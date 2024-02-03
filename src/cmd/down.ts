@@ -18,10 +18,10 @@ async function down({ ask }: { ask?: boolean }, workspace?: string) {
   }
 
   await workspaces.save(Deno.cwd(), {
-    containerId: result!.containerId,
+    containerId: null,
     name: result!.name,
     path: Deno.cwd(),
-    status: "STOPPED",
+    status: "Stopped",
     createdAt: result!.createdAt,
     updatedAt: new Date().toISOString(),
   });

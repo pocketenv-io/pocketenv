@@ -40,7 +40,7 @@ async function up(
     containerId,
     name: workspace,
     path: Deno.cwd(),
-    status: "RUNNING",
+    status: "Running",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });

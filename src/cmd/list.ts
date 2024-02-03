@@ -11,7 +11,7 @@ async function list() {
     table.push([
       item.value.name,
       item.value.status,
-      item.value.containerId.slice(0, 12),
+      item.value.containerId?.slice(0, 12),
       dayjs(item.value.createdAt).fromNow(),
       dayjs(item.value.updatedAt).fromNow(),
     ]);

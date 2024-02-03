@@ -1,5 +1,5 @@
 export type Workspace = {
-  containerId: string;
+  containerId: string | null;
   name: string;
   status: string;
   path: string;

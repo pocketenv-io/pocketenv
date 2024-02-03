@@ -20,7 +20,7 @@ export async function run(
   }
 
   const pkgx = new Deno.Command("pkgx", {
-    args: command.split(" "),
+    args: command.trim().split(" "),
     stdin: "inherit",
     stdout,
     stderr: "inherit",

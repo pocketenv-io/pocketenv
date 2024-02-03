@@ -1,6 +1,7 @@
 import { Command, brightGreen } from "./deps.ts";
 import down from "./src/cmd/down.ts";
 import init from "./src/cmd/init.ts";
+import logs from "./src/cmd/logs.ts";
 import server from "./src/cmd/server.ts";
 import shell from "./src/cmd/shell.ts";
 import status from "./src/cmd/status.ts";
@@ -53,6 +54,12 @@ async function main() {
     .arguments("[workspace:string]")
     .action(async function (_options, workspace) {
       await shell(workspace);
+    })
+    .command("logs", "Show the logs of a Pocketenv workspace")
+    .arguments("[workspace:string]")
+    .option("-f, --follow", "Follow log output")
+    .action(async function (options, workspace) {
+      await logs(options, workspace);
     })
     .parse(Deno.args);
 }

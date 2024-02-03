@@ -12,7 +12,7 @@ export async function spawn(
   await child.status;
   if (stdout === "piped") {
     const output = await child.output();
-    return new TextDecoder().decode(output.stdout);
+    return new TextDecoder().decode(output.stdout).trim();
   }
   return "";
 }

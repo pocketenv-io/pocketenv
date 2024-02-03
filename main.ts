@@ -2,6 +2,7 @@ import { Command, brightGreen } from "./deps.ts";
 import down from "./src/cmd/down.ts";
 import init from "./src/cmd/init.ts";
 import server from "./src/cmd/server.ts";
+import shell from "./src/cmd/shell.ts";
 import status from "./src/cmd/status.ts";
 import up from "./src/cmd/up.ts";
 import { VERSION } from "./src/consts.ts";
@@ -48,17 +49,10 @@ async function main() {
       await down(options, workspace);
     })
     .command("list", "List all Pocketenv workspaces")
-    .command("publish", "Publish a Pocketenv workspace as a template")
-    .command("search", "Search for a Pocketenv workspace")
-    .command("status", "Get the status of the Pocketenv workspace")
+    .command("shell", "Start a shell in the Pocketenv workspace")
     .arguments("[workspace:string]")
     .action(async function (_options, workspace) {
-      await status(workspace);
-    })
-    .command("server", "Start the Pocketenv server")
-    .option("-p, --port <port:number>", "Port to start the server on")
-    .action(async function (options) {
-      await server(options);
+      await shell(workspace);
     })
     .parse(Deno.args);
 }

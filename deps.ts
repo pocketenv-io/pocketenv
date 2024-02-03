@@ -27,3 +27,13 @@ export {
 export { decompress } from "https://deno.land/x/zip@v1.2.5/mod.ts";
 import dir from "https://deno.land/x/dir@1.5.2/mod.ts";
 export { dir };
+import Logger from "https://deno.land/x/logger@v1.1.3/logger.ts";
+export { Logger };
+import dayjs from "npm:dayjs";
+import relativeTime from "npm:dayjs/plugin/relativeTime.js";
+dayjs.extend(relativeTime);
+export { dayjs };
+export {
+  Cell,
+  Table,
+} from "https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts";

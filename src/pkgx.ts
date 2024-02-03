@@ -2,7 +2,8 @@ import { spawn } from "./lib.ts";
 
 export async function run(
   command: string,
-  stdout: "piped" | "inherit" = "inherit"
+  stdout: "piped" | "inherit" = "inherit",
+  cwd = Deno.cwd()
 ) {
   await setupPkgx();
   const env: Record<string, string> = {};
@@ -25,6 +26,7 @@ export async function run(
     stdout,
     stderr: "inherit",
     env,
+    cwd,
   });
   const process = pkgx.spawn();
 

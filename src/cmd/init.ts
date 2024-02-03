@@ -8,6 +8,8 @@ import {
   green,
   decompress,
 } from "../../deps.ts";
+import { POCKETENV_CACHE_DIR } from "../consts.ts";
+import { existsSync } from "node:fs";
 
 async function init({ template }: { template?: string }, name?: string) {
   const cwd = Deno.cwd().split("/").pop();
@@ -45,25 +47,40 @@ async function downloadFromGithub(template: string) {
   });
   terminalSpinner.start();
 
+  await Deno.mkdir(`${POCKETENV_CACHE_DIR}`, { recursive: true });
+
+  const filePath = `${POCKETENV_CACHE_DIR}/${template.replaceAll(
+    "/",
+    "-"
+  )}.zip`;
+
   const url =
     template.split("/").length === 2
       ? `https://codeload.github.com/${template}/zip/refs/heads/main`
       : `https://codeload.github.com/pocketenv-io/${template}/zip/refs/heads/main`;
 
-  const response = await fetch(url);
-  const data = await response.arrayBuffer();
+  if (!existsSync(filePath)) {
+    const response = await fetch(url);
+    const data = await response.arrayBuffer();
+    await Deno.writeFile(filePath, new Uint8Array(data));
+  }
 
   terminalSpinner.succeed("Template downloaded successfully!");
   terminalSpinner.stop();
 
-  const tempFilePath = await Deno.makeTempFile();
-  await Deno.writeFile(tempFilePath, new Uint8Array(data));
-  await decompress(tempFilePath, "./");
+  const cacheDir = `${POCKETENV_CACHE_DIR}/${template}`;
+  await Deno.mkdir(cacheDir, { recursive: true });
 
-  await Deno.remove(tempFilePath);
+  if (!existsSync(`${cacheDir}/${template.split("/").pop()}-main`)) {
+    await decompress(filePath, cacheDir);
+    await pkgx.run(
+      `terraform init`,
+      "inherit",
+      `${cacheDir}/${template.split("/").pop()}-main`
+    );
+  }
 
-  await copyDir(`./${template.split("/").pop()}-main`, `.`);
-  await Deno.remove(`./${template.split("/").pop()}-main`, { recursive: true });
+  await copyDir(`${cacheDir}/${template.split("/").pop()}-main`, `.`);
 }
 
 async function copyDir(src: string, dest: string) {

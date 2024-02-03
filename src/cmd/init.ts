@@ -25,7 +25,7 @@ async function init({ template }: { template?: string }, name?: string) {
   if (!template) {
     console.log(`${cyan("?")} Choose a template: `);
     template = await pkgx.run(
-      `gum choose pkgx nix devbox homebew devenv`,
+      `gum choose pkgx nix devbox homebrew devenv`,
       "piped"
     );
     await Deno.stdout.write(new TextEncoder().encode(magenta(template)));

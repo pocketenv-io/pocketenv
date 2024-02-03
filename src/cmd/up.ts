@@ -1,6 +1,7 @@
 import { pkgx } from "../../deps.ts";
 import { existsSync } from "node:fs";
 import { POCKETENV_CACHE_DIR } from "../consts.ts";
+import { spawn } from "../lib.ts";
 
 async function up(
   {
@@ -24,6 +25,13 @@ async function up(
   }
 
   await pkgx.run(`terraform apply ${args.join(" ")}`);
+  const containerId = await spawn(
+    "sh",
+    ["-c", 'pkgx terraform output -json | pkgx jq -r ".container_id.value"'],
+    "piped"
+  );
+  const logs = await spawn("sh", ["-c", `docker logs ${containerId}`]);
+  console.log(logs);
 }
 
 export default up;

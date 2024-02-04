@@ -13,6 +13,12 @@ Pocketenv is a simple and lightweight tool to manage development workspace envir
 > [!IMPORTANT]
 > Pocketenv is still in development and not ready for production use.
 
+## 🚚 Installation
+
+```bash
+ deno install --unstable -A -f -n pocketenv https://cdn.jsdelivr.net/gh/pocketenv-io/pocketenv@main/main.ts
+ ```
+
 ## 🚀 Usage
 
 ```bash

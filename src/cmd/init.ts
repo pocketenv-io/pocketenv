@@ -12,6 +12,7 @@ import {
 import { POCKETENV_CACHE_DIR } from "../consts.ts";
 import { existsSync } from "node:fs";
 import * as workspaces from "../workspaces.ts";
+import { getDefaultGithubBranch } from "../lib.ts";
 
 async function init({ template }: { template?: string }, name?: string) {
   if (!name) {
@@ -63,10 +64,14 @@ async function downloadFromGithub(template: string) {
     "-"
   )}.zip`;
 
+  const branch = await getDefaultGithubBranch(
+    template.split("/").length === 2 ? template : `pocketenv-io/${template}`
+  );
+
   const url =
     template.split("/").length === 2
-      ? `https://codeload.github.com/${template}/zip/refs/heads/main`
-      : `https://codeload.github.com/pocketenv-io/${template}/zip/refs/heads/main`;
+      ? `https://codeload.github.com/${template}/zip/refs/heads/${branch}`
+      : `https://codeload.github.com/pocketenv-io/${template}/zip/refs/heads/${branch}`;
 
   if (!existsSync(filePath)) {
     const response = await fetch(url);
@@ -80,16 +85,20 @@ async function downloadFromGithub(template: string) {
   const cacheDir = `${POCKETENV_CACHE_DIR}/${template}`;
   await Deno.mkdir(cacheDir, { recursive: true });
 
-  if (!existsSync(`${cacheDir}/${template.split("/").pop()}-main`)) {
+  if (!existsSync(`${cacheDir}/${template.split("/").pop()}-${branch}`)) {
     await decompress(filePath, cacheDir);
     await pkgx.run(
       `terraform init`,
       "inherit",
-      `${cacheDir}/${template.split("/").pop()}-main`
+      `${cacheDir}/${template.split("/").pop()}-${branch}`
+    );
+  } else {
+    console.log(
+      `💾 Using cached template: ${brightGreen(template)} ${brightGreen("...")}`
     );
   }
 
-  await copyDir(`${cacheDir}/${template.split("/").pop()}-main`, `.`);
+  await copyDir(`${cacheDir}/${template.split("/").pop()}-${branch}`, `.`);
 }
 
 async function copyDir(src: string, dest: string) {

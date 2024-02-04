@@ -16,3 +16,11 @@ export async function spawn(
   }
   return "";
 }
+
+export async function getDefaultGithubBranch(repo: string) {
+  // https://api.github.com/repos/pocketenv-io/nix
+  const data = await fetch(`https://api.github.com/repos/${repo}`).then((res) =>
+    res.json()
+  );
+  return data.default_branch;
+}

@@ -4,6 +4,9 @@
 
 Pocketenv is a simple and lightweight tool to manage development workspace environments. It allows you to define and manage workspaces for your projects, and easily switch between them.
 
+![preview](./.github/images/preview.png)
+
+
 > [!NOTE]
 > `Pocketenv Workspaces` are just Docker Containers with some preinstalled tools, volumes, and [vscode tunnel](https://code.visualstudio.com/docs/remote/tunnels) as an entry point.
 

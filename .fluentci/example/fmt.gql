@@ -1,0 +1,7 @@
+{
+  denoExample {
+    fmt {
+      id
+    }
+  }
+}

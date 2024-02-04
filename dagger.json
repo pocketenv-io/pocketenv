@@ -1,0 +1,8 @@
+{
+  "name": "pocketdev",
+  "sdk": "github.com/fluentci-io/daggerverse/deno-sdk@main",
+  "version": "v0.1.0",
+  "description": "",
+  "author": "Tsiry Sandratraina <tsiry.sndr@fluentci.io>",
+  "license": "MIT"
+}

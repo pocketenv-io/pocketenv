@@ -7,7 +7,7 @@ import * as workspaces from "../workspaces.ts";
 async function up(
   {
     ask,
-    template,
+    template: _template,
   }: {
     ask?: boolean;
     template?: string;

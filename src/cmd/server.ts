@@ -1,3 +1,3 @@
-async function server({ port }: { port?: number }) {}
+async function server({ port: _port }: { port?: number }) {}
 
 export default server;

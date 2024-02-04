@@ -1,12 +1,14 @@
 export async function spawn(
   name: string,
   args: string[],
-  stdout: "inherit" | "piped" = "inherit"
+  stdout: "inherit" | "piped" = "inherit",
+  cwd = Deno.cwd()
 ): Promise<string> {
   const command = new Deno.Command(name, {
     args,
     stdout,
     stderr: "inherit",
+    cwd,
   });
   const child = command.spawn();
   await child.status;

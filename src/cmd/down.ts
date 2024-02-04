@@ -9,18 +9,29 @@ async function down({ ask }: { ask?: boolean }, workspace?: string) {
     args.push("-auto-approve");
   }
 
-  await pkgx.run(`terraform destroy ${args.join(" ")}`, "inherit");
+  let workdir = Deno.cwd();
 
-  const result = await workspaces.get(Deno.cwd());
+  if (workspace) {
+    const result = await workspaces.get(workspace);
+    if (!result) {
+      console.error(`Workspace ${workspace} not found.`);
+      Deno.exit(1);
+    }
+    workdir = result.path;
+  }
+
+  await pkgx.run(`terraform destroy ${args.join(" ")}`, "inherit", workdir);
+
+  const result = await workspaces.get(workspace || workdir);
 
   if (!result) {
     logger.warn("Workspace not found");
   }
 
-  await workspaces.save(Deno.cwd(), {
+  await workspaces.save(result?.path || Deno.cwd(), {
     containerId: null,
     name: result!.name,
-    path: Deno.cwd(),
+    path: result?.path || Deno.cwd(),
     status: "Stopped",
     createdAt: result!.createdAt,
     updatedAt: new Date().toISOString(),

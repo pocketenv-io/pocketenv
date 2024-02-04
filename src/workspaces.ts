@@ -1,10 +1,12 @@
 import { POCKETENV_KV_PREFIX } from "./consts.ts";
 import { Workspace } from "./type.ts";
+import { _ } from "../deps.ts";
 
 const kv = await Deno.openKv();
 
 export async function save(path: string, data: Workspace) {
   await kv.set([POCKETENV_KV_PREFIX, "workspaces", path], data);
+  await kv.set([POCKETENV_KV_PREFIX, "workspaces", data.name], data);
 }
 
 export async function get(path: string) {
@@ -22,5 +24,5 @@ export async function list() {
   });
   const workspaces = [];
   for await (const res of iter) workspaces.push(res);
-  return workspaces;
+  return _.uniqBy(workspaces, (x: Deno.KvEntry<Workspace>) => x.value.path);
 }

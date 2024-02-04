@@ -6,7 +6,6 @@ Pocketenv is a simple and lightweight tool to manage development workspace envir
 
 ![preview](./.github/images/preview.png)
 
-
 > [!NOTE]
 > `Pocketenv Workspaces` are just Docker Containers with some preinstalled tools, volumes, and [vscode tunnel](https://code.visualstudio.com/docs/remote/tunnels) as an entry point.
 > 
@@ -22,6 +21,15 @@ Pocketenv is a simple and lightweight tool to manage development workspace envir
   -A -f -n pocketenv \ 
   https://cdn.jsdelivr.net/gh/pocketenv-io/pocketenv@main/main.ts
  ```
+
+> [!TIP]
+> Quickly create a new workspace with `pocketenv init` and `pocketenv up` command.
+>
+> Destroy it with `pocketenv down` command.
+> 
+> List all workspaces with `pocketenv list` command.
+>
+> Start a shell in a workspace with `pocketenv shell` command.
 
 ## 🚀 Usage
 

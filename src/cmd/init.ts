@@ -7,18 +7,18 @@ import {
   SpinnerTypes,
   green,
   decompress,
+  generateName,
 } from "../../deps.ts";
 import { POCKETENV_CACHE_DIR } from "../consts.ts";
 import { existsSync } from "node:fs";
+import * as workspaces from "../workspaces.ts";
 
 async function init({ template }: { template?: string }, name?: string) {
-  const cwd = Deno.cwd().split("/").pop();
-
   if (!name) {
     console.log(`${cyan("?")} Workspace name: `);
 
     while (!name || name === "") {
-      name = await pkgx.run(`gum input --value ${cwd}`, "piped");
+      name = await pkgx.run(`gum input --value ${generateName()}`, "piped");
       name = name.trim();
     }
 
@@ -35,6 +35,15 @@ async function init({ template }: { template?: string }, name?: string) {
   }
 
   await downloadFromGithub(template);
+
+  await workspaces.save(Deno.cwd(), {
+    containerId: null,
+    name,
+    path: Deno.cwd(),
+    status: "Initialized",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  });
 
   console.log("Workspace successfully generated! 🚀");
   console.log(`Run ${brightGreen("`pocketenv up`")} to start the workspace.`);

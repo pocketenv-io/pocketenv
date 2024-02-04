@@ -1,4 +1,4 @@
-import { pkgx } from "../../deps.ts";
+import { generateName, pkgx } from "../../deps.ts";
 import { existsSync } from "node:fs";
 import { POCKETENV_CACHE_DIR } from "../consts.ts";
 import { spawn } from "../lib.ts";
@@ -35,13 +35,15 @@ async function up(
   const logs = await spawn("sh", ["-c", `docker logs ${containerId}`]);
   console.log(logs);
 
-  workspace = workspace || Deno.cwd().split("/").pop()!;
+  const result = await workspaces.get(Deno.cwd());
+
+  workspace = workspace || result?.name || generateName();
   await workspaces.save(Deno.cwd(), {
     containerId,
     name: workspace,
     path: Deno.cwd(),
     status: "Running",
-    createdAt: new Date().toISOString(),
+    createdAt: result?.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
 }

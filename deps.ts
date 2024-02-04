@@ -37,3 +37,4 @@ export {
   Cell,
   Table,
 } from "https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts";
+export { generateName } from "https://deno.land/x/docker_names@v1.1.0/mod.ts ";

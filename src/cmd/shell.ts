@@ -1,5 +1,6 @@
 import { pkgx } from "../../deps.ts";
 import { spawn } from "../lib.ts";
+import { existsSync } from "node:fs";
 import * as workspaces from "../workspaces.ts";
 
 async function shell(workspace?: string) {
@@ -8,10 +9,14 @@ async function shell(workspace?: string) {
   if (workspace) {
     const result = await workspaces.get(workspace);
     if (!result) {
-      console.error(`Workspace ${workspace} not found.`);
+      console.error(`🚨 Workspace ${workspace} not found.`);
       Deno.exit(1);
     }
     workdir = result.path;
+  }
+
+  if (existsSync(`${workdir}/.pocketenv`)) {
+    workdir = `${workdir}/.pocketenv`;
   }
 
   const containerId = await spawn(

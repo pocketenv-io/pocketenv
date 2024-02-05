@@ -1,5 +1,6 @@
 import { pkgx, Logger } from "../../deps.ts";
 import * as workspaces from "../workspaces.ts";
+import { existsSync } from "node:fs";
 
 async function down({ ask }: { ask?: boolean }, workspace?: string) {
   const logger = new Logger();
@@ -20,9 +21,15 @@ async function down({ ask }: { ask?: boolean }, workspace?: string) {
     workdir = result.path;
   }
 
+  if (existsSync(`${workdir}/.pocketenv`)) {
+    workdir = `${workdir}/.pocketenv`;
+  }
+
   await pkgx.run(`terraform destroy ${args.join(" ")}`, "inherit", workdir);
 
-  const result = await workspaces.get(workspace || workdir);
+  const result = await workspaces.get(
+    workspace || workdir.replace(/\/.pocketenv$/, "")
+  );
 
   if (!result) {
     logger.warn("Workspace not found");

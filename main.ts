@@ -29,6 +29,10 @@ async function main() {
       "-t, --template <template:string>",
       "Create a workspace from a template"
     )
+    .option(
+      "-s, --standalone [standalone:boolean]",
+      "Create a standalone workspace from a template"
+    )
     .action(function (options, name) {
       init(options, name);
     })

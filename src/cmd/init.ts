@@ -14,7 +14,10 @@ import { existsSync } from "node:fs";
 import * as workspaces from "../workspaces.ts";
 import { getDefaultGithubBranch } from "../lib.ts";
 
-async function init({ template }: { template?: string }, name?: string) {
+async function init(
+  { template, standalone }: { template?: string; standalone?: boolean },
+  name?: string
+) {
   if (!name) {
     console.log(`${cyan("?")} Workspace name: `);
 
@@ -35,7 +38,7 @@ async function init({ template }: { template?: string }, name?: string) {
     template = template.trim();
   }
 
-  await downloadFromGithub(template);
+  await downloadFromGithub(template, standalone);
 
   await workspaces.save(Deno.cwd(), {
     containerId: null,
@@ -50,7 +53,17 @@ async function init({ template }: { template?: string }, name?: string) {
   console.log(`Run ${brightGreen("`pocketenv up`")} to start the workspace.`);
 }
 
-async function downloadFromGithub(template: string) {
+async function downloadFromGithub(template: string, standalone?: boolean) {
+  if (!standalone) {
+    if (existsSync(".pocketenv")) {
+      console.log(
+        `🚨 ${brightGreen(
+          ".pocketenv"
+        )} directory already exists. Please remove it and try again.`
+      );
+      Deno.exit(1);
+    }
+  }
   const terminalSpinner = new TerminalSpinner({
     text: `Downloading ${green(template)} template ...`,
     spinner: SpinnerTypes.dots,
@@ -98,7 +111,10 @@ async function downloadFromGithub(template: string) {
     );
   }
 
-  await copyDir(`${cacheDir}/${template.split("/").pop()}-${branch}`, `.`);
+  await copyDir(
+    `${cacheDir}/${template.split("/").pop()}-${branch}`,
+    standalone ? "." : ".pocketenv"
+  );
 }
 
 async function copyDir(src: string, dest: string) {

@@ -33,6 +33,10 @@ async function up(
     workdir = result.path;
   }
 
+  if (existsSync(`${workdir}/.pocketenv`)) {
+    workdir = `${workdir}/.pocketenv`;
+  }
+
   if (!existsSync(`${workdir}/.terraform`)) {
     await pkgx.run(`terraform init`, "inherit", workdir);
   }

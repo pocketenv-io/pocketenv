@@ -2,6 +2,8 @@
 
 # Pocketenv
 
+[![CodeSee](https://codesee-docs.s3.amazonaws.com/badge.svg?)](https://app.codesee.io/maps/public/85353fa0-c4dd-11ee-95ac-897807a2630c)
+
 Pocketenv is a simple and lightweight tool to manage development workspace environments. It allows you to define and manage workspaces for your projects, and easily switch between them.
 
 ![preview](./.github/images/preview.png)

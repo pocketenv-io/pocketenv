@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "graphql": "https://esm.sh/graphql@16.6.0"
+  }
+}

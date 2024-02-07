@@ -3,6 +3,7 @@ import down from "./src/cmd/down.ts";
 import init from "./src/cmd/init.ts";
 import list from "./src/cmd/list.ts";
 import logs from "./src/cmd/logs.ts";
+import server from "./src/cmd/server.ts";
 import shell from "./src/cmd/shell.ts";
 import up from "./src/cmd/up.ts";
 import { VERSION } from "./src/consts.ts";
@@ -66,6 +67,14 @@ async function main() {
     .command("list", "List all Pocketenv workspaces")
     .action(async function () {
       await list();
+    })
+    .command("server", "Start the Pocketenv server")
+    .option(
+      "--port <port:number>",
+      "Port to start the server on, defaults to 4090"
+    )
+    .action(async function (options) {
+      await server(options);
     })
     .parse(Deno.args);
 }

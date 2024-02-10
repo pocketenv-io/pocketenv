@@ -9,6 +9,7 @@ import {
   getTemplates,
   getTemplateDetails,
 } from "./resolvers/templates/queries.ts";
+import { createProject } from "./resolvers/projects/mutations.ts";
 
 builder.objectType(Project, {
   name: "Project",
@@ -61,6 +62,19 @@ builder.queryType({
         id: t.arg.id(),
       },
       resolve: getTemplateDetails,
+    }),
+  }),
+});
+
+builder.mutationType({
+  fields: (t) => ({
+    createProject: t.field({
+      type: Project,
+      args: {
+        name: t.arg.string(),
+        template: t.arg.string(),
+      },
+      resolve: createProject,
     }),
   }),
 });

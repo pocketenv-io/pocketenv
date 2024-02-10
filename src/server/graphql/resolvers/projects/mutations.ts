@@ -8,8 +8,8 @@ export async function createProject(
 ): Promise<Project> {
   return new Project(
     "id",
-    args.name,
-    args.template,
+    "demo",
+    "template",
     new Date().toISOString(),
     new Date().toISOString()
   );

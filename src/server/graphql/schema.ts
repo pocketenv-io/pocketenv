@@ -18,6 +18,8 @@ builder.objectType(Project, {
     id: t.exposeID("id"),
     name: t.exposeString("name"),
     template: t.exposeString("template"),
+    containerId: t.exposeString("containerId"),
+    status: t.exposeString("status"),
     createdAt: t.exposeString("createdAt"),
     updatedAt: t.exposeString("updatedAt"),
   }),

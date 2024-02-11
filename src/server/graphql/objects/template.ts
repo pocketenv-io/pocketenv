@@ -7,15 +7,15 @@ export class Template {
   repoUrl: string;
   packageName: string;
 
-  constructor(
-    id: string,
-    name: string,
-    description: string,
-    logo: string,
-    readme: string,
-    repoUrl: string,
-    packageName: string
-  ) {
+  constructor({
+    id,
+    name,
+    description,
+    logo,
+    readme,
+    repoUrl,
+    packageName,
+  }: Template) {
     this.id = id;
     this.name = name;
     this.description = description;

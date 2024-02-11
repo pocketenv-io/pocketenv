@@ -6,11 +6,13 @@ export async function createProject(
   args: any,
   ctx: Context
 ): Promise<Project> {
-  return new Project(
-    "id",
-    "demo",
-    "template",
-    new Date().toISOString(),
-    new Date().toISOString()
-  );
+  return new Project({
+    id: "2",
+    name: "trusting_pasteur",
+    template: "nix",
+    status: "Stopped",
+    containerId: "",
+    createdAt: "2024-02-11T19:00:00.778Z",
+    updatedAt: "2024-02-11T19:00:00.778Z",
+  });
 }

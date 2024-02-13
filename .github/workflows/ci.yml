@@ -14,3 +14,5 @@ jobs:
         uses: fluentci-io/setup-fluentci@v3
       - name: Run Dagger Pipelines
         run: fluentci run deno_pipeline fmt lint
+        env:
+          DAGGER_CLOUD_TOKEN: ${{secrets.DAGGER_CLOUD_TOKEN}}

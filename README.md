@@ -2,7 +2,10 @@
 
 # Pocketenv
 
-[![CodeSee](https://codesee-docs.s3.amazonaws.com/badge.svg?)](https://app.codesee.io/maps/public/85353fa0-c4dd-11ee-95ac-897807a2630c)
+[![FlakeHub](https://img.shields.io/endpoint?url=https://flakehub.com/f/pocketenv-io/pocketenv/badge)](https://flakehub.com/flake/pocketenv-io/pocketenv)
+[![deno module](https://shield.deno.dev/x/pocketenv)](https://deno.land/x/pocketenv)
+![deno compatibility](https://shield.deno.dev/deno/^1.37)
+[![flakestry.dev](https://flakestry.dev/api/badge/flake/github/pocketenv-io/pocketenv)](https://flakestry.dev/flake/github/pocketenv-io/pocketenv)
 
 Pocketenv is a simple and lightweight tool to manage development workspace environments. It allows you to define and manage workspaces for your projects, and easily switch between them.
 

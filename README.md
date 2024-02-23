@@ -38,7 +38,7 @@ With Nix:
 nix profile install --experimental-features "nix-command flakes" github:pocketenv-io/pocketenv
 ```
 
-Or download the binary from the [releases page](https://github.com/pcoketenv-io/pocketenv/releases) and add it to your PATH.
+Or download the binary from the [releases page](https://github.com/pocketenv-io/pocketenv/releases) and add it to your PATH.
 
 > [!TIP]
 > * Quickly create a new workspace with `pocketenv init` and `pocketenv up` command.

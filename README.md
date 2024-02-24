@@ -20,16 +20,22 @@ Pocketenv is a simple and lightweight tool to manage development workspace envir
 
 ## 🚚 Installation
 
-With Deno:
-
-```bash
-deno install -A -r https://cli.pocketenv.io -n pocketenv
-```
-
 With Bash:
 
 ```bash
 curl -fsSL https://cli.pocketenv.io | bash
+```
+
+With [Homebrew](https://brew.sh/) (macOS/Linux):
+
+```sh
+brew install pocketenv-io/tap/pocketenv
+```
+
+With Deno:
+
+```bash
+deno install -A -r https://cli.pocketenv.io -n pocketenv
 ```
 
 With Nix:

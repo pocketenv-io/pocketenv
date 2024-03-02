@@ -1,5 +1,5 @@
-import Client, { Directory, Secret, File } from "../../deps.ts";
-import { connect } from "../../sdk/connect.ts";
+import { dag } from '../../sdk/client.gen.ts';
+import { Directory, Secret, File } from "../../deps.ts";
 import { existsSync } from "node:fs";
 import { getDirectory, getDenoDeployToken } from "./lib.ts";
 
@@ -13,8 +13,8 @@ export enum Job {
 
 export const exclude = [".git", ".devbox", ".fluentci"];
 
-const baseCtr = (client: Client, pipeline: string) => {
-  return client
+const baseCtr = (pipeline: string) => {
+  return dag
     .pipeline(pipeline)
     .container()
     .from("denoland/deno:alpine")
@@ -32,27 +32,24 @@ export async function lint(
   src: string | Directory | undefined = "."
 ): Promise<Directory | string> {
   let id = "";
-  await connect(async (client) => {
-    const context = await getDirectory(client, src);
-    let command = ["deno", "lint"];
+  const context = await getDirectory(src);
+  let command = ["deno", "lint"];
 
-    if (existsSync("devbox.json")) {
-      command = ["sh", "-c", `devbox run -- ${command.join(" ")}`];
-    }
+  if (existsSync("devbox.json")) {
+    command = ["sh", "-c", `devbox run -- ${command.join(" ")}`];
+  }
 
-    const ctr = baseCtr(client, Job.lint)
-      .withDirectory("/app", context, {
-        exclude,
-      })
-      .withWorkdir("/app")
-      .withExec(command);
+  const ctr = baseCtr(Job.lint)
+    .withDirectory("/app", context, {
+       exclude,
+    })
+    .withWorkdir("/app")
+    .withExec(command);
 
-    const result = await ctr.stdout();
-    console.log(result);
+  const result = await ctr.stdout();
+  console.log(result);
 
-    id = await ctr.directory("/app").id();
-  });
-  return id;
+  return ctr.directory("/app").id();
 }
 
 /**
@@ -65,27 +62,23 @@ export async function fmt(
   src: string | Directory | undefined = "."
 ): Promise<Directory | string> {
   let id = "";
-  await connect(async (client) => {
-    const context = await getDirectory(client, src);
-    let command = ["deno", "fmt"];
+  const context = await getDirectory(src);
+  let command = ["deno", "fmt"];
 
-    if (existsSync("devbox.json")) {
-      command = ["sh", "-c", `devbox run -- ${command.join(" ")}`];
-    }
+  if (existsSync("devbox.json")) {
+    command = ["sh", "-c", `devbox run -- ${command.join(" ")}`];
+  }
 
-    const ctr = baseCtr(client, Job.fmt)
-      .withDirectory("/app", context, {
-        exclude,
-      })
-      .withWorkdir("/app")
-      .withExec(command);
+  const ctr = baseCtr(Job.fmt)
+    .withDirectory("/app", context, {
+       exclude,
+    })
+    .withWorkdir("/app")
+    .withExec(command);
 
-    const result = await ctr.stdout();
-    console.log(result);
-    id = await ctr.directory("/app").id();
-  });
-
-  return id;
+  const result = await ctr.stdout();
+  console.log(result);
+  return ctr.directory("/app").id();
 }
 
 /**
@@ -100,40 +93,38 @@ export async function test(
   ignore: string[] = []
 ): Promise<File | string> {
   let id = "";
-  await connect(async (client) => {
-    const context = await getDirectory(client, src);
-    let command = ["deno", "test", "-A", "--coverage=coverage", "--lock-write"];
+  const context = await getDirectory(src);
+  let command = ["deno", "test", "-A", "--coverage=coverage", "--lock-write"];
 
-    if (ignore.length > 0) {
-      command = command.concat([`--ignore=${ignore.join(",")}`]);
-    }
+  if (ignore.length > 0) {
+    command = command.concat([`--ignore=${ignore.join(",")}`]);
+  }
 
-    if (existsSync("devbox.json")) {
-      command = ["sh", "-c", `devbox run -- ${command.join(" ")}`];
-    }
+  if (existsSync("devbox.json")) {
+    command = ["sh", "-c", `devbox run -- ${command.join(" ")}`];
+  }
 
-    const ctr = baseCtr(client, Job.test)
-      .from("denoland/deno:alpine")
-      .withDirectory("/app", context, {
-        exclude,
-      })
-      .withWorkdir("/app")
-      .withMountedCache("/deno-dir", client.cacheVolume("deno-cache"))
-      .withExec(command)
-      .withExec([
-        "sh",
-        "-c",
-        "deno coverage ./coverage --lcov > coverage.lcov",
-      ]);
+  const ctr = baseCtr(Job.test)
+    .from("denoland/deno:alpine")
+    .withDirectory("/app", context, {
+      exclude,
+    })
+    .withWorkdir("/app")
+    .withMountedCache("/deno-dir", dag.cacheVolume("deno-cache"))
+    .withExec(command)
+    .withExec([
+      "sh",
+      "-c",
+      "deno coverage ./coverage --lcov > coverage.lcov",
+    ]);
 
-    const cov = await ctr.file("/app/coverage.lcov");
-    cov.export("./coverage.lcov");
-    id = await cov.id();
+  const cov = await ctr.file("/app/coverage.lcov");
+  cov.export("./coverage.lcov");
 
-    const result = await ctr.stdout();
-    console.log(result);
-  });
-  return id;
+  const result = await ctr.stdout();
+  console.log(result);
+
+  return cov.id();
 }
 
 /**
@@ -151,51 +142,49 @@ export async function compile(
   output = "main",
   target = "x86_64-unknown-linux-gnu"
 ): Promise<File | string> {
-  let id = "";
-  await connect(async (client) => {
-    const context = await getDirectory(client, src);
-    let command = [
-      "deno",
-      "compile",
-      "--unstable",
-      "-A",
-      "--output",
+  const context = await getDirectory(src);
+  let command = [
+   "deno",
+    "compile",
+    "--unstable",
+    "-A",
+    "--output",
+    "pocketenv",
+    "--target",
+    Deno.env.get("TARGET") || target,
+    file,
+  ];
+
+  if (existsSync("devbox.json")) {
+    command = ["sh", "-c", `devbox run -- ${command.join(" ")}`];
+  }
+
+  const ctr = baseCtr(Job.fmt)
+    .withMountedCache("/assets", dag.cacheVolume("gh-release-assets"))
+    .withDirectory("/app", context, {
+      exclude,
+    })
+    .withWorkdir("/app")
+    .withExec(command)
+    .withExec(["ls", "-ltr", "."])
+    .withExec([
+      "tar",
+      "czvf",
+      `/assets/pocketenv_${Deno.env.get("TAG") || ""}_${
+        Deno.env.get("TARGET") || target
+      }.tar.gz`,
       "pocketenv",
-      "--target",
-      Deno.env.get("TARGET") || target,
-      file,
-    ];
-
-    if (existsSync("devbox.json")) {
-      command = ["sh", "-c", `devbox run -- ${command.join(" ")}`];
-    }
-
-    const ctr = baseCtr(client, Job.fmt)
-      .withMountedCache("/assets", client.cacheVolume("gh-release-assets"))
-      .withDirectory("/app", context, {
-        exclude,
-      })
-      .withWorkdir("/app")
-      .withExec(command)
-      .withExec(["ls", "-ltr", "."])
-      .withExec([
-        "tar",
-        "czvf",
-        `/assets/pocketenv_${Deno.env.get("TAG") || ""}_${
-          Deno.env.get("TARGET") || target
-        }.tar.gz`,
-        "pocketenv",
-      ])
-      .withExec([
-        "sh",
-        "-c",
-        `shasum -a 256 /assets/pocketenv_${Deno.env.get("TAG") || ""}_${
-          Deno.env.get("TARGET") || target
-        }.tar.gz > /assets/pocketenv_${Deno.env.get("TAG") || ""}_${
-          Deno.env.get("TARGET") || target
-        }.tar.gz.sha256`,
-      ])
-      .withExec(["sh", "-c", "cp /assets/* /app"]);
+    ])
+    .withExec([
+      "sh",
+      "-c",
+      `shasum -a 256 /assets/pocketenv_${Deno.env.get("TAG") || ""}_${
+        Deno.env.get("TARGET") || target
+      }.tar.gz > /assets/pocketenv_${Deno.env.get("TAG") || ""}_${
+        Deno.env.get("TARGET") || target
+      }.tar.gz.sha256`,
+    ])
+    .withExec(["sh", "-c", "cp /assets/* /app"]);
 
     const sha256 = await ctr.file(
       `/app/pocketenv_${Deno.env.get("TAG") || ""}_${
@@ -218,11 +207,8 @@ export async function compile(
       }.tar.gz.sha256`
     );
 
-    await ctr.stdout();
-    id = await tar.id();
-  });
-
-  return id;
+  await ctr.stdout();
+  return tar.id();
 }
 
 /**
@@ -245,76 +231,72 @@ export async function deploy(
   excludeOpt?: string
 ): Promise<string> {
   let result = "";
-  await connect(async (client) => {
-    const context = await getDirectory(client, src);
-    let installDeployCtl = [
-      "deno",
-      "install",
-      "--allow-all",
-      "--no-check",
-      "-r",
-      "-f",
-      "https://deno.land/x/deploy/deployctl.ts",
-    ];
+  const context = await getDirectory(src);
+  let installDeployCtl = [
+    "deno",
+    "install",
+    "--allow-all",
+    "--no-check",
+    "-r",
+    "-f",
+    "https://deno.land/x/deploy/deployctl.ts",
+  ];
 
-    let command = ["deployctl", "deploy"];
+  let command = ["deployctl", "deploy"];
 
-    if (Deno.env.get("NO_STATIC") || noStatic) {
-      command = command.concat(["--no-static"]);
-    }
+  if (Deno.env.get("NO_STATIC") || noStatic) {
+    command = command.concat(["--no-static"]);
+  }
 
-    if (Deno.env.get("EXCLUDE") || excludeOpt) {
-      command = command.concat([
-        `--exclude=${Deno.env.get("EXCLUDE") || excludeOpt}`,
-      ]);
-    }
-
-    const secret = await getDenoDeployToken(client, token);
-
-    if (!secret) {
-      console.error("DENO_DEPLOY_TOKEN environment variable is not set");
-      Deno.exit(1);
-    }
-
-    if (!project) {
-      throw new Error("DENO_PROJECT environment variable is not set");
-    }
-
-    const script = Deno.env.get("DENO_MAIN_SCRIPT") || "main.tsx";
+  if (Deno.env.get("EXCLUDE") || excludeOpt) {
     command = command.concat([
-      `--project=${Deno.env.get("DENO_PROJECT") || project}`,
-      script,
+      `--exclude=${Deno.env.get("EXCLUDE") || excludeOpt}`,
     ]);
+  }
 
-    if (existsSync("devbox.json")) {
-      command = ["sh", "-c", `devbox run -- ${command.join(" ")}`];
-      installDeployCtl = [
-        "sh",
-        "-c",
-        `devbox run -- ${installDeployCtl.join(" ")}`,
-      ];
-    }
+  const secret = await getDenoDeployToken(token);
 
-    const ctr = baseCtr(client, Job.deploy)
-      .from("denoland/deno:alpine")
-      .withDirectory("/app", context, {
-        exclude,
-      })
-      .withWorkdir("/app")
-      .withEnvVariable("PATH", "/root/.deno/bin:$PATH", { expand: true })
-      .withSecretVariable("DENO_DEPLOY_TOKEN", secret)
-      .withEnvVariable(
-        "DENO_MAIN_SCRIPT",
-        Deno.env.get("DENO_MAIN_SCRIPT") || main || "main.tsx"
-      )
-      .withExec(installDeployCtl)
-      .withExec(command);
+  if (!secret) {
+    console.error("DENO_DEPLOY_TOKEN environment variable is not set");
+    Deno.exit(1);
+  }
 
-    result = await ctr.stdout();
-    console.log(result);
-  });
+  if (!project) {
+    throw new Error("DENO_PROJECT environment variable is not set");
+  }
 
-  return "Done";
+  const script = Deno.env.get("DENO_MAIN_SCRIPT") || "main.tsx";
+  command = command.concat([
+    `--project=${Deno.env.get("DENO_PROJECT") || project}`,
+    script,
+  ]);
+
+  if (existsSync("devbox.json")) {
+    command = ["sh", "-c", `devbox run -- ${command.join(" ")}`];
+    installDeployCtl = [
+      "sh",
+      "-c",
+      `devbox run -- ${installDeployCtl.join(" ")}`,
+    ];
+  }
+
+  const ctr = baseCtr(Job.deploy)
+    .from("denoland/deno:alpine")
+    .withDirectory("/app", context, {
+      exclude,
+    })
+    .withWorkdir("/app")
+    .withEnvVariable("PATH", "/root/.deno/bin:$PATH", { expand: true })
+    .withSecretVariable("DENO_DEPLOY_TOKEN", secret)
+    .withEnvVariable(
+      "DENO_MAIN_SCRIPT",
+      Deno.env.get("DENO_MAIN_SCRIPT") || main || "main.tsx"
+    )
+    .withExec(installDeployCtl)
+    .withExec(command);
+
+  return ctr.stdout();
+
 }
 
 export type JobExec =

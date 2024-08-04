@@ -32,13 +32,13 @@ async function up(
       Deno.exit(1);
     }
     workdir = result.path;
-    args.push(`-var 'hostname=${result.name}'`);
-    args.push(`-var 'workspace_name=${result.name}'`);
+    args.push(`-var hostname=${result.name}`);
+    args.push(`-var workspace_name=${result.name}`);
   }
 
   if (!workspace) {
-    args.push(`-var 'hostname=${generatedName}'`);
-    args.push(`-var 'workspace_name=${generatedName}'`);
+    args.push(`-var hostname=${generatedName}`);
+    args.push(`-var workspace_name=${generatedName}`);
   }
 
   if (existsSync(`${workdir}/.pocketenv`)) {

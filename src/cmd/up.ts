@@ -23,6 +23,7 @@ async function up(
   }
 
   let workdir = Deno.cwd();
+  const generatedName = generateName();
 
   if (workspace) {
     const result = await workspaces.get(workspace);
@@ -31,6 +32,13 @@ async function up(
       Deno.exit(1);
     }
     workdir = result.path;
+    args.push(`-var 'hostname=${result.name}'`);
+    args.push(`-var 'workspace_name=${result.name}'`);
+  }
+
+  if (!workspace) {
+    args.push(`-var 'hostname=${generatedName}'`);
+    args.push(`-var 'workspace_name=${generatedName}'`);
   }
 
   if (existsSync(`${workdir}/.pocketenv`)) {
@@ -53,7 +61,7 @@ async function up(
 
   const result = await workspaces.get(workspace || Deno.cwd());
 
-  workspace = result?.name || workspace || generateName();
+  workspace = result?.name || workspace || generatedName;
   await workspaces.save(result?.path || Deno.cwd(), {
     containerId,
     name: workspace,

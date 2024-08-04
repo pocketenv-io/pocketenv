@@ -25,7 +25,7 @@
 
         packages.default = pkgs.deno2nix.mkExecutable {
           pname = "pocketenv";
-          version = "0.1.0";
+          version = "0.1.1";
 
           src = ./.;
           lockfile = "./deno.lock";

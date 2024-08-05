@@ -3,6 +3,7 @@
 # Pocketenv
 
 [![FlakeHub](https://img.shields.io/endpoint?url=https://flakehub.com/f/pocketenv-io/pocketenv/badge)](https://flakehub.com/flake/pocketenv-io/pocketenv)
+[![discord](https://img.shields.io/discord/1270021300240252979?label=discord&logo=discord&color=5865F2)](https://discord.gg/RxKa62YAs4)
 [![built with nix](https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5)](https://builtwithnix.org)
 [![deno module](https://shield.deno.dev/x/pocketenv)](https://deno.land/x/pocketenv)
 ![deno compatibility](https://shield.deno.dev/deno/^1.37)

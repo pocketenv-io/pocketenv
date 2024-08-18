@@ -99,6 +99,7 @@ async function downloadFromGithub(template: string, standalone?: boolean) {
   await Deno.mkdir(cacheDir, { recursive: true });
 
   if (!existsSync(`${cacheDir}/${template.split("/").pop()}-${branch}`)) {
+    await pkgx.installPackage("unzip");
     await decompress(filePath, cacheDir);
     await pkgx.run(
       `terraform init`,

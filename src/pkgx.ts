@@ -42,6 +42,13 @@ export async function run(
 async function setupPkgx() {
   await spawn("sh", [
     "-c",
-    "type pkgx > /dev/null || curl -fsS https://pkgx.sh | sh",
+    "type pkgx > /dev/null 2> /dev/null || curl -fsS https://pkgx.sh | sh",
+  ]);
+}
+
+export async function installPackage(name: string) {
+  await spawn("sh", [
+    "-c",
+    `type ${name} > /dev/null 2> /dev/null || pkgx install ${name}`,
   ]);
 }

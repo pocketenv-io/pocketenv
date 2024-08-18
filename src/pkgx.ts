@@ -47,6 +47,7 @@ async function setupPkgx() {
 }
 
 export async function installPackage(name: string) {
+  await setupPkgx();
   await spawn("sh", [
     "-c",
     `type ${name} > /dev/null 2> /dev/null || pkgx install ${name}`,

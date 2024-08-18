@@ -55,13 +55,27 @@ tar -xzf /tmp/$ASSET_NAME -C /tmp
 # Set the correct permissions for the binary
 chmod +x /tmp/pocketenv
 
+# Check if the 'local' argument was passed
+LOCAL=0
+if [ $# -eq 1 ]; then
+    if [ $1 = "--local" ]; then
+	LOCAL=1
+    fi
+fi
+
 # Move the extracted binary to the installation directory
 # use sudo if OS is Linux
 if [ "$OS" = "Linux" ]; then
-    if command -v sudo >/dev/null 2>&1; then
-        sudo mv /tmp/pocketenv $INSTALL_DIR
+    # Install locally if LOCAL is set to 1
+    LOCAL_DIR="/home/$USER/.local/bin"
+    if [ "$LOCAL" -eq 1 ]; then
+	mv /tmp/pocketenv $LOCAL_DIR
     else
-        mv /tmp/pocketenv $INSTALL_DIR
+	if command -v sudo >/dev/null 2>&1; then
+	    sudo mv /tmp/pocketenv $INSTALL_DIR
+	else
+	    mv /tmp/pocketenv $INSTALL_DIR
+	fi
     fi
 else
     mv /tmp/pocketenv $INSTALL_DIR

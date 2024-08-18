@@ -60,7 +60,7 @@ Or download the binary from the [releases page](https://github.com/pocketenv-io/
 pocketenv --help
 
 Usage:   pocketenv
-Version: 0.1.2    
+Version: 0.1.3    
 
 Description:
 

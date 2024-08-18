@@ -5,6 +5,8 @@ readonly GREEN="$(tput setaf 2 2>/dev/null || echo '')"
 readonly CYAN="$(tput setaf 6 2>/dev/null || echo '')"
 readonly NO_COLOR="$(tput sgr0 2>/dev/null || echo '')"
 
+set -e
+
 # Define the release information
 RELEASE_URL="https://api.github.com/repos/pocketenv-io/pocketenv/releases/latest"
 

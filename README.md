@@ -7,8 +7,7 @@
 [![built with nix](https://img.shields.io/badge/Built_With-Nix-5277C3.svg?logo=nixos&labelColor=73C3D5)](https://builtwithnix.org)
 [![deno module](https://shield.deno.dev/x/pocketenv)](https://deno.land/x/pocketenv)
 ![deno compatibility](https://shield.deno.dev/deno/^1.37)
-[![flakestry.dev](https://flakestry.dev/api/badge/flake/github/pocketenv-io/pocketenv)](https://flakestry.dev/flake/github/pocketenv-io/pocketenv)
-[![Tests](https://github.com/pocketenv-io/pocketenv/actions/workflows/ci.yml/badge.svg)](https://github.com/pocketenv-io/pocketenv/actions/workflows/ci.yml)
+[![ci](https://github.com/pocketenv-io/pocketenv/actions/workflows/ci.yml/badge.svg)](https://github.com/pocketenv-io/pocketenv/actions/workflows/ci.yml)
 
 Pocketenv is a simple and lightweight tool to manage development workspace environments. It allows you to define and manage workspaces for your projects, and easily switch between them.
 

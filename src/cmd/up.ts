@@ -3,6 +3,7 @@ import { existsSync } from "node:fs";
 import { POCKETENV_CACHE_DIR } from "../consts.ts";
 import { spawn } from "../lib.ts";
 import * as workspaces from "../workspaces.ts";
+import showLogs from "./logs.ts";
 
 async function up(
   {
@@ -70,6 +71,7 @@ async function up(
     createdAt: result?.createdAt || new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   });
+  await showLogs({ follow: false });
 }
 
 export default up;

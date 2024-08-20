@@ -24,7 +24,6 @@ jobs:
         run: |
           deno run -A --unstable-kv main.ts init -t tsirysndr/base-workspace
           deno run -A --unstable-kv main.ts up
-          deno run -A --unstable-kv main.ts logs
           docker ps
       - name: Destroy
         run: |

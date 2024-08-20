@@ -40,3 +40,4 @@ export {
 export { generateName } from "https://deno.land/x/docker_names@v1.1.0/mod.ts ";
 import * as _ from "https://cdn.skypack.dev/lodash";
 export { _ };
+export { open } from "https://deno.land/x/open@v0.0.6/index.ts";

@@ -1,4 +1,5 @@
 import { Command, brightGreen } from "./deps.ts";
+import community from "./src/cmd/community.ts";
 import down from "./src/cmd/down.ts";
 import init from "./src/cmd/init.ts";
 import list from "./src/cmd/list.ts";
@@ -66,6 +67,10 @@ async function main() {
     .command("list", "List all Pocketenv workspaces")
     .action(async function () {
       await list();
+    })
+    .command("community", "Join our community Discord to chat with us")
+    .action(async function () {
+      await community();
     })
     .parse(Deno.args);
 }

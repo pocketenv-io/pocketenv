@@ -26,3 +26,7 @@ jobs:
           deno run -A --unstable-kv main.ts up
           deno run -A --unstable-kv main.ts logs
           docker ps
+      - name: Destroy
+        run: |
+          deno run -A --unstable-kv main.ts list
+          deno run -A --unstable-kv main.ts down

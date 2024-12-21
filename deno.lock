@@ -12,6 +12,7 @@
     "jsr:@std/encoding@~1.0.5": "1.0.5",
     "jsr:@std/fmt@*": "1.0.3",
     "jsr:@std/fmt@~1.0.2": "1.0.3",
+    "jsr:@std/io@*": "0.224.9",
     "jsr:@std/path@~1.0.6": "1.0.6",
     "jsr:@std/semver@*": "1.0.3",
     "jsr:@std/text@~1.0.7": "1.0.7",
@@ -74,6 +75,9 @@
     "@std/fmt@1.0.3": {
       "integrity": "97765c16aa32245ff4e2204ecf7d8562496a3cb8592340a80e7e554e0bb9149f"
     },
+    "@std/io@0.224.9": {
+      "integrity": "4414664b6926f665102e73c969cfda06d2c4c59bd5d0c603fd4f1b1c840d6ee3"
+    },
     "@std/path@1.0.6": {
       "integrity": "ab2c55f902b380cf28e0eec501b4906e4c1960d13f00e11cfbcd21de15f18fed"
     },
@@ -93,6 +97,10 @@
     "https://deno.land/x/is_docker/mod.ts": "https://deno.land/x/is_docker@v2.0.0/mod.ts"
   },
   "remote": {
+    "https://cdn.jsdelivr.net/gh/will-weiss/spinners@master/mod.ts": "ed5b3562d4ea6c6887bc7e9844612b08a3bc3a3678ca77cc7dfdf461c362751e",
+    "https://cdn.jsdelivr.net/gh/will-weiss/spinners@master/spinner-types.ts": "c67e6962a0c738aa57b4d3ad9fe06c8c0131f93360acbf95456f2ba200fd8826",
+    "https://cdn.jsdelivr.net/gh/will-weiss/spinners@master/terminal-spinner.ts": "aa2fcf87060caf79fbd26f741c2d8e0093f196b891aca9ffd0a709aba11a1620",
+    "https://cdn.jsdelivr.net/gh/will-weiss/spinners@master/util.ts": "22c7cafa1d1138c0009ddafe6c3fd1e0c335a92b53bb3a42d9e4d38727108251",
     "https://cdn.skypack.dev/-/lodash@v4.17.21-K6GEbP02mWFnLA45zAmi/dist=es2019,mode=imports/optimized/lodash.js": "10c4df47937ffc78548d136dd535a021df5f57182a653260d715c0690dd22978",
     "https://cdn.skypack.dev/lodash": "8280de0b3efd87f06ea0eb330d15b8de32c059556023b8c6524e9eb9e4844dc0",
     "https://deno.land/std@0.106.0/path/_constants.ts": "1247fee4a79b70c89f23499691ef169b41b6ccf01887a0abd131009c5581b853",

@@ -1,6 +1,6 @@
 import { dir } from "../deps.ts";
 
-export const VERSION = "0.1.3";
+export const VERSION = "0.1.4";
 
 export const POCKETENV_DIR = `${dir("home")}/.pocketenv`;
 

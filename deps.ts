@@ -1,6 +1,6 @@
 import * as pkgx from "./src/pkgx.ts";
 export { pkgx };
-import * as semver from "https://deno.land/std@0.212.0/semver/mod.ts";
+import * as semver from "jsr:@std/semver";
 export { semver };
 export {
   bold,
@@ -12,17 +12,17 @@ export {
   magenta,
   red,
   yellow,
-} from "https://deno.land/std@0.192.0/fmt/colors.ts";
-export { Command } from "https://deno.land/x/cliffy@v1.0.0-rc.3/command/mod.ts";
+} from "jsr:@std/fmt/colors";
+export { Command } from "jsr:@cliffy/command@1.0.0-rc.7";
 export {
+  Checkbox,
   Confirm,
   Input,
   prompt,
-  Checkbox,
-} from "https://deno.land/x/cliffy@v1.0.0-rc.3/prompt/mod.ts";
+} from "jsr:@cliffy/prompt@1.0.0-rc.7";
 export {
-  TerminalSpinner,
   SpinnerTypes,
+  TerminalSpinner,
 } from "https://deno.land/x/spinners@v1.1.2/mod.ts";
 export { decompress } from "https://deno.land/x/zip@v1.2.5/mod.ts";
 import dir from "https://deno.land/x/dir@1.5.2/mod.ts";
@@ -33,10 +33,7 @@ import dayjs from "npm:dayjs";
 import relativeTime from "npm:dayjs/plugin/relativeTime.js";
 dayjs.extend(relativeTime);
 export { dayjs };
-export {
-  Cell,
-  Table,
-} from "https://deno.land/x/cliffy@v1.0.0-rc.3/table/mod.ts";
+export { Cell, Table } from "jsr:@cliffy/table@1.0.0-rc.7";
 export { generateName } from "https://deno.land/x/docker_names@v1.1.0/mod.ts ";
 import * as _ from "https://cdn.skypack.dev/lodash";
 export { _ };

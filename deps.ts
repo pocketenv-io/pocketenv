@@ -23,7 +23,7 @@ export {
 export {
   SpinnerTypes,
   TerminalSpinner,
-} from "https://deno.land/x/spinners@v1.1.2/mod.ts";
+} from "https://cdn.jsdelivr.net/gh/will-weiss/spinners@master/mod.ts";
 export { decompress } from "https://deno.land/x/zip@v1.2.5/mod.ts";
 import dir from "https://deno.land/x/dir@1.5.2/mod.ts";
 export { dir };

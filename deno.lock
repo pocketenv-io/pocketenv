@@ -13,6 +13,7 @@
     "jsr:@std/fmt@*": "1.0.3",
     "jsr:@std/fmt@~1.0.2": "1.0.3",
     "jsr:@std/io@*": "0.224.9",
+    "jsr:@std/io@~0.224.9": "0.224.9",
     "jsr:@std/path@~1.0.6": "1.0.6",
     "jsr:@std/semver@*": "1.0.3",
     "jsr:@std/text@~1.0.7": "1.0.7",
@@ -23,7 +24,8 @@
       "integrity": "f71c921cce224c13d322e5cedba4f38e8f7354c7d855c9cb22729362a53f25aa",
       "dependencies": [
         "jsr:@cliffy/internal",
-        "jsr:@std/encoding"
+        "jsr:@std/encoding",
+        "jsr:@std/io@~0.224.9"
       ]
     },
     "@cliffy/command@1.0.0-rc.7": {
@@ -56,6 +58,7 @@
         "jsr:@cliffy/keycode",
         "jsr:@std/assert",
         "jsr:@std/fmt@~1.0.2",
+        "jsr:@std/io@~0.224.9",
         "jsr:@std/path",
         "jsr:@std/text"
       ]
@@ -97,6 +100,11 @@
     "https://deno.land/x/is_docker/mod.ts": "https://deno.land/x/is_docker@v2.0.0/mod.ts"
   },
   "remote": {
+    "https://cdn.jsdelivr.net/gh/bootoffav/deno-zip@main/compress.ts": "ca6cfbaa6007372f4fed2fef64ff14437c55f5beb9a8549ed63b79a387e94212",
+    "https://cdn.jsdelivr.net/gh/bootoffav/deno-zip@main/decompress.ts": "7f768124b09d352dac2c5f818239514f0bad2fb849b887f0ce0ca688c58f8248",
+    "https://cdn.jsdelivr.net/gh/bootoffav/deno-zip@main/deps.ts": "79548387594b3ae1efaaa870b5a507c4d6bedede13dbd5d4ad42f6cda0aeef86",
+    "https://cdn.jsdelivr.net/gh/bootoffav/deno-zip@main/mod.ts": "28eecbc3e1e5adf564f4aa465e64268713a05653104bacdcb04561533f8caf57",
+    "https://cdn.jsdelivr.net/gh/bootoffav/deno-zip@main/utils.ts": "43c323f2b79f9db1976c5739bbb1f9cced20e8077ca7e7e703f9d01d4330bd9d",
     "https://cdn.jsdelivr.net/gh/will-weiss/spinners@master/mod.ts": "ed5b3562d4ea6c6887bc7e9844612b08a3bc3a3678ca77cc7dfdf461c362751e",
     "https://cdn.jsdelivr.net/gh/will-weiss/spinners@master/spinner-types.ts": "c67e6962a0c738aa57b4d3ad9fe06c8c0131f93360acbf95456f2ba200fd8826",
     "https://cdn.jsdelivr.net/gh/will-weiss/spinners@master/terminal-spinner.ts": "aa2fcf87060caf79fbd26f741c2d8e0093f196b891aca9ffd0a709aba11a1620",

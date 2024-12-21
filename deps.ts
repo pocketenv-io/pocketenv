@@ -24,7 +24,6 @@ export {
   SpinnerTypes,
   TerminalSpinner,
 } from "https://cdn.jsdelivr.net/gh/will-weiss/spinners@master/mod.ts";
-export { decompress } from "https://cdn.jsdelivr.net/gh/bootoffav/deno-zip@main/mod.ts";
 import dir from "https://deno.land/x/dir@1.5.2/mod.ts";
 export { dir };
 import Logger from "https://deno.land/x/logger@v1.1.3/logger.ts";

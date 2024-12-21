@@ -1,13 +1,12 @@
 import {
-  cyan,
-  pkgx,
-  magenta,
   brightGreen,
-  TerminalSpinner,
-  SpinnerTypes,
-  green,
-  decompress,
+  cyan,
   generateName,
+  green,
+  magenta,
+  pkgx,
+  SpinnerTypes,
+  TerminalSpinner,
 } from "../../deps.ts";
 import { POCKETENV_CACHE_DIR } from "../consts.ts";
 import { existsSync } from "node:fs";
@@ -16,7 +15,7 @@ import { getDefaultGithubBranch } from "../lib.ts";
 
 async function init(
   { template, standalone }: { template?: string; standalone?: boolean },
-  name?: string
+  name?: string,
 ) {
   if (!name) {
     console.log(`${cyan("?")} Workspace name: `);
@@ -32,7 +31,7 @@ async function init(
     console.log(`${cyan("?")} Choose a template: `);
     template = await pkgx.run(
       `gum choose pkgx nix devbox homebrew devenv flox`,
-      "piped"
+      "piped",
     );
     await Deno.stdout.write(new TextEncoder().encode(magenta(template)));
     template = template.trim();
@@ -58,8 +57,9 @@ async function downloadFromGithub(template: string, standalone?: boolean) {
     if (existsSync(".pocketenv")) {
       console.log(
         `🚨 ${brightGreen(
-          ".pocketenv"
-        )} directory already exists. Please remove it and try again.`
+          ".pocketenv",
+        )
+        } directory already exists. Please remove it and try again.`,
       );
       Deno.exit(1);
     }
@@ -74,17 +74,17 @@ async function downloadFromGithub(template: string, standalone?: boolean) {
 
   const filePath = `${POCKETENV_CACHE_DIR}/${template.replaceAll(
     "/",
-    "-"
-  )}.zip`;
+    "-",
+  )
+    }.zip`;
 
   const branch = await getDefaultGithubBranch(
-    template.split("/").length === 2 ? template : `pocketenv-io/${template}`
+    template.split("/").length === 2 ? template : `pocketenv-io/${template}`,
   );
 
-  const url =
-    template.split("/").length === 2
-      ? `https://codeload.github.com/${template}/zip/refs/heads/${branch}`
-      : `https://codeload.github.com/pocketenv-io/${template}/zip/refs/heads/${branch}`;
+  const url = template.split("/").length === 2
+    ? `https://codeload.github.com/${template}/zip/refs/heads/${branch}`
+    : `https://codeload.github.com/pocketenv-io/${template}/zip/refs/heads/${branch}`;
 
   if (!existsSync(filePath)) {
     const response = await fetch(url);
@@ -100,21 +100,22 @@ async function downloadFromGithub(template: string, standalone?: boolean) {
 
   if (!existsSync(`${cacheDir}/${template.split("/").pop()}-${branch}`)) {
     await pkgx.installPackage("unzip");
-    await decompress(filePath, cacheDir);
+    await pkgx.run(`unzip ${filePath} -d ${cacheDir}`, "inherit");
     await pkgx.run(
       `terraform init`,
       "inherit",
-      `${cacheDir}/${template.split("/").pop()}-${branch}`
+      `${cacheDir}/${template.split("/").pop()}-${branch}`,
     );
   } else {
     console.log(
-      `💾 Using cached template: ${brightGreen(template)} ${brightGreen("...")}`
+      `💾 Using cached template: ${brightGreen(template)} ${brightGreen("...")
+      }`,
     );
   }
 
   await copyDir(
     `${cacheDir}/${template.split("/").pop()}-${branch}`,
-    standalone ? "." : ".pocketenv"
+    standalone ? "." : ".pocketenv",
   );
 }
 

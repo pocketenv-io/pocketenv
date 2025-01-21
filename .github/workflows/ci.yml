@@ -22,7 +22,7 @@ jobs:
           GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Run tests
         run: |
-          deno run -A --unstable-kv main.ts init -t tsirysndr/base-workspace
+          deno run -A --unstable-kv main.ts init -t tsirysndr/base-workspace demo-workspace
           deno run -A --unstable-kv main.ts up
           docker ps
       - name: Destroy

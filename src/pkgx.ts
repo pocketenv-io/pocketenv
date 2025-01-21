@@ -3,7 +3,7 @@ import { spawn } from "./lib.ts";
 export async function run(
   command: string,
   stdout: "piped" | "inherit" = "inherit",
-  cwd = Deno.cwd()
+  cwd = Deno.cwd(),
 ) {
   await setupPkgx();
   const env: Record<string, string> = {};
@@ -50,6 +50,6 @@ export async function installPackage(name: string) {
   await setupPkgx();
   await spawn("sh", [
     "-c",
-    `type ${name} > /dev/null 2> /dev/null || pkgx install ${name}`,
+    `type ${name} > /dev/null 2> /dev/null || pkgm install ${name}`,
   ]);
 }

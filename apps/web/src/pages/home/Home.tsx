@@ -11,7 +11,7 @@ function Home() {
             <h1 className="mb-[10px] text-7xl mb-[20px]">
               Instant Secure Prototyping.
             </h1>
-            <div className="text-white/50 text-[20px] font-mono font-light mb-[80px]">
+            <div className="text-white/50 text-[18px] font-mono font-light mb-[80px]">
               Throw ideas into isolated sandboxes. Run commands, test prompts,
               prototype agents — all in a safe, temporary space that vanishes
               when you're finished.
@@ -26,7 +26,7 @@ function Home() {
             <a
               href="https://docs.pocketenv.io"
               target="_blank"
-              className="btn btn-outline border-white text-white btn-xl font-bold opacity-80"
+              className="btn btn-outline border-white text-white btn-xl font-bold opacity-70 border-2 hover:opacity-100"
             >
               View Docs
             </a>

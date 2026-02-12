@@ -1,0 +1,1 @@
+ALTER TABLE "sandboxes" ADD COLUMN "provider" text DEFAULT 'cloudflare' NOT NULL;

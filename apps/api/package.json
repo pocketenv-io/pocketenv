@@ -1,0 +1,49 @@
+{
+  "name": "api",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx --watch src/index.ts",
+    "start": "tsx src/index.ts"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@atproto/api": "^0.13.31",
+    "@atproto/common": "^0.4.6",
+    "@atproto/identity": "^0.4.5",
+    "@atproto/jwk-jose": "0.1.11",
+    "@atproto/lex-cli": "^0.5.6",
+    "@atproto/lexicon": "^0.4.5",
+    "@atproto/oauth-client-node": "0.3.16",
+    "@atproto/sync": "^0.1.11",
+    "@atproto/syntax": "^0.3.1",
+    "@atproto/xrpc-server": "^0.7.8",
+    "@hono/node-server": "^1.19.9",
+    "@tsndr/cloudflare-worker-jwt": "^3.2.1",
+    "@types/node": "^25.2.3",
+    "@types/ramda": "^0.31.1",
+    "better-sqlite3": "^12.6.2",
+    "chalk": "^5.6.2",
+    "consola": "^3.4.2",
+    "cors": "^2.8.6",
+    "dayjs": "^1.11.19",
+    "dotenv": "^17.2.4",
+    "drizzle-orm": "^0.45.1",
+    "effect": "^3.19.16",
+    "express": "^5.2.1",
+    "hono": "^4.11.9",
+    "libsodium-wrappers": "^0.8.2",
+    "pg": "^8.18.0",
+    "ramda": "^0.32.0",
+    "unstorage": "^1.14.4",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.14",
+    "@types/express": "^5.0.6",
+    "drizzle-kit": "^0.31.9",
+    "tsx": "^4.21.0"
+  }
+}

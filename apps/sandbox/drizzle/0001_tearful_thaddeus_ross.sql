@@ -1,0 +1,1 @@
+ALTER TABLE "sandboxes" ADD COLUMN "sandbox_id" text;

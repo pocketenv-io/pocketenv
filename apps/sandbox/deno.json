@@ -1,0 +1,27 @@
+{
+  "tasks": {
+    "dev": "deno run --watch src/index.ts"
+  },
+  "imports": {
+    "@daytonaio/sdk": "npm:@daytonaio/sdk@^0.141.0",
+    "@deno/sandbox": "jsr:@deno/sandbox@^0.11.0",
+    "@std/assert": "jsr:@std/assert@1",
+    "@tsndr/cloudflare-worker-jwt": "npm:@tsndr/cloudflare-worker-jwt@^3.2.1",
+    "@vercel/sandbox": "npm:@vercel/sandbox@^1.5.0",
+    "chalk": "npm:chalk@^5.6.2",
+    "consola": "npm:consola@^3.4.2",
+    "drizzle-kit": "npm:drizzle-kit@^0.31.9",
+    "drizzle-orm": "npm:drizzle-orm@^0.45.1",
+    "effect": "npm:effect@^3.19.16",
+    "envalid": "npm:envalid@^8.1.1",
+    "hono": "npm:hono@^4.11.9",
+    "libsodium-wrappers": "npm:libsodium-wrappers@^0.8.2",
+    "pg": "npm:pg@^8.18.0",
+    "ramda": "npm:ramda@^0.32.0",
+    "unique-username-generator": "npm:unique-username-generator@^1.5.1",
+    "zod": "npm:zod@^4.3.6"
+  },
+  "deploy": {
+    "org": "tsirysndr"
+  }
+}

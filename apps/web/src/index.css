@@ -1,0 +1,136 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+
+@import "tailwindcss";
+@plugin "@iconify/tailwind4";
+@plugin "flyonui";
+@import "../node_modules/flyonui/variants.css";
+@source "../node_modules/flyonui/dist/index.js";
+@source "../node_modules/flyonui/dist/accordion.js";
+
+@font-face {
+  font-family: "RockfordSansLight";
+  src:
+    local("RockfordSansLight"),
+    url(./assets/fonts/RockfordSans-Light.otf) format("opentype");
+}
+
+@font-face {
+  font-family: "RockfordSansRegular";
+  src:
+    local("RockfordSans"),
+    url(./assets/fonts/RockfordSans-Regular.otf) format("opentype");
+}
+
+@font-face {
+  font-family: "RockfordSansMedium";
+  src:
+    local("RockfordSans"),
+    url(./assets/fonts/RockfordSans-Medium.otf) format("opentype");
+}
+
+@font-face {
+  font-family: "RockfordSansBold";
+  font-weight: 900;
+  src:
+    local("RockfordSans"),
+    url(./assets/fonts/RockfordSans-Bold.otf) format("opentype");
+}
+
+:root {
+  font-family: "DM Sans", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+}
+
+/* Light theme (default) */
+:root {
+  color-scheme: light;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+}
+
+/* Dark theme - Uniform dark background */
+:root.dark {
+  color-scheme: dark;
+  --bg-primary: #06051d;
+  --bg-secondary: #06051d;
+  --text-primary: #e5e5e5;
+  --text-secondary: #a0a0a0;
+}
+
+body {
+  font-family: "DM Sans", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 600;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Ensure smooth transitions for dark mode */
+* {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Uniform dark background - Override all backgrounds in dark mode */
+:root.dark body,
+:root.dark #root,
+:root.dark main,
+:root.dark .navbar,
+:root.dark .drawer,
+:root.dark .drawer-body,
+:root.dark aside,
+:root.dark .sidebar,
+:root.dark .card,
+:root.dark .menu,
+:root.dark .dropdown-menu {
+  background-color: #06051d !important;
+}
+
+/* Ensure base-100, base-200, base-300 are all uniform in dark mode */
+:root.dark [class*="bg-base-"] {
+  background-color: #06051d !important;
+}
+
+/* Override any navbar backgrounds */
+:root.dark .navbar {
+  background-color: #06051d !important;
+  border-bottom: 1px solid rgba(229, 229, 229, 0.1);
+}
+
+/* Override dropdown menus */
+:root.dark .dropdown-menu {
+  background-color: #06051d !important;
+  border: 1px solid rgba(229, 229, 229, 0.1);
+}
+
+/* Cards and containers */
+:root.dark .card,
+:root.dark .stats {
+  background-color: #06051d !important;
+  border: 1px solid rgba(229, 229, 229, 0.1);
+}
+
+/* Input elements with uniform dark background */
+:root.dark input,
+:root.dark select,
+:root.dark textarea {
+  background-color: #06051d !important;
+  border-color: rgba(229, 229, 229, 0.2);
+  color: #e5e5e5;
+}
+
+:root.dark input:focus,
+:root.dark select:focus,
+:root.dark textarea:focus {
+  border-color: rgba(99, 102, 241, 0.5);
+  background-color: #06051d !important;
+}

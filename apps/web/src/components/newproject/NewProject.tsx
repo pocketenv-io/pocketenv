@@ -75,7 +75,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
                 <div className="font-semibold">OpenCode</div>
               </div>
 
-              <div className="p-3 hover:bg-white/7 cursor-pointer rounted-md">
+              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
                 <div className="font-semibold">Aider</div>
               </div>
             </div>

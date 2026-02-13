@@ -52,6 +52,15 @@ function Navbar({ title }: NavbarProps) {
         </div>
         <div className="ml-[10px]">
           <a
+            href="https://github.com/pocketenv-io/pocketenv/issues/new"
+            className="text-[15px]"
+            target="_blank"
+          >
+            Feedback
+          </a>
+        </div>
+        <div className="ml-[10px]">
+          <a
             href="https://docs.pocketenv.io"
             className="text-[15px]"
             target="_blank"

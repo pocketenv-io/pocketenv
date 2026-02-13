@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import "flyonui/dist/dropdown.js";
+import "flyonui/dist/overlay.js";
 import { useState, useEffect, useRef } from "react";
+import NewProject from "../newproject";
 
 export type NavbarProps = {
   title: string;
@@ -8,10 +10,14 @@ export type NavbarProps = {
 
 function Navbar({ title }: NavbarProps) {
   const [open, setOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   const toggleDropdown = () => setOpen(!open);
+  const toggleModal = () => {
+    setModalOpen(!modalOpen);
+  };
 
   const onSignOut = () => {
     setOpen(false);
@@ -46,7 +52,12 @@ function Navbar({ title }: NavbarProps) {
       </div>
       <div className="navbar-end flex items-center gap-4">
         <div>
-          <button className="btn btn-primary btn-block">
+          <button
+            className="btn btn-primary btn-block"
+            aria-haspopup="dialog"
+            aria-expanded={modalOpen}
+            onClick={toggleModal}
+          >
             <span className="icon-[tabler--plus] size-5"></span>
           </button>
         </div>
@@ -148,6 +159,12 @@ function Navbar({ title }: NavbarProps) {
           </ul>
         </div>
       </div>
+      <NewProject
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+        }}
+      />
     </nav>
   );
 }

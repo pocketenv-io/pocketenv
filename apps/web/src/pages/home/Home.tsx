@@ -1,7 +1,9 @@
-import { Link } from "@tanstack/react-router";
 import Navbar from "./Navbar";
+import NewProject from "../../components/newproject";
+import { useState } from "react";
 
 function Home() {
+  const [modalOpen, setModalOpen] = useState(false);
   const banner = `
     ____             __        __
    / __ \\____  _____/ /_____  / /____  ____ _   __
@@ -29,12 +31,12 @@ function Home() {
             </div>
 
             <div className="flex justify-center gap-[20px]">
-              <Link
+              <button
                 className="btn bg-pink-500 border-none btn-xl font-bold"
-                to="/signin"
+                onClick={() => setModalOpen(true)}
               >
                 Start For Free
-              </Link>
+              </button>
               <a
                 href="https://docs.pocketenv.io"
                 target="_blank"
@@ -46,6 +48,12 @@ function Home() {
           </div>
         </div>
       </div>
+      <NewProject
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+        }}
+      />
     </>
   );
 }

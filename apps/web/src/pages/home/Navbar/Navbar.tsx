@@ -1,7 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import "flyonui/dist/dropdown.js";
+import NewProject from "../../../components/newproject";
+import { useState } from "react";
 
 function Navbar() {
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     <nav className="navbar bg-base-100 h-20 max-w-[80%] m-auto mt-0">
       <div className="flex flex-1 items-center">
@@ -34,14 +37,20 @@ function Navbar() {
           </a>
         </div>
         <div>
-          <Link
-            to="/signin"
+          <button
+            onClick={() => setModalOpen(true)}
             className="btn btn-block  bg-blue-600/20 border-none text-blue-500 font-extrabold"
           >
             Try Pocketenv
-          </Link>
+          </button>
         </div>
       </div>
+      <NewProject
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+        }}
+      />
     </nav>
   );
 }

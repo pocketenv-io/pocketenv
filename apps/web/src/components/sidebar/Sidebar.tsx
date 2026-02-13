@@ -17,7 +17,7 @@ function Sidebar() {
         id="scoped-sidebar"
         className="overlay [--auto-close:sm] sm:shadow-none overlay-open:translate-x-0 drawer drawer-start max-w-64 fixed z-50 sm:flex sm:translate-x-0 [--body-scroll:true] h-screen bg-base-100"
         role="dialog"
-        tabindex="-1"
+        tabIndex="-1"
       >
         <div className="drawer-body px-2 pt-4 bg-base-100">
           <div className="mb-[20px]">
@@ -35,7 +35,7 @@ function Sidebar() {
                 to="/projects"
                 className={
                   isActive("/projects")
-                    ? "active bg-white/7 text-purple-400! font-semibold rounded-full"
+                    ? "active bg-white/7 text-[#ff41b5]! font-semibold rounded-full"
                     : "rounded-full"
                 }
               >
@@ -48,7 +48,7 @@ function Sidebar() {
                 to="/snapshots"
                 className={
                   isActive("/snapshots")
-                    ? "active bg-white/7 text-purple-400! font-semibold rounded-full"
+                    ? "active bg-white/7 text-[#ff41b5]! font-semibold rounded-full"
                     : "rounded-full"
                 }
               >
@@ -61,7 +61,7 @@ function Sidebar() {
                 to="/volumes"
                 className={
                   isActive("/volumes")
-                    ? "active bg-white/7 text-purple-400! font-semibold rounded-full"
+                    ? "active bg-white/7 text-[#ff41b5]! font-semibold rounded-full"
                     : "rounded-full"
                 }
               >
@@ -74,7 +74,7 @@ function Sidebar() {
                 to="/secrets"
                 className={
                   isActive("/secrets")
-                    ? "active bg-white/7 text-purple-400! font-semibold rounded-full"
+                    ? "active bg-white/7 text-[#ff41b5]! font-semibold rounded-full"
                     : "rounded-full"
                 }
               >

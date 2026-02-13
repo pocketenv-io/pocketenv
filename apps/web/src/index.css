@@ -61,6 +61,7 @@
   --bg-secondary: #06051d;
   --text-primary: #e5e5e5;
   --text-secondary: #a0a0a0;
+  --modal-bg: #06051d;
 }
 
 body {
@@ -133,4 +134,35 @@ body {
 :root.dark textarea:focus {
   border-color: rgba(99, 102, 241, 0.5);
   background-color: #06051d !important;
+}
+
+/* Modal backgrounds - applies to both light and dark mode */
+.modal-content {
+  background-color: #06051d !important;
+  color: #e5e5e5;
+  border: 1px solid rgba(229, 229, 229, 0.1) !important;
+  border-radius: 0.5rem !important;
+  overflow: hidden;
+}
+
+.modal-header,
+.modal-body,
+.modal-footer {
+  background-color: #06051d !important;
+  color: #e5e5e5;
+}
+
+/* Modal dialog container */
+.modal-dialog {
+  background-color: transparent;
+}
+
+/* Modal text colors */
+.modal-title {
+  color: #e5e5e5;
+}
+
+/* Modal buttons styling */
+.modal-footer .btn {
+  border-color: rgba(229, 229, 229, 0.2);
 }

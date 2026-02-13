@@ -56,26 +56,26 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
               </div>
             </div>
             <div className="modal-body">
-              <div className="p-[12px]">
+              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
                 <div className="font-semibold">OpenClaw</div>
               </div>
-              <div className="p-[12px]">
+              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
                 <div className="font-semibold">Claude Code</div>
               </div>
-              <div className="p-[12px]">
+              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
                 <div className="font-semibold">OpenAI Codex CLI</div>
               </div>
-              <div className="p-[12px]">
+              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
                 <div className="font-semibold">GitHub Copilot CLI</div>
               </div>
-              <div className="p-[12px]">
+              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
                 <div className="font-semibold">Gemini CLI</div>
               </div>
-              <div className="p-[12px]">
+              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
                 <div className="font-semibold">OpenCode</div>
               </div>
 
-              <div className="p-[12px]">
+              <div className="p-3 hover:bg-white/7 cursor-pointer rounted-md">
                 <div className="font-semibold">Aider</div>
               </div>
             </div>
@@ -88,7 +88,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
           id="slide-down-animated-modal-backdrop"
           data-overlay-backdrop-template=""
           style={{ zIndex: 79 }}
-          className="overlay-backdrop transition duration-300 fixed inset-0 bg-base-300/60 overflow-y-auto opacity-85"
+          className="overlay-backdrop transition duration-300 fixed inset-0 bg-base-300/60 overflow-y-auto opacity-75"
           onClick={onClose}
         ></div>
       )}

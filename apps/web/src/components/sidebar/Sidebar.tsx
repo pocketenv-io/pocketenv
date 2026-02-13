@@ -20,11 +20,14 @@ function Sidebar() {
         tabindex="-1"
       >
         <div className="drawer-body px-2 pt-4 bg-base-100">
-          <div
-            className="pl-[15px] pr-[15px] text-[24px] mb-[20px] mt-[-3px] text-[#ff41b5]"
-            style={{ fontFamily: "RockfordSansMedium" }}
-          >
-            Pocketenv
+          <div className="mb-[20px]">
+            <Link
+              to="/"
+              className="pl-[15px] pr-[15px] text-[24px] mt-[-3px] text-[#ff41b5]"
+              style={{ fontFamily: "RockfordSansMedium" }}
+            >
+              Pocketenv
+            </Link>
           </div>
           <ul className="menu p-0">
             <li>

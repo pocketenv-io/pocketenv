@@ -15,9 +15,9 @@ function Home() {
       <div className="flex flex-col min-h-screen bg-base-100">
         <Navbar />
         <div className="flex-1">
-          <div className="max-w-[77%] m-auto mt-[5%]">
-            <div>
-              <pre>{banner}</pre>
+          <div className="max-w-[77%] m-auto mt-[5%] text-center">
+            <div className="flex justify-center">
+              <pre className="text-left">{banner}</pre>
             </div>
             <h1 className="mb-[10px] text-7xl mb-[20px] font-medium">
               A Safe Space to Try Your Ideas
@@ -28,19 +28,21 @@ function Home() {
               that disappears when you're done.
             </div>
 
-            <Link
-              className="btn bg-pink-500 border-none btn-xl mr-[20px] font-bold"
-              to="/signin"
-            >
-              Start For Free
-            </Link>
-            <a
-              href="https://docs.pocketenv.io"
-              target="_blank"
-              className="btn btn-outline border-white text-white btn-xl font-bold opacity-70 border-2 hover:opacity-100"
-            >
-              View Docs
-            </a>
+            <div className="flex justify-center gap-[20px]">
+              <Link
+                className="btn bg-pink-500 border-none btn-xl font-bold"
+                to="/signin"
+              >
+                Start For Free
+              </Link>
+              <a
+                href="https://docs.pocketenv.io"
+                target="_blank"
+                className="btn btn-outline border-white text-white btn-xl font-bold opacity-70 border-2 hover:opacity-100"
+              >
+                View Docs
+              </a>
+            </div>
           </div>
         </div>
       </div>

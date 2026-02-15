@@ -19,7 +19,11 @@ function SignIn() {
               <span className="label-text my-auto text-[16px] opacity-50 mr-[10px]">
                 @
               </span>
-              <input placeholder="alice.bsky.social" className="grow " />
+              <input
+                placeholder="alice.bsky.social"
+                className="grow "
+                autoFocus
+              />
             </div>
           </div>
 

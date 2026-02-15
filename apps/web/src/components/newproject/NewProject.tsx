@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useSandboxesQuery } from "../../hooks/useSandbox";
+import { useNavigate } from "@tanstack/react-router";
 
 export type NewProjectProps = {
   isOpen: boolean;
@@ -10,6 +11,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [filter, setFilter] = useState("");
   const { data, isLoading } = useSandboxesQuery();
+  const navigate = useNavigate();
 
   const sandboxes = data?.sandboxes.filter((sandbox) =>
     filter
@@ -48,6 +50,12 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
     setFilter(value);
   };
 
+  const onSelect = async (id: string) => {
+    await navigate({ to: `/sandbox/${id}` });
+    onClose();
+    setFilter("");
+  };
+
   return (
     <>
       <div
@@ -62,11 +70,17 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
               <div className="form-control w-full">
                 <div className="input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent  focus-within:border-pink-500!">
                   <input
+                    type="text"
                     ref={inputRef}
                     placeholder="What would you like to try?"
                     className="grow"
                     value={filter}
                     onChange={(e) => onFilter(e.target.value)}
+                    autoComplete="off"
+                    name="search-filter"
+                    data-1p-ignore
+                    data-lpignore="true"
+                    data-form-type="other"
                   />
                 </div>
               </div>
@@ -77,6 +91,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
                   <div
                     key={item.id}
                     className="p-3 hover:bg-white/7 cursor-pointer rounded-md"
+                    onClick={() => onSelect(item.id)}
                   >
                     <div className="font-semibold">{item.displayName}</div>
                   </div>

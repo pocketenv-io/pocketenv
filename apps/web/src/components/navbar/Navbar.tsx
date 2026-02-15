@@ -49,7 +49,11 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
   return (
     <nav className="navbar bg-base-100 h-[65px]">
       <div className="flex flex-1 items-center">
-        {withLogo && <img src={Logo} className="max-h-[40px] mr-[15px]" />}
+        {withLogo && (
+          <Link to="/">
+            <img src={Logo} className="max-h-[40px] mr-[15px]" />
+          </Link>
+        )}
         <div className="text-base-content link-neutral  font-semibold no-underline text-[23px]">
           {title}
         </div>
@@ -84,85 +88,100 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
             Docs
           </a>
         </div>
-        <div
-          ref={dropdownRef}
-          className={`dropdown relative inline-flex [--auto-close:inside] [--offset:8] [--placement:bottom-end] ${
-            open ? "open" : ""
-          }`}
-        >
-          <button
-            id="dropdown-scrollable"
-            type="button"
-            className="dropdown-toggle flex items-center"
-            aria-haspopup="menu"
-            aria-expanded={open ? "true" : "false"}
-            aria-label="Dropdown"
-            onClick={toggleDropdown}
-          >
-            <div className="avatar avatar-placeholder">
-              <div className="bg-secondary/10  w-10 rounded-full flex items-center justify-center">
-                {true && (
-                  <img
-                    src="https://cdn.bsky.app/img/avatar/plain/did:plc:7vdlgi2bflelz7mmuxoqjfcr/bafkreiebrezrvxt3istx4i4x3wqsfyle4shfetwq6nmlykoputyyqqe5ri@jpeg"
-                    alt="avatar 1"
-                  />
-                )}
-                {false && <span className="icon-[tabler--user] size-5 "></span>}
-              </div>
-            </div>
-          </button>
-          <ul
-            className={`dropdown-menu dropdown-open:opacity-100 absolute right-0 top-full mt-2 min-w-60 z-50 ${
-              open ? "" : "hidden"
+        {false && (
+          <div
+            ref={dropdownRef}
+            className={`dropdown relative inline-flex [--auto-close:inside] [--offset:8] [--placement:bottom-end] ${
+              open ? "open" : ""
             }`}
-            role="menu"
-            aria-orientation="vertical"
-            aria-labelledby="dropdown-avatar"
           >
-            <li className="dropdown-header gap-2">
-              <div className="avatar">
-                <div className="w-10 rounded-full">
-                  <img
-                    src="https://cdn.bsky.app/img/avatar/plain/did:plc:7vdlgi2bflelz7mmuxoqjfcr/bafkreiebrezrvxt3istx4i4x3wqsfyle4shfetwq6nmlykoputyyqqe5ri@jpeg"
-                    alt="avatar"
-                  />
+            <button
+              id="dropdown-scrollable"
+              type="button"
+              className="dropdown-toggle flex items-center"
+              aria-haspopup="menu"
+              aria-expanded={open ? "true" : "false"}
+              aria-label="Dropdown"
+              onClick={toggleDropdown}
+            >
+              <div className="avatar avatar-placeholder">
+                <div className="bg-secondary/10  w-10 rounded-full flex items-center justify-center">
+                  {true && (
+                    <img
+                      src="https://cdn.bsky.app/img/avatar/plain/did:plc:7vdlgi2bflelz7mmuxoqjfcr/bafkreiebrezrvxt3istx4i4x3wqsfyle4shfetwq6nmlykoputyyqqe5ri@jpeg"
+                      alt="avatar 1"
+                    />
+                  )}
+                  {false && (
+                    <span className="icon-[tabler--user] size-5 "></span>
+                  )}
                 </div>
               </div>
-              <div>
-                <h6 className="text-base-content text-base font-semibold">
-                  Tsiry Sandratraina
-                </h6>
-                <small className="text-base-content/50">
-                  @tsiry-sandratraina.com
-                </small>
-              </div>
-            </li>
-            <li>
-              <a className="dropdown-item" href="/">
-                <span className="icon-[tabler--layout-dashboard]"></span>
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <Link className="dropdown-item" to="/settings">
-                <span className="icon-[tabler--settings]"></span>
-                Settings
-              </Link>
-            </li>
-            <li>
-              <a className="dropdown-item" href="/faqs">
-                <span className="icon-[tabler--help-triangle]"></span>
-                FAQs
-              </a>
-            </li>
-            <li className="dropdown-footer gap-2">
-              <button className="btn btn-primary btn-block" onClick={onSignOut}>
-                <span className="icon-[tabler--logout]"></span>
-                Sign out
-              </button>
-            </li>
-          </ul>
-        </div>
+            </button>
+            <ul
+              className={`dropdown-menu dropdown-open:opacity-100 absolute right-0 top-full mt-2 min-w-60 z-50 ${
+                open ? "" : "hidden"
+              }`}
+              role="menu"
+              aria-orientation="vertical"
+              aria-labelledby="dropdown-avatar"
+            >
+              <li className="dropdown-header gap-2">
+                <div className="avatar">
+                  <div className="w-10 rounded-full">
+                    <img
+                      src="https://cdn.bsky.app/img/avatar/plain/did:plc:7vdlgi2bflelz7mmuxoqjfcr/bafkreiebrezrvxt3istx4i4x3wqsfyle4shfetwq6nmlykoputyyqqe5ri@jpeg"
+                      alt="avatar"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <h6 className="text-base-content text-base font-semibold">
+                    Tsiry Sandratraina
+                  </h6>
+                  <small className="text-base-content/50">
+                    @tsiry-sandratraina.com
+                  </small>
+                </div>
+              </li>
+              <li>
+                <a className="dropdown-item" href="/">
+                  <span className="icon-[tabler--layout-dashboard]"></span>
+                  Dashboard
+                </a>
+              </li>
+              <li>
+                <Link className="dropdown-item" to="/settings">
+                  <span className="icon-[tabler--settings]"></span>
+                  Settings
+                </Link>
+              </li>
+              <li>
+                <a className="dropdown-item" href="/faqs">
+                  <span className="icon-[tabler--help-triangle]"></span>
+                  FAQs
+                </a>
+              </li>
+              <li className="dropdown-footer gap-2">
+                <button
+                  className="btn btn-primary btn-block"
+                  onClick={onSignOut}
+                >
+                  <span className="icon-[tabler--logout]"></span>
+                  Sign out
+                </button>
+              </li>
+            </ul>
+          </div>
+        )}
+        {true && (
+          <Link
+            to="/signin"
+            className="btn btn-block  bg-blue-600/20 border-none text-blue-500 font-extrabold w-[100px]"
+          >
+            Sign in
+          </Link>
+        )}
       </div>
       <NewProject
         isOpen={modalOpen}

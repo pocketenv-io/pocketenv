@@ -1,0 +1,1 @@
+ALTER TABLE "sandboxes" ADD COLUMN "installs" integer DEFAULT 0 NOT NULL;

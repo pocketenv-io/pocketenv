@@ -1,0 +1,489 @@
+/**
+ * GENERATED CODE - DO NOT MODIFY
+ */
+import { type LexiconDoc, Lexicons } from "@atproto/lexicon";
+
+export const schemaDict = {
+  AppBskyActorProfile: {
+    lexicon: 1,
+    id: "app.bsky.actor.profile",
+    defs: {
+      main: {
+        type: "record",
+        description: "A declaration of a Bluesky account profile.",
+        key: "literal:self",
+        record: {
+          type: "object",
+          properties: {
+            displayName: {
+              type: "string",
+              maxGraphemes: 64,
+              maxLength: 640,
+            },
+            description: {
+              type: "string",
+              description: "Free-form profile description text.",
+              maxGraphemes: 256,
+              maxLength: 2560,
+            },
+            avatar: {
+              type: "blob",
+              description:
+                "Small image to be displayed next to posts from account. AKA, 'profile picture'",
+              accept: ["image/png", "image/jpeg"],
+              maxSize: 1000000,
+            },
+            banner: {
+              type: "blob",
+              description:
+                "Larger horizontal image to display behind profile view.",
+              accept: ["image/png", "image/jpeg"],
+              maxSize: 10000000,
+            },
+            labels: {
+              type: "union",
+              description:
+                "Self-label values, specific to the Bluesky application, on the overall account.",
+              refs: ["lex:com.atproto.label.defs#selfLabels"],
+            },
+            joinedViaStarterPack: {
+              type: "ref",
+              ref: "lex:com.atproto.repo.strongRef",
+            },
+            createdAt: {
+              type: "string",
+              format: "datetime",
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxClaimSandbox: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.claimSandbox",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Claim a sandbox by id",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxCreateSandbox: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.createSandbox",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Create a sandbox",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["base"],
+            properties: {
+              base: {
+                type: "string",
+                description:
+                  "The base sandbox URI to clone from, e.g. a template or an existing sandbox.",
+                format: "at-uri",
+              },
+              name: {
+                type: "string",
+                description: "The name of the sandbox",
+                minLength: 1,
+              },
+              description: {
+                type: "string",
+                description: "A description for the sandbox",
+              },
+              topics: {
+                type: "array",
+                description:
+                  "A list of topics/tags to associate with the sandbox",
+                items: {
+                  type: "string",
+                  maxLength: 50,
+                },
+              },
+              repo: {
+                type: "string",
+                description:
+                  "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+                format: "uri",
+              },
+              vcpus: {
+                type: "integer",
+                description:
+                  "The number of virtual CPUs to allocate for the sandbox",
+                minimum: 1,
+              },
+              memory: {
+                type: "integer",
+                description:
+                  "The amount of memory (in GB) to allocate for the sandbox",
+                minimum: 1,
+              },
+              disk: {
+                type: "integer",
+                description:
+                  "The amount of disk space (in GB) to allocate for the sandbox",
+                minimum: 3,
+              },
+              readme: {
+                type: "string",
+                description: "A URI to a README for the sandbox.",
+                format: "uri",
+              },
+              secrets: {
+                type: "ref",
+                description: "A list of secrets to add to the sandbox",
+                ref: "lex:io.pocketenv.sandbox.defs#secrets",
+              },
+              envs: {
+                type: "ref",
+                description:
+                  "A list of environment variables to add to the sandbox",
+                ref: "lex:io.pocketenv.sandbox.defs#envs",
+              },
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxDeleteSandbox: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.deleteSandbox",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Delete a sandbox by uri",
+        parameters: {
+          type: "params",
+          required: ["uri"],
+          properties: {
+            uri: {
+              type: "string",
+              description: "The sandbox URI.",
+              format: "at-uri",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxGetSandbox: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.getSandbox",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get a sandbox by uri",
+        parameters: {
+          type: "params",
+          required: ["uri"],
+          properties: {
+            uri: {
+              type: "string",
+              description: "The sandbox URI.",
+              format: "at-uri",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxGetSandboxes: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.getSandboxes",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get all sandboxes",
+        parameters: {
+          type: "params",
+          properties: {
+            limit: {
+              type: "integer",
+              description: "The maximum number of sandboxes to return.",
+              minimum: 1,
+            },
+            offset: {
+              type: "integer",
+              description:
+                "The number of sandboxes to skip before starting to collect the result set.",
+              minimum: 0,
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              sandboxes: {
+                type: "array",
+                items: {
+                  type: "ref",
+                  ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+                },
+              },
+              total: {
+                type: "integer",
+                description: "The total number of sandboxes available.",
+                minimum: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandbox: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox",
+    defs: {
+      main: {
+        type: "record",
+        key: "tid",
+        record: {
+          type: "object",
+          required: ["name", "createdAt"],
+          properties: {
+            name: {
+              type: "string",
+              description: "Name of the sandbox",
+              maxLength: 255,
+            },
+            base: {
+              type: "ref",
+              description:
+                "A strong reference to the base template for the sandbox environment.",
+              ref: "lex:com.atproto.repo.strongRef",
+            },
+            provider: {
+              type: "string",
+              description:
+                "The provider of the sandbox, e.g. 'daytona', 'vercel', 'cloudflare', etc.",
+              maxLength: 50,
+            },
+            description: {
+              type: "string",
+              maxGraphemes: 300,
+              maxLength: 3000,
+            },
+            website: {
+              type: "string",
+              description: "Any URI related to the sandbox",
+              format: "uri",
+            },
+            logo: {
+              type: "string",
+              description: "URI to an image logo for the sandbox",
+              format: "uri",
+            },
+            topics: {
+              type: "array",
+              items: {
+                type: "string",
+                minLength: 1,
+                maxLength: 50,
+              },
+              maxLength: 50,
+            },
+            repo: {
+              type: "string",
+              description:
+                "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+              format: "uri",
+            },
+            readme: {
+              type: "string",
+              description: "A URI to a README for the sandbox.",
+              format: "uri",
+            },
+            vcpus: {
+              type: "integer",
+              description: "Number of virtual CPUs allocated to the sandbox",
+            },
+            memory: {
+              type: "integer",
+              description: "Amount of memory in GB allocated to the sandbox",
+            },
+            disk: {
+              type: "integer",
+              description:
+                "Amount of disk space in GB allocated to the sandbox",
+            },
+            createdAt: {
+              type: "string",
+              format: "datetime",
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxStartSandbox: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.startSandbox",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Start a sandbox",
+        parameters: {
+          type: "params",
+          required: ["uri"],
+          properties: {
+            uri: {
+              type: "string",
+              description: "The sandbox URI.",
+              format: "at-uri",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxStopSandbox: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.stopSandbox",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Stop a sandbox",
+        parameters: {
+          type: "params",
+          required: ["uri"],
+          properties: {
+            uri: {
+              type: "string",
+              description: "The sandbox URI.",
+              format: "at-uri",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvPublicKey: {
+    lexicon: 1,
+    id: "io.pocketenv.publicKey",
+    defs: {
+      main: {
+        type: "record",
+        key: "tid",
+        record: {
+          type: "object",
+          required: ["name", "key", "createdAt"],
+          properties: {
+            name: {
+              type: "string",
+              description: "Name of the public key",
+              maxLength: 255,
+            },
+            key: {
+              type: "string",
+              description:
+                "The public key value, e.g. an SSH public key string.",
+            },
+            createdAt: {
+              type: "string",
+              format: "datetime",
+            },
+          },
+        },
+      },
+    },
+  },
+  ComAtprotoRepoStrongRef: {
+    lexicon: 1,
+    id: "com.atproto.repo.strongRef",
+    description: "A URI with a content-hash fingerprint.",
+    defs: {
+      main: {
+        type: "object",
+        required: ["uri", "cid"],
+        properties: {
+          uri: {
+            type: "string",
+            format: "at-uri",
+          },
+          cid: {
+            type: "string",
+            format: "cid",
+          },
+        },
+      },
+    },
+  },
+} as const satisfies Record<string, LexiconDoc>;
+
+export const schemas = Object.values(schemaDict);
+export const lexicons: Lexicons = new Lexicons(schemas);
+export const ids = {
+  AppBskyActorProfile: "app.bsky.actor.profile",
+  IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",
+  IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",
+  IoPocketenvSandboxDeleteSandbox: "io.pocketenv.sandbox.deleteSandbox",
+  IoPocketenvSandboxGetSandbox: "io.pocketenv.sandbox.getSandbox",
+  IoPocketenvSandboxGetSandboxes: "io.pocketenv.sandbox.getSandboxes",
+  IoPocketenvSandbox: "io.pocketenv.sandbox",
+  IoPocketenvSandboxStartSandbox: "io.pocketenv.sandbox.startSandbox",
+  IoPocketenvSandboxStopSandbox: "io.pocketenv.sandbox.stopSandbox",
+  IoPocketenvPublicKey: "io.pocketenv.publicKey",
+  ComAtprotoRepoStrongRef: "com.atproto.repo.strongRef",
+};

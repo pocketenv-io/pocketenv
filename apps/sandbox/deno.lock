@@ -2,12 +2,14 @@
   "version": "5",
   "specifiers": {
     "jsr:@deno/sandbox@0.11": "0.11.0",
+    "jsr:@std/assert@1": "1.0.18",
     "jsr:@std/fs@^1.0.19": "1.0.22",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@^1.1.2": "1.1.4",
     "jsr:@std/path@^1.1.4": "1.1.4",
     "npm:@daytonaio/sdk@0.141": "0.141.0_@aws-sdk+client-s3@3.988.0_@opentelemetry+api@1.9.0_ws@8.19.0",
     "npm:@tsndr/cloudflare-worker-jwt@^3.2.1": "3.2.1",
+    "npm:@types/ws@^8.18.1": "8.18.1",
     "npm:@vercel/sandbox@^1.5.0": "1.5.0",
     "npm:chalk@^5.6.2": "5.6.2",
     "npm:consola@^3.4.2": "3.4.2",
@@ -30,8 +32,15 @@
       "dependencies": [
         "jsr:@std/fs",
         "jsr:@std/path@^1.1.2",
+        "npm:@types/ws",
         "npm:ws",
         "npm:zod@^4.1.5"
+      ]
+    },
+    "@std/assert@1.0.18": {
+      "integrity": "270245e9c2c13b446286de475131dc688ca9abcd94fc5db41d43a219b34d1c78",
+      "dependencies": [
+        "jsr:@std/internal"
       ]
     },
     "@std/fs@1.0.22": {
@@ -1743,6 +1752,12 @@
         "@types/node",
         "pg-protocol",
         "pg-types"
+      ]
+    },
+    "@types/ws@8.18.1": {
+      "integrity": "sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==",
+      "dependencies": [
+        "@types/node"
       ]
     },
     "@vercel/oidc@3.2.0": {

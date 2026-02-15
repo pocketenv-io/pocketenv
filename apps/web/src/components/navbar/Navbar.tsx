@@ -6,9 +6,10 @@ import NewProject from "../newproject";
 
 export type NavbarProps = {
   title: string;
+  project?: string;
 };
 
-function Navbar({ title }: NavbarProps) {
+function Navbar({ title, project }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -44,11 +45,12 @@ function Navbar({ title }: NavbarProps) {
   }, [open]);
 
   return (
-    <nav className="navbar bg-base-100">
+    <nav className="navbar bg-base-100 h-[65px]">
       <div className="flex flex-1 items-center">
         <div className="text-base-content link-neutral  font-semibold no-underline text-[23px]">
           {title}
         </div>
+        <div className="text-[15px]">{project}</div>
       </div>
       <div className="navbar-end flex items-center gap-4">
         <div>

@@ -4,9 +4,7 @@ import sandboxes from "./sandboxes";
 import volumes from "./volumes";
 
 const sandboxVolumes = pgTable("sandbox_volumes", {
-  id: text("id")
-    .primaryKey()
-    .default(sql`xata_id()`),
+  id: text("id").primaryKey().default(sql`xata_id()`),
   sandboxId: text("sandbox_id")
     .notNull()
     .references(() => sandboxes.id),

@@ -4,10 +4,14 @@
   "type": "module",
   "scripts": {
     "dev": "tsx --watch src/index.ts",
-    "start": "tsx src/index.ts"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
+    "start": "tsx src/index.ts",
+    "pkl:eval": "pkl eval -f json",
+    "pkl:gen": "tsx ./scripts/pkl.ts",
+    "lexgen": "lex gen-server ./src/lexicon ./lexicons/**/* ./lexicons/*",
+    "format": "biome format src",
+    "lint": "biome lint src",
+    "sandbox": "tsx ./scripts/sandbox.ts",
+    "seed": "tsx ./scripts/seed.ts"
   },
   "dependencies": {
     "@atproto/api": "^0.13.31",
@@ -23,6 +27,7 @@
     "@hono/node-server": "^1.19.9",
     "@tsndr/cloudflare-worker-jwt": "^3.2.1",
     "@types/node": "^25.2.3",
+    "@types/prompts": "^2.4.9",
     "@types/ramda": "^0.31.1",
     "better-sqlite3": "^12.6.2",
     "chalk": "^5.6.2",
@@ -32,17 +37,31 @@
     "dotenv": "^17.2.4",
     "drizzle-orm": "^0.45.1",
     "effect": "^3.19.16",
+    "envalid": "^8.1.1",
     "express": "^5.2.1",
     "hono": "^4.11.9",
+    "ioredis": "^5.9.3",
+    "jsonwebtoken": "^9.0.3",
+    "kysely": "^0.28.11",
     "libsodium-wrappers": "^0.8.2",
+    "morgan": "^1.10.1",
     "pg": "^8.18.0",
+    "prompts": "^2.4.2",
     "ramda": "^0.32.0",
-    "unstorage": "^1.14.4",
-    "zod": "^4.3.6"
+    "redis": "^5.10.0",
+    "redlock": "^5.0.0-beta.2",
+    "unstorage": "^1.17.4",
+    "zod": "^4.3.6",
+    "zx": "^8.8.5"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.3.14",
+    "@biomejs/biome": "^2.3.15",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/pg": "^8.16.0",
     "drizzle-kit": "^0.31.9",
     "tsx": "^4.21.0"
   }

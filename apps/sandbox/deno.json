@@ -23,5 +23,10 @@
   },
   "deploy": {
     "org": "tsirysndr"
-  }
+  },
+  "allowScripts": {
+    "allow": ["npm:esbuild@0.25.12", "npm:protobufjs@7.5.4"],
+    "deny": ["npm:esbuild@0.18.20"]
+  },
+  "nodeModulesDir": "auto"
 }

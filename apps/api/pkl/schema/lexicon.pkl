@@ -1,0 +1,97 @@
+open class BaseType {
+  type: String
+  description: String?
+}
+
+class StringType extends BaseType {
+  type: "string"
+  maxGraphemes: Int?
+  minLength: Int?
+  maxLength: Int?
+  format: "uri" | "datetime" | "cid" | "at-uri" | "at-identifier" | "did" | Null = null
+}
+
+class IntegerType extends BaseType {
+  type: "integer"
+  maximum: Int?
+  minimum: Int?
+  default: Int?
+}
+
+class BooleanType extends BaseType {
+  type: "boolean"
+}
+
+class Blob extends BaseType {
+  type: "blob"
+  accept: List<String>
+  maxSize: Int
+}
+
+class Array extends BaseType {
+  type: "array"
+  items: StringType | IntegerType | ObjectType | Blob | Ref | Union
+  maxLength: Int?
+}
+
+class Params {
+  type: "params"
+  required: List<String>?
+  properties: Mapping<String, StringType | IntegerType | BooleanType | Blob | Ref | Array>
+}
+
+class ObjectType extends BaseType {
+  type: "object"
+  required: List<String>?
+  properties: Mapping<String, StringType | IntegerType | BooleanType | Blob | Ref | Union | Array>
+}
+
+class Union extends BaseType {
+  type: "union"
+  refs: List<String>
+}
+
+class Ref extends BaseType {
+  type: "ref"
+  ref: String
+}
+
+class Input {
+  encoding: "application/json"
+  schema: ObjectType
+}
+
+class Output {
+  encoding: "application/json" | "application/octet-stream"
+  schema: ObjectType | Ref | Array | Null = null
+}
+
+class Query extends BaseType {
+  type: "query"
+  parameters: Params
+  output: Output
+}
+
+class Procedure extends BaseType {
+  type: "procedure"
+  parameters: Params?
+  input: Input?
+  output: Output?
+}
+
+class Record extends BaseType {
+  type: "record"
+  key: String
+  `record`: ObjectType
+}
+
+lexicon: Int = 1
+id: String
+description: String?
+defs: Mapping<String, Procedure>
+  | Mapping<String, Record>
+  | Mapping<String, ObjectType>
+  | Mapping<String, Query>
+  | Mapping<String, Array>
+  | Mapping<String, ObjectType | Array>
+  | Null = null

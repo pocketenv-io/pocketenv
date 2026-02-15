@@ -16,6 +16,7 @@ import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SecretsRouteImport } from './routes/secrets'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SandboxIdRouteImport } from './routes/sandbox/$id'
 
 const VolumesRoute = VolumesRouteImport.update({
   id: '/volumes',
@@ -52,6 +53,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SandboxIdRoute = SandboxIdRouteImport.update({
+  id: '/sandbox/$id',
+  path: '/sandbox/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
   '/snapshots': typeof SnapshotsRoute
   '/volumes': typeof VolumesRoute
+  '/sandbox/$id': typeof SandboxIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/snapshots': typeof SnapshotsRoute
   '/volumes': typeof VolumesRoute
+  '/sandbox/$id': typeof SandboxIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/snapshots': typeof SnapshotsRoute
   '/volumes': typeof VolumesRoute
+  '/sandbox/$id': typeof SandboxIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/snapshots'
     | '/volumes'
+    | '/sandbox/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/snapshots'
     | '/volumes'
+    | '/sandbox/$id'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/snapshots'
     | '/volumes'
+    | '/sandbox/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   SigninRoute: typeof SigninRoute
   SnapshotsRoute: typeof SnapshotsRoute
   VolumesRoute: typeof VolumesRoute
+  SandboxIdRoute: typeof SandboxIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sandbox/$id': {
+      id: '/sandbox/$id'
+      path: '/sandbox/$id'
+      fullPath: '/sandbox/$id'
+      preLoaderRoute: typeof SandboxIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   SigninRoute: SigninRoute,
   SnapshotsRoute: SnapshotsRoute,
   VolumesRoute: VolumesRoute,
+  SandboxIdRoute: SandboxIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

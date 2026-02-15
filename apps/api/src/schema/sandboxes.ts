@@ -1,24 +1,36 @@
 import { type InferInsertModel, type InferSelectModel, sql } from "drizzle-orm";
-import { pgTable, text, timestamp, boolean } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  text,
+  timestamp,
+  boolean,
+  integer,
+} from "drizzle-orm/pg-core";
 import users from "./users";
 
 const sandboxes = pgTable("sandboxes", {
   id: text("id")
     .primaryKey()
     .default(sql`sandbox_id()`),
-  base: text("base").notNull(),
+  base: text("base"),
   name: text("name").unique().notNull(),
+  displayName: text("display_name"),
+  uri: text("uri").unique(),
   provider: text("provider").default("cloudflare").notNull(),
   description: text("description"),
+  logo: text("logo"),
   publicKey: text("public_key").notNull(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id),
-  instanceType: text("instance_type").notNull(),
+  readme: text("readme"),
+  userId: text("user_id").references(() => users.id),
+  instanceType: text("instance_type"),
+  vcpus: integer("vcpus"),
+  memory: integer("memory"),
+  disk: integer("disk"),
   status: text("status").notNull(),
   keepAlive: boolean("keep_alive").default(false).notNull(),
   sleepAfter: text("sleep_after"),
   sandbox_id: text("sandbox_id"),
+  installs: integer("installs").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

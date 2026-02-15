@@ -18,6 +18,8 @@
     "@tanstack/react-router": "^1.159.5",
     "@tanstack/react-router-devtools": "^1.159.5",
     "@tanstack/router-plugin": "^1.159.5",
+    "axios": "^1.13.5",
+    "consola": "^3.4.2",
     "dayjs": "^1.11.19",
     "effect": "^3.19.16",
     "flyonui": "^2.4.1",

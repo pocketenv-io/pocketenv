@@ -1,0 +1,84 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "name",
+          "createdAt"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the sandbox",
+            "maxLength": 255
+          },
+          "base": {
+            "type": "ref",
+            "description": "A strong reference to the base template for the sandbox environment.",
+            "ref": "com.atproto.repo.strongRef"
+          },
+          "provider": {
+            "type": "string",
+            "description": "The provider of the sandbox, e.g. 'daytona', 'vercel', 'cloudflare', etc.",
+            "maxLength": 50
+          },
+          "description": {
+            "type": "string",
+            "maxGraphemes": 300,
+            "maxLength": 3000
+          },
+          "website": {
+            "type": "string",
+            "description": "Any URI related to the sandbox",
+            "format": "uri"
+          },
+          "logo": {
+            "type": "string",
+            "description": "URI to an image logo for the sandbox",
+            "format": "uri"
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            "maxLength": 50
+          },
+          "repo": {
+            "type": "string",
+            "description": "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+            "format": "uri"
+          },
+          "readme": {
+            "type": "string",
+            "description": "A URI to a README for the sandbox.",
+            "format": "uri"
+          },
+          "vcpus": {
+            "type": "integer",
+            "description": "Number of virtual CPUs allocated to the sandbox"
+          },
+          "memory": {
+            "type": "integer",
+            "description": "Amount of memory in GB allocated to the sandbox"
+          },
+          "disk": {
+            "type": "integer",
+            "description": "Amount of disk space in GB allocated to the sandbox"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

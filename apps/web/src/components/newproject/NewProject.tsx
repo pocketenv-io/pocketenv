@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSandboxesQuery } from "../../hooks/useSandbox";
 
 export type NewProjectProps = {
   isOpen: boolean;
@@ -7,10 +8,17 @@ export type NewProjectProps = {
 
 function NewProject({ isOpen, onClose }: NewProjectProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [filter, setFilter] = useState("");
+  const { data, isLoading } = useSandboxesQuery();
+
+  const sandboxes = data?.sandboxes.filter((sandbox) =>
+    filter
+      ? sandbox.displayName.toLowerCase().includes(filter.toLowerCase())
+      : true,
+  );
 
   useEffect(() => {
     if (isOpen) {
-      console.log("Attempting to focus input:", inputRef.current);
       inputRef.current?.focus();
     }
   }, [isOpen]);
@@ -19,6 +27,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
         onClose();
+        setFilter("");
       }
     };
 
@@ -31,7 +40,12 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
+      setFilter("");
     }
+  };
+
+  const onFilter = (value: string) => {
+    setFilter(value);
   };
 
   return (
@@ -51,33 +65,28 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
                     ref={inputRef}
                     placeholder="What would you like to try?"
                     className="grow"
+                    value={filter}
+                    onChange={(e) => onFilter(e.target.value)}
                   />
                 </div>
               </div>
             </div>
             <div className="modal-body">
-              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
-                <div className="font-semibold">OpenClaw</div>
-              </div>
-              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
-                <div className="font-semibold">Claude Code</div>
-              </div>
-              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
-                <div className="font-semibold">OpenAI Codex CLI</div>
-              </div>
-              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
-                <div className="font-semibold">GitHub Copilot CLI</div>
-              </div>
-              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
-                <div className="font-semibold">Gemini CLI</div>
-              </div>
-              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
-                <div className="font-semibold">OpenCode</div>
-              </div>
-
-              <div className="p-3 hover:bg-white/7 cursor-pointer rounded-md">
-                <div className="font-semibold">Aider</div>
-              </div>
+              {!isLoading &&
+                sandboxes?.map((item) => (
+                  <div
+                    key={item.id}
+                    className="p-3 hover:bg-white/7 cursor-pointer rounded-md"
+                  >
+                    <div className="font-semibold">{item.displayName}</div>
+                  </div>
+                ))}
+              {!isLoading && sandboxes?.length === 0 && (
+                <div className="p-3 text-center font-semibold opacity-70">
+                  No results found for <br />
+                  <b>{filter}</b>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -89,7 +98,10 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
           data-overlay-backdrop-template=""
           style={{ zIndex: 79 }}
           className="overlay-backdrop transition duration-300 fixed inset-0 bg-base-300/60 overflow-y-auto opacity-75"
-          onClick={onClose}
+          onClick={() => {
+            onClose();
+            setFilter("");
+          }}
         ></div>
       )}
     </>

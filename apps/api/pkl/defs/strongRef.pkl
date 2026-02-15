@@ -1,0 +1,21 @@
+amends "../schema/lexicon.pkl"
+
+lexicon = 1
+id = "com.atproto.repo.strongRef"
+description = "A URI with a content-hash fingerprint."
+defs = new Mapping {
+  ["main"] = new ObjectType {
+    type = "object"
+    required = List("uri", "cid")
+    properties {
+      ["uri"] = new StringType {
+        type = "string"
+        format = "at-uri"
+      }
+      ["cid"] = new StringType {
+        type = "string"
+        format = "cid"
+      }
+    }
+  }
+}

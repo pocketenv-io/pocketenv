@@ -14,6 +14,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly:latest
+    command: --maxmemory=4g
+    ports:
+      - "6379:6379"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
 volumes:
   pgdata:

@@ -8,7 +8,7 @@ import sandboxSecrets from "./sandbox-secrets";
 import sandboxVariables from "./sandbox-variables";
 import sandboxVolumes from "./sandbox-volumes";
 
-export {
+export default {
   sandboxes,
   secrets,
   snapshots,

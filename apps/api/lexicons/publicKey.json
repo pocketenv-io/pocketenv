@@ -1,0 +1,33 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.publicKey",
+  "defs": {
+    "main": {
+      "type": "record",
+      "key": "tid",
+      "record": {
+        "type": "object",
+        "required": [
+          "name",
+          "key",
+          "createdAt"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the public key",
+            "maxLength": 255
+          },
+          "key": {
+            "type": "string",
+            "description": "The public key value, e.g. an SSH public key string."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "datetime"
+          }
+        }
+      }
+    }
+  }
+}

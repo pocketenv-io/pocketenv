@@ -1,0 +1,45 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.getSandboxes",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get all sandboxes",
+      "parameters": {
+        "type": "params",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "The maximum number of sandboxes to return.",
+            "minimum": 1
+          },
+          "offset": {
+            "type": "integer",
+            "description": "The number of sandboxes to skip before starting to collect the result set.",
+            "minimum": 0
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "sandboxes": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "io.pocketenv.sandbox.defs#sandboxViewBasic"
+              }
+            },
+            "total": {
+              "type": "integer",
+              "description": "The total number of sandboxes available.",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}

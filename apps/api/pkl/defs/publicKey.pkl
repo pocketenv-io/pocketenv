@@ -1,0 +1,29 @@
+amends "../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.publicKey"
+defs = new Mapping<String, Record> {
+  ["main"] {
+    type = "record"
+    key = "tid"
+    `record` {
+      type = "object"
+      required = List("name", "key", "createdAt")
+      properties {
+        ["name"] = new StringType {
+          type = "string"
+          maxLength = 255
+          description = "Name of the public key"
+        }
+        ["key"] = new StringType {
+          type = "string"
+          description = "The public key value, e.g. an SSH public key string."
+        }
+        ["createdAt"] = new StringType {
+          type = "string"
+          format = "datetime"
+        }
+      }
+    }
+  }
+}

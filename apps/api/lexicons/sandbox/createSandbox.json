@@ -1,0 +1,85 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.createSandbox",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Create a sandbox",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "base"
+          ],
+          "properties": {
+            "base": {
+              "type": "string",
+              "description": "The base sandbox URI to clone from, e.g. a template or an existing sandbox.",
+              "format": "at-uri"
+            },
+            "name": {
+              "type": "string",
+              "description": "The name of the sandbox",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "description": "A description for the sandbox"
+            },
+            "topics": {
+              "type": "array",
+              "description": "A list of topics/tags to associate with the sandbox",
+              "items": {
+                "type": "string",
+                "maxLength": 50
+              }
+            },
+            "repo": {
+              "type": "string",
+              "description": "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+              "format": "uri"
+            },
+            "vcpus": {
+              "type": "integer",
+              "description": "The number of virtual CPUs to allocate for the sandbox",
+              "minimum": 1
+            },
+            "memory": {
+              "type": "integer",
+              "description": "The amount of memory (in GB) to allocate for the sandbox",
+              "minimum": 1
+            },
+            "disk": {
+              "type": "integer",
+              "description": "The amount of disk space (in GB) to allocate for the sandbox",
+              "minimum": 3
+            },
+            "readme": {
+              "type": "string",
+              "description": "A URI to a README for the sandbox.",
+              "format": "uri"
+            },
+            "secrets": {
+              "type": "ref",
+              "description": "A list of secrets to add to the sandbox",
+              "ref": "io.pocketenv.sandbox.defs#secrets"
+            },
+            "envs": {
+              "type": "ref",
+              "description": "A list of environment variables to add to the sandbox",
+              "ref": "io.pocketenv.sandbox.defs#envs"
+            }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "io.pocketenv.sandbox.defs#sandboxViewBasic"
+        }
+      }
+    }
+  }
+}

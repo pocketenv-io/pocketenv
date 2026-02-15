@@ -3,13 +3,15 @@ import "flyonui/dist/dropdown.js";
 import "flyonui/dist/overlay.js";
 import { useState, useEffect, useRef } from "react";
 import NewProject from "../newproject";
+import Logo from "../../assets/logo.png";
 
 export type NavbarProps = {
   title: string;
   project?: string;
+  withLogo?: boolean;
 };
 
-function Navbar({ title, project }: NavbarProps) {
+function Navbar({ title, project, withLogo }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -47,6 +49,7 @@ function Navbar({ title, project }: NavbarProps) {
   return (
     <nav className="navbar bg-base-100 h-[65px]">
       <div className="flex flex-1 items-center">
+        {withLogo && <img src={Logo} className="max-h-[40px] mr-[15px]" />}
         <div className="text-base-content link-neutral  font-semibold no-underline text-[23px]">
           {title}
         </div>

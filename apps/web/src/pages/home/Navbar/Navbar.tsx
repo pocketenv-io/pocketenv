@@ -1,17 +1,14 @@
-import { Link } from "@tanstack/react-router";
 import "flyonui/dist/dropdown.js";
 import NewProject from "../../../components/newproject";
+import Logo from "../../../assets/logo.png";
 import { useState } from "react";
 
 function Navbar() {
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <nav className="navbar bg-base-100 h-20 max-w-[80%] m-auto mt-0">
-      <div className="flex flex-1 items-center">
-        <div className=" text-[#ff41b5] font-semibold no-underline text-[23px]">
-          Pocketenv
-        </div>
-      </div>
+      <img src={Logo} className="max-h-[40px] mr-[15px]" />
+      <div className="flex flex-1 items-center"></div>
       <div className="navbar-end flex items-center gap-4">
         <div className="ml-[10px]">
           <a

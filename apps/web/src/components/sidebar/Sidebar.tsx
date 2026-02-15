@@ -1,4 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
+import Logo from "../../assets/logo.png";
 
 function Sidebar() {
   const routerState = useRouterState();
@@ -20,14 +21,8 @@ function Sidebar() {
         tabIndex="-1"
       >
         <div className="drawer-body px-2 pt-4 bg-base-100">
-          <div className="mb-[20px]">
-            <Link
-              to="/"
-              className="pl-[15px] pr-[15px] text-[24px] mt-[-3px] text-[#ff41b5]"
-              style={{ fontFamily: "RockfordSansMedium" }}
-            >
-              Pocketenv
-            </Link>
+          <div className="mb-[30px] ml-[5px]">
+            <img src={Logo} className="max-h-[40px] mr-[15px]" />
           </div>
           <ul className="menu p-0">
             <li>

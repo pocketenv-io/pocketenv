@@ -4,6 +4,7 @@ import "flyonui/dist/overlay.js";
 import { useState, useEffect, useRef } from "react";
 import NewProject from "../newproject";
 import Logo from "../../assets/logo.png";
+import SignIn from "../signin";
 
 export type NavbarProps = {
   title: string;
@@ -14,6 +15,7 @@ export type NavbarProps = {
 function Navbar({ title, project, withLogo }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [signInModalOpen, setSignInModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -175,18 +177,24 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
           </div>
         )}
         {true && (
-          <Link
-            to="/signin"
+          <button
+            onClick={() => setSignInModalOpen(true)}
             className="btn btn-block  bg-blue-600/20 border-none text-blue-500 font-extrabold w-[100px]"
           >
             Sign in
-          </Link>
+          </button>
         )}
       </div>
       <NewProject
         isOpen={modalOpen}
         onClose={() => {
           setModalOpen(false);
+        }}
+      />
+      <SignIn
+        isOpen={signInModalOpen}
+        onClose={() => {
+          setSignInModalOpen(false);
         }}
       />
     </nav>

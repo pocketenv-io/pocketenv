@@ -4,7 +4,6 @@ import {
   useSandboxesQuery,
 } from "../../hooks/useSandbox";
 import { useNavigate } from "@tanstack/react-router";
-import consola from "consola";
 
 export type NewProjectProps = {
   isOpen: boolean;

@@ -1,10 +1,15 @@
 import { useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
+import { API_URL } from "../../consts";
 
 function SignIn() {
-  const navigate = useNavigate();
+  const [handle, setHandle] = useState("");
 
   const onSignIn = () => {
-    navigate({ to: "/projects" });
+    if (!handle) {
+      return;
+    }
+    window.location.href = `${API_URL}/login?handle=${handle}`;
   };
 
   return (
@@ -15,13 +20,15 @@ function SignIn() {
             <label className="label">
               <span className="label-text text-[15px]">Handle</span>
             </label>
-            <div className="input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent  focus-within:border-pink-500!">
+            <div className="input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent  focus-within:border-pink-500! outline-none!">
               <span className="label-text my-auto text-[16px] opacity-50 mr-[10px]">
                 @
               </span>
               <input
                 placeholder="alice.bsky.social"
                 className="grow "
+                value={handle}
+                onChange={(e) => setHandle(e.target.value)}
                 autoFocus
               />
             </div>
@@ -35,7 +42,13 @@ function SignIn() {
           </button>
           <p className="text-center text-white/70">
             Don't have an atproto handle yet? You can create one at
-            <button className="text-pink-400">selfhosted.social</button>,{" "}
+            <a
+              href={`${API_URL}/login?prompt=create`}
+              className="text-pink-400"
+            >
+              selfhosted.social
+            </a>
+            ,{" "}
             <a
               href="https://bsky.app/"
               className="text-pink-400"

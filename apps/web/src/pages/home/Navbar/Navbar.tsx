@@ -36,6 +36,11 @@ function Navbar() {
             <span className="icon-[mdi--github] size-7 mt-[8px]"></span>
           </a>
         </div>
+        <div className="ml-[10px]">
+          <Link to="/signin" className="text-[15px]">
+            Login
+          </Link>
+        </div>
         <div>
           <button
             onClick={() => setModalOpen(true)}

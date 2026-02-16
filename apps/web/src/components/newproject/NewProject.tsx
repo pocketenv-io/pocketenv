@@ -12,6 +12,7 @@ export type NewProjectProps = {
 };
 
 function NewProject({ isOpen, onClose }: NewProjectProps) {
+  const [selected, setSelected] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [filter, setFilter] = useState("");
   const { data, isLoading } = useSandboxesQuery();
@@ -56,8 +57,10 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
   };
 
   const onSelect = async (id: string) => {
+    setSelected(id);
     const res = await mutateAsync(id);
     await navigate({ to: `/sandbox/${res.data.id}` });
+    setSelected(null);
     onClose();
     setFilter("");
   };
@@ -96,10 +99,15 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
                 sandboxes?.map((item) => (
                   <div
                     key={item.id}
-                    className="p-3 hover:bg-white/7 cursor-pointer rounded-md"
+                    className="p-3 hover:bg-white/7 cursor-pointer rounded-md flex"
                     onClick={() => onSelect(item.uri)}
                   >
-                    <div className="font-semibold">{item.displayName}</div>
+                    <div className="font-semibold flex-1">
+                      {item.displayName}
+                    </div>
+                    {selected === item.uri && (
+                      <span className="loading loading-spinner loadiing-md text-pink-500"></span>
+                    )}
                   </div>
                 ))}
               {!isLoading && sandboxes?.length === 0 && (

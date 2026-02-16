@@ -8,11 +8,12 @@
     <script>
       // Prevent flash of unstyled content (FOUC) for dark mode
       (function () {
-        const theme =
+        /*  const theme =
           localStorage.getItem("theme") ||
           (window.matchMedia("(prefers-color-scheme: dark)").matches
             ? "dark"
-            : "light");
+            : "light");*/
+        const theme = "dark";
         document.documentElement.classList.add(theme);
         document.documentElement.setAttribute("data-theme", theme);
       })();

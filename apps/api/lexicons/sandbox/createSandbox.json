@@ -15,8 +15,7 @@
           "properties": {
             "base": {
               "type": "string",
-              "description": "The base sandbox URI to clone from, e.g. a template or an existing sandbox.",
-              "format": "at-uri"
+              "description": "The base sandbox URI to clone from, e.g. a template or an existing sandbox."
             },
             "name": {
               "type": "string",

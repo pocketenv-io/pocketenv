@@ -71,44 +71,54 @@
         }
       }
     },
+    "secret": {
+      "type": "object",
+      "required": [
+        "name",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc."
+        },
+        "value": {
+          "type": "string",
+          "description": "Value of the secret. This will be encrypted at rest and redacted in any API responses."
+        }
+      }
+    },
+    "envVar": {
+      "type": "object",
+      "required": [
+        "name",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc."
+        },
+        "value": {
+          "type": "string",
+          "description": "Value of the environment variable. This will be visible in API responses and should not contain sensitive information."
+        }
+      }
+    },
     "secrets": {
       "type": "array",
       "items": {
-        "type": "object",
-        "required": [
-          "name",
-          "value"
-        ],
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc."
-          },
-          "value": {
-            "type": "string",
-            "description": "Value of the secret. This will be encrypted at rest and redacted in any API responses."
-          }
-        }
+        "type": "ref",
+        "description": "A secret to add to the sandbox",
+        "ref": "io.pocketenv.sandbox.defs#secret"
       }
     },
     "envs": {
       "type": "array",
       "items": {
-        "type": "object",
-        "required": [
-          "name",
-          "value"
-        ],
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc."
-          },
-          "value": {
-            "type": "string",
-            "description": "Value of the environment variable. This will be visible in API responses and should not contain sensitive information."
-          }
-        }
+        "type": "ref",
+        "description": "An environment variable to add to the sandbox",
+        "ref": "io.pocketenv.sandbox.defs#envVar"
       }
     }
   }

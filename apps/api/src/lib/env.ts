@@ -25,4 +25,5 @@ export const env = cleanEnv(process.env, {
   PRIVATE_KEY_3: str({}),
   PUBLIC_KEY: str({}),
   PRIVATE_KEY: str({}),
+  SANDBOX_API_URL: str({ default: "http://localhost:8788" }),
 });

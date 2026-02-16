@@ -8,12 +8,11 @@ defs = new Mapping<String, Procedure> {
     description = "Stop a sandbox"
     parameters {
       type = "params"
-      required = List("uri")
+      required = List("id")
       properties {
-        ["uri"] = new StringType {
+        ["id"] = new StringType {
           type = "string"
-          description = "The sandbox URI."
-          format = "at-uri"
+          description = "The sandbox ID."
         }
       }
     }

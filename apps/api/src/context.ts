@@ -9,6 +9,7 @@ import { consola } from "consola";
 import authVerifier from "lib/authVerfifier";
 import redis from "redis";
 import type { RequestHandler } from "express";
+import axios from "axios";
 
 const { DB_PATH } = env;
 export const db = createDb(DB_PATH);
@@ -36,6 +37,9 @@ export const ctx = {
     })
     .connect(),
   kv: new Map<string, string>(),
+  sandbox: axios.create({
+    baseURL: env.SANDBOX_API_URL,
+  }),
 };
 
 export const contextMiddleware: RequestHandler = (req, _res, next) => {

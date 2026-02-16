@@ -2,12 +2,15 @@ import "flyonui/dist/dropdown.js";
 import NewProject from "../../../components/newproject";
 import Logo from "../../../assets/logo.png";
 import { useState } from "react";
+import { Link } from "@tanstack/react-router";
 
 function Navbar() {
   const [modalOpen, setModalOpen] = useState(false);
   return (
     <nav className="navbar bg-base-100 h-20 max-w-[80%] m-auto mt-0">
-      <img src={Logo} className="max-h-[40px] mr-[15px]" />
+      <Link to="/">
+        <img src={Logo} className="max-h-[40px] mr-[15px]" />
+      </Link>
       <div className="flex flex-1 items-center"></div>
       <div className="navbar-end flex items-center gap-4">
         <div className="ml-[10px]">

@@ -72,40 +72,50 @@ defs = new Mapping<String, ObjectType | Array> {
       }
     }
   }
+  ["secret"] = new ObjectType {
+    type = "object"
+    required = List("name", "value")
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc."
+      }
+      ["value"] = new StringType {
+        type = "string"
+        description =
+          "Value of the secret. This will be encrypted at rest and redacted in any API responses."
+      }
+    }
+  }
+  ["envVar"] = new ObjectType {
+    type = "object"
+    required = List("name", "value")
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc."
+      }
+      ["value"] = new StringType {
+        type = "string"
+        description =
+          "Value of the environment variable. This will be visible in API responses and should not contain sensitive information."
+      }
+    }
+  }
   ["secrets"] = new Array {
     type = "array"
-    items = new ObjectType {
-      type = "object"
-      required = List("name", "value")
-      properties {
-        ["name"] = new StringType {
-          type = "string"
-          description = "Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc."
-        }
-        ["value"] = new StringType {
-          type = "string"
-          description =
-            "Value of the secret. This will be encrypted at rest and redacted in any API responses."
-        }
-      }
+    items = new Ref {
+      type = "ref"
+      ref = "io.pocketenv.sandbox.defs#secret"
+      description = "A secret to add to the sandbox"
     }
   }
   ["envs"] = new Array {
     type = "array"
-    items = new ObjectType {
-      type = "object"
-      required = List("name", "value")
-      properties {
-        ["name"] = new StringType {
-          type = "string"
-          description = "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc."
-        }
-        ["value"] = new StringType {
-          type = "string"
-          description =
-            "Value of the environment variable. This will be visible in API responses and should not contain sensitive information."
-        }
-      }
+    items = new Ref {
+      type = "ref"
+      ref = "io.pocketenv.sandbox.defs#envVar"
+      description = "An environment variable to add to the sandbox"
     }
   }
 }

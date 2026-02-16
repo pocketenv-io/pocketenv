@@ -4,11 +4,14 @@ import type { Server } from "lexicon";
 import type { QueryParams } from "lexicon/types/io/pocketenv/sandbox/stopSandbox";
 
 export default function (server: Server, ctx: Context) {
-  const stopSandbox = (params: QueryParams, auth: HandlerAuth) => ({});
-  server.io.pocketenv.sandbox.deleteSandbox({
+  const stopSandbox = async (params: QueryParams, auth: HandlerAuth) => {
+    await ctx.sandbox.post(`/v1/sandboxes/${params.id}/stop`);
+    return {};
+  };
+  server.io.pocketenv.sandbox.stopSandbox({
     auth: ctx.authVerifier,
     handler: async ({ params, auth }) => {
-      const result = stopSandbox(params, auth);
+      const result = await stopSandbox(params, auth);
       return {
         encoding: "application/json",
         body: result,

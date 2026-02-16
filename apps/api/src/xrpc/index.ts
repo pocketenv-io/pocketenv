@@ -6,15 +6,17 @@ import getSandbox from "./io/pocketenv/sandbox/getSandbox";
 import getSandboxes from "./io/pocketenv/sandbox/getSandboxes";
 import startSandbox from "./io/pocketenv/sandbox/startSandbox";
 import stopSandbox from "./io/pocketenv/sandbox/stopSandbox";
+import claimSandbox from "./io/pocketenv/sandbox/claimSandbox";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
-  createSandbox(server, ctx);
-  deleteSandbox(server, ctx);
   getSandbox(server, ctx);
   getSandboxes(server, ctx);
+  createSandbox(server, ctx);
+  deleteSandbox(server, ctx);
   startSandbox(server, ctx);
   stopSandbox(server, ctx);
+  claimSandbox(server, ctx);
 
   return server;
 }

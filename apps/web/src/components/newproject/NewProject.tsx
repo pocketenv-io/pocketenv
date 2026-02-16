@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useSandboxesQuery } from "../../hooks/useSandbox";
+import {
+  useCreateSandboxMutation,
+  useSandboxesQuery,
+} from "../../hooks/useSandbox";
 import { useNavigate } from "@tanstack/react-router";
+import consola from "consola";
 
 export type NewProjectProps = {
   isOpen: boolean;
@@ -12,6 +16,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
   const [filter, setFilter] = useState("");
   const { data, isLoading } = useSandboxesQuery();
   const navigate = useNavigate();
+  const { mutateAsync } = useCreateSandboxMutation();
 
   const sandboxes = data?.sandboxes.filter((sandbox) =>
     filter
@@ -51,7 +56,8 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
   };
 
   const onSelect = async (id: string) => {
-    await navigate({ to: `/sandbox/${id}` });
+    const res = await mutateAsync(id);
+    await navigate({ to: `/sandbox/${res.data.id}` });
     onClose();
     setFilter("");
   };
@@ -91,7 +97,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
                   <div
                     key={item.id}
                     className="p-3 hover:bg-white/7 cursor-pointer rounded-md"
-                    onClick={() => onSelect(item.id)}
+                    onClick={() => onSelect(item.uri)}
                   >
                     <div className="font-semibold">{item.displayName}</div>
                   </div>

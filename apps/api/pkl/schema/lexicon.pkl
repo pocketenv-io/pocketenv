@@ -30,7 +30,7 @@ class Blob extends BaseType {
 
 class Array extends BaseType {
   type: "array"
-  items: StringType | IntegerType | ObjectType | Blob | Ref | Union
+  items: StringType | IntegerType | Blob | Ref | Union
   maxLength: Int?
 }
 

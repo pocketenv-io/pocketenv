@@ -103,7 +103,6 @@ export const schemaDict = {
                 type: "string",
                 description:
                   "The base sandbox URI to clone from, e.g. a template or an existing sandbox.",
-                format: "at-uri",
               },
               name: {
                 type: "string",
@@ -176,6 +175,132 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSandboxDefs: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.defs",
+    defs: {
+      sandboxViewBasic: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            description: "Name of the sandbox",
+            maxLength: 50,
+          },
+          provider: {
+            type: "string",
+            description:
+              "The provider of the sandbox, e.g. 'daytona', 'vercel', 'cloudflare', etc.",
+            maxLength: 50,
+          },
+          description: {
+            type: "string",
+            maxGraphemes: 300,
+            maxLength: 3000,
+          },
+          website: {
+            type: "string",
+            description: "Any URI related to the sandbox",
+            format: "uri",
+          },
+          logo: {
+            type: "string",
+            description: "URI to an image logo for the sandbox",
+            format: "uri",
+          },
+          topics: {
+            type: "array",
+            items: {
+              type: "string",
+              minLength: 1,
+              maxLength: 50,
+            },
+            maxLength: 50,
+          },
+          repo: {
+            type: "string",
+            description:
+              "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+            format: "uri",
+          },
+          readme: {
+            type: "string",
+            description: "A URI to a README for the sandbox.",
+            format: "uri",
+          },
+          vcpus: {
+            type: "integer",
+            description: "Number of virtual CPUs allocated to the sandbox",
+          },
+          memory: {
+            type: "integer",
+            description: "Amount of memory in GB allocated to the sandbox",
+          },
+          disk: {
+            type: "integer",
+            description: "Amount of disk space in GB allocated to the sandbox",
+          },
+          installs: {
+            type: "integer",
+            description:
+              "Number of times the sandbox has been installed by users.",
+          },
+          createdAt: {
+            type: "string",
+            format: "datetime",
+          },
+        },
+      },
+      secret: {
+        type: "object",
+        required: ["name", "value"],
+        properties: {
+          name: {
+            type: "string",
+            description:
+              "Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc.",
+          },
+          value: {
+            type: "string",
+            description:
+              "Value of the secret. This will be encrypted at rest and redacted in any API responses.",
+          },
+        },
+      },
+      envVar: {
+        type: "object",
+        required: ["name", "value"],
+        properties: {
+          name: {
+            type: "string",
+            description:
+              "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc.",
+          },
+          value: {
+            type: "string",
+            description:
+              "Value of the environment variable. This will be visible in API responses and should not contain sensitive information.",
+          },
+        },
+      },
+      secrets: {
+        type: "array",
+        items: {
+          type: "ref",
+          description: "A secret to add to the sandbox",
+          ref: "lex:io.pocketenv.sandbox.defs#secret",
+        },
+      },
+      envs: {
+        type: "array",
+        items: {
+          type: "ref",
+          description: "An environment variable to add to the sandbox",
+          ref: "lex:io.pocketenv.sandbox.defs#envVar",
+        },
+      },
+    },
+  },
   IoPocketenvSandboxDeleteSandbox: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.deleteSandbox",
@@ -185,12 +310,11 @@ export const schemaDict = {
         description: "Delete a sandbox by uri",
         parameters: {
           type: "params",
-          required: ["uri"],
+          required: ["id"],
           properties: {
-            uri: {
+            id: {
               type: "string",
-              description: "The sandbox URI.",
-              format: "at-uri",
+              description: "The sandbox ID.",
             },
           },
         },
@@ -372,12 +496,11 @@ export const schemaDict = {
         description: "Start a sandbox",
         parameters: {
           type: "params",
-          required: ["uri"],
+          required: ["id"],
           properties: {
-            uri: {
+            id: {
               type: "string",
-              description: "The sandbox URI.",
-              format: "at-uri",
+              description: "The sandbox ID.",
             },
           },
         },
@@ -400,12 +523,11 @@ export const schemaDict = {
         description: "Stop a sandbox",
         parameters: {
           type: "params",
-          required: ["uri"],
+          required: ["id"],
           properties: {
-            uri: {
+            id: {
               type: "string",
-              description: "The sandbox URI.",
-              format: "at-uri",
+              description: "The sandbox ID.",
             },
           },
         },
@@ -478,6 +600,7 @@ export const ids = {
   AppBskyActorProfile: "app.bsky.actor.profile",
   IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",
   IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",
+  IoPocketenvSandboxDefs: "io.pocketenv.sandbox.defs",
   IoPocketenvSandboxDeleteSandbox: "io.pocketenv.sandbox.deleteSandbox",
   IoPocketenvSandboxGetSandbox: "io.pocketenv.sandbox.getSandbox",
   IoPocketenvSandboxGetSandboxes: "io.pocketenv.sandbox.getSandboxes",

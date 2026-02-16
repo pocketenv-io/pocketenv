@@ -16,7 +16,6 @@ defs = new Mapping<String, Procedure> {
             type = "string"
             description =
               "The base sandbox URI to clone from, e.g. a template or an existing sandbox."
-            format = "at-uri"
           }
           ["name"] = new StringType {
             type = "string"

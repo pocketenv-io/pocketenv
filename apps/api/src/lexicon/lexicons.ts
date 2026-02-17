@@ -4,6 +4,75 @@
 import { type LexiconDoc, Lexicons } from "@atproto/lexicon";
 
 export const schemaDict = {
+  IoPocketenvActorDefs: {
+    lexicon: 1,
+    id: "io.pocketenv.actor.defs",
+    defs: {
+      profileViewDetailed: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "The unique identifier of the actor.",
+          },
+          did: {
+            type: "string",
+            description: "The DID of the actor.",
+          },
+          handle: {
+            type: "string",
+            description: "The handle of the actor.",
+          },
+          displayName: {
+            type: "string",
+            description: "The display name of the actor.",
+          },
+          avatar: {
+            type: "string",
+            description: "The URL of the actor's avatar image.",
+            format: "uri",
+          },
+          createdAt: {
+            type: "string",
+            description: "The date and time when the actor was created.",
+            format: "datetime",
+          },
+          updatedAt: {
+            type: "string",
+            description: "The date and time when the actor was last updated.",
+            format: "datetime",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvActorGetProfile: {
+    lexicon: 1,
+    id: "io.pocketenv.actor.getProfile",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get the profile of an actor",
+        parameters: {
+          type: "params",
+          properties: {
+            did: {
+              type: "string",
+              description: "The DID or handle of the actor",
+              format: "at-identifier",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.actor.defs#profileViewDetailed",
+          },
+        },
+      },
+    },
+  },
   AppBskyActorProfile: {
     lexicon: 1,
     id: "app.bsky.actor.profile",
@@ -597,6 +666,8 @@ export const schemaDict = {
 export const schemas = Object.values(schemaDict);
 export const lexicons: Lexicons = new Lexicons(schemas);
 export const ids = {
+  IoPocketenvActorDefs: "io.pocketenv.actor.defs",
+  IoPocketenvActorGetProfile: "io.pocketenv.actor.getProfile",
   AppBskyActorProfile: "app.bsky.actor.profile",
   IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",
   IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",

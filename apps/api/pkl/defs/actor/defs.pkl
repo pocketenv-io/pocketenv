@@ -1,0 +1,48 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.actor.defs"
+defs = new Mapping<String, ObjectType> {
+  ["profileViewDetailed"] {
+    type = "object"
+    properties {
+      ["id"] = new StringType {
+        type = "string"
+        description = "The unique identifier of the actor."
+      }
+
+      ["did"] = new StringType {
+        type = "string"
+        description = "The DID of the actor."
+      }
+
+      ["handle"] = new StringType {
+        type = "string"
+        description = "The handle of the actor."
+      }
+
+      ["displayName"] = new StringType {
+        type = "string"
+        description = "The display name of the actor."
+      }
+
+      ["avatar"] = new StringType {
+        type = "string"
+        format = "uri"
+        description = "The URL of the actor's avatar image."
+      }
+
+      ["createdAt"] = new StringType {
+        type = "string"
+        format = "datetime"
+        description = "The date and time when the actor was created."
+      }
+
+      ["updatedAt"] = new StringType {
+        type = "string"
+        format = "datetime"
+        description = "The date and time when the actor was last updated."
+      }
+    }
+  }
+}

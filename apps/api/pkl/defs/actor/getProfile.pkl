@@ -1,0 +1,24 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.actor.getProfile"
+defs = new Mapping<String, Query> {
+  ["main"] {
+    type = "query"
+    description = "Get the profile of an actor"
+    parameters = new Params {
+      properties {
+        ["did"] = new StringType {
+          description = "The DID or handle of the actor"
+          format = "at-identifier"
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new Ref {
+        ref = "io.pocketenv.actor.defs#profileViewDetailed"
+      }
+    }
+  }
+}

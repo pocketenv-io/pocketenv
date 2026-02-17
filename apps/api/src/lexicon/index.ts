@@ -9,6 +9,7 @@ import {
   type StreamAuthVerifier,
 } from "@atproto/xrpc-server";
 import { schemas } from "./lexicons";
+import type * as IoPocketenvActorGetProfile from "./types/io/pocketenv/actor/getProfile";
 import type * as IoPocketenvSandboxClaimSandbox from "./types/io/pocketenv/sandbox/claimSandbox";
 import type * as IoPocketenvSandboxCreateSandbox from "./types/io/pocketenv/sandbox/createSandbox";
 import type * as IoPocketenvSandboxDeleteSandbox from "./types/io/pocketenv/sandbox/deleteSandbox";
@@ -23,43 +24,15 @@ export function createServer(options?: XrpcOptions): Server {
 
 export class Server {
   xrpc: XrpcServer;
-  app: AppNS;
   io: IoNS;
+  app: AppNS;
   com: ComNS;
 
   constructor(options?: XrpcOptions) {
     this.xrpc = createXrpcServer(schemas, options);
-    this.app = new AppNS(this);
     this.io = new IoNS(this);
+    this.app = new AppNS(this);
     this.com = new ComNS(this);
-  }
-}
-
-export class AppNS {
-  _server: Server;
-  bsky: AppBskyNS;
-
-  constructor(server: Server) {
-    this._server = server;
-    this.bsky = new AppBskyNS(server);
-  }
-}
-
-export class AppBskyNS {
-  _server: Server;
-  actor: AppBskyActorNS;
-
-  constructor(server: Server) {
-    this._server = server;
-    this.actor = new AppBskyActorNS(server);
-  }
-}
-
-export class AppBskyActorNS {
-  _server: Server;
-
-  constructor(server: Server) {
-    this._server = server;
   }
 }
 
@@ -75,11 +48,32 @@ export class IoNS {
 
 export class IoPocketenvNS {
   _server: Server;
+  actor: IoPocketenvActorNS;
   sandbox: IoPocketenvSandboxNS;
 
   constructor(server: Server) {
     this._server = server;
+    this.actor = new IoPocketenvActorNS(server);
     this.sandbox = new IoPocketenvSandboxNS(server);
+  }
+}
+
+export class IoPocketenvActorNS {
+  _server: Server;
+
+  constructor(server: Server) {
+    this._server = server;
+  }
+
+  getProfile<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvActorGetProfile.Handler<ExtractAuth<AV>>,
+      IoPocketenvActorGetProfile.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.actor.getProfile"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
   }
 }
 
@@ -165,6 +159,34 @@ export class IoPocketenvSandboxNS {
   ) {
     const nsid = "io.pocketenv.sandbox.stopSandbox"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
+  }
+}
+
+export class AppNS {
+  _server: Server;
+  bsky: AppBskyNS;
+
+  constructor(server: Server) {
+    this._server = server;
+    this.bsky = new AppBskyNS(server);
+  }
+}
+
+export class AppBskyNS {
+  _server: Server;
+  actor: AppBskyActorNS;
+
+  constructor(server: Server) {
+    this._server = server;
+    this.actor = new AppBskyActorNS(server);
+  }
+}
+
+export class AppBskyActorNS {
+  _server: Server;
+
+  constructor(server: Server) {
+    this._server = server;
   }
 }
 

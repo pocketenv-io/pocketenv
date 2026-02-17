@@ -1,0 +1,27 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.actor.getProfile",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get the profile of an actor",
+      "parameters": {
+        "type": "params",
+        "properties": {
+          "did": {
+            "type": "string",
+            "description": "The DID or handle of the actor",
+            "format": "at-identifier"
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "io.pocketenv.actor.defs#profileViewDetailed"
+        }
+      }
+    }
+  }
+}

@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import NewProject from "../newproject";
 import Logo from "../../assets/logo.png";
 import SignIn from "../signin";
+import { useCurrentProfileQuery } from "../../hooks/useProfile";
 
 export type NavbarProps = {
   title: string;
@@ -18,6 +19,7 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
   const [signInModalOpen, setSignInModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const { data: profile, isLoading } = useCurrentProfileQuery();
 
   const toggleDropdown = () => setOpen(!open);
   const toggleModal = () => {
@@ -111,13 +113,10 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
             >
               <div className="avatar avatar-placeholder">
                 <div className="bg-secondary/10  w-10 rounded-full flex items-center justify-center">
-                  {true && (
-                    <img
-                      src="https://cdn.bsky.app/img/avatar/plain/did:plc:7vdlgi2bflelz7mmuxoqjfcr/bafkreiebrezrvxt3istx4i4x3wqsfyle4shfetwq6nmlykoputyyqqe5ri@jpeg"
-                      alt="avatar 1"
-                    />
+                  {profile?.avatar && (
+                    <img src={profile.avatar} alt="avatar 1" />
                   )}
-                  {false && (
+                  {!profile?.avatar && (
                     <span className="icon-[tabler--user] size-5 "></span>
                   )}
                 </div>
@@ -134,26 +133,30 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
               <li className="dropdown-header gap-2">
                 <div className="avatar">
                   <div className="w-10 rounded-full">
-                    <img
-                      src="https://cdn.bsky.app/img/avatar/plain/did:plc:7vdlgi2bflelz7mmuxoqjfcr/bafkreiebrezrvxt3istx4i4x3wqsfyle4shfetwq6nmlykoputyyqqe5ri@jpeg"
-                      alt="avatar"
-                    />
+                    {profile?.avatar && (
+                      <img src={profile.avatar} alt="avatar 1" />
+                    )}
+                    {!profile?.avatar && (
+                      <span className="icon-[tabler--user] size-5 "></span>
+                    )}
                   </div>
                 </div>
                 <div>
-                  <h6 className="text-base-content text-base font-semibold">
-                    Tsiry Sandratraina
-                  </h6>
+                  {profile?.displayName && (
+                    <h6 className="text-base-content text-base font-semibold">
+                      {profile.displayName}
+                    </h6>
+                  )}
                   <small className="text-base-content/50">
-                    @tsiry-sandratraina.com
+                    @{profile?.handle}
                   </small>
                 </div>
               </li>
               <li>
-                <a className="dropdown-item" href="/">
+                <Link className="dropdown-item" to="/projects">
                   <span className="icon-[tabler--layout-dashboard]"></span>
                   Dashboard
-                </a>
+                </Link>
               </li>
               <li>
                 <Link className="dropdown-item" to="/settings">

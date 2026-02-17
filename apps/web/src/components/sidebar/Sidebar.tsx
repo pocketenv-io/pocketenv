@@ -21,9 +21,11 @@ function Sidebar() {
         tabIndex="-1"
       >
         <div className="drawer-body px-2 pt-4 bg-base-100">
-          <div className="mb-[30px] ml-[5px]">
-            <img src={Logo} className="max-h-[40px] mr-[15px]" />
-          </div>
+          <Link to="/projects">
+            <div className="mb-[30px] ml-[5px]">
+              <img src={Logo} className="max-h-[40px] mr-[15px]" />
+            </div>
+          </Link>
           <ul className="menu p-0">
             <li>
               <Link

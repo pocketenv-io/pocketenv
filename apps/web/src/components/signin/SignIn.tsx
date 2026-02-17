@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { API_URL } from "../../consts";
+import { useSearch } from "@tanstack/react-router";
 
 export type SignInProps = {
   isOpen: boolean;
@@ -54,14 +55,26 @@ function SignIn({ isOpen, onClose }: SignInProps) {
       >
         <div className="overlay-animation-target modal-dialog overlay-open:mt-4 overlay-open:duration-300 mt-12 transition-all ease-out">
           <div className="modal-content">
-            <div className="modal-header"></div>
+            <div className="modal-header">
+              <button
+                type="button"
+                className="btn btn-text btn-circle btn-sm absolute end-3 top-3"
+                aria-label="Close"
+                onClick={() => {
+                  onClose();
+                  setHandle("");
+                }}
+              >
+                <span className="icon-[tabler--x] size-4"></span>
+              </button>
+            </div>
             <div className="modal-body">
               <div className="flex flex-col items-center gap-6 w-[400px]">
                 <div className="form-control w-full">
                   <label className="label">
                     <span className="label-text text-[15px]">Handle</span>
                   </label>
-                  <div className="input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent  focus-within:border-pink-500! outline-none!">
+                  <div className="input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent">
                     <span className="label-text my-auto text-[16px] opacity-50 mr-[10px]">
                       @
                     </span>
@@ -77,7 +90,7 @@ function SignIn({ isOpen, onClose }: SignInProps) {
                 </div>
 
                 <button
-                  className="btn btn-lg font-bold bg-pink-500  border-none w-full"
+                  className="btn btn-lg font-bold btn-primary  border-none w-full"
                   onClick={onSignIn}
                 >
                   Sign In
@@ -86,14 +99,14 @@ function SignIn({ isOpen, onClose }: SignInProps) {
                   Don't have an atproto handle yet? You can create one at
                   <a
                     href={`${API_URL}/login?prompt=create`}
-                    className="text-pink-400"
+                    className="text-primary"
                   >
                     selfhosted.social
                   </a>
                   ,{" "}
                   <a
                     href="https://bsky.app/"
-                    className="text-pink-400"
+                    className="text-primary"
                     target="_blank"
                   >
                     Bluesky
@@ -113,6 +126,7 @@ function SignIn({ isOpen, onClose }: SignInProps) {
           style={{ zIndex: 79 }}
           className="overlay-backdrop transition duration-300 fixed inset-0 bg-base-300/60 overflow-y-auto opacity-75"
           onClick={() => {
+            setHandle("");
             onClose();
           }}
         ></div>

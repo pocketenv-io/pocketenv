@@ -1,8 +1,12 @@
 import Navbar from "./Navbar";
 import NewProject from "../../components/newproject";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearch } from "@tanstack/react-router";
+import { API_URL } from "../../consts";
 
 function Home() {
+  const { did } = useSearch({ from: "/" });
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const banner = `
     ____             __        __
@@ -12,6 +16,31 @@ function Home() {
 /_/    \\____/\\___/_/|_|\\___/\\__/\\___/_/ /_/|___/
 
     `;
+
+  const isAuthenticated = !!localStorage.getItem("token");
+
+  if (isAuthenticated) {
+    navigate({ to: "/projects" });
+  }
+
+  useEffect(() => {
+    if (did) {
+      fetch(`${API_URL}/token`, {
+        headers: {
+          "session-did": did,
+        },
+      })
+        .then((res) => {
+          if (res.ok) {
+            return res.json();
+          }
+        })
+        .then(({ token }) => {
+          localStorage.setItem("token", token);
+          navigate({ to: "/projects" });
+        });
+    }
+  }, [did, navigate]);
   return (
     <>
       <div className="flex flex-col min-h-screen bg-base-100">

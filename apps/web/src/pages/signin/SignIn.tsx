@@ -20,7 +20,7 @@ function SignIn() {
             <label className="label">
               <span className="label-text text-[15px]">Handle</span>
             </label>
-            <div className="input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent  focus-within:border-pink-500! outline-none!">
+            <div className="input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent  ">
               <span className="label-text my-auto text-[16px] opacity-50 mr-[10px]">
                 @
               </span>
@@ -35,23 +35,20 @@ function SignIn() {
           </div>
 
           <button
-            className="btn btn-lg font-bold bg-pink-500  border-none w-full"
+            className="btn btn-lg font-bold btn-primary border-none w-full"
             onClick={onSignIn}
           >
             Sign In
           </button>
           <p className="text-center text-white/70">
             Don't have an atproto handle yet? You can create one at
-            <a
-              href={`${API_URL}/login?prompt=create`}
-              className="text-pink-400"
-            >
+            <a href={`${API_URL}/login?prompt=create`} className="text-primary">
               selfhosted.social
             </a>
             ,{" "}
             <a
               href="https://bsky.app/"
-              className="text-pink-400"
+              className="text-primary"
               target="_blank"
             >
               Bluesky

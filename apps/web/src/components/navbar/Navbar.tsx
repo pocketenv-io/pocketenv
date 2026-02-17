@@ -25,8 +25,9 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
   };
 
   const onSignOut = () => {
+    localStorage.removeItem("token");
     setOpen(false);
-    navigate({ to: "/signin" });
+    navigate({ to: "/" });
   };
 
   useEffect(() => {
@@ -47,6 +48,8 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [open]);
+
+  const isAuthenticated = !!localStorage.getItem("token");
 
   return (
     <nav className="navbar bg-base-100 h-[65px]">
@@ -90,7 +93,7 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
             Docs
           </a>
         </div>
-        {false && (
+        {isAuthenticated && (
           <div
             ref={dropdownRef}
             className={`dropdown relative inline-flex [--auto-close:inside] [--offset:8] [--placement:bottom-end] ${
@@ -176,7 +179,7 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
             </ul>
           </div>
         )}
-        {true && (
+        {!isAuthenticated && (
           <button
             onClick={() => setSignInModalOpen(true)}
             className="btn btn-block  bg-blue-600/20 border-none text-blue-500 font-extrabold w-[100px]"

@@ -1,5 +1,5 @@
 import type React from "react";
-import { useRouterState } from "@tanstack/react-router";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 import Navbar from "../components/navbar";
 import Sidebar from "../components/sidebar";
 
@@ -9,7 +9,13 @@ type MainProps = {
 
 function Main({ children }: MainProps) {
   const routerState = useRouterState();
+  const navigate = useNavigate();
   const pathname = routerState.location.pathname;
+  const isAuthenticated = !!localStorage.getItem("token");
+
+  if (!isAuthenticated) {
+    navigate({ to: "/" });
+  }
 
   const getTitle = (path: string): string => {
     if (path === "/") return "Projects";

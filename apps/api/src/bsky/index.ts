@@ -123,7 +123,12 @@ app.get("/oauth/callback", async (req, res) => {
     return;
   }
 
-  res.redirect(`${env.FRONTEND_URL}?did=${did}&cli=${cli}`);
+  const url = new URL(env.FRONTEND_URL);
+  url.searchParams.set("did", did);
+  if (cli) {
+    url.searchParams.set("cli", "1");
+  }
+  res.redirect(url.toString());
 });
 
 app.get("/token", async (req, res) => {

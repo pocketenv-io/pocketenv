@@ -19,7 +19,7 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
   const [signInModalOpen, setSignInModalOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-  const { data: profile, isLoading } = useCurrentProfileQuery();
+  const { data: profile } = useCurrentProfileQuery();
 
   const toggleDropdown = () => setOpen(!open);
   const toggleModal = () => {

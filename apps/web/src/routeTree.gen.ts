@@ -17,6 +17,7 @@ import { Route as SecretsRouteImport } from './routes/secrets'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SandboxIdRouteImport } from './routes/sandbox/$id'
+import { Route as DidSandboxRkeyRouteImport } from './routes/$did.sandbox.$rkey'
 
 const VolumesRoute = VolumesRouteImport.update({
   id: '/volumes',
@@ -58,6 +59,11 @@ const SandboxIdRoute = SandboxIdRouteImport.update({
   path: '/sandbox/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DidSandboxRkeyRoute = DidSandboxRkeyRouteImport.update({
+  id: '/$did/sandbox/$rkey',
+  path: '/$did/sandbox/$rkey',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/snapshots': typeof SnapshotsRoute
   '/volumes': typeof VolumesRoute
   '/sandbox/$id': typeof SandboxIdRoute
+  '/$did/sandbox/$rkey': typeof DidSandboxRkeyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/snapshots': typeof SnapshotsRoute
   '/volumes': typeof VolumesRoute
   '/sandbox/$id': typeof SandboxIdRoute
+  '/$did/sandbox/$rkey': typeof DidSandboxRkeyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/snapshots': typeof SnapshotsRoute
   '/volumes': typeof VolumesRoute
   '/sandbox/$id': typeof SandboxIdRoute
+  '/$did/sandbox/$rkey': typeof DidSandboxRkeyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/snapshots'
     | '/volumes'
     | '/sandbox/$id'
+    | '/$did/sandbox/$rkey'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/snapshots'
     | '/volumes'
     | '/sandbox/$id'
+    | '/$did/sandbox/$rkey'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/snapshots'
     | '/volumes'
     | '/sandbox/$id'
+    | '/$did/sandbox/$rkey'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   SnapshotsRoute: typeof SnapshotsRoute
   VolumesRoute: typeof VolumesRoute
   SandboxIdRoute: typeof SandboxIdRoute
+  DidSandboxRkeyRoute: typeof DidSandboxRkeyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SandboxIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$did/sandbox/$rkey': {
+      id: '/$did/sandbox/$rkey'
+      path: '/$did/sandbox/$rkey'
+      fullPath: '/$did/sandbox/$rkey'
+      preLoaderRoute: typeof DidSandboxRkeyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   SnapshotsRoute: SnapshotsRoute,
   VolumesRoute: VolumesRoute,
   SandboxIdRoute: SandboxIdRoute,
+  DidSandboxRkeyRoute: DidSandboxRkeyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

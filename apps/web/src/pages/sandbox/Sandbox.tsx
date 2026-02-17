@@ -1,18 +1,24 @@
 import { useState } from "react";
 import Navbar from "../../components/navbar";
 import SignIn from "../../components/signin/Signin";
+import { useLocation } from "@tanstack/react-router";
 
 function New() {
+  const isAuthenticated = !!localStorage.getItem("token");
   const [signInModalOpen, setSignInModalOpen] = useState(false);
   const onClaim = () => {
+    if (isAuthenticated) {
+      return;
+    }
     setSignInModalOpen(true);
   };
-  const isAuthenticated = !!localStorage.getItem("token");
+  const location = useLocation();
+
   return (
     <>
       <div className="flex flex-col min-h-screen bg-base-100">
         <Navbar withLogo title="" project="lucky-quietude" />
-        {!isAuthenticated && (
+        {location.pathname.startsWith("/sandbox") && (
           <div
             className="alert alert-soft alert-warning flex items-center bg-warning/10 border-none"
             role="alert"

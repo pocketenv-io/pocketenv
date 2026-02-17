@@ -1,13 +1,17 @@
 import { useState } from "react";
 import Navbar from "../../components/navbar";
 import SignIn from "../../components/signin/Signin";
-import { useLocation } from "@tanstack/react-router";
+import { useLocation, useNavigate } from "@tanstack/react-router";
 
 function New() {
   const isAuthenticated = !!localStorage.getItem("token");
   const [signInModalOpen, setSignInModalOpen] = useState(false);
+  const navigate = useNavigate();
   const onClaim = () => {
     if (isAuthenticated) {
+      navigate({
+        to: "/did:plc:pyzvvyrh6eudle55nhqe62tv/sandbox/3mezx5ymmjs26",
+      });
       return;
     }
     setSignInModalOpen(true);

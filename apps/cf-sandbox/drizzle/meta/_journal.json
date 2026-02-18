@@ -64,6 +64,13 @@
       "when": 1771135267679,
       "tag": "0008_futuristic_the_hand",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1771395054419,
+      "tag": "0009_sticky_madame_masque",
+      "breakpoints": true
     }
   ]
 }

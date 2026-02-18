@@ -61,6 +61,15 @@
           "type": "integer",
           "description": "Amount of disk space in GB allocated to the sandbox"
         },
+        "ports": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "maximum": 65535,
+            "minimum": 1
+          },
+          "maxLength": 100
+        },
         "installs": {
           "type": "integer",
           "description": "Number of times the sandbox has been installed by users."

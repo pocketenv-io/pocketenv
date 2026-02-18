@@ -27,6 +27,7 @@ export interface SandboxViewBasic {
   memory?: number;
   /** Amount of disk space in GB allocated to the sandbox */
   disk?: number;
+  ports?: number[];
   /** Number of times the sandbox has been installed by users. */
   installs?: number;
   createdAt?: string;

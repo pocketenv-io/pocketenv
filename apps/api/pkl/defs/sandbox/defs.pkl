@@ -62,6 +62,15 @@ defs = new Mapping<String, ObjectType | Array> {
         type = "integer"
         description = "Amount of disk space in GB allocated to the sandbox"
       }
+      ["ports"] = new Array {
+        type = "array"
+        items = new IntegerType {
+          type = "integer"
+          minimum = 1
+          maximum = 65535
+        }
+        maxLength = 100
+      }
       ["installs"] = new IntegerType {
         type = "integer"
         description = "Number of times the sandbox has been installed by users."

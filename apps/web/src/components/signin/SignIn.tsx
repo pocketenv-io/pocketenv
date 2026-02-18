@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { API_URL } from "../../consts";
-import { useSearch } from "@tanstack/react-router";
 
 export type SignInProps = {
   isOpen: boolean;
@@ -111,7 +110,15 @@ function SignIn({ isOpen, onClose }: SignInProps) {
                   >
                     Bluesky
                   </a>{" "}
-                  or any other AT Protocol service.
+                  or any other{" "}
+                  <a
+                    href={"https://atproto.com"}
+                    className="text-primary"
+                    target="_blank"
+                  >
+                    AT Protocol
+                  </a>{" "}
+                  service.
                 </p>
               </div>
             </div>

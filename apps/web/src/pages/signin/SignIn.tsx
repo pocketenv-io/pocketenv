@@ -53,7 +53,15 @@ function SignIn() {
             >
               Bluesky
             </a>{" "}
-            or any other AT Protocol service.
+            or any other{" "}
+            <a
+              href={"https://atproto.com"}
+              className="text-primary"
+              target="_blank"
+            >
+              AT Protocol
+            </a>{" "}
+            service.
           </p>
         </div>
       </div>

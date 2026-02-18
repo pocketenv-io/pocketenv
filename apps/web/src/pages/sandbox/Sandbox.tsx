@@ -40,6 +40,15 @@ function New() {
             </button>
           </div>
         )}
+        <div className="p-4">
+          <div className="mt-[50px] flex space-between">
+            <div className="flex-1"></div>
+            <button className="btn btn-outline btn-lg hover:text-white">
+              <span className="icon-[tabler--player-stop-filled] size-5 shrink-0"></span>
+              Stop Sandbox
+            </button>
+          </div>
+        </div>
       </div>
       <SignIn
         isOpen={signInModalOpen}

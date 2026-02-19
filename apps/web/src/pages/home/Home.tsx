@@ -50,7 +50,7 @@ function Home() {
             <div className="flex-1">
               <div className="max-w-[77%] m-auto mt-[5%] text-center">
                 <div className="flex justify-center">
-                  <pre className="text-left text-[cyan]">{banner}</pre>
+                  <pre className="text-left text-primary">{banner}</pre>
                 </div>
                 <h1 className="mb-[10px] text-7xl mb-[20px] font-medium">
                   A Safe Space to Try Your Ideas

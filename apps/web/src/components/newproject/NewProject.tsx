@@ -58,7 +58,11 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
   const onSelect = async (id: string) => {
     setSelected(id);
     const res = await mutateAsync(id);
-    await navigate({ to: `/sandbox/${res.data.id}` });
+    await navigate({
+      to: res.data.uri
+        ? `/${res.data.uri.split("at://")[1].replace("io.pocketenv.", "")}`
+        : `/sandbox/${res.data.id}`,
+    });
     setSelected(null);
     onClose();
     setFilter("");

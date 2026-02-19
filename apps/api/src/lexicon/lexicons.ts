@@ -412,15 +412,14 @@ export const schemaDict = {
     defs: {
       main: {
         type: "query",
-        description: "Get a sandbox by uri",
+        description: "Get a sandbox by ID or URI",
         parameters: {
           type: "params",
-          required: ["uri"],
+          required: ["id"],
           properties: {
-            uri: {
+            id: {
               type: "string",
-              description: "The sandbox URI.",
-              format: "at-uri",
+              description: "The sandbox ID or URI to retrieve",
             },
           },
         },
@@ -444,6 +443,11 @@ export const schemaDict = {
         parameters: {
           type: "params",
           properties: {
+            author: {
+              type: "string",
+              description: "Filter sandboxes by author did or handle",
+              format: "at-identifier",
+            },
             limit: {
               type: "integer",
               description: "The maximum number of sandboxes to return.",

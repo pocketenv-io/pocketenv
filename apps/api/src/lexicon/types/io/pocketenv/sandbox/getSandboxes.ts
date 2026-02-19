@@ -10,6 +10,8 @@ import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
 import type * as IoPocketenvSandboxDefs from "./defs";
 
 export interface QueryParams {
+  /** Filter sandboxes by author did or handle */
+  author?: string;
   /** The maximum number of sandboxes to return. */
   limit?: number;
   /** The number of sandboxes to skip before starting to collect the result set. */

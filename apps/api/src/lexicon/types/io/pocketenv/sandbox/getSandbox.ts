@@ -10,8 +10,8 @@ import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
 import type * as IoPocketenvSandboxDefs from "./defs";
 
 export interface QueryParams {
-  /** The sandbox URI. */
-  uri: string;
+  /** The sandbox ID or URI to retrieve */
+  id: string;
 }
 
 export type InputSchema = undefined;

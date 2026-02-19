@@ -8,6 +8,11 @@
       "parameters": {
         "type": "params",
         "properties": {
+          "author": {
+            "type": "string",
+            "description": "Filter sandboxes by author did or handle",
+            "format": "at-identifier"
+          },
           "limit": {
             "type": "integer",
             "description": "The maximum number of sandboxes to return.",

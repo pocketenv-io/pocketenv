@@ -9,7 +9,7 @@ import type {
 import type { SelectSandbox } from "schema/sandboxes";
 import { consola } from "consola";
 import schema from "schema";
-import { count, eq, desc } from "drizzle-orm";
+import { count, eq, desc, or } from "drizzle-orm";
 
 export default function (server: Server, ctx: Context) {
   const getSandboxes = (params: QueryParams, auth: HandlerAuth) =>
@@ -50,7 +50,14 @@ const retrieve = ({
           .select()
           .from(schema.sandboxes)
           .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
-          .where(eq(schema.users.handle, "pocketenv.io"))
+          .where(
+            params.author
+              ? or(
+                  eq(schema.users.did, params.author),
+                  eq(schema.users.handle, params.author),
+                )
+              : eq(schema.users.handle, "pocketenv.io"),
+          )
           .orderBy(desc(schema.sandboxes.installs))
           .limit(params.limit ?? 30)
           .offset(params.offset ?? 0)
@@ -59,6 +66,15 @@ const retrieve = ({
         ctx.db
           .select({ count: count() })
           .from(schema.sandboxes)
+          .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
+          .where(
+            params.author
+              ? or(
+                  eq(schema.users.did, params.author),
+                  eq(schema.users.handle, params.author),
+                )
+              : eq(schema.users.handle, "pocketenv.io"),
+          )
           .execute()
           .then((result) => result[0]?.count ?? 0),
       ]),

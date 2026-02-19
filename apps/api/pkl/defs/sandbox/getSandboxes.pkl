@@ -9,6 +9,11 @@ defs = new Mapping<String, Query> {
     parameters {
       type = "params"
       properties {
+        ["author"] = new StringType {
+          type = "string"
+          description = "Filter sandboxes by author did or handle"
+          format = "at-identifier"
+        }
         ["limit"] = new IntegerType {
           type = "integer"
           description = "The maximum number of sandboxes to return."

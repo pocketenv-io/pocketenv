@@ -10,6 +10,10 @@ import { createAgent } from "lib/agent";
 import { TID } from "@atproto/common";
 import schema from "schema";
 import { eq } from "drizzle-orm";
+import {
+  validateMain,
+  type Main,
+} from "lexicon/types/com/atproto/repo/strongRef";
 
 export default function (server: Server, ctx: Context) {
   const createSandbox = async (input: HandlerInput, auth: HandlerAuth) => {
@@ -36,6 +40,26 @@ export default function (server: Server, ctx: Context) {
         `Writing ${chalk.greenBright("io.pocketenv.sandbox")} record...`,
       );
 
+      const base = await ctx.db
+        .select()
+        .from(schema.sandboxes)
+        .where(eq(schema.sandboxes.name, "openclaw"))
+        .execute()
+        .then(([row]) => row);
+
+      const baseRef = validateMain({
+        uri: base?.uri,
+        cid: base?.cid,
+      });
+
+      if (!baseRef.success) {
+        consola.error(
+          "Failed to validate base record reference:",
+          baseRef.error,
+        );
+        throw new Error("Invalid base record reference");
+      }
+
       const record: Sandbox.Record = {
         $type: "io.pocketenv.sandbox",
         name: res.data.name,
@@ -43,6 +67,7 @@ export default function (server: Server, ctx: Context) {
         vcpus: res.data.vcpus,
         memory: res.data.memory,
         disk: res.data.disk,
+        base: baseRef.value as Main,
         createdAt: new Date().toISOString(),
       };
 
@@ -64,7 +89,7 @@ export default function (server: Server, ctx: Context) {
 
       await ctx.db
         .update(schema.sandboxes)
-        .set({ uri: data.uri })
+        .set({ uri: data.uri, cid: data.cid })
         .where(eq(schema.sandboxes.id, res.data.id))
         .execute();
 

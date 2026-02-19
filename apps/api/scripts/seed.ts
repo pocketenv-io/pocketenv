@@ -66,6 +66,7 @@ for (const sandbox of sandboxes) {
       provider: "daytona",
       status: "STOPPED",
       uri: sandbox.uri,
+      cid: sandbox.cid,
       publicKey: env.PUBLIC_KEY,
       vcpus: sandbox.value.vcpus,
       memory: sandbox.value.memory,

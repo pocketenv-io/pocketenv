@@ -16,6 +16,7 @@ const sandboxes = pgTable("sandboxes", {
   name: text("name").unique().notNull(),
   displayName: text("display_name"),
   uri: text("uri").unique(),
+  cid: text("cid").unique(),
   repo: text("repo"),
   provider: text("provider").default("cloudflare").notNull(),
   description: text("description"),

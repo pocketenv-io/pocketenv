@@ -19,6 +19,7 @@ dayjs.extend(relativeTime);
 function New() {
   const profile = useAtomValue(profileAtom);
   const queryClient = useQueryClient();
+  const [displayLoading, setDisplayLoading] = useState(false);
   const { mutate: stopSandbox } = useStopSandboxMutation();
   const { mutate: startSandbox } = useStartSandboxMutation();
   const isAuthenticated = !!localStorage.getItem("token");
@@ -135,7 +136,9 @@ function New() {
                   ((profile && data?.sandbox?.owner?.did === profile.did) ||
                     !data?.sandbox?.owner) && (
                     <button
-                      onClick={() =>
+                      onClick={() => {
+                        if (displayLoading) return;
+                        setDisplayLoading(true);
                         stopSandbox(data!.sandbox!.id, {
                           onSuccess: async () => {
                             await queryClient.invalidateQueries({
@@ -144,12 +147,21 @@ function New() {
                             await queryClient.invalidateQueries({
                               queryKey: ["sandbox", data?.sandbox?.uri],
                             });
+                            setDisplayLoading(false);
                           },
-                        })
-                      }
+                          onError: () => {
+                            setDisplayLoading(false);
+                          },
+                        });
+                      }}
                       className="btn btn-outline btn-lg hover:text-white"
                     >
-                      <span className="icon-[tabler--player-stop-filled] size-5 shrink-0"></span>
+                      {!displayLoading && (
+                        <span className="icon-[tabler--player-stop-filled] size-5 shrink-0"></span>
+                      )}
+                      {displayLoading && (
+                        <span className="loading loading-spinner loading-sm"></span>
+                      )}
                       Stop Sandbox
                     </button>
                   )}
@@ -157,7 +169,9 @@ function New() {
                   ((profile && data?.sandbox?.owner?.did === profile.did) ||
                     !data?.sandbox?.owner) && (
                     <button
-                      onClick={() =>
+                      onClick={() => {
+                        if (displayLoading) return;
+                        setDisplayLoading(true);
                         startSandbox(data!.sandbox!.id, {
                           onSuccess: async () => {
                             await queryClient.invalidateQueries({
@@ -166,12 +180,21 @@ function New() {
                             await queryClient.invalidateQueries({
                               queryKey: ["sandbox", data?.sandbox?.uri],
                             });
+                            setDisplayLoading(false);
                           },
-                        })
-                      }
+                          onError: () => {
+                            setDisplayLoading(false);
+                          },
+                        });
+                      }}
                       className="btn btn-outline btn-lg hover:text-white"
                     >
-                      <span className="icon-[tabler--player-play-filled] size-5 shrink-0"></span>
+                      {!displayLoading && (
+                        <span className="icon-[tabler--player-play-filled] size-5 shrink-0"></span>
+                      )}
+                      {displayLoading && (
+                        <span className="loading loading-spinner loading-sm"></span>
+                      )}
                       Start Sandbox
                     </button>
                   )}

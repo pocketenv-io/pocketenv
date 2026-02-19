@@ -46,6 +46,52 @@ export function validateSandboxViewBasic(v: unknown): ValidationResult {
   return lexicons.validate("io.pocketenv.sandbox.defs#sandboxViewBasic", v);
 }
 
+export interface SandboxViewDetailed {
+  /** Name of the sandbox */
+  name?: string;
+  /** The provider of the sandbox, e.g. 'daytona', 'vercel', 'cloudflare', etc. */
+  provider?: string;
+  description?: string;
+  /** The current status of the sandbox, e.g. 'STARTED', 'STOPPED', etc. */
+  status?: string;
+  startedAt?: string;
+  /** The sandbox timeout in seconds */
+  timeout?: number;
+  baseSandbox?: SandboxViewBasic;
+  /** Any URI related to the sandbox */
+  website?: string;
+  /** URI to an image logo for the sandbox */
+  logo?: string;
+  topics?: string[];
+  /** A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo. */
+  repo?: string;
+  /** A URI to a README for the sandbox. */
+  readme?: string;
+  /** Number of virtual CPUs allocated to the sandbox */
+  vcpus?: number;
+  /** Amount of memory in GB allocated to the sandbox */
+  memory?: number;
+  /** Amount of disk space in GB allocated to the sandbox */
+  disk?: number;
+  ports?: number[];
+  /** Number of times the sandbox has been installed by users. */
+  installs?: number;
+  createdAt?: string;
+  [k: string]: unknown;
+}
+
+export function isSandboxViewDetailed(v: unknown): v is SandboxViewDetailed {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#sandboxViewDetailed"
+  );
+}
+
+export function validateSandboxViewDetailed(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#sandboxViewDetailed", v);
+}
+
 export interface Secret {
   /** Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc. */
   name: string;

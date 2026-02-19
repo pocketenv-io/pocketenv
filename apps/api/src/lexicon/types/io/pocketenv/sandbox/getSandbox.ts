@@ -15,7 +15,7 @@ export interface QueryParams {
 }
 
 export type InputSchema = undefined;
-export type OutputSchema = IoPocketenvSandboxDefs.SandboxViewBasic;
+export type OutputSchema = IoPocketenvSandboxDefs.SandboxViewDetailed;
 export type HandlerInput = undefined;
 
 export interface HandlerSuccess {

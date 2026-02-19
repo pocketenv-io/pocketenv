@@ -81,6 +81,100 @@ defs = new Mapping<String, ObjectType | Array> {
       }
     }
   }
+  ["sandboxViewDetailed"] = new ObjectType {
+    type = "object"
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        maxLength = 50
+        description = "Name of the sandbox"
+      }
+      ["provider"] = new StringType {
+        type = "string"
+        maxLength = 50
+        description = "The provider of the sandbox, e.g. 'daytona', 'vercel', 'cloudflare', etc."
+      }
+      ["description"] = new StringType {
+        type = "string"
+        maxLength = 3000
+        maxGraphemes = 300
+      }
+      ["status"] = new StringType {
+        type = "string"
+        description = "The current status of the sandbox, e.g. 'STARTED', 'STOPPED', etc."
+      }
+      ["startedAt"] = new StringType {
+        type = "string"
+        format = "datetime"
+      }
+      ["timeout"] = new IntegerType {
+        type = "integer"
+        description = "The sandbox timeout in seconds"
+      }
+      ["baseSandbox"] = new Ref {
+        type = "ref"
+        ref = "io.pocketenv.sandbox.defs#sandboxViewBasic"
+      }
+      ["website"] = new StringType {
+        type = "string"
+        format = "uri"
+        description = "Any URI related to the sandbox"
+      }
+      ["logo"] = new StringType {
+        type = "string"
+        format = "uri"
+        description = "URI to an image logo for the sandbox"
+      }
+      ["topics"] = new Array {
+        type = "array"
+        items = new StringType {
+          type = "string"
+          minLength = 1
+          maxLength = 50
+        }
+        maxLength = 50
+      }
+      ["repo"] = new StringType {
+        type = "string"
+        description = "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo."
+        format = "uri"
+      }
+      ["readme"] = new StringType {
+        type = "string"
+        description = "A URI to a README for the sandbox."
+        format = "uri"
+      }
+      ["vcpus"] = new IntegerType {
+        type = "integer"
+        description = "Number of virtual CPUs allocated to the sandbox"
+      }
+      ["memory"] = new IntegerType {
+        type = "integer"
+        description = "Amount of memory in GB allocated to the sandbox"
+      }
+      ["disk"] = new IntegerType {
+        type = "integer"
+        description = "Amount of disk space in GB allocated to the sandbox"
+      }
+      ["ports"] = new Array {
+        type = "array"
+        items = new IntegerType {
+          type = "integer"
+          minimum = 1
+          maximum = 65535
+        }
+        maxLength = 100
+      }
+      ["installs"] = new IntegerType {
+        type = "integer"
+        description = "Number of times the sandbox has been installed by users."
+      }
+      ["createdAt"] = new StringType {
+        type = "string"
+        format = "datetime"
+      }
+    }
+  }
   ["secret"] = new ObjectType {
     type = "object"
     required = List("name", "value")

@@ -329,6 +329,104 @@ export const schemaDict = {
           },
         },
       },
+      sandboxViewDetailed: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            description: "Name of the sandbox",
+            maxLength: 50,
+          },
+          provider: {
+            type: "string",
+            description:
+              "The provider of the sandbox, e.g. 'daytona', 'vercel', 'cloudflare', etc.",
+            maxLength: 50,
+          },
+          description: {
+            type: "string",
+            maxGraphemes: 300,
+            maxLength: 3000,
+          },
+          status: {
+            type: "string",
+            description:
+              "The current status of the sandbox, e.g. 'STARTED', 'STOPPED', etc.",
+          },
+          startedAt: {
+            type: "string",
+            format: "datetime",
+          },
+          timeout: {
+            type: "integer",
+            description: "The sandbox timeout in seconds",
+          },
+          baseSandbox: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+          },
+          website: {
+            type: "string",
+            description: "Any URI related to the sandbox",
+            format: "uri",
+          },
+          logo: {
+            type: "string",
+            description: "URI to an image logo for the sandbox",
+            format: "uri",
+          },
+          topics: {
+            type: "array",
+            items: {
+              type: "string",
+              minLength: 1,
+              maxLength: 50,
+            },
+            maxLength: 50,
+          },
+          repo: {
+            type: "string",
+            description:
+              "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+            format: "uri",
+          },
+          readme: {
+            type: "string",
+            description: "A URI to a README for the sandbox.",
+            format: "uri",
+          },
+          vcpus: {
+            type: "integer",
+            description: "Number of virtual CPUs allocated to the sandbox",
+          },
+          memory: {
+            type: "integer",
+            description: "Amount of memory in GB allocated to the sandbox",
+          },
+          disk: {
+            type: "integer",
+            description: "Amount of disk space in GB allocated to the sandbox",
+          },
+          ports: {
+            type: "array",
+            items: {
+              type: "integer",
+              maximum: 65535,
+              minimum: 1,
+            },
+            maxLength: 100,
+          },
+          installs: {
+            type: "integer",
+            description:
+              "Number of times the sandbox has been installed by users.",
+          },
+          createdAt: {
+            type: "string",
+            format: "datetime",
+          },
+        },
+      },
       secret: {
         type: "object",
         required: ["name", "value"],
@@ -427,7 +525,7 @@ export const schemaDict = {
           encoding: "application/json",
           schema: {
             type: "ref",
-            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewDetailed",
           },
         },
       },

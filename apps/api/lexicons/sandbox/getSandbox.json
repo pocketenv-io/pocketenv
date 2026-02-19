@@ -21,7 +21,7 @@
         "encoding": "application/json",
         "schema": {
           "type": "ref",
-          "ref": "io.pocketenv.sandbox.defs#sandboxViewBasic"
+          "ref": "io.pocketenv.sandbox.defs#sandboxViewDetailed"
         }
       }
     }

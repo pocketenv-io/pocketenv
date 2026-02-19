@@ -36,3 +36,24 @@ export const getSandboxes = (offset?: number, limit?: number) =>
   client.get<{ sandboxes: Sandbox[]; total: number }>(
     `/xrpc/io.pocketenv.sandbox.getSandboxes?offset=${offset ?? 0}&limit=${limit ?? 30}`,
   );
+
+export const stopSandbox = (id: string) =>
+  client.post(`/xrpc/io.pocketenv.sandbox.stopSandbox?id=${id}`, undefined, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+export const deleteSandbox = (id: string) =>
+  client.post(`/xrpc/io.pocketenv.sandbox.deleteSandbox?id=${id}`, undefined, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+export const startSandbox = (id: string) =>
+  client.post(`/xrpc/io.pocketenv.sandbox.startSandbox?id=${id}`, undefined, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });

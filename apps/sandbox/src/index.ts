@@ -7,6 +7,7 @@ import {
   sandboxSecrets,
   sandboxVariables,
   secrets,
+  users,
   variables,
 } from "./schema/mod.ts";
 import {
@@ -28,11 +29,21 @@ import { PgTransaction } from "drizzle-orm/pg-core";
 import { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import chalk from "chalk";
 import process from "node:process";
+import jwt from "@tsndr/cloudflare-worker-jwt";
 
 const app = new Hono<{ Variables: Context }>();
 
 app.use("*", async (c, next) => {
   c.set("db", getConnection());
+  const token = c.req.header("Authorization")?.split(" ")[1]?.trim();
+  if (token) {
+    try {
+      const decoded = await jwt.verify(token, process.env.JWT_SECRET!);
+      c.set("did", decoded?.payload.sub);
+    } catch (err) {
+      consola.error("JWT verification failed:", err);
+    }
+  }
   await next();
 });
 
@@ -87,6 +98,13 @@ app.post("/v1/sandboxes", async (c) => {
     } while (true);
 
     const record = await c.var.db.transaction(async (tx) => {
+      const did = c.get("did");
+      const user = await tx
+        .select()
+        .from(users)
+        .where(eq(users.did, did || ""))
+        .execute()
+        .then((res) => res[0]);
       let [record] = await tx
         .insert(sandboxes)
         .values({
@@ -94,7 +112,7 @@ app.post("/v1/sandboxes", async (c) => {
           name,
           provider: params.provider,
           publicKey: process.env.PUBLIC_KEY!,
-          userId: "rec_d6626djac0kg4q000020",
+          userId: user?.id,
           instanceType: "standard-1",
           keepAlive: params.keepAlive,
           sleepAfter: params.sleepAfter,
@@ -121,7 +139,14 @@ app.post("/v1/sandboxes", async (c) => {
 
       [record] = await tx
         .update(sandboxes)
-        .set({ status: "RUNNING", sandbox_id: sandboxId })
+        .set({
+          status: "RUNNING",
+          sandbox_id: sandboxId,
+          startedAt: new Date(),
+          vcpus: params.vcpus,
+          memory: params.memory,
+          disk: params.disk,
+        })
         .where(eq(sandboxes.id, record.id))
         .returning()
         .execute();
@@ -178,7 +203,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
   await sandbox.start();
   await c.var.db
     .update(sandboxes)
-    .set({ status: "RUNNING" })
+    .set({ status: "RUNNING", startedAt: new Date() })
     .where(eq(sandboxes.id, c.req.param("sandboxId")))
     .execute();
   return c.json({});

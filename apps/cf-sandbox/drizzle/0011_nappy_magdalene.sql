@@ -1,0 +1,1 @@
+ALTER TABLE "sandboxes" ADD COLUMN "started_at" timestamp;

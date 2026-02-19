@@ -351,7 +351,7 @@ export const schemaDict = {
           status: {
             type: "string",
             description:
-              "The current status of the sandbox, e.g. 'STARTED', 'STOPPED', etc.",
+              "The current status of the sandbox, e.g. 'RUNNING', 'STOPPED', etc.",
           },
           startedAt: {
             type: "string",
@@ -362,8 +362,9 @@ export const schemaDict = {
             description: "The sandbox timeout in seconds",
           },
           baseSandbox: {
-            type: "ref",
-            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+            type: "string",
+            description:
+              "The base sandbox that this sandbox was created from, if any. This can be used to determine the template or configuration used to create the sandbox.",
           },
           website: {
             type: "string",
@@ -424,6 +425,11 @@ export const schemaDict = {
           createdAt: {
             type: "string",
             format: "datetime",
+          },
+          owner: {
+            type: "ref",
+            description: "The user who created the sandbox",
+            ref: "lex:io.pocketenv.user.defs#userViewBasic",
           },
         },
       },
@@ -525,7 +531,7 @@ export const schemaDict = {
           encoding: "application/json",
           schema: {
             type: "ref",
-            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewDetailed",
+            ref: "lex:io.pocketenv.actor.defs#profileViewDetailed",
           },
         },
       },

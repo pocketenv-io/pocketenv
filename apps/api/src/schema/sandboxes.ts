@@ -14,6 +14,7 @@ const sandboxes = pgTable("sandboxes", {
   name: text("name").unique().notNull(),
   displayName: text("display_name"),
   uri: text("uri").unique(),
+  repo: text("repo"),
   provider: text("provider").default("cloudflare").notNull(),
   description: text("description"),
   logo: text("logo"),
@@ -29,6 +30,7 @@ const sandboxes = pgTable("sandboxes", {
   sleepAfter: text("sleep_after"),
   sandbox_id: text("sandbox_id"),
   installs: integer("installs").default(0).notNull(),
+  startedAt: timestamp("started_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

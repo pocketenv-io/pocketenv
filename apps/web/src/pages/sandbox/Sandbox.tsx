@@ -1,11 +1,26 @@
 import { useState } from "react";
 import Navbar from "../../components/navbar";
-import SignIn from "../../components/signin/Signin";
+import SignIn from "../../components/signin";
 import { useLocation, useNavigate } from "@tanstack/react-router";
-import { useSandboxQuery } from "../../hooks/useSandbox";
-import { consola } from "consola";
+import {
+  useSandboxQuery,
+  useStartSandboxMutation,
+  useStopSandboxMutation,
+} from "../../hooks/useSandbox";
+import _ from "lodash";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { useAtomValue } from "jotai";
+import { profileAtom } from "../../atoms/profile";
+import { useQueryClient } from "@tanstack/react-query";
+
+dayjs.extend(relativeTime);
 
 function New() {
+  const profile = useAtomValue(profileAtom);
+  const queryClient = useQueryClient();
+  const { mutate: stopSandbox } = useStopSandboxMutation();
+  const { mutate: startSandbox } = useStartSandboxMutation();
   const isAuthenticated = !!localStorage.getItem("token");
   const [signInModalOpen, setSignInModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -31,10 +46,9 @@ function New() {
 
   const { data, isLoading } = useSandboxQuery(getSandboxIdFromPath());
 
-  consola.info("Sandbox data:", data, isLoading);
-
   const onClaim = () => {
     if (isAuthenticated) {
+      // create a new sandbox for the user and then navigate to it
       navigate({
         to: "/did:plc:pyzvvyrh6eudle55nhqe62tv/sandbox/3mezx5ymmjs26",
       });
@@ -92,18 +106,24 @@ function New() {
                       <tbody>
                         <tr>
                           <td>
-                            <span className="badge badge-soft badge-success rounded-full bg-green-400/10">
-                              Running
+                            <span
+                              className={`badge badge-soft ${data?.sandbox?.status === "RUNNING" ? "badge-success" : ""} rounded-full ${data?.sandbox.status === "RUNNING" ? "bg-green-400/10" : "bg-white/15 rounded"}`}
+                            >
+                              {_.upperFirst(_.camelCase(data.sandbox.status))}
                             </span>
                           </td>
-                          <td>1 minute ago</td>
+                          <td>
+                            {data?.sandbox?.startedAt
+                              ? dayjs(data.sandbox.startedAt).fromNow()
+                              : "-"}
+                          </td>
                           <td>5m</td>
                           <td>
                             <span className="badge badge-soft badge-primary bg-blue-400/10 rounded-full">
-                              1 CPU
+                              {data?.sandbox?.vcpus} CPU
                             </span>
                             <span className="badge badge-soft badge-primary bg-blue-400/10 rounded-full ml-2">
-                              4 GiB RAM
+                              {data?.sandbox?.memory} GiB RAM
                             </span>
                           </td>
                         </tr>
@@ -111,10 +131,50 @@ function New() {
                     </table>
                   </div>
                 </div>
-                <button className="btn btn-outline btn-lg hover:text-white">
-                  <span className="icon-[tabler--player-stop-filled] size-5 shrink-0"></span>
-                  Stop Sandbox
-                </button>
+                {data?.sandbox?.status === "RUNNING" &&
+                  ((profile && data?.sandbox?.uri?.includes(profile.did)) ||
+                    !data?.sandbox?.owner) && (
+                    <button
+                      onClick={() =>
+                        stopSandbox(data!.sandbox!.id, {
+                          onSuccess: async () => {
+                            await queryClient.invalidateQueries({
+                              queryKey: ["sandbox", data?.sandbox?.id],
+                            });
+                            await queryClient.invalidateQueries({
+                              queryKey: ["sandbox", data?.sandbox?.uri],
+                            });
+                          },
+                        })
+                      }
+                      className="btn btn-outline btn-lg hover:text-white"
+                    >
+                      <span className="icon-[tabler--player-stop-filled] size-5 shrink-0"></span>
+                      Stop Sandbox
+                    </button>
+                  )}
+                {data?.sandbox?.status !== "RUNNING" &&
+                  ((profile && data?.sandbox?.uri?.includes(profile.did)) ||
+                    !data?.sandbox?.owner) && (
+                    <button
+                      onClick={() =>
+                        startSandbox(data!.sandbox!.id, {
+                          onSuccess: async () => {
+                            await queryClient.invalidateQueries({
+                              queryKey: ["sandbox", data?.sandbox?.id],
+                            });
+                            await queryClient.invalidateQueries({
+                              queryKey: ["sandbox", data?.sandbox?.uri],
+                            });
+                          },
+                        })
+                      }
+                      className="btn btn-outline btn-lg hover:text-white"
+                    >
+                      <span className="icon-[tabler--player-play-filled] size-5 shrink-0"></span>
+                      Start Sandbox
+                    </button>
+                  )}
               </div>
             </div>
           </>

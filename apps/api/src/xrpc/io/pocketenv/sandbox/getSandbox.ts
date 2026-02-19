@@ -10,6 +10,7 @@ import { Effect, pipe } from "effect";
 import schema from "schema";
 import { eq, or } from "drizzle-orm";
 import { consola } from "consola";
+import type { SelectUser } from "schema/users";
 
 export default function (server: Server, ctx: Context) {
   const getSandbox = (params: QueryParams, auth: HandlerAuth) =>
@@ -42,12 +43,16 @@ const retrieve = ({
 }: {
   params: QueryParams;
   ctx: Context;
-}): Effect.Effect<SelectSandbox | undefined, Error> => {
+}): Effect.Effect<
+  { sandboxes: SelectSandbox; users: SelectUser | null } | undefined,
+  Error
+> => {
   return Effect.tryPromise({
     try: async () =>
       ctx.db
         .select()
         .from(schema.sandboxes)
+        .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
         .where(
           or(
             eq(schema.sandboxes.id, params.id),
@@ -64,19 +69,33 @@ const retrieve = ({
 };
 
 const presentation = (
-  sandbox: SelectSandbox | undefined,
+  data: { sandboxes: SelectSandbox; users: SelectUser | null } | undefined,
 ): Effect.Effect<OutputSchema, never> => {
   return Effect.sync(() => ({
-    sandbox: sandbox && {
-      id: sandbox.id,
-      name: sandbox.name,
-      displayName: sandbox.displayName,
-      description: sandbox.description!,
-      logo: sandbox.logo!,
-      readme: sandbox.readme!,
-      installs: sandbox.installs,
-      uri: sandbox.uri,
-      createdAt: sandbox.createdAt.toISOString(),
+    sandbox: data?.sandboxes && {
+      id: data.sandboxes.id,
+      name: data.sandboxes.name,
+      displayName: data.sandboxes.displayName,
+      description: data.sandboxes.description,
+      baseSandbox: data.sandboxes.base,
+      status: data.sandboxes.status,
+      repo: data.sandboxes.repo,
+      logo: data.sandboxes.logo,
+      readme: data.sandboxes.readme,
+      installs: data.sandboxes.installs,
+      uri: data.sandboxes.uri,
+      vcpus: data.sandboxes.vcpus,
+      memory: data.sandboxes.memory,
+      disk: data.sandboxes.disk,
+      createdAt: data.sandboxes.createdAt.toISOString(),
+      startedAt: data.sandboxes.startedAt?.toISOString(),
+      ...(data.users && {
+        owner: {
+          ...data.users,
+          createdAt: data.users.createdAt.toISOString(),
+          updatedAt: data.users.updatedAt.toISOString(),
+        },
+      }),
     },
   }));
 };

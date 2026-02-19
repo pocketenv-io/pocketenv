@@ -5,6 +5,7 @@ import { type ValidationResult, BlobRef } from "@atproto/lexicon";
 import { lexicons } from "../../../../lexicons";
 import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
+import type * as IoPocketenvUserDefs from "../user/defs";
 
 export interface SandboxViewBasic {
   /** Name of the sandbox */
@@ -52,12 +53,13 @@ export interface SandboxViewDetailed {
   /** The provider of the sandbox, e.g. 'daytona', 'vercel', 'cloudflare', etc. */
   provider?: string;
   description?: string;
-  /** The current status of the sandbox, e.g. 'STARTED', 'STOPPED', etc. */
+  /** The current status of the sandbox, e.g. 'RUNNING', 'STOPPED', etc. */
   status?: string;
   startedAt?: string;
   /** The sandbox timeout in seconds */
   timeout?: number;
-  baseSandbox?: SandboxViewBasic;
+  /** The base sandbox that this sandbox was created from, if any. This can be used to determine the template or configuration used to create the sandbox. */
+  baseSandbox?: string;
   /** Any URI related to the sandbox */
   website?: string;
   /** URI to an image logo for the sandbox */
@@ -77,6 +79,7 @@ export interface SandboxViewDetailed {
   /** Number of times the sandbox has been installed by users. */
   installs?: number;
   createdAt?: string;
+  owner?: IoPocketenvUserDefs.UserViewBasic;
   [k: string]: unknown;
 }
 

@@ -101,7 +101,7 @@ defs = new Mapping<String, ObjectType | Array> {
       }
       ["status"] = new StringType {
         type = "string"
-        description = "The current status of the sandbox, e.g. 'STARTED', 'STOPPED', etc."
+        description = "The current status of the sandbox, e.g. 'RUNNING', 'STOPPED', etc."
       }
       ["startedAt"] = new StringType {
         type = "string"
@@ -111,9 +111,10 @@ defs = new Mapping<String, ObjectType | Array> {
         type = "integer"
         description = "The sandbox timeout in seconds"
       }
-      ["baseSandbox"] = new Ref {
-        type = "ref"
-        ref = "io.pocketenv.sandbox.defs#sandboxViewBasic"
+      ["baseSandbox"] = new StringType {
+        type = "string"
+        description =
+          "The base sandbox that this sandbox was created from, if any. This can be used to determine the template or configuration used to create the sandbox."
       }
       ["website"] = new StringType {
         type = "string"
@@ -172,6 +173,11 @@ defs = new Mapping<String, ObjectType | Array> {
       ["createdAt"] = new StringType {
         type = "string"
         format = "datetime"
+      }
+      ["owner"] = new Ref {
+        type = "ref"
+        ref = "io.pocketenv.user.defs#userViewBasic"
+        description = "The user who created the sandbox"
       }
     }
   }

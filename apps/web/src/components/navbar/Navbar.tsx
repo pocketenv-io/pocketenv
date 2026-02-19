@@ -6,6 +6,8 @@ import NewProject from "../newproject";
 import Logo from "../../assets/logo.png";
 import SignIn from "../signin";
 import { useCurrentProfileQuery } from "../../hooks/useProfile";
+import { useAtom } from "jotai";
+import { profileAtom } from "../../atoms/profile";
 
 export type NavbarProps = {
   title: string;
@@ -14,6 +16,7 @@ export type NavbarProps = {
 };
 
 function Navbar({ title, project, withLogo }: NavbarProps) {
+  const [, setProfile] = useAtom(profileAtom);
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [signInModalOpen, setSignInModalOpen] = useState(false);
@@ -31,6 +34,12 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
     setOpen(false);
     navigate({ to: "/" });
   };
+
+  useEffect(() => {
+    if (profile) {
+      setProfile(profile);
+    }
+  }, [profile, setProfile]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

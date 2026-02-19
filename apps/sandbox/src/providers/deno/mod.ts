@@ -1,6 +1,7 @@
 import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
 import { Sandbox } from "@deno/sandbox";
 import process from "node:process";
+import consola from "consola";
 
 export class DenoSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
@@ -10,7 +11,11 @@ export class DenoSandbox implements BaseSandbox {
   }
 
   async stop(): Promise<void> {
-    await this.sandbox.kill();
+    try {
+      await this.sandbox.kill();
+    } catch (error) {
+      consola.error("Error killing sandbox:", error);
+    }
   }
 
   async delete(): Promise<void> {

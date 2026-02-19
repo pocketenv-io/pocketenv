@@ -100,7 +100,7 @@
         },
         "status": {
           "type": "string",
-          "description": "The current status of the sandbox, e.g. 'STARTED', 'STOPPED', etc."
+          "description": "The current status of the sandbox, e.g. 'RUNNING', 'STOPPED', etc."
         },
         "startedAt": {
           "type": "string",
@@ -111,8 +111,8 @@
           "description": "The sandbox timeout in seconds"
         },
         "baseSandbox": {
-          "type": "ref",
-          "ref": "io.pocketenv.sandbox.defs#sandboxViewBasic"
+          "type": "string",
+          "description": "The base sandbox that this sandbox was created from, if any. This can be used to determine the template or configuration used to create the sandbox."
         },
         "website": {
           "type": "string",
@@ -171,6 +171,11 @@
         "createdAt": {
           "type": "string",
           "format": "datetime"
+        },
+        "owner": {
+          "type": "ref",
+          "description": "The user who created the sandbox",
+          "ref": "io.pocketenv.user.defs#userViewBasic"
         }
       }
     },

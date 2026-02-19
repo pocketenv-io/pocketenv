@@ -14,12 +14,9 @@ const sandboxVariables = pgTable(
       .notNull()
       .references(() => variables.id),
   },
-  (table) => ({
-    uniqueSandboxSecret: uniqueIndex("unique_sandbox_variables").on(
-      table.sandboxId,
-      table.variableId,
-    ),
-  }),
+  (t) => [
+    uniqueIndex("unique_sandbox_variables").on(t.sandboxId, t.variableId),
+  ],
 );
 
 export type SelectSandboxVariables = InferSelectModel<typeof sandboxVariables>;

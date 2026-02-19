@@ -1,6 +1,7 @@
 import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
 import { Sandbox } from "@vercel/sandbox";
 import process from "node:process";
+import consola from "consola";
 
 export class VercelSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
@@ -10,7 +11,11 @@ export class VercelSandbox implements BaseSandbox {
   }
 
   async stop(): Promise<void> {
-    await this.sandbox.stop();
+    try {
+      await this.sandbox.stop();
+    } catch (error) {
+      consola.error("Error stopping Vercel sandbox:", error);
+    }
   }
 
   async delete(): Promise<void> {

@@ -71,6 +71,20 @@
       "when": 1771395054419,
       "tag": "0009_sticky_madame_masque",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1771519396530,
+      "tag": "0010_motionless_shriek",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1771520023773,
+      "tag": "0011_nappy_magdalene",
+      "breakpoints": true
     }
   ]
 }

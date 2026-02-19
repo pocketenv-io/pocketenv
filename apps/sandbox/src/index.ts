@@ -98,11 +98,10 @@ app.post("/v1/sandboxes", async (c) => {
     } while (true);
 
     const record = await c.var.db.transaction(async (tx) => {
-      const did = c.get("did");
       const user = await tx
         .select()
         .from(users)
-        .where(eq(users.did, did || ""))
+        .where(eq(users.did, c.var.did || ""))
         .execute()
         .then((res) => res[0]);
       let [record] = await tx

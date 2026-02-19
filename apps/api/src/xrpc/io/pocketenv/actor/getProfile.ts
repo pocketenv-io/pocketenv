@@ -135,7 +135,6 @@ const withUser = ({
 }: WithAgent): Effect.Effect<WithUser, Error> => {
   return Effect.tryPromise({
     try: async () => {
-      consola.info(">> did", did);
       return ctx.db
         .select()
         .from(tables.users)

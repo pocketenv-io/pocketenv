@@ -14,7 +14,7 @@ export default function (server: Server, ctx: Context) {
       {
         ...(auth?.credentials && {
           headers: {
-            Authorization: `Bearer ${generateJwt(auth.credentials.did)}`,
+            Authorization: `Bearer ${await generateJwt(auth.credentials.did)}`,
           },
         }),
       },

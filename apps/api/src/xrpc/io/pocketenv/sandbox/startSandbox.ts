@@ -9,7 +9,7 @@ export default function (server: Server, ctx: Context) {
     await ctx.sandbox.post(`/v1/sandboxes/${params.id}/start`, undefined, {
       ...(auth?.credentials && {
         headers: {
-          Authorization: `Bearer ${generateJwt(auth.credentials.did)}`,
+          Authorization: `Bearer ${await generateJwt(auth.credentials.did)}`,
         },
       }),
     });

@@ -2,6 +2,7 @@ import type { AuthOutput } from "@atproto/xrpc-server";
 import type express from "express";
 import jwt from "jsonwebtoken";
 import { env } from "./env";
+import consola from "consola";
 
 type ReqCtx = {
   req: express.Request;

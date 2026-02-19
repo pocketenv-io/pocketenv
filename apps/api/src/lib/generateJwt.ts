@@ -1,10 +1,10 @@
 import jwt from "@tsndr/cloudflare-worker-jwt";
 import { env } from "./env";
 
-export default function generateJwt(did: string) {
+export default function generateJwt(did: string): Promise<string> {
   return jwt.sign(
     {
-      did,
+      sub: did,
     },
     env.JWT_SECRET,
   );

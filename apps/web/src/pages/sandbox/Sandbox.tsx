@@ -63,7 +63,7 @@ function New() {
         <Navbar withLogo title="" project={data?.sandbox?.name} />
         {data?.sandbox && !isLoading && (
           <>
-            {location.pathname.startsWith("/sandbox") && (
+            {!data?.sandbox?.owner && (
               <div
                 className="alert alert-soft alert-warning flex items-center bg-warning/10 border-none"
                 role="alert"
@@ -132,7 +132,7 @@ function New() {
                   </div>
                 </div>
                 {data?.sandbox?.status === "RUNNING" &&
-                  ((profile && data?.sandbox?.uri?.includes(profile.did)) ||
+                  ((profile && data?.sandbox?.owner?.did === profile.did) ||
                     !data?.sandbox?.owner) && (
                     <button
                       onClick={() =>
@@ -154,7 +154,7 @@ function New() {
                     </button>
                   )}
                 {data?.sandbox?.status !== "RUNNING" &&
-                  ((profile && data?.sandbox?.uri?.includes(profile.did)) ||
+                  ((profile && data?.sandbox?.owner?.did === profile.did) ||
                     !data?.sandbox?.owner) && (
                     <button
                       onClick={() =>

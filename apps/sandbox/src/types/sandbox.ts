@@ -33,7 +33,7 @@ export const SandboxConfigSchema = z.object({
   provider: z.enum(["daytona", "vercel", "deno"]).optional().default("deno"),
   base: z.enum(["openclaw"]).optional().default("openclaw"),
   keepAlive: z.boolean().optional().default(false),
-  vcpus: z.number().optional().default(1),
+  vcpus: z.number().optional().default(2),
   memory: z.number().optional().default(4),
   disk: z.number().optional().default(3),
   sleepAfter: z

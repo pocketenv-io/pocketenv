@@ -61,7 +61,9 @@ export async function getSandboxById(
         new module.default().get(id),
       );
     case "deno":
-      return createSandbox("deno", { id });
+      return import("./deno/mod.ts").then((module) =>
+        new module.default().get(id),
+      );
     case "vercel":
       return import("./vercel/mod.ts").then((module) =>
         new module.default().get(id),

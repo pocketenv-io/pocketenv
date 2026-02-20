@@ -8,6 +8,7 @@ class StringType extends BaseType {
   maxGraphemes: Int?
   minLength: Int?
   maxLength: Int?
+  enum: List<String>?
   format: "uri" | "datetime" | "cid" | "at-uri" | "at-identifier" | "did" | Null = null
 }
 

@@ -12,6 +12,7 @@ export class DaytonaSandbox implements BaseSandbox {
 
   async stop(): Promise<void> {
     try {
+      consola.info("Stopping Daytona sandbox with ID:", await this.id());
       await this.sandbox.stop();
     } catch (error) {
       consola.error("Error stopping Daytona sandbox:", error);

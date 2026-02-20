@@ -26,6 +26,12 @@ defs = new Mapping<String, Procedure> {
             type = "string"
             description = "A description for the sandbox"
           }
+          ["provider"] = new StringType {
+            type = "string"
+            enum = List("daytona", "vercel", "cloudflare", "deno")
+            description =
+              "The provider to create the sandbox on, e.g. 'daytona', 'vercel', 'cloudflare', etc."
+          }
           ["topics"] = new Array {
             type = "array"
             description = "A list of topics/tags to associate with the sandbox"

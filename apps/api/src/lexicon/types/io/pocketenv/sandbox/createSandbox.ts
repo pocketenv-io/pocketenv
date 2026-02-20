@@ -18,6 +18,8 @@ export interface InputSchema {
   name?: string;
   /** A description for the sandbox */
   description?: string;
+  /** The provider to create the sandbox on, e.g. 'daytona', 'vercel', 'cloudflare', etc. */
+  provider?: "daytona" | "vercel" | "cloudflare" | "deno";
   /** A list of topics/tags to associate with the sandbox */
   topics?: string[];
   /** A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo. */

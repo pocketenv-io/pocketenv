@@ -182,6 +182,12 @@ export const schemaDict = {
                 type: "string",
                 description: "A description for the sandbox",
               },
+              provider: {
+                type: "string",
+                description:
+                  "The provider to create the sandbox on, e.g. 'daytona', 'vercel', 'cloudflare', etc.",
+                enum: ["daytona", "vercel", "cloudflare", "deno"],
+              },
               topics: {
                 type: "array",
                 description:

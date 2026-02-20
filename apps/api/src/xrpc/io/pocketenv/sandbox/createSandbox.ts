@@ -14,13 +14,14 @@ import {
   validateMain,
   type Main,
 } from "lexicon/types/com/atproto/repo/strongRef";
+import { Providers } from "consts";
 
 export default function (server: Server, ctx: Context) {
   const createSandbox = async (input: HandlerInput, auth: HandlerAuth) => {
     const res = await ctx.sandbox.post(
       "/v1/sandboxes",
       {
-        provider: "daytona",
+        provider: input.body.provider || Providers.DENO,
       },
       {
         ...(auth?.credentials && {

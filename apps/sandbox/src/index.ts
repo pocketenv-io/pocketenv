@@ -202,7 +202,12 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
   await sandbox.start();
   await c.var.db
     .update(sandboxes)
-    .set({ status: "RUNNING", startedAt: new Date() })
+    .set({
+      status: "RUNNING",
+      startedAt: new Date(),
+      sandbox_id:
+        record.provider === "deno" ? await sandbox.id() : record.sandbox_id,
+    })
     .where(eq(sandboxes.id, c.req.param("sandboxId")))
     .execute();
   return c.json({});

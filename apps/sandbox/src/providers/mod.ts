@@ -60,10 +60,15 @@ export async function getSandboxById(
       return import("./daytona/mod.ts").then((module) =>
         new module.default().get(id),
       );
-    case "deno":
-      return import("./deno/mod.ts").then((module) =>
-        new module.default().get(id),
-      );
+    case "deno": {
+      const module = await import("./deno/mod.ts");
+      try {
+        return await new module.default().get(id);
+      } catch (err) {
+        console.error(`Error getting Deno sandbox with ID ${id}:`, err);
+        return createSandbox("deno", { id });
+      }
+    }
     case "vercel":
       return import("./vercel/mod.ts").then((module) =>
         new module.default().get(id),

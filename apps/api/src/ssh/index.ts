@@ -19,6 +19,7 @@ const router = Router();
 router.use(express.json());
 
 router.use((req, res, next) => {
+  req.sandboxId = req.headers["x-sandbox-id"] as string | undefined;
   const authHeader = req.headers.authorization;
   const bearer = authHeader?.split("Bearer ")[1]?.trim();
   if (bearer && bearer !== "null") {
@@ -28,7 +29,6 @@ router.use((req, res, next) => {
       }) as { did: string };
 
       req.did = credentials.did;
-      req.sandboxId = req.headers["x-sandbox-id"] as string | undefined;
     } catch (err) {
       consola.error("Invalid JWT token:", err);
     }
@@ -56,8 +56,6 @@ router.post("/connect", async (req, res) => {
       }),
     },
   });
-
-  console.log(ssh);
 
   const client = new Client();
 

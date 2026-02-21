@@ -37,8 +37,8 @@ function Main({ children }: MainProps) {
     <div className="flex min-h-screen bg-base-100">
       <Sidebar />
       <div
-        className={`flex flex-col flex-1 bg-base-100 transition-all duration-300 ease-in-out ${
-          isCollapsed ? "sm:ml-16" : "sm:ml-64"
+        className={`flex flex-col flex-1 bg-base-100 ${
+          isCollapsed ? "sm:ml-[72px]" : "sm:ml-64"
         }`}
       >
         <Navbar title={title} />

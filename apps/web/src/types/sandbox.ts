@@ -3,6 +3,7 @@ import type { Profile } from "./profile";
 export type Sandbox = {
   id: string;
   name: string;
+  baseSandbox: string;
   displayName: string;
   uri: string;
   description?: string;

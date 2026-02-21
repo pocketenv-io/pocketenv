@@ -16,6 +16,7 @@ function Projects() {
             <thead>
               <tr>
                 <th className="normal-case text-[14px]">Name</th>
+                <th className="normal-case text-[14px]">Base</th>
                 <th className="normal-case text-[14px]">State</th>
                 <th className="normal-case text-[14px]">Resources</th>
                 <th className="normal-case text-[14px]">Created At</th>

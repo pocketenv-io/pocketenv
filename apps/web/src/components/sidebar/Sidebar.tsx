@@ -23,28 +23,32 @@ function Sidebar() {
   return (
     <div>
       <aside
-        className={`fixed z-50 h-screen bg-base-100 w-64 transition-transform duration-300 ease-in-out ${
-          isCollapsed ? "-translate-x-48" : "translate-x-0"
+        className={`fixed z-50 h-screen bg-base-100 ${
+          isCollapsed ? "w-[72px]" : "w-64"
         }`}
         role="dialog"
         tabIndex={-1}
       >
-        <div className="drawer-body px-2 pt-4 bg-base-100 h-full">
+        <div className="drawer-body px-2 pt-4 bg-base-100 overflow-hidden">
           <div className="flex items-center">
-            <div className="flex-1">
-              <Link to="/projects">
-                <div className="mb-[30px] ml-[5px]">
-                  <img src={Logo} className="max-h-[40px] mr-[15px]" />
-                </div>
-              </Link>
-            </div>
+            {!isCollapsed && (
+              <div className="flex-1">
+                <Link to="/projects">
+                  <div className="mb-[30px] ml-[5px]">
+                    <img src={Logo} className="max-h-[40px] mr-[15px]" />
+                  </div>
+                </Link>
+              </div>
+            )}
             <button
-              className="mb-[25px] opacity-70 hover:opacity-100 transition-opacity"
+              className={`mb-[25px] opacity-70 hover:opacity-100 ${
+                isCollapsed ? "mx-auto mt-2" : ""
+              }`}
               onClick={toggleSidebar}
               aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               <span
-                className={`icon-[hugeicons--panel-left] size-5.5 text-white transition-transform duration-300 ${
+                className={`icon-[hugeicons--panel-left] size-5.5 text-white ${
                   isCollapsed ? "rotate-180" : ""
                 }`}
               ></span>
@@ -54,57 +58,65 @@ function Sidebar() {
             <li>
               <Link
                 to="/projects"
-                className={
+                className={`${
                   isActive("/projects")
                     ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
                     : "rounded-full hover:text-white"
-                }
-                title="Projects"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? "Projects" : undefined}
               >
-                <span className="icon-[tabler--box] size-6 mr-2"></span>
-                Projects
+                <span
+                  className={`icon-[tabler--box] size-6 ${isCollapsed ? "" : "mr-2"}`}
+                ></span>
+                {!isCollapsed && "Projects"}
               </Link>
             </li>
             <li>
               <Link
                 to="/snapshots"
-                className={
+                className={`${
                   isActive("/snapshots")
                     ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
                     : "rounded-full hover:text-white"
-                }
-                title="Snapshots"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? "Snapshots" : undefined}
               >
-                <span className="icon-[tabler--device-floppy] size-6 mr-2"></span>
-                Snapshots
+                <span
+                  className={`icon-[tabler--device-floppy] size-6 ${isCollapsed ? "" : "mr-2"}`}
+                ></span>
+                {!isCollapsed && "Snapshots"}
               </Link>
             </li>
             <li>
               <Link
                 to="/volumes"
-                className={
+                className={`${
                   isActive("/volumes")
                     ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
                     : "rounded-full hover:text-white"
-                }
-                title="Volumes"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? "Volumes" : undefined}
               >
-                <span className="icon-[icon-park-outline--hard-disk] size-5 mr-2"></span>
-                Volumes
+                <span
+                  className={`icon-[icon-park-outline--hard-disk] size-5 ${isCollapsed ? "" : "mr-2"}`}
+                ></span>
+                {!isCollapsed && "Volumes"}
               </Link>
             </li>
             <li>
               <Link
                 to="/secrets"
-                className={
+                className={`${
                   isActive("/secrets")
                     ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
                     : "rounded-full hover:text-white"
-                }
-                title="Secrets"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? "Secrets" : undefined}
               >
-                <span className="icon-[tabler--key] size-6 mr-2"></span>
-                Secrets
+                <span
+                  className={`icon-[tabler--key] size-6 ${isCollapsed ? "" : "mr-2"}`}
+                ></span>
+                {!isCollapsed && "Secrets"}
               </Link>
             </li>
           </ul>

@@ -56,7 +56,7 @@ const retrieve = ({
               eq(schema.users.handle, params.did),
             ),
           )
-          .orderBy(desc(schema.sandboxes.installs))
+          .orderBy(desc(schema.sandboxes.createdAt))
           .limit(params.limit ?? 30)
           .offset(params.offset ?? 0)
           .execute()
@@ -89,6 +89,7 @@ const presentation = ([sandboxes, total]: [
     sandboxes: sandboxes.map((sandbox) => ({
       id: sandbox.id,
       name: sandbox.name,
+      base: sandbox.base,
       displayName: sandbox.displayName,
       description: sandbox.description!,
       logo: sandbox.logo!,

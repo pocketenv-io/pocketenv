@@ -99,6 +99,7 @@ function New() {
                       <thead>
                         <tr>
                           <th>Status</th>
+                          <th>Base</th>
                           <th>Started</th>
                           <th>Timeout</th>
                           <th>Resources</th>
@@ -113,6 +114,7 @@ function New() {
                               {_.upperFirst(_.camelCase(data.sandbox.status))}
                             </span>
                           </td>
+                          <td>{data.sandbox.baseSandbox}</td>
                           <td>
                             {data?.sandbox?.startedAt
                               ? dayjs(data.sandbox.startedAt).fromNow()

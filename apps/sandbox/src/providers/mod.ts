@@ -6,6 +6,7 @@ export abstract class BaseSandbox {
   abstract delete(): Promise<void>;
   abstract sh(strings: TemplateStringsArray, ...values: any[]): Promise<any>;
   abstract id(): Promise<string | null>;
+  abstract ssh(): Promise<any>;
 }
 
 abstract class BaseProvider {

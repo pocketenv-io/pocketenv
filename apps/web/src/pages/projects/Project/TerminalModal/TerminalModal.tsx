@@ -5,10 +5,16 @@ import Terminal from "../../../../components/terminal";
 export type TerminalModalProps = {
   isOpen: boolean;
   onClose: () => void;
+  sandboxId: string;
   title?: string;
 };
 
-function TerminalModal({ isOpen, onClose, title }: TerminalModalProps) {
+function TerminalModal({
+  isOpen,
+  onClose,
+  title,
+  sandboxId,
+}: TerminalModalProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
@@ -118,7 +124,7 @@ function TerminalModal({ isOpen, onClose, title }: TerminalModalProps) {
                   : { height: "60vh" }
               }
             >
-              <Terminal />
+              <Terminal sandboxId={sandboxId} />
             </div>
           </div>
         </div>

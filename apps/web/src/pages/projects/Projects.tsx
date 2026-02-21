@@ -2,7 +2,6 @@ import { useAtomValue } from "jotai";
 import { profileAtom } from "../../atoms/profile";
 import { useActorSandboxesQuery } from "../../hooks/useSandbox";
 import Main from "../../layouts/Main";
-import _ from "lodash";
 import Project from "./Project";
 
 function Projects() {

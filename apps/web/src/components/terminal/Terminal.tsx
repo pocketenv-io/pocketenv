@@ -1,3 +1,4 @@
+/** eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useRef, useMemo, useCallback, useState } from "react";
 import { useXTerm } from "react-xtermjs";
 import { FitAddon } from "@xterm/addon-fit";
@@ -59,9 +60,10 @@ const lightTheme = {
 
 interface TerminalContentProps {
   isDarkMode: boolean;
+  sandboxId: string;
 }
 
-function TerminalContent({ isDarkMode }: TerminalContentProps) {
+function TerminalContent({ isDarkMode, sandboxId }: TerminalContentProps) {
   const sessionIdRef = useRef<string | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
@@ -92,7 +94,12 @@ function TerminalContent({ isDarkMode }: TerminalContentProps) {
     try {
       await fetch(`${API_URL}/ssh/input/${sid}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(localStorage.getItem("token") && {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }),
+        },
         body: JSON.stringify({ data }),
       });
     } catch {
@@ -106,7 +113,13 @@ function TerminalContent({ isDarkMode }: TerminalContentProps) {
     try {
       await fetch(`${API_URL}/ssh/resize/${sid}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(localStorage.getItem("token") && {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }),
+        },
+
         body: JSON.stringify({ cols, rows }),
       });
     } catch {
@@ -121,7 +134,6 @@ function TerminalContent({ isDarkMode }: TerminalContentProps) {
     fitAddonRef.current = fitAddon;
     instance.loadAddon(fitAddon);
 
-    // Fit after a small delay to ensure container is sized
     const fitTimer = setTimeout(() => {
       try {
         fitAddon.fit();
@@ -130,7 +142,6 @@ function TerminalContent({ isDarkMode }: TerminalContentProps) {
       }
     }, 100);
 
-    // Handle window resize
     const handleResize = () => {
       try {
         fitAddon.fit();
@@ -140,7 +151,6 @@ function TerminalContent({ isDarkMode }: TerminalContentProps) {
     };
     window.addEventListener("resize", handleResize);
 
-    // Send terminal resize to SSH when xterm resizes
     const resizeDisposable = instance.onResize(({ cols, rows }) => {
       sendResize(cols, rows);
     });
@@ -152,7 +162,13 @@ function TerminalContent({ isDarkMode }: TerminalContentProps) {
 
         const response = await fetch(`${API_URL}/ssh/connect`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "X-Sandbox-Id": sandboxId,
+            ...(localStorage.getItem("token") && {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            }),
+          },
           body: JSON.stringify({ cols, rows }),
         });
 
@@ -167,12 +183,10 @@ function TerminalContent({ isDarkMode }: TerminalContentProps) {
         const { sessionId } = await response.json();
         sessionIdRef.current = sessionId;
 
-        // Open SSE stream
         const es = new EventSource(`${API_URL}/ssh/stream/${sessionId}`);
         eventSourceRef.current = es;
 
         es.addEventListener("connected", () => {
-          // SSE connected, terminal is ready
           instance.focus();
         });
 
@@ -194,7 +208,7 @@ function TerminalContent({ isDarkMode }: TerminalContentProps) {
           sessionIdRef.current = null;
         });
 
-        es.addEventListener("error", (e) => {
+        es.addEventListener("error", (e: any) => {
           // EventSource error can be a reconnect or a real error
           if (es.readyState === EventSource.CLOSED) {
             instance.write("\r\n\x1b[38;5;203mSSH connection lost.\x1b[0m\r\n");
@@ -231,11 +245,14 @@ function TerminalContent({ isDarkMode }: TerminalContentProps) {
         // Fire-and-forget disconnect
         fetch(`${API_URL}/ssh/disconnect/${sessionIdRef.current}`, {
           method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }).catch(() => {});
         sessionIdRef.current = null;
       }
     };
-  }, [instance, sendInput, sendResize]);
+  }, [instance, sendInput, sendResize, sandboxId]);
 
   return (
     <div
@@ -249,7 +266,11 @@ function TerminalContent({ isDarkMode }: TerminalContentProps) {
   );
 }
 
-function Terminal() {
+export interface TerminalProps {
+  sandboxId: string;
+}
+
+function Terminal({ sandboxId }: TerminalProps) {
   const [isDarkMode, setIsDarkMode] = useState(
     document.documentElement.classList.contains("dark"),
   );
@@ -275,6 +296,7 @@ function Terminal() {
     <TerminalContent
       key={isDarkMode ? "dark" : "light"}
       isDarkMode={isDarkMode}
+      sandboxId={sandboxId}
     />
   );
 }

@@ -40,6 +40,8 @@ export class VercelSandbox implements BaseSandbox {
   async id(): Promise<string | null> {
     return this.sandbox.sandboxId;
   }
+
+  async ssh(): Promise<any> {}
 }
 
 class VercelProvider implements BaseProvider {

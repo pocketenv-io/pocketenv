@@ -2,6 +2,9 @@ import express, { Router } from "express";
 import { Client } from "ssh2";
 import { randomUUID } from "node:crypto";
 import { consola } from "consola";
+import jwt from "jsonwebtoken";
+import { env } from "lib/env";
+import generateJwt from "lib/generateJwt";
 
 interface SSHSession {
   client: Client;
@@ -11,25 +14,46 @@ interface SSHSession {
 
 const sessions = new Map<string, SSHSession>();
 
-const SSH_HOST = process.env.SSH_HOST || "example.com";
-const SSH_PORT = Number(process.env.SSH_PORT || 22);
-const SSH_USERNAME = process.env.SSH_USERNAME || "user";
-const SSH_PASSWORD = process.env.SSH_PASSWORD || "123";
-
 const router = Router();
 
 router.use(express.json());
+
+router.use((req, res, next) => {
+  const authHeader = req.headers.authorization;
+  const bearer = authHeader?.split("Bearer ")[1]?.trim();
+  if (bearer && bearer !== "null") {
+    const credentials = jwt.verify(bearer, env.JWT_SECRET, {
+      ignoreExpiration: true,
+    }) as { did: string };
+
+    req.did = credentials.did;
+    req.sandboxId = req.headers["x-sandbox-id"] as string | undefined;
+  }
+
+  next();
+});
 
 /**
  * POST /ssh/connect
  * Creates a new SSH session and returns the sessionId.
  * Optionally accepts { cols, rows } in the body.
  */
-router.post("/ssh/connect", (req, res) => {
+router.post("/ssh/connect", async (req, res) => {
   const sessionId = randomUUID();
-  consola.log(req.body);
   const cols = req.body?.cols || 80;
   const rows = req.body?.rows || 24;
+  consola.log(req.did);
+  consola.log(req.sandboxId);
+
+  const ssh = await req.ctx.sandbox.get(`/v1/sandboxes/${req.sandboxId}/ssh`, {
+    headers: {
+      ...(req.did && {
+        Authorization: `Bearer ${await generateJwt(req.did)}`,
+      }),
+    },
+  });
+
+  console.log(ssh);
 
   const client = new Client();
 
@@ -100,10 +124,9 @@ router.post("/ssh/connect", (req, res) => {
   });
 
   client.connect({
-    host: SSH_HOST,
-    port: SSH_PORT,
-    username: SSH_USERNAME,
-    password: SSH_PASSWORD,
+    host: ssh.data?.hostname,
+    port: 22,
+    username: ssh.data?.username,
   });
 });
 

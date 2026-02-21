@@ -303,6 +303,31 @@ app.delete("/v1/sandboxes/:sandboxId", async (c) => {
   return c.json({ success: true }, 200);
 });
 
+app.get("/v1/sandboxes/:sandboxId/ssh", async (c) => {
+  const record = await getSandbox(c.var.db, c.req.param("sandboxId"));
+
+  if (!record) {
+    return c.json({ error: "Sandbox not found" }, 404);
+  }
+
+  let sandbox: BaseSandbox | null = null;
+
+  if (!["daytona", "deno"].includes(record.provider)) {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  sandbox = await getSandboxById(
+    record.provider as Provider,
+    record.sandbox_id!,
+  );
+
+  if (!sandbox) {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  return c.json(await sandbox.ssh());
+});
+
 export const getSandbox = async (db: Context["db"], sandboxId: string) => {
   const [record] = await db
     .select()

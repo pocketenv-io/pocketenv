@@ -5,6 +5,8 @@ declare global {
   namespace Express {
     interface Request {
       ctx: Context;
+      did?: string;
+      sandboxId?: string;
     }
   }
 }

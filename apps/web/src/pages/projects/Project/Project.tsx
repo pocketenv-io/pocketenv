@@ -47,7 +47,7 @@ function Project({ sandbox }: ProjectProps) {
 
   const onOpenTerminal = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // if (sandbox.status !== "RUNNING") return;
+    if (sandbox.status !== "RUNNING") return;
     setModalOpen(true);
   };
 
@@ -121,6 +121,7 @@ function Project({ sandbox }: ProjectProps) {
           onClose={() => {
             setModalOpen(false);
           }}
+          sandboxId={sandbox.id}
         />
       </td>
     </tr>

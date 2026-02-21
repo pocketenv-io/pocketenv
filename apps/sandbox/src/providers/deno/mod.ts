@@ -37,8 +37,15 @@ export class DenoSandbox implements BaseSandbox {
     return output;
   }
 
-  async id(): Promise<string | null> {
-    return this.sandbox.id;
+  id(): Promise<string | null> {
+    return Promise.resolve(this.sandbox.id);
+  }
+
+  ssh(): Promise<{
+    username: string;
+    hostname: string;
+  }> {
+    return this.sandbox.exposeSsh();
   }
 }
 

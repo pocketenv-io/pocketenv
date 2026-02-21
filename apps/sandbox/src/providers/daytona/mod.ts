@@ -23,15 +23,27 @@ export class DaytonaSandbox implements BaseSandbox {
     await this.sandbox.delete();
   }
 
-  async sh(strings: TemplateStringsArray, ...values: any[]): Promise<any> {
+  // deno-lint-ignore no-explicit-any
+  sh(strings: TemplateStringsArray, ...values: any[]): Promise<any> {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");
-    return this.sandbox.process.executeCommand(command);
+    return Promise.resolve(this.sandbox.process.executeCommand(command));
   }
 
-  async id(): Promise<string | null> {
-    return this.sandbox.id;
+  id(): Promise<string | null> {
+    return Promise.resolve(this.sandbox.id);
+  }
+
+  async ssh(): Promise<{
+    username: string;
+    hostname: string;
+  }> {
+    const sshAccess = await this.sandbox.createSshAccess();
+    return {
+      username: sshAccess.token,
+      hostname: "ssh.app.daytona.io",
+    };
   }
 }
 

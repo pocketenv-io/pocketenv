@@ -260,7 +260,7 @@ function New() {
                           : { height: "400px" }
                       }
                     >
-                      <Terminal />
+                      {data && <Terminal sandboxId={data.sandbox.id} />}
                     </div>
                   </div>
                 )}

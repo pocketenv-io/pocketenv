@@ -9,6 +9,7 @@ import {
   type StreamAuthVerifier,
 } from "@atproto/xrpc-server";
 import { schemas } from "./lexicons";
+import type * as IoPocketenvActorGetActorSandboxes from "./types/io/pocketenv/actor/getActorSandboxes";
 import type * as IoPocketenvActorGetProfile from "./types/io/pocketenv/actor/getProfile";
 import type * as IoPocketenvSandboxClaimSandbox from "./types/io/pocketenv/sandbox/claimSandbox";
 import type * as IoPocketenvSandboxCreateSandbox from "./types/io/pocketenv/sandbox/createSandbox";
@@ -63,6 +64,17 @@ export class IoPocketenvActorNS {
 
   constructor(server: Server) {
     this._server = server;
+  }
+
+  getActorSandboxes<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvActorGetActorSandboxes.Handler<ExtractAuth<AV>>,
+      IoPocketenvActorGetActorSandboxes.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.actor.getActorSandboxes"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
   }
 
   getProfile<AV extends AuthVerifier>(

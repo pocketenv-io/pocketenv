@@ -3,11 +3,24 @@ import {
   claimSandbox,
   createSandbox,
   deleteSandbox,
+  getActorSandboxes,
   getSandbox,
   getSandboxes,
   startSandbox,
   stopSandbox,
 } from "../api/sandbox";
+
+export const useActorSandboxesQuery = (
+  did: string,
+  offset?: number,
+  limit?: number,
+) =>
+  useQuery({
+    queryKey: ["actorSandboxes", did, offset, limit],
+    queryFn: () => getActorSandboxes(did, offset, limit),
+    select: (response) => response.data,
+    enabled: !!did,
+  });
 
 export const useSandboxesQuery = (offset?: number, limit?: number) =>
   useQuery({

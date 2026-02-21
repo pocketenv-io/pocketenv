@@ -7,9 +7,11 @@ import { lexicons } from "../../../../lexicons";
 import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
 import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
-import type * as IoPocketenvSandboxDefs from "./defs";
+import type * as IoPocketenvSandboxDefs from "../sandbox/defs";
 
 export interface QueryParams {
+  /** The DID or handle of the actor */
+  did: string;
   /** The maximum number of sandboxes to return. */
   limit?: number;
   /** The number of sandboxes to skip before starting to collect the result set. */
@@ -19,7 +21,7 @@ export interface QueryParams {
 export type InputSchema = undefined;
 
 export interface OutputSchema {
-  sandboxes?: IoPocketenvSandboxDefs.SandboxViewBasic[];
+  sandboxes?: IoPocketenvSandboxDefs.SandboxViewDetailed[];
   /** The total number of sandboxes available. */
   total?: number;
   [k: string]: unknown;

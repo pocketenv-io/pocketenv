@@ -1,7 +1,9 @@
 import type React from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { useAtomValue } from "jotai";
 import Navbar from "../components/navbar";
 import Sidebar from "../components/sidebar";
+import { sidebarCollapsedAtom } from "../atoms/sidebar";
 
 type MainProps = {
   children: React.ReactNode;
@@ -12,6 +14,7 @@ function Main({ children }: MainProps) {
   const navigate = useNavigate();
   const pathname = routerState.location.pathname;
   const isAuthenticated = !!localStorage.getItem("token");
+  const isCollapsed = useAtomValue(sidebarCollapsedAtom);
 
   if (!isAuthenticated) {
     navigate({ to: "/" });
@@ -31,15 +34,17 @@ function Main({ children }: MainProps) {
   const title = getTitle(pathname);
 
   return (
-    <>
-      <div className="flex min-h-screen bg-base-100">
-        <Sidebar />
-        <div className="flex flex-col flex-1 sm:ml-64 bg-base-100">
-          <Navbar title={title} />
-          <main className="flex-1 p-4 bg-base-100">{children}</main>
-        </div>
+    <div className="flex min-h-screen bg-base-100">
+      <Sidebar />
+      <div
+        className={`flex flex-col flex-1 bg-base-100 transition-all duration-300 ease-in-out ${
+          isCollapsed ? "sm:ml-16" : "sm:ml-64"
+        }`}
+      >
+        <Navbar title={title} />
+        <main className="flex-1 p-4 bg-base-100">{children}</main>
       </div>
-    </>
+    </div>
   );
 }
 

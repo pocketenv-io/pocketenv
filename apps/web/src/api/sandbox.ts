@@ -37,6 +37,15 @@ export const getSandboxes = (offset?: number, limit?: number) =>
     `/xrpc/io.pocketenv.sandbox.getSandboxes?offset=${offset ?? 0}&limit=${limit ?? 30}`,
   );
 
+export const getActorSandboxes = (
+  did: string,
+  offset?: number,
+  limit?: number,
+) =>
+  client.get<{ sandboxes: Sandbox[]; total: number }>(
+    `/xrpc/io.pocketenv.actor.getActorSandboxes?did=${did}&offset=${offset ?? 0}&limit=${limit ?? 30}`,
+  );
+
 export const stopSandbox = (id: string) =>
   client.post(`/xrpc/io.pocketenv.sandbox.stopSandbox?id=${id}`, undefined, {
     headers: {

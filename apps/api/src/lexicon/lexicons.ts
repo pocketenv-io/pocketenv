@@ -46,6 +46,58 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvActorGetActorSandboxes: {
+    lexicon: 1,
+    id: "io.pocketenv.actor.getActorSandboxes",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get all sandboxes for a given actor",
+        parameters: {
+          type: "params",
+          required: ["did"],
+          properties: {
+            did: {
+              type: "string",
+              description: "The DID or handle of the actor",
+              format: "at-identifier",
+            },
+            limit: {
+              type: "integer",
+              description: "The maximum number of sandboxes to return.",
+              minimum: 1,
+            },
+            offset: {
+              type: "integer",
+              description:
+                "The number of sandboxes to skip before starting to collect the result set.",
+              minimum: 0,
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              sandboxes: {
+                type: "array",
+                items: {
+                  type: "ref",
+                  ref: "lex:io.pocketenv.sandbox.defs#sandboxViewDetailed",
+                },
+              },
+              total: {
+                type: "integer",
+                description: "The total number of sandboxes available.",
+                minimum: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvActorGetProfile: {
     lexicon: 1,
     id: "io.pocketenv.actor.getProfile",
@@ -553,11 +605,6 @@ export const schemaDict = {
         parameters: {
           type: "params",
           properties: {
-            author: {
-              type: "string",
-              description: "Filter sandboxes by author did or handle",
-              format: "at-identifier",
-            },
             limit: {
               type: "integer",
               description: "The maximum number of sandboxes to return.",
@@ -790,6 +837,7 @@ export const schemas = Object.values(schemaDict);
 export const lexicons: Lexicons = new Lexicons(schemas);
 export const ids = {
   IoPocketenvActorDefs: "io.pocketenv.actor.defs",
+  IoPocketenvActorGetActorSandboxes: "io.pocketenv.actor.getActorSandboxes",
   IoPocketenvActorGetProfile: "io.pocketenv.actor.getProfile",
   AppBskyActorProfile: "app.bsky.actor.profile",
   IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",

@@ -8,11 +8,13 @@ import startSandbox from "./io/pocketenv/sandbox/startSandbox";
 import stopSandbox from "./io/pocketenv/sandbox/stopSandbox";
 import claimSandbox from "./io/pocketenv/sandbox/claimSandbox";
 import getProfile from "./io/pocketenv/actor/getProfile";
+import getActorSandboxes from "./io/pocketenv/actor/getActorSandboxes";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
   getSandbox(server, ctx);
   getSandboxes(server, ctx);
+  getActorSandboxes(server, ctx);
   createSandbox(server, ctx);
   deleteSandbox(server, ctx);
   startSandbox(server, ctx);

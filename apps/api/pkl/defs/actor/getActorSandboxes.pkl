@@ -1,14 +1,19 @@
 amends "../../schema/lexicon.pkl"
 
 lexicon = 1
-id = "io.pocketenv.sandbox.getSandboxes"
+id = "io.pocketenv.actor.getActorSandboxes"
 defs = new Mapping<String, Query> {
   ["main"] {
     type = "query"
-    description = "Get all sandboxes"
+    description = "Get all sandboxes for a given actor"
     parameters {
       type = "params"
+      required = List("did")
       properties {
+        ["did"] = new StringType {
+          description = "The DID or handle of the actor"
+          format = "at-identifier"
+        }
         ["limit"] = new IntegerType {
           type = "integer"
           description = "The maximum number of sandboxes to return."
@@ -29,7 +34,7 @@ defs = new Mapping<String, Query> {
           ["sandboxes"] = new Array {
             type = "array"
             items = new Ref {
-              ref = "io.pocketenv.sandbox.defs#sandboxViewBasic"
+              ref = "io.pocketenv.sandbox.defs#sandboxViewDetailed"
             }
           }
           ["total"] = new IntegerType {

@@ -5,14 +5,14 @@ import { Effect, pipe } from "effect";
 import type {
   QueryParams,
   OutputSchema,
-} from "lexicon/types/io/pocketenv/sandbox/getSandboxes";
+} from "lexicon/types/io/pocketenv/actor/getActorSandboxes";
 import type { SelectSandbox } from "schema/sandboxes";
 import { consola } from "consola";
 import schema from "schema";
 import { count, eq, desc, or } from "drizzle-orm";
 
 export default function (server: Server, ctx: Context) {
-  const getSandboxes = (params: QueryParams, auth: HandlerAuth) =>
+  const getActorSandboxes = (params: QueryParams, auth: HandlerAuth) =>
     pipe(
       { params, ctx },
       retrieve,
@@ -24,10 +24,10 @@ export default function (server: Server, ctx: Context) {
         return Effect.succeed({ sandboxes: [] });
       }),
     );
-  server.io.pocketenv.sandbox.getSandboxes({
+  server.io.pocketenv.actor.getActorSandboxes({
     auth: ctx.authVerifier,
     handler: async ({ params, auth }) => {
-      const result = await Effect.runPromise(getSandboxes(params, auth));
+      const result = await Effect.runPromise(getActorSandboxes(params, auth));
       return {
         encoding: "application/json",
         body: result,
@@ -50,7 +50,12 @@ const retrieve = ({
           .select()
           .from(schema.sandboxes)
           .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
-          .where(eq(schema.users.handle, "pocketenv.io"))
+          .where(
+            or(
+              eq(schema.users.did, params.did),
+              eq(schema.users.handle, params.did),
+            ),
+          )
           .orderBy(desc(schema.sandboxes.installs))
           .limit(params.limit ?? 30)
           .offset(params.offset ?? 0)
@@ -60,7 +65,12 @@ const retrieve = ({
           .select({ count: count() })
           .from(schema.sandboxes)
           .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
-          .where(eq(schema.users.handle, "pocketenv.io"))
+          .where(
+            or(
+              eq(schema.users.did, params.did),
+              eq(schema.users.handle, params.did),
+            ),
+          )
           .execute()
           .then((result) => result[0]?.count ?? 0),
       ]),
@@ -83,8 +93,12 @@ const presentation = ([sandboxes, total]: [
       description: sandbox.description!,
       logo: sandbox.logo!,
       readme: sandbox.readme!,
+      status: sandbox.status,
       installs: sandbox.installs,
       uri: sandbox.uri,
+      vcpus: sandbox.vcpus as number,
+      memory: sandbox.memory as number,
+      disk: sandbox.disk as number,
       createdAt: sandbox.createdAt.toISOString(),
     })),
     total,

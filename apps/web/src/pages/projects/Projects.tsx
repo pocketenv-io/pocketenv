@@ -20,7 +20,7 @@ function Projects() {
                 <th className="normal-case text-[14px]">State</th>
                 <th className="normal-case text-[14px]">Resources</th>
                 <th className="normal-case text-[14px]">Created At</th>
-                <th className="normal-case text-[14px]"></th>{" "}
+                <th className="normal-case text-[14px]"></th>
               </tr>
             </thead>
             <tbody>

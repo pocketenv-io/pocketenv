@@ -89,7 +89,7 @@ const presentation = ([sandboxes, total]: [
     sandboxes: sandboxes.map((sandbox) => ({
       id: sandbox.id,
       name: sandbox.name,
-      base: sandbox.base,
+      baseSandbox: sandbox.base as string,
       displayName: sandbox.displayName,
       description: sandbox.description!,
       logo: sandbox.logo!,

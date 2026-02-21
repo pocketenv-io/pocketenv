@@ -33,6 +33,7 @@
     "react-content-loader": "^7.1.2",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.71.1",
+    "react-xtermjs": "^1.0.10",
     "zod": "^4.3.6"
   },
   "devDependencies": {

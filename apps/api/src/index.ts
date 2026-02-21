@@ -7,6 +7,7 @@ import { contextMiddleware, ctx } from "context";
 import { createServer } from "lexicon";
 import chalk from "chalk";
 import API from "./xrpc";
+import sshRouter from "./ssh";
 
 let server = createServer({
   validateResponse: false,
@@ -47,6 +48,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(bsky);
+app.use(sshRouter);
 app.use(server.xrpc.router);
 
 app.listen(process.env.POCKETENV_XPRC_PORT || 8789, () => {

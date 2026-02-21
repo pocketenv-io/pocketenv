@@ -10,6 +10,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { profileAtom } from "../../../atoms/profile";
+import TerminalModal from "./TerminalModal";
 
 export type ProjectProps = {
   sandbox: Sandbox;
@@ -18,6 +19,7 @@ export type ProjectProps = {
 function Project({ sandbox }: ProjectProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [modalOpen, setModalOpen] = useState(false);
   const profile = useAtomValue(profileAtom);
   const { mutateAsync: stopSandbox } = useStopSandboxMutation();
   const { mutateAsync: startSandbox } = useStartSandboxMutation();
@@ -43,6 +45,12 @@ function Project({ sandbox }: ProjectProps) {
     setDisplayLoading(false);
   };
 
+  const onOpenTerminal = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // if (sandbox.status !== "RUNNING") return;
+    setModalOpen(true);
+  };
+
   const onOpenProject = () => {
     navigate({
       to: `/${sandbox.uri.split("at://")[1].replace("io.pocketenv.", "")}`,
@@ -56,7 +64,7 @@ function Project({ sandbox }: ProjectProps) {
   return (
     <tr className="cursor-pointer" onClick={onOpenProject}>
       <td>{sandbox.name}</td>
-      <td>{sandbox.base}</td>
+      <td>{sandbox.baseSandbox}</td>
       <td>
         <span
           className={`badge badge-soft ${sandbox?.status === "RUNNING" ? "badge-success" : ""} rounded-full ${sandbox.status === "RUNNING" ? "bg-green-400/10" : "bg-white/15 rounded"}`}
@@ -75,12 +83,18 @@ function Project({ sandbox }: ProjectProps) {
       <td>{dayjs(sandbox.createdAt).format("M/D/YYYY, h:mm:ss A")}</td>
       <td>
         {!displayLoading && sandbox.status === "RUNNING" && (
-          <button className="btn btn-circle btn-text btn-sm" onClick={onStop}>
+          <button
+            className="btn btn-circle btn-text btn-sm bg-transparent outline-0"
+            onClick={onStop}
+          >
             <span className="icon-[tabler--player-stop] size-5 hover:text-white"></span>
           </button>
         )}
         {!displayLoading && sandbox.status !== "RUNNING" && (
-          <button className="btn btn-circle btn-text btn-sm" onClick={onPlay}>
+          <button
+            className="btn btn-circle btn-text btn-sm bg-transparent outline-0"
+            onClick={onPlay}
+          >
             <span className="icon-[tabler--player-play] size-5 hover:text-white"></span>
           </button>
         )}
@@ -88,11 +102,26 @@ function Project({ sandbox }: ProjectProps) {
           <span className="loading loading-spinner loading-sm btn-text mr-[10px]"></span>
         )}
         <button
-          className="btn btn-circle btn-text btn-sm"
+          className={`btn btn-circle btn-text btn-sm bg-transparent outline-0 ${sandbox.status !== "RUNNING" ? "opacity-50" : ""}`}
+          onClick={onOpenTerminal}
+        >
+          <span
+            className={`icon-[mingcute--terminal-fill] size-5 ${sandbox.status !== "RUNNING" ? "" : "hover:text-white"}`}
+          ></span>
+        </button>
+        <button
+          className="btn btn-circle btn-text btn-sm bg-transparent outline-0"
           onClick={onOpenContextMenu}
         >
           <span className="icon-[tabler--dots-vertical] size-5 hover:text-white"></span>
         </button>
+        <TerminalModal
+          title={sandbox.name}
+          isOpen={modalOpen}
+          onClose={() => {
+            setModalOpen(false);
+          }}
+        />
       </td>
     </tr>
   );

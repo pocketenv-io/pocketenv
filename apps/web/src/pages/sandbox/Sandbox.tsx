@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import SignIn from "../../components/signin";
 import { useLocation, useNavigate } from "@tanstack/react-router";
@@ -13,6 +13,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { useAtomValue } from "jotai";
 import { profileAtom } from "../../atoms/profile";
 import { useQueryClient } from "@tanstack/react-query";
+import Terminal from "../../components/terminal";
 
 dayjs.extend(relativeTime);
 
@@ -24,8 +25,21 @@ function New() {
   const { mutate: startSandbox } = useStartSandboxMutation();
   const isAuthenticated = !!localStorage.getItem("token");
   const [signInModalOpen, setSignInModalOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isFullscreen) {
+        setIsFullscreen(false);
+        (document.activeElement as HTMLElement)?.blur();
+        setTimeout(() => window.dispatchEvent(new Event("resize")), 50);
+      }
+    };
+    document.addEventListener("keydown", handleEscapeKey);
+    return () => document.removeEventListener("keydown", handleEscapeKey);
+  }, [isFullscreen]);
 
   const getSandboxIdFromPath = () => {
     const path = location.pathname;
@@ -201,6 +215,55 @@ function New() {
                     </button>
                   )}
               </div>
+
+              {data?.sandbox?.status === "RUNNING" &&
+                ((profile && data?.sandbox?.owner?.did === profile.did) ||
+                  !data?.sandbox?.owner) && (
+                  <div
+                    className={
+                      isFullscreen
+                        ? "fixed inset-0 z-50 bg-base-100 flex flex-col"
+                        : "relative mt-10"
+                    }
+                  >
+                    <button
+                      type="button"
+                      className={
+                        isFullscreen
+                          ? "btn btn-text btn-circle btn-sm absolute top-2 right-2 z-10"
+                          : "btn btn-text btn-circle btn-sm absolute -top-6 right-0"
+                      }
+                      aria-label={
+                        isFullscreen ? "Exit fullscreen" : "Fullscreen"
+                      }
+                      onClick={() => {
+                        setIsFullscreen((prev) => !prev);
+                        setTimeout(
+                          () => window.dispatchEvent(new Event("resize")),
+                          50,
+                        );
+                      }}
+                      onMouseDown={(e) => e.stopPropagation()}
+                    >
+                      <span
+                        className={
+                          isFullscreen
+                            ? "icon-[qlementine-icons--fullscreen-exit-16] size-5"
+                            : "icon-[qlementine-icons--fullscreen-16] size-5"
+                        }
+                      ></span>
+                    </button>
+                    <div
+                      style={
+                        isFullscreen
+                          ? { flex: 1, minHeight: 0 }
+                          : { height: "400px" }
+                      }
+                    >
+                      <Terminal />
+                    </div>
+                  </div>
+                )}
             </div>
           </>
         )}

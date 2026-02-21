@@ -124,7 +124,7 @@ function TerminalModal({
                   : { height: "60vh" }
               }
             >
-              <Terminal sandboxId={sandboxId} />
+              <Terminal sandboxId={sandboxId} onClose={onClose} />
             </div>
           </div>
         </div>

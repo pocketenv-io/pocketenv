@@ -1,4 +1,5 @@
 import { Memory } from "@deno/sandbox";
+import process from "node:process";
 
 export abstract class BaseSandbox {
   abstract start(): Promise<void>;
@@ -67,7 +68,10 @@ export async function getSandboxById(
         return await new module.default().get(id);
       } catch (err) {
         console.error(`Error getting Deno sandbox with ID ${id}:`, err);
-        return createSandbox("deno", { id });
+        return createSandbox("deno", {
+          id,
+          snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
+        });
       }
     }
     case "vercel":

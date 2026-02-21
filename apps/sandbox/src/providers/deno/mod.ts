@@ -41,10 +41,16 @@ export class DenoSandbox implements BaseSandbox {
     return Promise.resolve(this.sandbox.id);
   }
 
-  ssh(): Promise<{
+  async ssh(): Promise<{
     username: string;
     hostname: string;
   }> {
+    const HOME = await this.sandbox.env.get("HOME");
+    const PATH = await this.sandbox.env.get("PATH");
+    await this.sandbox.env.set(
+      "PATH",
+      `${HOME}/.npm-global/bin:/usr/bin:${PATH}`,
+    );
     return this.sandbox.exposeSsh();
   }
 }

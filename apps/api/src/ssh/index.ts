@@ -22,12 +22,16 @@ router.use((req, res, next) => {
   const authHeader = req.headers.authorization;
   const bearer = authHeader?.split("Bearer ")[1]?.trim();
   if (bearer && bearer !== "null") {
-    const credentials = jwt.verify(bearer, env.JWT_SECRET, {
-      ignoreExpiration: true,
-    }) as { did: string };
+    try {
+      const credentials = jwt.verify(bearer, env.JWT_SECRET, {
+        ignoreExpiration: true,
+      }) as { did: string };
 
-    req.did = credentials.did;
-    req.sandboxId = req.headers["x-sandbox-id"] as string | undefined;
+      req.did = credentials.did;
+      req.sandboxId = req.headers["x-sandbox-id"] as string | undefined;
+    } catch (err) {
+      consola.error("Invalid JWT token:", err);
+    }
   }
 
   next();
@@ -38,7 +42,7 @@ router.use((req, res, next) => {
  * Creates a new SSH session and returns the sessionId.
  * Optionally accepts { cols, rows } in the body.
  */
-router.post("/ssh/connect", async (req, res) => {
+router.post("/connect", async (req, res) => {
   const sessionId = randomUUID();
   const cols = req.body?.cols || 80;
   const rows = req.body?.rows || 24;
@@ -134,7 +138,7 @@ router.post("/ssh/connect", async (req, res) => {
  * GET /ssh/stream/:sessionId
  * SSE endpoint that streams SSH output to the client.
  */
-router.get("/ssh/stream/:sessionId", (req, res) => {
+router.get("/stream/:sessionId", (req, res) => {
   const { sessionId } = req.params;
   const session = sessions.get(sessionId);
 
@@ -167,7 +171,7 @@ router.get("/ssh/stream/:sessionId", (req, res) => {
  * Sends keyboard input to the SSH session.
  * Body: { data: string }
  */
-router.post("/ssh/input/:sessionId", (req, res) => {
+router.post("/input/:sessionId", (req, res) => {
   const { sessionId } = req.params;
   const session = sessions.get(sessionId);
 
@@ -189,7 +193,7 @@ router.post("/ssh/input/:sessionId", (req, res) => {
  * Resizes the SSH terminal.
  * Body: { cols: number, rows: number }
  */
-router.post("/ssh/resize/:sessionId", (req, res) => {
+router.post("/resize/:sessionId", (req, res) => {
   const { sessionId } = req.params;
   const session = sessions.get(sessionId);
 
@@ -210,7 +214,7 @@ router.post("/ssh/resize/:sessionId", (req, res) => {
  * DELETE /ssh/disconnect/:sessionId
  * Disconnects the SSH session.
  */
-router.delete("/ssh/disconnect/:sessionId", (req, res) => {
+router.delete("/disconnect/:sessionId", (req, res) => {
   const { sessionId } = req.params;
   const session = sessions.get(sessionId);
 

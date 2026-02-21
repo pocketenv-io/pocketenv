@@ -61,9 +61,14 @@ const lightTheme = {
 interface TerminalContentProps {
   isDarkMode: boolean;
   sandboxId: string;
+  onClose: () => void;
 }
 
-function TerminalContent({ isDarkMode, sandboxId }: TerminalContentProps) {
+function TerminalContent({
+  isDarkMode,
+  sandboxId,
+  onClose,
+}: TerminalContentProps) {
   const sessionIdRef = useRef<string | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
@@ -206,6 +211,7 @@ function TerminalContent({ isDarkMode, sandboxId }: TerminalContentProps) {
           es.close();
           eventSourceRef.current = null;
           sessionIdRef.current = null;
+          onClose();
         });
 
         es.addEventListener("error", (e: any) => {
@@ -268,9 +274,10 @@ function TerminalContent({ isDarkMode, sandboxId }: TerminalContentProps) {
 
 export interface TerminalProps {
   sandboxId: string;
+  onClose: () => void;
 }
 
-function Terminal({ sandboxId }: TerminalProps) {
+function Terminal({ sandboxId, onClose }: TerminalProps) {
   const [isDarkMode, setIsDarkMode] = useState(
     document.documentElement.classList.contains("dark"),
   );
@@ -297,6 +304,7 @@ function Terminal({ sandboxId }: TerminalProps) {
       key={isDarkMode ? "dark" : "light"}
       isDarkMode={isDarkMode}
       sandboxId={sandboxId}
+      onClose={onClose}
     />
   );
 }

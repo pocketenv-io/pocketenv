@@ -1,17 +1,19 @@
 {
   "name": "api",
-  "module": "src/index.ts",
+  "module": "dist/index.js",
   "type": "module",
   "scripts": {
     "dev": "tsx --watch src/index.ts",
     "start": "tsx src/index.ts",
+    "start:prod": "node dist/index.js",
     "pkl:eval": "pkl eval -f json",
     "pkl:gen": "tsx ./scripts/pkl.ts",
     "lexgen": "lex gen-server ./src/lexicon ./lexicons/**/* ./lexicons/*",
     "format": "biome format src",
     "lint": "biome lint src",
     "sandbox": "tsx ./scripts/sandbox.ts",
-    "seed": "tsx ./scripts/seed.ts"
+    "seed": "tsx ./scripts/seed.ts",
+    "build": "pkgroll"
   },
   "dependencies": {
     "@atproto/api": "^0.13.31",
@@ -68,6 +70,7 @@
     "@types/pg": "^8.16.0",
     "@types/ssh2": "^1.15.4",
     "drizzle-kit": "^0.31.9",
+    "pkgroll": "^2.26.3",
     "tsx": "^4.21.0"
   }
 }

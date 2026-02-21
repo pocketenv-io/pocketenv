@@ -133,6 +133,7 @@ app.post("/v1/sandboxes", async (c) => {
         keepAlive: params.keepAlive,
         sleepAfter: params.sleepAfter,
         organizationId: process.env.DAYTONA_ORGANIZATION_ID,
+        snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
       });
       const sandboxId = await sandbox.id();
 

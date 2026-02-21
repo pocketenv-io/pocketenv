@@ -260,7 +260,12 @@ function New() {
                           : { height: "400px" }
                       }
                     >
-                      {data && <Terminal sandboxId={data.sandbox.id} />}
+                      {data && (
+                        <Terminal
+                          sandboxId={data.sandbox.id}
+                          onClose={() => {}}
+                        />
+                      )}
                     </div>
                   </div>
                 )}

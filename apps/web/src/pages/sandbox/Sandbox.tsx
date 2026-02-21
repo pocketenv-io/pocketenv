@@ -248,8 +248,8 @@ function New() {
                       <span
                         className={
                           isFullscreen
-                            ? "icon-[qlementine-icons--fullscreen-exit-16] size-5"
-                            : "icon-[qlementine-icons--fullscreen-16] size-5"
+                            ? "icon-[mingcute--fullscreen-exit-2-line] size-5"
+                            : "icon-[mingcute--fullscreen-2-line] size-5"
                         }
                       ></span>
                     </button>

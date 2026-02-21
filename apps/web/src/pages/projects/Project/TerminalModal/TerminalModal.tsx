@@ -87,7 +87,7 @@ function TerminalModal({ isOpen, onClose, title }: TerminalModalProps) {
               <div className="flex-1 text-center">{title}</div>
               <button
                 type="button"
-                className="btn btn-text btn-circle btn-sm absolute start-2 top-3"
+                className="btn btn-text btn-circle btn-sm absolute end-10 top-3"
                 aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
                 onClick={handleFullscreenToggle}
                 onMouseDown={(e) => e.stopPropagation()}
@@ -95,8 +95,8 @@ function TerminalModal({ isOpen, onClose, title }: TerminalModalProps) {
                 <span
                   className={
                     isFullscreen
-                      ? "icon-[qlementine-icons--fullscreen-exit-16] size-4.5"
-                      : "icon-[qlementine-icons--fullscreen-16] size-4.5"
+                      ? "icon-[mingcute--fullscreen-exit-2-line] size-4"
+                      : "icon-[mingcute--fullscreen-2-line] size-4"
                   }
                 ></span>
               </button>

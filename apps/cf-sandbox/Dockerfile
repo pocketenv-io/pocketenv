@@ -22,6 +22,10 @@ RUN curl -fsSL https://tailscale.com/install.sh | sh
 
 RUN curl -fsSL https://cli.kiro.dev/install | bash
 
+RUN mkdir -p /root/.npm-global && npm config set prefix "/root/.npm-global"
+
+ENV PATH="/root/.npm-global/bin:${PATH}"
+
 RUN npm install -g \
     openclaw \
     @anthropic-ai/claude-code \

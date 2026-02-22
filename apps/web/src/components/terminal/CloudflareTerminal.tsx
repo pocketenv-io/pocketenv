@@ -5,6 +5,10 @@ import { FitAddon } from "@xterm/addon-fit";
 import { SandboxAddon } from "@cloudflare/sandbox/xterm";
 import { CF_URL } from "../../consts";
 import { useTerminalTokenQuery } from "../../hooks/useTerminal";
+import { createId } from "@paralleldrive/cuid2";
+import { useAtom } from "jotai";
+import { sessionsAtom } from "../../atoms/sessions";
+import { useLocation, useSearch } from "@tanstack/react-router";
 
 const darkTheme = {
   background: "#06051d",
@@ -74,8 +78,22 @@ function TerminalContent({
   const fitAddonRef = useRef<FitAddon | null>(null);
   const sandboxAddonRef = useRef<SandboxAddon | null>(null);
   const { data: terminalToken, isLoading } = useTerminalTokenQuery();
+  const [sessions, setSessions] = useAtom(sessionsAtom);
+  const location = useLocation();
+  const params = useSearch({
+    from: location.pathname.startsWith("/sandbox/")
+      ? "/sandbox/$id"
+      : "/$did/sandbox/$rkey",
+  });
 
   const theme = isDarkMode ? darkTheme : lightTheme;
+
+  useEffect(() => {
+    setSessions((prevSessions) => ({
+      ...prevSessions,
+      [sandboxId]: params.sessionId || prevSessions[sandboxId] || createId(),
+    }));
+  }, [sandboxId, terminalToken, setSessions, params]);
 
   const options = useMemo(
     () => ({
@@ -145,7 +163,7 @@ function TerminalContent({
     window.addEventListener("resize", handleResize);
 
     instance.write(`\x1b[35mConnecting to terminal session...\x1b[0m\r\n`);
-    sandboxAddon.connect({ sandboxId });
+    sandboxAddon.connect({ sandboxId, sessionId: sessions[sandboxId] });
     instance.focus();
 
     return () => {

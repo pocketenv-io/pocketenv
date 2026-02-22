@@ -13,6 +13,7 @@ export class DenoSandbox implements BaseSandbox {
   async stop(): Promise<void> {
     try {
       consola.info("Stopping Deno sandbox with ID:", await this.id());
+      await this.sandbox.close();
       await this.sandbox.kill();
     } catch (error) {
       consola.error("Error killing sandbox:", error);
@@ -20,6 +21,7 @@ export class DenoSandbox implements BaseSandbox {
   }
 
   async delete(): Promise<void> {
+    await this.sandbox.close();
     await this.sandbox.kill();
   }
 

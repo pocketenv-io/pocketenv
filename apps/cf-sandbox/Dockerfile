@@ -10,7 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
     gnupg \
-    unzip
+    unzip \
+    python3 \
+    build-essential
 
 RUN curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' | gpg --dearmor | tee /etc/apt/keyrings/doppler.gpg >/dev/null \
     && echo "deb [signed-by=/etc/apt/keyrings/doppler.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | tee /etc/apt/sources.list.d/doppler-cli.list \
@@ -18,11 +20,10 @@ RUN curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com
 
 RUN curl -fsSL https://tailscale.com/install.sh | sh
 
-RUN curl -fsSL https://openclaw.ai/install.sh | bash || true
-
 RUN curl -fsSL https://cli.kiro.dev/install | bash
 
 RUN npm install -g \
+    openclaw \
     @anthropic-ai/claude-code \
     @openai/codex \
     @google/gemini-cli \
@@ -37,7 +38,9 @@ RUN curl -fsSL https://deno.land/install.sh | sh
 
 RUN curl -fsSL https://bun.sh/install | bash
 
-ENV PATH="${HOME}/.deno/bin:${HOME}/.local/bin:${PATH}"
+ENV PATH="/root/.deno/bin:/root/.local/bin:${PATH}"
+
+RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc
 
 WORKDIR /workspace
 

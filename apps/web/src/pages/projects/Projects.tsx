@@ -10,7 +10,10 @@ function Projects() {
   return (
     <Main>
       <div>
-        <div className="w-full overflow-x-auto">
+        <div
+          className="w-full overflow-x-auto"
+          style={{ height: "calc(100vh - 80px)" }}
+        >
           <table className="table">
             <thead>
               <tr>

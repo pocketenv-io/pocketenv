@@ -73,22 +73,6 @@ function Sidebar() {
             </li>
             <li>
               <Link
-                to="/snapshots"
-                className={`${
-                  isActive("/snapshots")
-                    ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
-                    : "rounded-full hover:text-white"
-                } ${isCollapsed ? "justify-center px-2" : ""}`}
-                title={isCollapsed ? "Snapshots" : undefined}
-              >
-                <span
-                  className={`icon-[tabler--device-floppy] size-6 ${isCollapsed ? "" : "mr-2"}`}
-                ></span>
-                {!isCollapsed && "Snapshots"}
-              </Link>
-            </li>
-            <li>
-              <Link
                 to="/volumes"
                 className={`${
                   isActive("/volumes")

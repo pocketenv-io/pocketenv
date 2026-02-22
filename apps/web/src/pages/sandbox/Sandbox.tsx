@@ -74,7 +74,7 @@ function New() {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen bg-base-100">
+      <div className="flex flex-col min-h-screen bg-base-100 h-screen overflow-y-hidden">
         <Navbar withLogo title="" project={data?.sandbox?.name} />
         {data?.sandbox && !isLoading && (
           <>

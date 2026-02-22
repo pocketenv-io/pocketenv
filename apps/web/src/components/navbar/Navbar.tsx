@@ -168,13 +168,10 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
                 </Link>
               </li>
               <li>
-                <Link className="dropdown-item" to="/settings">
-                  <span className="icon-[tabler--settings]"></span>
-                  Settings
-                </Link>
-              </li>
-              <li>
-                <a className="dropdown-item" href="/faqs">
+                <a
+                  className="dropdown-item"
+                  href="https://docs.pocketenv.io/faqs"
+                >
                   <span className="icon-[tabler--help-triangle]"></span>
                   FAQs
                 </a>

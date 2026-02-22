@@ -11,6 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
 import { profileAtom } from "../../../atoms/profile";
 import TerminalModal from "./TerminalModal";
+import ContextMenu from "../../../components/contextmenu";
 
 export type ProjectProps = {
   sandbox: Sandbox;
@@ -57,10 +58,6 @@ function Project({ sandbox }: ProjectProps) {
     });
   };
 
-  const onOpenContextMenu = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-
   return (
     <tr className="cursor-pointer" onClick={onOpenProject}>
       <td>{sandbox.name}</td>
@@ -81,40 +78,38 @@ function Project({ sandbox }: ProjectProps) {
         </span>
       </td>
       <td>{dayjs(sandbox.createdAt).format("M/D/YYYY, h:mm:ss A")}</td>
-      <td>
-        {!displayLoading && sandbox.status === "RUNNING" && (
+      <td className="align-middle">
+        <div className="flex items-center justify-center p-1">
+          {!displayLoading && sandbox.status === "RUNNING" && (
+            <button
+              className="btn btn-circle btn-text btn-sm bg-transparent outline-0"
+              onClick={onStop}
+            >
+              <span className="icon-[tabler--player-stop] size-5 hover:text-white"></span>
+            </button>
+          )}
+          {!displayLoading && sandbox.status !== "RUNNING" && (
+            <button
+              className="btn btn-circle btn-text btn-sm bg-transparent outline-0"
+              onClick={onPlay}
+            >
+              <span className="icon-[tabler--player-play] size-5 hover:text-white"></span>
+            </button>
+          )}
+          {displayLoading && (
+            <span className="loading loading-spinner loading-sm btn-text mr-[10px]"></span>
+          )}
           <button
-            className="btn btn-circle btn-text btn-sm bg-transparent outline-0"
-            onClick={onStop}
+            className={`btn btn-circle btn-text btn-sm bg-transparent outline-0 ${sandbox.status !== "RUNNING" ? "opacity-50" : ""}`}
+            onClick={onOpenTerminal}
           >
-            <span className="icon-[tabler--player-stop] size-5 hover:text-white"></span>
+            <span
+              className={`icon-[mingcute--terminal-fill] size-5 ${sandbox.status !== "RUNNING" ? "" : "hover:text-white"}`}
+            ></span>
           </button>
-        )}
-        {!displayLoading && sandbox.status !== "RUNNING" && (
-          <button
-            className="btn btn-circle btn-text btn-sm bg-transparent outline-0"
-            onClick={onPlay}
-          >
-            <span className="icon-[tabler--player-play] size-5 hover:text-white"></span>
-          </button>
-        )}
-        {displayLoading && (
-          <span className="loading loading-spinner loading-sm btn-text mr-[10px]"></span>
-        )}
-        <button
-          className={`btn btn-circle btn-text btn-sm bg-transparent outline-0 ${sandbox.status !== "RUNNING" ? "opacity-50" : ""}`}
-          onClick={onOpenTerminal}
-        >
-          <span
-            className={`icon-[mingcute--terminal-fill] size-5 ${sandbox.status !== "RUNNING" ? "" : "hover:text-white"}`}
-          ></span>
-        </button>
-        <button
-          className="btn btn-circle btn-text btn-sm bg-transparent outline-0"
-          onClick={onOpenContextMenu}
-        >
-          <span className="icon-[tabler--dots-vertical] size-5 hover:text-white"></span>
-        </button>
+          <ContextMenu />
+        </div>
+
         <TerminalModal
           title={sandbox.name}
           isOpen={modalOpen}

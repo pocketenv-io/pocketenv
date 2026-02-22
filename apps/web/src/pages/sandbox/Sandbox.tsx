@@ -3,6 +3,7 @@ import Navbar from "../../components/navbar";
 import SignIn from "../../components/signin";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import {
+  useClaimSandboxMutation,
   useSandboxQuery,
   useStartSandboxMutation,
   useStopSandboxMutation,
@@ -21,6 +22,7 @@ function New() {
   const profile = useAtomValue(profileAtom);
   const queryClient = useQueryClient();
   const [displayLoading, setDisplayLoading] = useState(false);
+  const [loadingClaim, setLoadingClaim] = useState(false);
   const { mutate: stopSandbox } = useStopSandboxMutation();
   const { mutate: startSandbox } = useStartSandboxMutation();
   const isAuthenticated = !!localStorage.getItem("token");
@@ -60,12 +62,17 @@ function New() {
   };
 
   const { data, isLoading } = useSandboxQuery(getSandboxIdFromPath());
+  const { mutateAsync: claimSandbox } = useClaimSandboxMutation();
 
-  const onClaim = () => {
+  const onClaim = async () => {
     if (isAuthenticated) {
-      // create a new sandbox for the user and then navigate to it
+      setLoadingClaim(true);
+      const newSandbox = await claimSandbox(data!.sandbox!.id!);
+      setLoadingClaim(false);
       navigate({
-        to: "/did:plc:pyzvvyrh6eudle55nhqe62tv/sandbox/3mezx5ymmjs26",
+        to: newSandbox?.data?.sandbox?.uri
+          ?.split("at://")[1]
+          ?.replace("io.pocketenv.", ""),
       });
       return;
     }
@@ -84,8 +91,8 @@ function New() {
                 role="alert"
               >
                 <div className="flex-1">
-                  This is a temporary project (what's this?) and will be deleted
-                  in 24 hours. Claim it to make it yours.
+                  This is a temporary project and will be deleted in 24 hours.
+                  Claim it to make it yours.
                 </div>
 
                 <button
@@ -93,6 +100,9 @@ function New() {
                   className="btn btn-md btn-primary font-semibold ml-4"
                 >
                   Claim Project
+                  {loadingClaim && (
+                    <span className="loading loading-spinner loading-sm ml-2"></span>
+                  )}
                 </button>
               </div>
             )}

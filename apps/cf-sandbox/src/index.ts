@@ -15,7 +15,7 @@ import {
   nouns,
   generateUniqueAsync,
 } from "unique-username-generator";
-import { eq, ExtractTablesWithRelations, or } from "drizzle-orm";
+import { and, eq, ExtractTablesWithRelations, isNull, or } from "drizzle-orm";
 import { getConnection } from "./drizzle";
 import { env } from "cloudflare:workers";
 import { SandboxConfig, SandboxConfigSchema } from "./types/sandbox";
@@ -84,23 +84,37 @@ app.post("/v1/sandboxes", async (c) => {
   try {
     const params = SandboxConfigSchema.parse(body);
     name = params.name || `${name}-${suffix}`;
-    do {
-      const existing = await c.var.db
+    let existing: SelectSandbox[] = [];
+
+    if (params.name) {
+      existing = await c.var.db
         .select()
         .from(sandboxes)
-        .where(eq(sandboxes.name, name))
+        .where(and(eq(sandboxes.name, params.name), isNull(sandboxes.userId)))
         .execute();
-      if (existing.length === 0) {
-        break;
-      }
+    }
 
-      name = await generateUniqueAsync(
-        { dictionaries: [adjectives, nouns], separator: "-" },
-        () => false,
-      );
-      suffix = Math.random().toString(36).substring(2, 6);
-      name = `${name}-${suffix}`;
-    } while (true);
+    const canBeClaimed = existing.length !== 0;
+
+    if (!canBeClaimed) {
+      do {
+        existing = await c.var.db
+          .select()
+          .from(sandboxes)
+          .where(eq(sandboxes.name, name))
+          .execute();
+        if (existing.length === 0) {
+          break;
+        }
+
+        name = await generateUniqueAsync(
+          { dictionaries: [adjectives, nouns], separator: "-" },
+          () => false,
+        );
+        suffix = Math.random().toString(36).substring(2, 6);
+        name = `${name}-${suffix}`;
+      } while (true);
+    }
 
     const record = await c.var.db.transaction(async (tx) => {
       const user = await tx
@@ -110,35 +124,47 @@ app.post("/v1/sandboxes", async (c) => {
         .execute()
         .then(([row]) => row);
 
-      let [record] = await tx
-        .insert(sandboxes)
-        .values({
-          base: params.base,
-          name,
-          provider: params.provider,
-          publicKey: env.PUBLIC_KEY,
-          userId: user?.id,
-          instanceType: "standard-1",
-          keepAlive: params.keepAlive,
-          sleepAfter: params.sleepAfter,
-          vcpus: params.vcpus,
-          memory: params.memory,
-          disk: params.disk,
-          status: "INITIALIZING",
-        })
-        .returning()
-        .execute();
+      let record: SelectSandbox | undefined = undefined;
+      if (canBeClaimed) {
+        record = await tx
+          .update(sandboxes)
+          .set({ userId: user?.id })
+          .where(eq(sandboxes.id, existing[0].id))
+          .returning()
+          .execute()
+          .then(([row]) => row);
+      } else {
+        record = await tx
+          .insert(sandboxes)
+          .values({
+            base: params.base,
+            name,
+            provider: params.provider,
+            publicKey: env.PUBLIC_KEY,
+            userId: user?.id,
+            instanceType: "standard-1",
+            keepAlive: params.keepAlive,
+            sleepAfter: params.sleepAfter,
+            vcpus: params.vcpus,
+            memory: params.memory,
+            disk: params.disk,
+            status: "INITIALIZING",
+          })
+          .returning()
+          .execute()
+          .then(([row]) => row);
+      }
 
       if (params.secrets.length > 0) {
-        await saveSecrets(tx, record, { secrets: params.secrets });
+        await saveSecrets(tx, record!, { secrets: params.secrets });
       }
 
       if (params.variables.length > 0) {
-        await saveVariables(tx, record, { variables: params.variables });
+        await saveVariables(tx, record!, { variables: params.variables });
       }
 
       const sandbox = await createSandbox(params.provider, {
-        id: record.id,
+        id: record!.id,
         keepAlive: params.keepAlive,
         sleepAfter: params.sleepAfter,
       });
@@ -146,8 +172,12 @@ app.post("/v1/sandboxes", async (c) => {
 
       [record] = await tx
         .update(sandboxes)
-        .set({ status: "RUNNING", sandbox_id: sandboxId })
-        .where(eq(sandboxes.id, record.id))
+        .set({
+          status: "RUNNING",
+          sandbox_id: sandboxId,
+          startedAt: new Date(),
+        })
+        .where(eq(sandboxes.id, record!.id))
         .returning()
         .execute();
 
@@ -210,7 +240,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     await sandbox.start();
     await c.var.db
       .update(sandboxes)
-      .set({ status: "RUNNING" })
+      .set({ status: "RUNNING", startedAt: new Date() })
       .where(eq(sandboxes.id, c.req.param("sandboxId")))
       .execute();
   } catch (err) {

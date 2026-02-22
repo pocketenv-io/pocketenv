@@ -9,7 +9,7 @@ export const createSandbox = ({
   base: string;
   provider: Provider;
 }) =>
-  client.post(
+  client.post<{ sandbox: Sandbox | undefined }>(
     "/xrpc/io.pocketenv.sandbox.createSandbox",
     {
       base,
@@ -23,11 +23,9 @@ export const createSandbox = ({
   );
 
 export const claimSandbox = ({ id }: { id: string }) =>
-  client.post(
-    "/xrpc/io.pocketenv.sandbox.claimSandbox",
-    {
-      id,
-    },
+  client.post<{ sandbox: Sandbox | undefined }>(
+    `/xrpc/io.pocketenv.sandbox.claimSandbox?id=${id}`,
+    undefined,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,

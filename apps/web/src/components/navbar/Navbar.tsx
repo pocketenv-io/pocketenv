@@ -156,13 +156,22 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
                       {profile.displayName}
                     </h6>
                   )}
-                  <small className="text-base-content/50">
-                    @{profile?.handle}
-                  </small>
+                  <a
+                    href={`https://bsky.app/profile/${profile?.handle}`}
+                    target="_blank"
+                  >
+                    <small className="text-base-content/50">
+                      @{profile?.handle}
+                    </small>
+                  </a>
                 </div>
               </li>
               <li>
-                <Link className="dropdown-item" to="/projects">
+                <Link
+                  className="dropdown-item"
+                  to="/projects"
+                  onClick={() => setOpen(false)}
+                >
                   <span className="icon-[tabler--layout-dashboard]"></span>
                   Dashboard
                 </Link>

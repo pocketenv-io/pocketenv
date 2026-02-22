@@ -83,7 +83,9 @@ function TerminalContent({
   const params = useSearch({
     from: location.pathname.startsWith("/sandbox/")
       ? "/sandbox/$id"
-      : "/$did/sandbox/$rkey",
+      : location.pathname === "/projects"
+        ? "/projects"
+        : "/$did/sandbox/$rkey",
   });
 
   const theme = isDarkMode ? darkTheme : lightTheme;

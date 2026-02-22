@@ -1,8 +1,26 @@
 import { useEffect, useRef, useState } from "react";
+import AddEnvironmentVariableModal from "./AddEnvironmentVariableModal";
+import AddFileModal from "./AddFileModal";
+import AddVolumeModal from "./AddVolumeModal";
+import DeleteSandboxModal from "./DeleteSandboxModal";
+import AddSecretModal from "./AddSecretModal";
 
-function ContextMenu() {
+type ContextMenuProps = {
+  sandboxId: string;
+};
+
+function ContextMenu({ sandboxId }: ContextMenuProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const [
+    isAddEnvironmentVariableModalOpen,
+    setIsAddEnvironmentVariableModalOpen,
+  ] = useState(false);
+  const [isDeleteSandboxModalOpen, setIsDeleteSandboxModalOpen] =
+    useState(false);
+  const [isAddFileModalOpen, setIsAddFileModalOpen] = useState(false);
+  const [isAddSecretModalOpen, setIsAddSecretModalOpen] = useState(false);
+  const [isAddVolumeModalOpen, setIsAddVolumeModalOpen] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -28,26 +46,31 @@ function ContextMenu() {
   const onAddFile = (e: React.MouseEvent) => {
     e.stopPropagation();
     setOpen(false);
+    setIsAddFileModalOpen(true);
   };
 
   const onAddSecret = (e: React.MouseEvent) => {
     e.stopPropagation();
     setOpen(false);
+    setIsAddSecretModalOpen(true);
   };
 
   const onAddEnvironmentVariable = (e: React.MouseEvent) => {
     e.stopPropagation();
     setOpen(false);
+    setIsAddEnvironmentVariableModalOpen(true);
   };
 
   const onAddVolume = (e: React.MouseEvent) => {
     e.stopPropagation();
     setOpen(false);
+    setIsAddVolumeModalOpen(true);
   };
 
   const onDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     setOpen(false);
+    setIsDeleteSandboxModalOpen(true);
   };
 
   return (
@@ -103,6 +126,31 @@ function ContextMenu() {
           </li>
         </ul>
       </div>
+      <AddEnvironmentVariableModal
+        isOpen={isAddEnvironmentVariableModalOpen}
+        onClose={() => setIsAddEnvironmentVariableModalOpen(false)}
+        sandboxId={sandboxId}
+      />
+      <AddFileModal
+        isOpen={isAddFileModalOpen}
+        onClose={() => setIsAddFileModalOpen(false)}
+        sandboxId={sandboxId}
+      />
+      <AddVolumeModal
+        isOpen={isAddVolumeModalOpen}
+        onClose={() => setIsAddVolumeModalOpen(false)}
+        sandboxId={sandboxId}
+      />
+      <AddSecretModal
+        isOpen={isAddSecretModalOpen}
+        onClose={() => setIsAddSecretModalOpen(false)}
+        sandboxId={sandboxId}
+      />
+      <DeleteSandboxModal
+        isOpen={isDeleteSandboxModalOpen}
+        onClose={() => setIsDeleteSandboxModalOpen(false)}
+        sandboxId={sandboxId}
+      />
     </>
   );
 }

@@ -15,6 +15,7 @@ import { useAtomValue } from "jotai";
 import { profileAtom } from "../../atoms/profile";
 import { useQueryClient } from "@tanstack/react-query";
 import Terminal from "../../components/terminal";
+import ContextMenu from "../../components/contextmenu";
 
 dayjs.extend(relativeTime);
 
@@ -113,9 +114,11 @@ function New() {
                     <div className="text-xl mr-3 mt-[-5px]">
                       {data?.sandbox?.id}
                     </div>
-                    <span className="badge bg-white/15 rounded-full text-white/80 border-none">
+                    <span className="badge bg-white/15 rounded-full text-white/80 border-none mr-1">
                       Sandbox
                     </span>
+                    {((profile && data?.sandbox?.owner?.did === profile.did) ||
+                      !data?.sandbox?.owner) && <ContextMenu />}
                   </div>
 
                   <div className="w-[50%] overflow-x-auto mt-5 ml-[-18px]">

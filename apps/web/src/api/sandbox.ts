@@ -9,7 +9,7 @@ export const createSandbox = ({
   base: string;
   provider: Provider;
 }) =>
-  client.post<{ sandbox: Sandbox | undefined }>(
+  client.post<Sandbox | undefined>(
     "/xrpc/io.pocketenv.sandbox.createSandbox",
     {
       base,

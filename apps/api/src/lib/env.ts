@@ -11,7 +11,7 @@ export const env = cleanEnv(process.env, {
   }),
   HOST: host({ default: "localhost" }),
   PORT: port({ default: 8789 }),
-  PUBLIC_URL: str({ default: "http://localhost:8000" }),
+  PUBLIC_URL: str({ default: "http://localhost:8789" }),
   DB_PATH: str({ devDefault: ":memory:" }),
   KV_DB_PATH: str({ devDefault: ":memory:" }),
   COOKIE_SECRET: str({}),

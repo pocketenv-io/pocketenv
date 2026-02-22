@@ -1,6 +1,6 @@
 FROM node:24-slim
 
-COPY --from=docker.io/cloudflare/sandbox:0.7.0 /container-server/sandbox /sandbox
+COPY --from=docker.io/cloudflare/sandbox:0.7.5 /container-server/sandbox /sandbox
 
 RUN echo "deb [signed-by=/etc/apt/keyrings/doppler.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | tee /etc/apt/sources.list.d/doppler-cli.list
 
@@ -9,7 +9,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
     ca-certificates \
-    gnupg
+    gnupg \
+    unzip
 
 RUN curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' | gpg --dearmor | tee /etc/apt/keyrings/doppler.gpg >/dev/null \
     && echo "deb [signed-by=/etc/apt/keyrings/doppler.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | tee /etc/apt/sources.list.d/doppler-cli.list \
@@ -19,7 +20,20 @@ RUN curl -fsSL https://tailscale.com/install.sh | sh
 
 RUN curl -fsSL https://openclaw.ai/install.sh | bash || true
 
-RUN npm install -g @anthropic-ai/claude-code @openai/codex @google/gemini-cli @github/copilot pm2
+RUN curl -fsSL https://cli.kiro.dev/install | bash
+
+RUN npm install -g \
+    @anthropic-ai/claude-code \
+    @openai/codex \
+    @google/gemini-cli \
+    @github/copilot \
+    opencode-ai \
+    @charmland/crush \
+    @sourcegraph/amp \
+    @kilocode/cli \
+    pm2
+
+ENV PATH="/root/.local/bin:${PATH}"
 
 WORKDIR /workspace
 

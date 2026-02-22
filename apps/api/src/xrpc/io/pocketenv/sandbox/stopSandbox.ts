@@ -1,17 +1,32 @@
-import type { HandlerAuth } from "@atproto/xrpc-server";
+import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
+import { Providers } from "consts";
 import type { Context } from "context";
+import { eq } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type { QueryParams } from "lexicon/types/io/pocketenv/sandbox/stopSandbox";
 import generateJwt from "lib/generateJwt";
+import schema from "schema";
 
 export default function (server: Server, ctx: Context) {
   const stopSandbox = async (params: QueryParams, auth: HandlerAuth) => {
-    await ctx.sandbox.post(`/v1/sandboxes/${params.id}/stop`, undefined, {
-      ...(auth?.credentials && {
-        headers: {
-          Authorization: `Bearer ${await generateJwt(auth.credentials.did)}`,
-        },
-      }),
+    const record = await ctx.db
+      .select()
+      .from(schema.sandboxes)
+      .where(eq(schema.sandboxes.id, params.id))
+      .execute()
+      .then(([row]) => row);
+
+    if (!record) {
+      throw new XRPCError(404, "Sandbox not found", "SandboxNotFound");
+    }
+
+    let sandbox =
+      record.provider === Providers.CLOUDFLARE ? ctx.cfsandbox : ctx.sandbox;
+
+    await sandbox.post(`/v1/sandboxes/${params.id}/stop`, undefined, {
+      headers: {
+        Authorization: `Bearer ${await generateJwt(auth?.credentials?.did || "")}`,
+      },
     });
     return {};
   };

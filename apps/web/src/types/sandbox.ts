@@ -1,8 +1,10 @@
 import type { Profile } from "./profile";
+import type { Provider } from "./providers";
 
 export type Sandbox = {
   id: string;
   name: string;
+  provider: Provider;
   baseSandbox: string;
   displayName: string;
   uri: string;

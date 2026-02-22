@@ -33,6 +33,9 @@ export const SandboxConfigSchema = z.object({
   provider: z.enum(["cloudflare"]).optional().default("cloudflare"),
   base: z.enum(["openclaw"]).optional().default("openclaw"),
   keepAlive: z.boolean().optional().default(false),
+  vcpus: z.number().int().positive().optional().default(2),
+  memory: z.number().int().positive().optional().default(4),
+  disk: z.number().int().positive().optional().default(8),
   sleepAfter: z
     .string()
     .regex(

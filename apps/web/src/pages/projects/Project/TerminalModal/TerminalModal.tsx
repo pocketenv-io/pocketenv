@@ -7,6 +7,7 @@ export type TerminalModalProps = {
   onClose: () => void;
   sandboxId: string;
   title?: string;
+  isCloudflare?: boolean;
 };
 
 function TerminalModal({
@@ -14,6 +15,7 @@ function TerminalModal({
   onClose,
   title,
   sandboxId,
+  isCloudflare,
 }: TerminalModalProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -124,7 +126,11 @@ function TerminalModal({
                   : { height: "60vh" }
               }
             >
-              <Terminal sandboxId={sandboxId} onClose={onClose} />
+              <Terminal
+                sandboxId={sandboxId}
+                onClose={onClose}
+                isCloudflare={isCloudflare}
+              />
             </div>
           </div>
         </div>

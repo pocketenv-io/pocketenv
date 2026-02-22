@@ -1,12 +1,13 @@
-import { Hono, HonoRequest } from "hono";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { Context } from "./context";
-import { Sandbox } from "@cloudflare/sandbox";
-import { Container, getContainer } from "@cloudflare/containers";
+import { getSandbox, Sandbox } from "@cloudflare/sandbox";
 import {
   sandboxes,
   sandboxSecrets,
   sandboxVariables,
   secrets,
+  users,
   variables,
 } from "./schema";
 import {
@@ -22,6 +23,9 @@ import { BaseSandbox, createSandbox } from "./providers";
 import { SelectSandbox } from "./schema/sandboxes";
 import { PgTransaction } from "drizzle-orm/pg-core";
 import { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
+import jwt from "@tsndr/cloudflare-worker-jwt";
+import { consola } from "consola";
+import { createId } from "@paralleldrive/cuid2";
 
 type Bindings = {
   Sandbox: DurableObjectNamespace<Sandbox<Env>>;
@@ -29,8 +33,25 @@ type Bindings = {
 
 const app = new Hono<{ Variables: Context; Bindings: Bindings }>();
 
+app.use(cors());
+
 app.use("*", async (c, next) => {
   c.set("db", getConnection());
+  const token = c.req.header("Authorization")?.split(" ")[1]?.trim();
+  if (token) {
+    try {
+      const decoded = await jwt.verify(token, process.env.JWT_SECRET!);
+      c.set("did", decoded?.payload?.sub);
+    } catch (err) {
+      consola.error("JWT verification failed:", err);
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+  } else {
+    if (!c.req.path.endsWith("/ws/terminal")) {
+      consola.warn("No Authorization header found");
+      return c.json({ error: "Unauthorized" }, 401);
+    }
+  }
   await next();
 });
 
@@ -83,6 +104,13 @@ app.post("/v1/sandboxes", async (c) => {
     } while (true);
 
     const record = await c.var.db.transaction(async (tx) => {
+      const user = await tx
+        .select()
+        .from(users)
+        .where(eq(users.did, c.var.did || ""))
+        .execute()
+        .then(([row]) => row);
+
       let [record] = await tx
         .insert(sandboxes)
         .values({
@@ -90,10 +118,13 @@ app.post("/v1/sandboxes", async (c) => {
           name,
           provider: params.provider,
           publicKey: env.PUBLIC_KEY,
-          userId: "rec_d6626djac0kg4q000020",
+          userId: user?.id,
           instanceType: "standard-1",
           keepAlive: params.keepAlive,
           sleepAfter: params.sleepAfter,
+          vcpus: params.vcpus,
+          memory: params.memory,
+          disk: params.disk,
           status: "INITIALIZING",
         })
         .returning()
@@ -111,7 +142,6 @@ app.post("/v1/sandboxes", async (c) => {
         id: record.id,
         keepAlive: params.keepAlive,
         sleepAfter: params.sleepAfter,
-        organizationId: env.DAYTONA_ORGANIZATION_ID,
       });
       const sandboxId = await sandbox.id();
 
@@ -136,7 +166,7 @@ app.post("/v1/sandboxes", async (c) => {
 });
 
 app.get("/v1/sandboxes/:sandboxId", async (c) => {
-  const record = await getSandbox(c.var.db, c.req.param("sandboxId"));
+  const record = await getSandboxById(c.var.db, c.req.param("sandboxId"));
   return c.json(record);
 });
 
@@ -150,7 +180,7 @@ app.get("/v1/sandboxes", async (c) => {
 });
 
 app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
-  const record = await getSandbox(c.var.db, c.req.param("sandboxId"));
+  const record = await getSandboxById(c.var.db, c.req.param("sandboxId"));
 
   if (!record) {
     return c.json({ error: "Sandbox not found" }, 404);
@@ -162,27 +192,32 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  sandbox = await createSandbox("cloudflare", {
-    id: c.req.param("sandboxId"),
-    snapshotRoot: env.DENO_SNAPSHOT_ROOT,
-    memory: "4GiB",
-  });
+  try {
+    sandbox = await createSandbox("cloudflare", {
+      id: c.req.param("sandboxId"),
+      memory: "4GiB",
+    });
 
-  if (!sandbox) {
-    return c.json({ error: "Sandbox provider not supported" }, 400);
+    if (!sandbox) {
+      return c.json({ error: "Sandbox provider not supported" }, 400);
+    }
+
+    await sandbox.start();
+    await c.var.db
+      .update(sandboxes)
+      .set({ status: "RUNNING" })
+      .where(eq(sandboxes.id, c.req.param("sandboxId")))
+      .execute();
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    consola.error("Failed to start sandbox:", errorMessage);
+    return c.json({ error: `Failed to start sandbox: ${errorMessage}` }, 500);
   }
-
-  await sandbox.start();
-  await c.var.db
-    .update(sandboxes)
-    .set({ status: "RUNNING" })
-    .where(eq(sandboxes.id, c.req.param("sandboxId")))
-    .execute();
   return c.json({});
 });
 
 app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
-  const record = await getSandbox(c.var.db, c.req.param("sandboxId"));
+  const record = await getSandboxById(c.var.db, c.req.param("sandboxId"));
 
   if (!record) {
     return c.json({ error: "Sandbox not found" }, 404);
@@ -192,27 +227,33 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  let sandbox: BaseSandbox | null = null;
+  try {
+    let sandbox: BaseSandbox | null = null;
 
-  sandbox = await createSandbox("cloudflare", {
-    id: c.req.param("sandboxId"),
-  });
+    sandbox = await createSandbox("cloudflare", {
+      id: c.req.param("sandboxId"),
+    });
 
-  if (!sandbox) {
-    return c.json({ error: "Sandbox provider not supported" }, 400);
+    if (!sandbox) {
+      return c.json({ error: "Sandbox provider not supported" }, 400);
+    }
+
+    await sandbox.stop();
+    await c.var.db
+      .update(sandboxes)
+      .set({ status: "STOPPED" })
+      .where(eq(sandboxes.id, c.req.param("sandboxId")))
+      .execute();
+    return c.json({});
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    consola.error("Failed to stop sandbox:", errorMessage);
+    return c.json({ error: `Failed to stop sandbox: ${errorMessage}` }, 500);
   }
-
-  await sandbox.stop();
-  await c.var.db
-    .update(sandboxes)
-    .set({ status: "STOPPED" })
-    .where(eq(sandboxes.id, c.req.param("sandboxId")))
-    .execute();
-  return c.json({});
 });
 
 app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
-  const record = await getSandbox(c.var.db, c.req.param("sandboxId"));
+  const record = await getSandboxById(c.var.db, c.req.param("sandboxId"));
 
   if (!record) {
     return c.json({ error: "Sandbox not found" }, 404);
@@ -222,19 +263,25 @@ app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  let sandbox: BaseSandbox | null = null;
+  try {
+    let sandbox: BaseSandbox | null = null;
 
-  sandbox = await createSandbox("cloudflare", {
-    id: c.req.param("sandboxId"),
-  });
+    sandbox = await createSandbox("cloudflare", {
+      id: c.req.param("sandboxId"),
+    });
 
-  const { command } = await c.req.json();
-  const res = await sandbox.sh`${command}`;
-  return c.json(res);
+    const { command } = await c.req.json();
+    const res = await sandbox.sh`${command}`;
+    return c.json(res);
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    consola.error("Failed to run command in sandbox:", errorMessage);
+    return c.json({ error: `Failed to run command: ${errorMessage}` }, 500);
+  }
 });
 
 app.delete("/v1/sandboxes/:sandboxId", async (c) => {
-  const record = await getSandbox(c.var.db, c.req.param("sandboxId"));
+  const record = await getSandboxById(c.var.db, c.req.param("sandboxId"));
 
   if (!record) {
     return c.json({ error: "Sandbox not found" }, 404);
@@ -244,23 +291,49 @@ app.delete("/v1/sandboxes/:sandboxId", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  let sandbox: BaseSandbox | null = null;
+  try {
+    let sandbox: BaseSandbox | null = null;
 
-  sandbox = await createSandbox("cloudflare", {
-    id: c.req.param("sandboxId"),
-  });
+    sandbox = await createSandbox("cloudflare", {
+      id: c.req.param("sandboxId"),
+    });
 
-  await sandbox.delete();
+    await sandbox.delete();
 
-  await c.var.db
-    .delete(sandboxes)
-    .where(eq(sandboxes.id, c.req.param("sandboxId")))
-    .execute();
+    await c.var.db
+      .delete(sandboxes)
+      .where(eq(sandboxes.id, c.req.param("sandboxId")))
+      .execute();
 
-  return c.json({ success: true }, 200);
+    return c.json({ success: true }, 200);
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    consola.error("Failed to delete sandbox:", errorMessage);
+    return c.json({ error: `Failed to delete sandbox: ${errorMessage}` }, 500);
+  }
 });
 
-export const getSandbox = async (db: Context["db"], sandboxId: string) => {
+app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
+  if (c.req.header("upgrade")?.toLowerCase() !== "websocket") {
+    return c.text("Expected WebSocket connection", 426);
+  }
+
+  const sandbox = getSandbox(c.env.Sandbox, c.req.param("sandboxId"));
+  const sessionId = c.req.query("session");
+  try {
+    if (sessionId) {
+      const session = await sandbox.getSession(sessionId);
+      return session.terminal(c.req.raw);
+    }
+
+    return sandbox.terminal(c.req.raw);
+  } catch (err) {
+    console.error(err);
+    return c.text("Failed to connect to sandbox", 500);
+  }
+});
+
+export const getSandboxById = async (db: Context["db"], sandboxId: string) => {
   const [record] = await db
     .select()
     .from(sandboxes)

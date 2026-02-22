@@ -1,11 +1,19 @@
 import { client } from ".";
+import type { Provider } from "../types/providers";
 import type { Sandbox } from "../types/sandbox";
 
-export const createSandbox = ({ base }: { base: string }) =>
+export const createSandbox = ({
+  base,
+  provider,
+}: {
+  base: string;
+  provider: Provider;
+}) =>
   client.post(
     "/xrpc/io.pocketenv.sandbox.createSandbox",
     {
       base,
+      provider,
     },
     {
       headers: {

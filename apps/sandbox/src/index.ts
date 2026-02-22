@@ -42,7 +42,10 @@ app.use("*", async (c, next) => {
       c.set("did", decoded?.payload.sub);
     } catch (err) {
       consola.error("JWT verification failed:", err);
+      return c.json({ error: "Unauthorized" }, 401);
     }
+  } else {
+    return c.json({ error: "Unauthorized" }, 401);
   }
   await next();
 });

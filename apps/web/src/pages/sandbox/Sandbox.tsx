@@ -264,6 +264,7 @@ function New() {
                         <Terminal
                           sandboxId={data.sandbox.id}
                           onClose={() => {}}
+                          isCloudflare={data.sandbox.provider === "cloudflare"}
                         />
                       )}
                     </div>

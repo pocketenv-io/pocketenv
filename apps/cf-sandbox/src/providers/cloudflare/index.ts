@@ -5,12 +5,35 @@ import { env } from "cloudflare:workers";
 export class CloudflareSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
 
+  private async retryWithBackoff<T>(
+    fn: () => Promise<T>,
+    maxRetries: number = 5,
+    initialDelayMs: number = 500,
+  ): Promise<T> {
+    let lastError: Error | null = null;
+
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        return await fn();
+      } catch (err) {
+        lastError = err instanceof Error ? err : new Error(String(err));
+        if (i < maxRetries - 1) {
+          const delayMs = initialDelayMs * Math.pow(2, i);
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+        }
+      }
+    }
+
+    throw lastError || new Error("Max retries exceeded");
+  }
+
   async start(): Promise<void> {
-    await this.sandbox.start();
+    await this.retryWithBackoff(() => this.sandbox.start());
   }
 
   async stop(): Promise<void> {
     await this.sandbox.stop();
+    await this.sandbox.destroy();
   }
 
   async delete(): Promise<void> {
@@ -40,6 +63,7 @@ class CloudflareProvider implements BaseProvider {
     const sandbox = getSandbox(env.Sandbox, options.id, {
       keepAlive: options.keepAlive,
       sleepAfter: options.sleepAfter,
+      normalizeId: true,
     });
     return new CloudflareSandbox(sandbox);
   }

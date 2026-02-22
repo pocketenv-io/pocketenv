@@ -21,17 +21,18 @@ export default function (server: Server, ctx: Context) {
   const createSandbox = async (input: HandlerInput, auth: HandlerAuth) => {
     let res;
     try {
-      res = await ctx.sandbox.post(
+      const provider = input.body.provider || Providers.CLOUDFLARE;
+      let sandbox =
+        provider === Providers.CLOUDFLARE ? ctx.cfsandbox : ctx.sandbox;
+      res = await sandbox.post(
         "/v1/sandboxes",
         {
-          provider: input.body.provider || Providers.DENO,
+          provider,
         },
         {
-          ...(auth?.credentials && {
-            headers: {
-              Authorization: `Bearer ${await generateJwt(auth.credentials.did)}`,
-            },
-          }),
+          headers: {
+            Authorization: `Bearer ${await generateJwt(auth?.credentials?.did || "")}`,
+          },
         },
       );
     } catch (err: unknown) {

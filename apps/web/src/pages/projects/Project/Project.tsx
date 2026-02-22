@@ -122,6 +122,7 @@ function Project({ sandbox }: ProjectProps) {
             setModalOpen(false);
           }}
           sandboxId={sandbox.id}
+          isCloudflare={sandbox.provider === "cloudflare"}
         />
       </td>
     </tr>

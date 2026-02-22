@@ -1,13 +1,13 @@
 import cors from "cors";
 import express from "express";
 import morgan from "morgan";
-import { consola, LogLevels } from "consola";
+import { consola } from "consola";
 import bsky from "bsky";
 import { contextMiddleware, ctx } from "context";
 import { createServer } from "lexicon";
 import chalk from "chalk";
 import API from "./xrpc";
-import sshRouter from "./ssh";
+import ssh from "./ssh";
 
 let server = createServer({
   validateResponse: false,
@@ -49,7 +49,7 @@ app.get("/", (req, res) => {
 
 app.use(bsky);
 app.use(server.xrpc.router);
-app.use("/ssh", sshRouter);
+app.use("/ssh", ssh);
 
 app.listen(process.env.POCKETENV_XPRC_PORT || 8789, () => {
   consola.log(chalk.greenBright(banner));

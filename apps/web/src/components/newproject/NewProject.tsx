@@ -57,7 +57,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
 
   const onSelect = async (id: string) => {
     setSelected(id);
-    const res = await mutateAsync(id);
+    const res = await mutateAsync({ base: id, provider: "cloudflare" });
     await navigate({
       to: res.data.uri
         ? `/${res.data.uri.split("at://")[1].replace("io.pocketenv.", "")}`

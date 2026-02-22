@@ -9,6 +9,7 @@ import {
   startSandbox,
   stopSandbox,
 } from "../api/sandbox";
+import type { Provider } from "../types/providers";
 
 export const useActorSandboxesQuery = (
   did: string,
@@ -39,10 +40,8 @@ export const useSandboxQuery = (id: string) =>
 export const useCreateSandboxMutation = () =>
   useMutation({
     mutationKey: ["createSandbox"],
-    mutationFn: async (base: string) =>
-      createSandbox({
-        base,
-      }),
+    mutationFn: async (params: { base: string; provider: Provider }) =>
+      createSandbox(params),
   });
 
 export const useClaimSandboxMutation = () =>

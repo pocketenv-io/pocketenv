@@ -40,6 +40,9 @@ export const ctx = {
   sandbox: axios.create({
     baseURL: env.SANDBOX_API_URL,
   }),
+  cfsandbox: axios.create({
+    baseURL: env.CF_SANDBOX_API_URL,
+  }),
 };
 
 export const contextMiddleware: RequestHandler = (req, _res, next) => {

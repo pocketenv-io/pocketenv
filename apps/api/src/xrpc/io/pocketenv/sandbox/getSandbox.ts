@@ -1,4 +1,4 @@
-import type { HandlerAuth } from "@atproto/xrpc-server";
+import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import type { Context } from "context";
 import type { Server } from "lexicon";
 import type {
@@ -62,7 +62,8 @@ const retrieve = ({
         .execute()
         .then(([row]) => row),
     catch: (error) =>
-      new Error(
+      new XRPCError(
+        500,
         `Failed to retrieve sandbox: ${error instanceof Error ? error.message : String(error)}`,
       ),
   });
@@ -75,6 +76,7 @@ const presentation = (
     sandbox: data?.sandboxes && {
       id: data.sandboxes.id,
       name: data.sandboxes.name,
+      provider: data.sandboxes.provider,
       displayName: data.sandboxes.displayName,
       description: data.sandboxes.description,
       baseSandbox: data.sandboxes.base,

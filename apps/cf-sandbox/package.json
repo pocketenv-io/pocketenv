@@ -12,7 +12,6 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@cloudflare/sandbox": "*",
     "@types/node": "^25.2.3",
     "@types/pg": "^8.16.0",
     "drizzle-kit": "^0.31.9",
@@ -23,10 +22,11 @@
   "license": "MIT",
   "dependencies": {
     "@cloudflare/containers": "^0.1.0",
-    "@daytonaio/sdk": "^0.140.0",
+    "@cloudflare/sandbox": "^0.7.5",
+    "@paralleldrive/cuid2": "^3.3.0",
     "@tsndr/cloudflare-worker-jwt": "^3.2.1",
     "@types/ramda": "^0.31.1",
-    "@vercel/sandbox": "^1.5.0",
+    "consola": "^3.4.2",
     "dotenv": "^17.2.4",
     "drizzle-orm": "^0.45.1",
     "effect": "^3.19.16",

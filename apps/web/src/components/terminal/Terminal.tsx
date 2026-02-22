@@ -165,6 +165,8 @@ function TerminalContent({
         const cols = instance.cols;
         const rows = instance.rows;
 
+        instance.write(`\x1b[35mConnecting to SSH session...\x1b[0m\r\n`);
+
         const response = await fetch(`${API_URL}/ssh/connect`, {
           method: "POST",
           headers: {
@@ -176,6 +178,8 @@ function TerminalContent({
           },
           body: JSON.stringify({ cols, rows }),
         });
+
+        instance.write("\r\x1b[K");
 
         if (!response.ok) {
           const err = await response.json();

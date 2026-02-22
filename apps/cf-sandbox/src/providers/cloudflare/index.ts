@@ -7,7 +7,7 @@ export class CloudflareSandbox implements BaseSandbox {
 
   private async retryWithBackoff<T>(
     fn: () => Promise<T>,
-    maxRetries: number = 5,
+    maxRetries: number = 15,
     initialDelayMs: number = 500,
   ): Promise<T> {
     let lastError: Error | null = null;

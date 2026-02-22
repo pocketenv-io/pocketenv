@@ -33,7 +33,11 @@ RUN npm install -g \
     @kilocode/cli \
     pm2
 
-ENV PATH="/root/.local/bin:${PATH}"
+RUN curl -fsSL https://deno.land/install.sh | sh
+
+RUN curl -fsSL https://bun.sh/install | bash
+
+ENV PATH="${HOME}/.deno/bin:${HOME}/.local/bin:${PATH}"
 
 WORKDIR /workspace
 

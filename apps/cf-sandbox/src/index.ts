@@ -47,7 +47,7 @@ app.use("*", async (c, next) => {
       return c.json({ error: "Unauthorized" }, 401);
     }
   } else {
-    if (!c.req.path.endsWith("/ws/terminal")) {
+    if (!c.req.path.endsWith("/ws/terminal") && c.req.path !== "/") {
       consola.warn("No Authorization header found");
       return c.json({ error: "Unauthorized" }, 401);
     }

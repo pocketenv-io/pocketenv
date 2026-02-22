@@ -52,7 +52,7 @@ ENV COMMAND_TIMEOUT_MS=300000
 
 # Required during local development to access exposed ports
 EXPOSE 8080
-EXPOSE 3000
 EXPOSE 18789
+EXPOSE 3000/tcp
 
 ENTRYPOINT ["/sandbox"]

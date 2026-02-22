@@ -66,7 +66,7 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                 <span className="icon-[tabler--x] size-4"></span>
               </button>
             </div>
-            <div className="modal-body " style={{ height: "60vh" }}>
+            <div className="modal-body " style={{ height: 300 }}>
               <>
                 <div className="form-control w-full">
                   <label className="label">

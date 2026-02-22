@@ -3,7 +3,8 @@ import { useEffect, useRef, useMemo, useState } from "react";
 import { useXTerm } from "react-xtermjs";
 import { FitAddon } from "@xterm/addon-fit";
 import { SandboxAddon } from "@cloudflare/sandbox/xterm";
-import { API_URL, CF_URL } from "../../consts";
+import { CF_URL } from "../../consts";
+import { useTerminalTokenQuery } from "../../hooks/useTerminal";
 
 const darkTheme = {
   background: "#06051d",
@@ -72,6 +73,7 @@ function TerminalContent({
 }: TerminalContentProps) {
   const fitAddonRef = useRef<FitAddon | null>(null);
   const sandboxAddonRef = useRef<SandboxAddon | null>(null);
+  const { data: terminalToken, isLoading } = useTerminalTokenQuery();
 
   const theme = isDarkMode ? darkTheme : lightTheme;
 
@@ -94,7 +96,7 @@ function TerminalContent({
   const { ref, instance } = useXTerm({ options });
 
   useEffect(() => {
-    if (!instance) return;
+    if (!instance || isLoading) return;
 
     const fitAddon = new FitAddon();
     fitAddonRef.current = fitAddon;
@@ -104,7 +106,12 @@ function TerminalContent({
       getWebSocketUrl: ({ sandboxId: addonSandboxId, sessionId }) => {
         const params = new URLSearchParams({});
         if (sessionId) params.set("session", sessionId);
-        return `${CF_URL}/v1/sandboxes/${addonSandboxId}/ws/terminal`;
+        if (terminalToken) params.set("t", terminalToken.token);
+        const url = new URL(
+          `${CF_URL}/v1/sandboxes/${addonSandboxId}/ws/terminal`,
+        );
+        url.search = params.toString();
+        return url.toString();
       },
       onStateChange: (state, error) => {
         if (error) {
@@ -153,7 +160,7 @@ function TerminalContent({
       disposable?.dispose?.();
       sandboxAddonRef.current = null;
     };
-  }, [instance, sandboxId, onClose]);
+  }, [instance, sandboxId, onClose, isLoading]);
 
   return (
     <div

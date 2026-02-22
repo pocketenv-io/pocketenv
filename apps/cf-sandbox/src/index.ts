@@ -166,7 +166,10 @@ app.post("/v1/sandboxes", async (c) => {
 });
 
 app.get("/v1/sandboxes/:sandboxId", async (c) => {
-  const record = await getSandboxById(c.var.db, c.req.param("sandboxId"));
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
   return c.json(record);
 });
 
@@ -180,7 +183,10 @@ app.get("/v1/sandboxes", async (c) => {
 });
 
 app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
-  const record = await getSandboxById(c.var.db, c.req.param("sandboxId"));
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
 
   if (!record) {
     return c.json({ error: "Sandbox not found" }, 404);
@@ -217,7 +223,10 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 });
 
 app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
-  const record = await getSandboxById(c.var.db, c.req.param("sandboxId"));
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
 
   if (!record) {
     return c.json({ error: "Sandbox not found" }, 404);
@@ -253,7 +262,10 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
 });
 
 app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
-  const record = await getSandboxById(c.var.db, c.req.param("sandboxId"));
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
 
   if (!record) {
     return c.json({ error: "Sandbox not found" }, 404);
@@ -281,7 +293,10 @@ app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
 });
 
 app.delete("/v1/sandboxes/:sandboxId", async (c) => {
-  const record = await getSandboxById(c.var.db, c.req.param("sandboxId"));
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
 
   if (!record) {
     return c.json({ error: "Sandbox not found" }, 404);
@@ -317,6 +332,22 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
   if (c.req.header("upgrade")?.toLowerCase() !== "websocket") {
     return c.text("Expected WebSocket connection", 426);
   }
+  const token = c.req.query("t");
+  if (token) {
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET!);
+
+    const { sandboxes: record, users: user } = await getSandboxById(
+      c.var.db,
+      c.req.param("sandboxId"),
+    );
+    if (!record) {
+      return c.text("Sandbox not found", 404);
+    }
+
+    if (record.userId && user && user?.did !== decoded?.payload?.sub) {
+      return c.text("Unauthorized", 403);
+    }
+  }
 
   const sandbox = getSandbox(c.env.Sandbox, c.req.param("sandboxId"));
   const sessionId = c.req.query("session");
@@ -337,6 +368,7 @@ export const getSandboxById = async (db: Context["db"], sandboxId: string) => {
   const [record] = await db
     .select()
     .from(sandboxes)
+    .leftJoin(users, eq(sandboxes.userId, users.id))
     .where(or(eq(sandboxes.id, sandboxId), eq(sandboxes.sandbox_id, sandboxId)))
     .execute();
 

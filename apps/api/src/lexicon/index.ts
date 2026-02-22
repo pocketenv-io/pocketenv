@@ -11,6 +11,7 @@ import {
 import { schemas } from "./lexicons";
 import type * as IoPocketenvActorGetActorSandboxes from "./types/io/pocketenv/actor/getActorSandboxes";
 import type * as IoPocketenvActorGetProfile from "./types/io/pocketenv/actor/getProfile";
+import type * as IoPocketenvActorGetTerminalToken from "./types/io/pocketenv/actor/getTerminalToken";
 import type * as IoPocketenvSandboxClaimSandbox from "./types/io/pocketenv/sandbox/claimSandbox";
 import type * as IoPocketenvSandboxCreateSandbox from "./types/io/pocketenv/sandbox/createSandbox";
 import type * as IoPocketenvSandboxDeleteSandbox from "./types/io/pocketenv/sandbox/deleteSandbox";
@@ -85,6 +86,17 @@ export class IoPocketenvActorNS {
     >,
   ) {
     const nsid = "io.pocketenv.actor.getProfile"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  getTerminalToken<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvActorGetTerminalToken.Handler<ExtractAuth<AV>>,
+      IoPocketenvActorGetTerminalToken.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.actor.getTerminalToken"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 }

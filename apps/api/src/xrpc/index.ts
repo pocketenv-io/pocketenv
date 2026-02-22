@@ -9,6 +9,7 @@ import stopSandbox from "./io/pocketenv/sandbox/stopSandbox";
 import claimSandbox from "./io/pocketenv/sandbox/claimSandbox";
 import getProfile from "./io/pocketenv/actor/getProfile";
 import getActorSandboxes from "./io/pocketenv/actor/getActorSandboxes";
+import getTerminalToken from "./io/pocketenv/actor/getTerminalToken";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
@@ -21,6 +22,7 @@ export default function (server: Server, ctx: Context) {
   stopSandbox(server, ctx);
   claimSandbox(server, ctx);
   getProfile(server, ctx);
+  getTerminalToken(server, ctx);
 
   return server;
 }

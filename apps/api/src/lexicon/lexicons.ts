@@ -125,6 +125,33 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvActorGetTerminalToken: {
+    lexicon: 1,
+    id: "io.pocketenv.actor.getTerminalToken",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get a terminal token",
+        parameters: {
+          type: "params",
+          properties: {},
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              token: {
+                type: "string",
+                description:
+                  "An access token that can be used to authenticate with the terminal service. This token is typically short-lived and should be used immediately to establish a connection with the terminal.",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   AppBskyActorProfile: {
     lexicon: 1,
     id: "app.bsky.actor.profile",
@@ -839,6 +866,7 @@ export const ids = {
   IoPocketenvActorDefs: "io.pocketenv.actor.defs",
   IoPocketenvActorGetActorSandboxes: "io.pocketenv.actor.getActorSandboxes",
   IoPocketenvActorGetProfile: "io.pocketenv.actor.getProfile",
+  IoPocketenvActorGetTerminalToken: "io.pocketenv.actor.getTerminalToken",
   AppBskyActorProfile: "app.bsky.actor.profile",
   IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",
   IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",

@@ -20,7 +20,7 @@ export default function (server: Server, ctx: Context) {
       throw new XRPCError(404, "Sandbox not found", "SandboxNotFound");
     }
 
-    let sandbox =
+    const sandbox =
       record.provider === Providers.CLOUDFLARE ? ctx.cfsandbox : ctx.sandbox;
 
     await sandbox.post(`/v1/sandboxes/${params.id}/start`, undefined, {

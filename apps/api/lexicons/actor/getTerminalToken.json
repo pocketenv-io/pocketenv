@@ -1,0 +1,26 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.actor.getTerminalToken",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get a terminal token",
+      "parameters": {
+        "type": "params",
+        "properties": {}
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "token": {
+              "type": "string",
+              "description": "An access token that can be used to authenticate with the terminal service. This token is typically short-lived and should be used immediately to establish a connection with the terminal."
+            }
+          }
+        }
+      }
+    }
+  }
+}

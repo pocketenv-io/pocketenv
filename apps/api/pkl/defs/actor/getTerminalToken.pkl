@@ -1,0 +1,22 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.actor.getTerminalToken"
+defs = new Mapping<String, Query> {
+  ["main"] {
+    type = "query"
+    description = "Get a terminal token"
+    output {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        properties {
+          ["token"] = new StringType {
+            type = "string"
+            description = "An access token that can be used to authenticate with the terminal service. This token is typically short-lived and should be used immediately to establish a connection with the terminal."
+          }
+        }
+      }
+    }
+  }
+}

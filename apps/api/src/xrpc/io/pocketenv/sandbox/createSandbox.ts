@@ -22,7 +22,7 @@ export default function (server: Server, ctx: Context) {
     let res;
     try {
       const provider = input.body.provider || Providers.CLOUDFLARE;
-      let sandbox =
+      const sandbox =
         provider === Providers.CLOUDFLARE ? ctx.cfsandbox : ctx.sandbox;
       res = await sandbox.post(
         "/v1/sandboxes",

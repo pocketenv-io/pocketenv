@@ -41,6 +41,10 @@ app.use("*", async (c, next) => {
       const decoded = await jwt.verify(token, process.env.JWT_SECRET!);
       c.set("did", decoded?.payload.sub);
     } catch (err) {
+      if (c.req.path === "/") {
+        await next();
+        return;
+      }
       consola.error("JWT verification failed:", err);
       return c.json({ error: "Unauthorized" }, 401);
     }

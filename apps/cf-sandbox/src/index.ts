@@ -25,7 +25,6 @@ import { PgTransaction } from "drizzle-orm/pg-core";
 import { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import jwt from "@tsndr/cloudflare-worker-jwt";
 import { consola } from "consola";
-import { createId } from "@paralleldrive/cuid2";
 
 type Bindings = {
   Sandbox: DurableObjectNamespace<Sandbox<Env>>;

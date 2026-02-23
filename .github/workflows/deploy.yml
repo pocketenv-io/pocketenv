@@ -1,0 +1,33 @@
+
+name: Deploy Cloudflare Worker
+on:
+  push:
+	branches:
+	  - main
+	paths:
+	  - 'apps/cf-sandbox/**'
+		- '.github/workflows/deploy.yml'
+
+jobs:
+  deploy:
+	runs-on: ubuntu-latest
+	steps:
+	  - name: Checkout repository
+		uses: actions/checkout@v4
+
+	  - name: Set up Docker Buildx
+		uses: docker/setup-buildx-action@v3
+
+	  - name: Set up Bun
+		uses: oven-sh/setup-bun@v1
+
+	  - name: Install dependencies
+		working-directory: apps/cf-sandbox
+		run: bun install
+
+	  - name: Deploy to Cloudflare Workers
+		working-directory: apps/cf-sandbox
+		env:
+		  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+		run: |
+		  bunx wrangler deploy --api-token $CLOUDFLARE_API_TOKEN

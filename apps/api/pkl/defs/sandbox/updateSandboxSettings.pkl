@@ -1,0 +1,88 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.updateSandboxSettings"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    description = "Update sandbox settings"
+    input {
+      encoding = "application/json"
+      schema {
+        type = "object"
+        properties {
+          ["name"] = new StringType {
+            type = "string"
+            description = "The name of the sandbox"
+            minLength = 1
+          }
+          ["description"] = new StringType {
+            type = "string"
+            description = "A description for the sandbox"
+          }
+          ["topics"] = new Array {
+            type = "array"
+            description = "A list of topics/tags to associate with the sandbox"
+            items = new StringType {
+              type = "string"
+              maxLength = 50
+            }
+          }
+          ["repo"] = new StringType {
+            type = "string"
+            description =
+              "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo."
+            format = "uri"
+          }
+          ["vcpus"] = new IntegerType {
+            type = "integer"
+            description = "The number of virtual CPUs to allocate for the sandbox"
+            minimum = 1
+          }
+          ["memory"] = new IntegerType {
+            type = "integer"
+            description = "The amount of memory (in GB) to allocate for the sandbox"
+            minimum = 1
+          }
+          ["disk"] = new IntegerType {
+            type = "integer"
+            description = "The amount of disk space (in GB) to allocate for the sandbox"
+            minimum = 3
+          }
+          ["readme"] = new StringType {
+            type = "string"
+            description = "A URI to a README for the sandbox."
+            format = "uri"
+          }
+          ["secrets"] = new Ref {
+            type = "ref"
+            ref = "io.pocketenv.sandbox.defs#secrets"
+            description = "A list of secrets to add to the sandbox"
+          }
+          ["envs"] = new Ref {
+            type = "ref"
+            ref = "io.pocketenv.sandbox.defs#envs"
+            description = "A list of environment variables to add to the sandbox"
+          }
+          ["files"] = new Ref {
+            type = "ref"
+            ref = "io.pocketenv.sandbox.defs#file"
+            description = "A list of files to add to the sandbox"
+          }
+          ["volumes"] = new Ref {
+            type = "ref"
+            ref = "io.pocketenv.sandbox.defs#volumes"
+            description = "A list of volumes to add to the sandbox"
+          }
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new Ref {
+        type = "ref"
+        ref = "io.pocketenv.sandbox.defs#profileViewDetailed"
+      }
+    }
+  }
+}

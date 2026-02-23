@@ -213,6 +213,59 @@
         }
       }
     },
+    "file": {
+      "type": "object",
+      "required": [
+        "path",
+        "content"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc."
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the file. This will be written to the specified path within the sandbox. The content should be base64 encoded if it's binary data."
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "ref",
+        "description": "A file to add to the sandbox",
+        "ref": "io.pocketenv.sandbox.defs#file"
+      }
+    },
+    "volumes": {
+      "type": "array",
+      "items": {
+        "type": "ref",
+        "description": "A volume to add to the sandbox",
+        "ref": "io.pocketenv.sandbox.defs#volume"
+      }
+    },
+    "volume": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the volume, e.g. 'data-volume', 'logs', etc."
+        },
+        "path": {
+          "type": "string",
+          "description": "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc."
+        },
+        "readOnly": {
+          "type": "boolean",
+          "description": "Whether the volume should be mounted as read-only"
+        }
+      }
+    },
     "secrets": {
       "type": "array",
       "items": {

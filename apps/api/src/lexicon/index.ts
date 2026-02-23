@@ -19,6 +19,7 @@ import type * as IoPocketenvSandboxGetSandbox from "./types/io/pocketenv/sandbox
 import type * as IoPocketenvSandboxGetSandboxes from "./types/io/pocketenv/sandbox/getSandboxes";
 import type * as IoPocketenvSandboxStartSandbox from "./types/io/pocketenv/sandbox/startSandbox";
 import type * as IoPocketenvSandboxStopSandbox from "./types/io/pocketenv/sandbox/stopSandbox";
+import type * as IoPocketenvSandboxUpdateSandboxSettings from "./types/io/pocketenv/sandbox/updateSandboxSettings";
 
 export function createServer(options?: XrpcOptions): Server {
   return new Server(options);
@@ -182,6 +183,17 @@ export class IoPocketenvSandboxNS {
     >,
   ) {
     const nsid = "io.pocketenv.sandbox.stopSandbox"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  updateSandboxSettings<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxUpdateSandboxSettings.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxUpdateSandboxSettings.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.updateSandboxSettings"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 }

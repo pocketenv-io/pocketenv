@@ -211,6 +211,56 @@ defs = new Mapping<String, ObjectType | Array> {
       }
     }
   }
+  ["file"] = new ObjectType {
+    type = "object"
+    required = List("path", "content")
+    properties {
+      ["path"] = new StringType {
+        type = "string"
+        description = "The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc."
+      }
+      ["content"] = new StringType {
+        type = "string"
+        description =
+          "The content of the file. This will be written to the specified path within the sandbox. The content should be base64 encoded if it's binary data."
+      }
+    }
+  }
+  ["files"] = new Array {
+    type = "array"
+    items = new Ref {
+      type = "ref"
+      ref = "io.pocketenv.sandbox.defs#file"
+      description = "A file to add to the sandbox"
+    }
+  }
+   ["volumes"] = new Array {
+    type = "array"
+    items = new Ref {
+      type = "ref"
+      ref = "io.pocketenv.sandbox.defs#volume"
+      description = "A volume to add to the sandbox"
+    }
+  }
+  ["volume"] = new ObjectType {
+    type = "object"
+    required = List("name")
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "Name of the volume, e.g. 'data-volume', 'logs', etc."
+      }
+      ["path"] = new StringType {
+        type = "string"
+        description =
+          "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc."
+      }
+       ["readOnly"] = new BooleanType {
+        type = "boolean"
+        description = "Whether the volume should be mounted as read-only"
+       }
+    }
+  }
   ["secrets"] = new Array {
     type = "array"
     items = new Ref {

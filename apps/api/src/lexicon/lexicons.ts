@@ -550,6 +550,57 @@ export const schemaDict = {
           },
         },
       },
+      file: {
+        type: "object",
+        required: ["path", "content"],
+        properties: {
+          path: {
+            type: "string",
+            description:
+              "The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc.",
+          },
+          content: {
+            type: "string",
+            description:
+              "The content of the file. This will be written to the specified path within the sandbox. The content should be base64 encoded if it's binary data.",
+          },
+        },
+      },
+      files: {
+        type: "array",
+        items: {
+          type: "ref",
+          description: "A file to add to the sandbox",
+          ref: "lex:io.pocketenv.sandbox.defs#file",
+        },
+      },
+      volumes: {
+        type: "array",
+        items: {
+          type: "ref",
+          description: "A volume to add to the sandbox",
+          ref: "lex:io.pocketenv.sandbox.defs#volume",
+        },
+      },
+      volume: {
+        type: "object",
+        required: ["name"],
+        properties: {
+          name: {
+            type: "string",
+            description: "Name of the volume, e.g. 'data-volume', 'logs', etc.",
+          },
+          path: {
+            type: "string",
+            description:
+              "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc.",
+          },
+          readOnly: {
+            type: "boolean",
+            description: "Whether the volume should be mounted as read-only",
+          },
+        },
+      },
       secrets: {
         type: "array",
         items: {
@@ -744,6 +795,38 @@ export const schemaDict = {
               description:
                 "Amount of disk space in GB allocated to the sandbox",
             },
+            volumes: {
+              type: "array",
+              items: {
+                type: "string",
+                description:
+                  "A path to be mounted as a volume in the sandbox, e.g. '/data', '/logs', etc.",
+              },
+            },
+            ports: {
+              type: "array",
+              items: {
+                type: "integer",
+                description:
+                  "A port number that is exposed by the sandbox environment.",
+              },
+            },
+            secrets: {
+              type: "array",
+              items: {
+                type: "string",
+                description:
+                  "Name of a secret to be added to the sandbox environment. Secrets are typically encrypted and stored securely, and can be used to store sensitive information such as API keys, database credentials, etc.",
+              },
+            },
+            envs: {
+              type: "array",
+              items: {
+                type: "string",
+                description:
+                  "Name of an environment variable to be added to the sandbox environment.",
+              },
+            },
             createdAt: {
               type: "string",
               format: "datetime",
@@ -802,6 +885,99 @@ export const schemaDict = {
           schema: {
             type: "ref",
             ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxUpdateSandboxSettings: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.updateSandboxSettings",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Update sandbox settings",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              name: {
+                type: "string",
+                description: "The name of the sandbox",
+                minLength: 1,
+              },
+              description: {
+                type: "string",
+                description: "A description for the sandbox",
+              },
+              topics: {
+                type: "array",
+                description:
+                  "A list of topics/tags to associate with the sandbox",
+                items: {
+                  type: "string",
+                  maxLength: 50,
+                },
+              },
+              repo: {
+                type: "string",
+                description:
+                  "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+                format: "uri",
+              },
+              vcpus: {
+                type: "integer",
+                description:
+                  "The number of virtual CPUs to allocate for the sandbox",
+                minimum: 1,
+              },
+              memory: {
+                type: "integer",
+                description:
+                  "The amount of memory (in GB) to allocate for the sandbox",
+                minimum: 1,
+              },
+              disk: {
+                type: "integer",
+                description:
+                  "The amount of disk space (in GB) to allocate for the sandbox",
+                minimum: 3,
+              },
+              readme: {
+                type: "string",
+                description: "A URI to a README for the sandbox.",
+                format: "uri",
+              },
+              secrets: {
+                type: "ref",
+                description: "A list of secrets to add to the sandbox",
+                ref: "lex:io.pocketenv.sandbox.defs#secrets",
+              },
+              envs: {
+                type: "ref",
+                description:
+                  "A list of environment variables to add to the sandbox",
+                ref: "lex:io.pocketenv.sandbox.defs#envs",
+              },
+              files: {
+                type: "ref",
+                description: "A list of files to add to the sandbox",
+                ref: "lex:io.pocketenv.sandbox.defs#file",
+              },
+              volumes: {
+                type: "ref",
+                description: "A list of volumes to add to the sandbox",
+                ref: "lex:io.pocketenv.sandbox.defs#volumes",
+              },
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#profileViewDetailed",
           },
         },
       },
@@ -877,6 +1053,8 @@ export const ids = {
   IoPocketenvSandbox: "io.pocketenv.sandbox",
   IoPocketenvSandboxStartSandbox: "io.pocketenv.sandbox.startSandbox",
   IoPocketenvSandboxStopSandbox: "io.pocketenv.sandbox.stopSandbox",
+  IoPocketenvSandboxUpdateSandboxSettings:
+    "io.pocketenv.sandbox.updateSandboxSettings",
   IoPocketenvPublicKey: "io.pocketenv.publicKey",
   ComAtprotoRepoStrongRef: "com.atproto.repo.strongRef",
 };

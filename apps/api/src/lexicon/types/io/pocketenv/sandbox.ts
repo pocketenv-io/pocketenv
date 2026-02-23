@@ -29,6 +29,10 @@ export interface Record {
   memory?: number;
   /** Amount of disk space in GB allocated to the sandbox */
   disk?: number;
+  volumes?: string[];
+  ports?: number[];
+  secrets?: string[];
+  envs?: string[];
   createdAt: string;
   [k: string]: unknown;
 }

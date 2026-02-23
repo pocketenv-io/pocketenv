@@ -135,5 +135,50 @@ export function validateEnvVar(v: unknown): ValidationResult {
   return lexicons.validate("io.pocketenv.sandbox.defs#envVar", v);
 }
 
+export interface File {
+  /** The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc. */
+  path: string;
+  /** The content of the file. This will be written to the specified path within the sandbox. The content should be base64 encoded if it's binary data. */
+  content: string;
+  [k: string]: unknown;
+}
+
+export function isFile(v: unknown): v is File {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#file"
+  );
+}
+
+export function validateFile(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#file", v);
+}
+
+export type Files = File[];
+export type Volumes = Volume[];
+
+export interface Volume {
+  /** Name of the volume, e.g. 'data-volume', 'logs', etc. */
+  name: string;
+  /** The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc. */
+  path?: string;
+  /** Whether the volume should be mounted as read-only */
+  readOnly?: boolean;
+  [k: string]: unknown;
+}
+
+export function isVolume(v: unknown): v is Volume {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#volume"
+  );
+}
+
+export function validateVolume(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#volume", v);
+}
+
 export type Secrets = Secret[];
 export type Envs = EnvVar[];

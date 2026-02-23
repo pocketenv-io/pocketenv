@@ -24,45 +24,31 @@ With Pocketenv, sandboxes become portable, shareable, and open.
 
 ## Key Features
 
-### Secure isolated environments
+- **Secure Isolated Environments**  
+  Run commands, agents, and code safely inside isolated sandboxes with strong separation.
 
-Run commands, agents, and code safely in isolated sandboxes.
+- **Vendor-Agnostic Abstraction**  
+  Run sandboxes transparently on Daytona, Cloudflare Sandbox, Vercel Sandbox, Deno Sandbox — and more coming.  
+  No provider lock-in.
 
-### Vendor-agnostic abstraction
+- **Agent-Native Design**  
+  Built for modern AI workflows:  
+  - OpenClaw  
+  - Codex CLI  
+  - Claude Code  
+  - Gemini CLI  
+  - Copilot CLI  
+  - …and your custom agents
 
-Pocketenv can run sandboxes on different providers transparently:
-- Daytona
-- Cloudflare Sandbox
-- Vercel Sandbox
-- Deno Sandbox
-- And more to come!
+- **Open Sandbox Definitions via AT Protocol**  
+  Sandboxes defined with open lexicons and stored on AT Protocol PDS. Enables discoverable, shareable, versioned sandboxes and a growing community ecosystem.
 
-No provider lock-in.
+## Example Use Cases
 
-### Agent-native design
-
-Pocketenv is designed for AI workflows:
-- Run OpenClaw
-- Run Codex CLI
-- Run Claude Code
-- Run Gemini CLI
-- Run Copilot CLI
-- Run custom agents
-
-### Open sandbox definitions via AT Protocol
-
-Sandboxes are defined using open lexicons and stored on [AT Protocol](https://atproto.com) PDS.
-
-This enables:
-- Discoverable sandboxes
-- Shareable sandboxes
-- Versioned sandboxes
-- Community ecosystem
-
-### Example Use Cases
-- Prototype AI agents safely
-- Run Codex / Claude / Gemini in isolation
-- Test untrusted code securely
-- Share reproducible dev environments
-- Run temporary dev environments
-- Provide sandbox infrastructure for your app
+- Prototype and run **OpenClaw** agents safely in isolated environments
+- Prototype AI agents in complete safety
+- Run Codex / Claude / Gemini / OpenClaw code in isolation
+- Securely test untrusted or third-party code
+- Share reproducible developer environments
+- Spin up temporary / ephemeral dev sandboxes
+- Provide sandbox infrastructure as a service for your application

@@ -41,7 +41,7 @@ With Pocketenv, sandboxes become portable, shareable, and open.
   - …and your custom agents
 
 - **Open Sandbox Definitions via AT Protocol**  
-  Sandboxes defined with open lexicons and stored on AT Protocol PDS. Enables discoverable, shareable, versioned sandboxes and a growing community ecosystem.
+  Sandboxes defined with open lexicons and stored on [AT Protocol](https://atproto.com) PDS. Enables discoverable, shareable, versioned sandboxes and a growing community ecosystem.
 
 ## Example Use Cases
 

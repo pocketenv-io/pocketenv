@@ -23,7 +23,7 @@ Pocketenv solves this by providing:
 - A unified sandbox interface
 - Open, portable sandbox definitions
 - Vendor-agnostic execution
-- Interoperability via AT Protocol lexicons
+- Interoperability via [AT Protocol](https://atproto.com) lexicons
 - A platform designed for both AI agents and humans
 
 With Pocketenv, sandboxes become portable, shareable, and open.
@@ -55,9 +55,9 @@ Pocketenv is designed for AI workflows:
 - Run Copilot CLI
 - Run custom agents
 
-### Open sandbox definitions via AT Protocol
+### Open sandbox definitions via [AT Protocol](https://atproto.com)
 
-Sandboxes are defined using open lexicons and stored on AT Protocol PDS.
+Sandboxes are defined using open lexicons and stored on [AT Protocol](https://atproto.com) PDS.
 
 This enables:
 - Discoverable sandboxes

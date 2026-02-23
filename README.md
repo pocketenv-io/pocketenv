@@ -1,12 +1,8 @@
 ![](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExb25lY3R1dmVyczRwMmE5a204cmlkcjVmazluZ3V3MDE3YzNyMW1oaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uWLJEGCSWdmvK/giphy.gif)
 
-# Pocketenv
-
-[![Deploy Cloudflare Worker](https://github.com/pocketenv-io/pocketenv/actions/workflows/deploy.yml/badge.svg)](https://github.com/pocketenv-io/pocketenv/actions/workflows/deploy.yml)
-
 ![Preview](./pocketenv.png)
 
-an open, interoperable sandbox platform for agents and humans.
+Pocketenv is an open, interoperable sandbox platform for agents and humans.
 Run code, test ideas, and prototype safely in isolated environments — without worrying about vendor lock-in.
 
 > [!NOTE]

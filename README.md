@@ -55,7 +55,7 @@ Pocketenv is designed for AI workflows:
 - Run Copilot CLI
 - Run custom agents
 
-### Open sandbox definitions via [AT Protocol](https://atproto.com)
+### Open sandbox definitions via AT Protocol
 
 Sandboxes are defined using open lexicons and stored on [AT Protocol](https://atproto.com) PDS.
 

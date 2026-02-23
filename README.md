@@ -1,7 +1,5 @@
 ![](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExb25lY3R1dmVyczRwMmE5a204cmlkcjVmazluZ3V3MDE3YzNyMW1oaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uWLJEGCSWdmvK/giphy.gif)
 
-![Preview](./pocketenv.png)
-
 Pocketenv is an open, interoperable sandbox platform for agents and humans.
 Run code, test ideas, and prototype safely in isolated environments — without worrying about vendor lock-in.
 

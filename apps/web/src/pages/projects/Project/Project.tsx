@@ -79,7 +79,10 @@ function Project({ sandbox }: ProjectProps) {
       </td>
       <td>{dayjs(sandbox.createdAt).format("M/D/YYYY, h:mm:ss A")}</td>
       <td className="align-middle">
-        <div className="flex items-center justify-center p-1">
+        <div
+          className="flex items-center justify-center p-1"
+          onClick={(e) => e.stopPropagation()}
+        >
           {!displayLoading && sandbox.status === "RUNNING" && (
             <button
               className="btn btn-circle btn-text btn-sm bg-transparent outline-0"

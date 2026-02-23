@@ -93,8 +93,9 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
                       </span>
                     </label>
                     <textarea
-                      className="textarea max-w-full h-[250px]"
+                      className="textarea max-w-full h-[250px] text-[14px] font-semibold"
                       aria-label="Textarea"
+                      placeholder="Secret Value"
                     ></textarea>
                   </div>
                 </div>

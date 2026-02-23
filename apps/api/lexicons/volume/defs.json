@@ -1,0 +1,34 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.volume.defs",
+  "defs": {
+    "volumes": {
+      "type": "array",
+      "items": {
+        "type": "ref",
+        "description": "A volume to add to the sandbox",
+        "ref": "io.pocketenv.volume.defs#volume"
+      }
+    },
+    "volume": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the volume, e.g. 'data-volume', 'logs', etc."
+        },
+        "path": {
+          "type": "string",
+          "description": "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc."
+        },
+        "readOnly": {
+          "type": "boolean",
+          "description": "Whether the volume should be mounted as read-only"
+        }
+      }
+    }
+  }
+}

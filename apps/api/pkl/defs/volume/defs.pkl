@@ -1,0 +1,33 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.volume.defs"
+defs = new Mapping<String, Array | ObjectType | StringType | BooleanType> {
+  ["volumes"] = new Array {
+    type = "array"
+    items = new Ref {
+      type = "ref"
+      ref = "io.pocketenv.volume.defs#volume"
+      description = "A volume to add to the sandbox"
+    }
+  }
+  ["volume"] = new ObjectType {
+    type = "object"
+    required = List("name")
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "Name of the volume, e.g. 'data-volume', 'logs', etc."
+      }
+      ["path"] = new StringType {
+        type = "string"
+        description =
+          "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc."
+      }
+       ["readOnly"] = new BooleanType {
+        type = "boolean"
+        description = "Whether the volume should be mounted as read-only"
+       }
+    }
+  }
+}

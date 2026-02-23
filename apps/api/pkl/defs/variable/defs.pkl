@@ -1,0 +1,29 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.variable.defs"
+defs = new Mapping<String, StringType | Array | ObjectType> {
+  ["variable"] = new ObjectType {
+    type = "object"
+    required = List("name", "value")
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc."
+      }
+      ["value"] = new StringType {
+        type = "string"
+        description =
+          "Value of the environment variable. This will be visible in API responses and should not contain sensitive information."
+      }
+    }
+  }
+   ["variables"] = new Array {
+    type = "array"
+    items = new Ref {
+      type = "ref"
+      ref = "io.pocketenv.variable.defs#envVar"
+      description = "An environment variable to add to the sandbox"
+    }
+  }
+}

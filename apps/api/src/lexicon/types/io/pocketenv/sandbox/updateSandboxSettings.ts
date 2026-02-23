@@ -7,6 +7,10 @@ import { lexicons } from "../../../../lexicons";
 import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
 import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
+import type * as IoPocketenvSecretDefs from "../secret/defs";
+import type * as IoPocketenvVariableDefs from "../variable/defs";
+import type * as IoPocketenvFileDefs from "../file/defs";
+import type * as IoPocketenvVolumeDefs from "../volume/defs";
 import type * as IoPocketenvSandboxDefs from "./defs";
 
 export type QueryParams = {};
@@ -28,10 +32,10 @@ export interface InputSchema {
   disk?: number;
   /** A URI to a README for the sandbox. */
   readme?: string;
-  secrets?: IoPocketenvSandboxDefs.Secrets;
-  envs?: IoPocketenvSandboxDefs.Envs;
-  files?: IoPocketenvSandboxDefs.File;
-  volumes?: IoPocketenvSandboxDefs.Volumes;
+  secrets?: IoPocketenvSecretDefs.Secrets;
+  variables?: IoPocketenvVariableDefs.Variables;
+  files?: IoPocketenvFileDefs.File;
+  volumes?: IoPocketenvVolumeDefs.Volumes;
   [k: string]: unknown;
 }
 

@@ -56,22 +56,22 @@ defs = new Mapping<String, Procedure> {
           }
           ["secrets"] = new Ref {
             type = "ref"
-            ref = "io.pocketenv.sandbox.defs#secrets"
+            ref = "io.pocketenv.secret.defs#secrets"
             description = "A list of secrets to add to the sandbox"
           }
-          ["envs"] = new Ref {
+          ["variables"] = new Ref {
             type = "ref"
-            ref = "io.pocketenv.sandbox.defs#envs"
+            ref = "io.pocketenv.variable.defs#variables"
             description = "A list of environment variables to add to the sandbox"
           }
           ["files"] = new Ref {
             type = "ref"
-            ref = "io.pocketenv.sandbox.defs#file"
+            ref = "io.pocketenv.file.defs#file"
             description = "A list of files to add to the sandbox"
           }
           ["volumes"] = new Ref {
             type = "ref"
-            ref = "io.pocketenv.sandbox.defs#volumes"
+            ref = "io.pocketenv.volume.defs#volumes"
             description = "A list of volumes to add to the sandbox"
           }
         }

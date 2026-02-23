@@ -1,0 +1,31 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.file.defs",
+  "defs": {
+    "file": {
+      "type": "object",
+      "required": [
+        "path",
+        "content"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc."
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the file. This will be written to the specified path within the sandbox. The content should be base64 encoded if it's binary data."
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "ref",
+        "description": "A file to add to the sandbox",
+        "ref": "io.pocketenv.file.defs#file"
+      }
+    }
+  }
+}

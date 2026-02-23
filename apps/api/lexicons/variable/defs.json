@@ -1,0 +1,31 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.variable.defs",
+  "defs": {
+    "variable": {
+      "type": "object",
+      "required": [
+        "name",
+        "value"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc."
+        },
+        "value": {
+          "type": "string",
+          "description": "Value of the environment variable. This will be visible in API responses and should not contain sensitive information."
+        }
+      }
+    },
+    "variables": {
+      "type": "array",
+      "items": {
+        "type": "ref",
+        "description": "An environment variable to add to the sandbox",
+        "ref": "io.pocketenv.variable.defs#envVar"
+      }
+    }
+  }
+}

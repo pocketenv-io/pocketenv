@@ -55,22 +55,22 @@
             "secrets": {
               "type": "ref",
               "description": "A list of secrets to add to the sandbox",
-              "ref": "io.pocketenv.sandbox.defs#secrets"
+              "ref": "io.pocketenv.secret.defs#secrets"
             },
-            "envs": {
+            "variables": {
               "type": "ref",
               "description": "A list of environment variables to add to the sandbox",
-              "ref": "io.pocketenv.sandbox.defs#envs"
+              "ref": "io.pocketenv.variable.defs#variables"
             },
             "files": {
               "type": "ref",
               "description": "A list of files to add to the sandbox",
-              "ref": "io.pocketenv.sandbox.defs#file"
+              "ref": "io.pocketenv.file.defs#file"
             },
             "volumes": {
               "type": "ref",
               "description": "A list of volumes to add to the sandbox",
-              "ref": "io.pocketenv.sandbox.defs#volumes"
+              "ref": "io.pocketenv.volume.defs#volumes"
             }
           }
         }

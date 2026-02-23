@@ -207,6 +207,36 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvFileDefs: {
+    lexicon: 1,
+    id: "io.pocketenv.file.defs",
+    defs: {
+      file: {
+        type: "object",
+        required: ["path", "content"],
+        properties: {
+          path: {
+            type: "string",
+            description:
+              "The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc.",
+          },
+          content: {
+            type: "string",
+            description:
+              "The content of the file. This will be written to the specified path within the sandbox. The content should be base64 encoded if it's binary data.",
+          },
+        },
+      },
+      files: {
+        type: "array",
+        items: {
+          type: "ref",
+          description: "A file to add to the sandbox",
+          ref: "lex:io.pocketenv.file.defs#file",
+        },
+      },
+    },
+  },
   IoPocketenvSandboxClaimSandbox: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.claimSandbox",
@@ -516,105 +546,6 @@ export const schemaDict = {
             description: "The user who created the sandbox",
             ref: "lex:io.pocketenv.user.defs#userViewBasic",
           },
-        },
-      },
-      secret: {
-        type: "object",
-        required: ["name", "value"],
-        properties: {
-          name: {
-            type: "string",
-            description:
-              "Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc.",
-          },
-          value: {
-            type: "string",
-            description:
-              "Value of the secret. This will be encrypted at rest and redacted in any API responses.",
-          },
-        },
-      },
-      envVar: {
-        type: "object",
-        required: ["name", "value"],
-        properties: {
-          name: {
-            type: "string",
-            description:
-              "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc.",
-          },
-          value: {
-            type: "string",
-            description:
-              "Value of the environment variable. This will be visible in API responses and should not contain sensitive information.",
-          },
-        },
-      },
-      file: {
-        type: "object",
-        required: ["path", "content"],
-        properties: {
-          path: {
-            type: "string",
-            description:
-              "The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc.",
-          },
-          content: {
-            type: "string",
-            description:
-              "The content of the file. This will be written to the specified path within the sandbox. The content should be base64 encoded if it's binary data.",
-          },
-        },
-      },
-      files: {
-        type: "array",
-        items: {
-          type: "ref",
-          description: "A file to add to the sandbox",
-          ref: "lex:io.pocketenv.sandbox.defs#file",
-        },
-      },
-      volumes: {
-        type: "array",
-        items: {
-          type: "ref",
-          description: "A volume to add to the sandbox",
-          ref: "lex:io.pocketenv.sandbox.defs#volume",
-        },
-      },
-      volume: {
-        type: "object",
-        required: ["name"],
-        properties: {
-          name: {
-            type: "string",
-            description: "Name of the volume, e.g. 'data-volume', 'logs', etc.",
-          },
-          path: {
-            type: "string",
-            description:
-              "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc.",
-          },
-          readOnly: {
-            type: "boolean",
-            description: "Whether the volume should be mounted as read-only",
-          },
-        },
-      },
-      secrets: {
-        type: "array",
-        items: {
-          type: "ref",
-          description: "A secret to add to the sandbox",
-          ref: "lex:io.pocketenv.sandbox.defs#secret",
-        },
-      },
-      envs: {
-        type: "array",
-        items: {
-          type: "ref",
-          description: "An environment variable to add to the sandbox",
-          ref: "lex:io.pocketenv.sandbox.defs#envVar",
         },
       },
     },
@@ -952,23 +883,23 @@ export const schemaDict = {
               secrets: {
                 type: "ref",
                 description: "A list of secrets to add to the sandbox",
-                ref: "lex:io.pocketenv.sandbox.defs#secrets",
+                ref: "lex:io.pocketenv.secret.defs#secrets",
               },
-              envs: {
+              variables: {
                 type: "ref",
                 description:
                   "A list of environment variables to add to the sandbox",
-                ref: "lex:io.pocketenv.sandbox.defs#envs",
+                ref: "lex:io.pocketenv.variable.defs#variables",
               },
               files: {
                 type: "ref",
                 description: "A list of files to add to the sandbox",
-                ref: "lex:io.pocketenv.sandbox.defs#file",
+                ref: "lex:io.pocketenv.file.defs#file",
               },
               volumes: {
                 type: "ref",
                 description: "A list of volumes to add to the sandbox",
-                ref: "lex:io.pocketenv.sandbox.defs#volumes",
+                ref: "lex:io.pocketenv.volume.defs#volumes",
               },
             },
           },
@@ -978,6 +909,99 @@ export const schemaDict = {
           schema: {
             type: "ref",
             ref: "lex:io.pocketenv.sandbox.defs#profileViewDetailed",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSecretDefs: {
+    lexicon: 1,
+    id: "io.pocketenv.secret.defs",
+    defs: {
+      secret: {
+        type: "object",
+        required: ["name", "value"],
+        properties: {
+          name: {
+            type: "string",
+            description:
+              "Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc.",
+          },
+          value: {
+            type: "string",
+            description:
+              "Value of the secret. This will be encrypted at rest and redacted in any API responses.",
+          },
+        },
+      },
+      secrets: {
+        type: "array",
+        items: {
+          type: "ref",
+          description: "A secret to add to the sandbox",
+          ref: "lex:io.pocketenv.secret.defs#secret",
+        },
+      },
+    },
+  },
+  IoPocketenvVariableDefs: {
+    lexicon: 1,
+    id: "io.pocketenv.variable.defs",
+    defs: {
+      variable: {
+        type: "object",
+        required: ["name", "value"],
+        properties: {
+          name: {
+            type: "string",
+            description:
+              "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc.",
+          },
+          value: {
+            type: "string",
+            description:
+              "Value of the environment variable. This will be visible in API responses and should not contain sensitive information.",
+          },
+        },
+      },
+      variables: {
+        type: "array",
+        items: {
+          type: "ref",
+          description: "An environment variable to add to the sandbox",
+          ref: "lex:io.pocketenv.variable.defs#envVar",
+        },
+      },
+    },
+  },
+  IoPocketenvVolumeDefs: {
+    lexicon: 1,
+    id: "io.pocketenv.volume.defs",
+    defs: {
+      volumes: {
+        type: "array",
+        items: {
+          type: "ref",
+          description: "A volume to add to the sandbox",
+          ref: "lex:io.pocketenv.volume.defs#volume",
+        },
+      },
+      volume: {
+        type: "object",
+        required: ["name"],
+        properties: {
+          name: {
+            type: "string",
+            description: "Name of the volume, e.g. 'data-volume', 'logs', etc.",
+          },
+          path: {
+            type: "string",
+            description:
+              "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc.",
+          },
+          readOnly: {
+            type: "boolean",
+            description: "Whether the volume should be mounted as read-only",
           },
         },
       },
@@ -1044,6 +1068,7 @@ export const ids = {
   IoPocketenvActorGetProfile: "io.pocketenv.actor.getProfile",
   IoPocketenvActorGetTerminalToken: "io.pocketenv.actor.getTerminalToken",
   AppBskyActorProfile: "app.bsky.actor.profile",
+  IoPocketenvFileDefs: "io.pocketenv.file.defs",
   IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",
   IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",
   IoPocketenvSandboxDefs: "io.pocketenv.sandbox.defs",
@@ -1055,6 +1080,9 @@ export const ids = {
   IoPocketenvSandboxStopSandbox: "io.pocketenv.sandbox.stopSandbox",
   IoPocketenvSandboxUpdateSandboxSettings:
     "io.pocketenv.sandbox.updateSandboxSettings",
+  IoPocketenvSecretDefs: "io.pocketenv.secret.defs",
+  IoPocketenvVariableDefs: "io.pocketenv.variable.defs",
+  IoPocketenvVolumeDefs: "io.pocketenv.volume.defs",
   IoPocketenvPublicKey: "io.pocketenv.publicKey",
   ComAtprotoRepoStrongRef: "com.atproto.repo.strongRef",
 };

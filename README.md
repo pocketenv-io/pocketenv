@@ -2,6 +2,8 @@
 
 # Pocketenv
 
+[![Deploy Cloudflare Worker](https://github.com/pocketenv-io/pocketenv/actions/workflows/deploy.yml/badge.svg)](https://github.com/pocketenv-io/pocketenv/actions/workflows/deploy.yml)
+
 ![Preview](./pocketenv.png)
 
 an open, interoperable sandbox platform for agents and humans.

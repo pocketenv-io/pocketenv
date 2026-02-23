@@ -106,7 +106,10 @@ function AddEnvironmentVariableModal({
               </>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary" onClick={() => {}}>
+              <button
+                className="btn btn-primary w-35 font-semibold"
+                onClick={() => {}}
+              >
                 Add Variable
               </button>
             </div>

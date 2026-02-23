@@ -74,7 +74,10 @@ function DeleteSandboxModal({
               <></>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-error" onClick={() => {}}>
+              <button
+                className="btn btn-error font-semibold"
+                onClick={() => {}}
+              >
                 Delete Sandbox
               </button>
             </div>

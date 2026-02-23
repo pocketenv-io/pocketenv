@@ -109,7 +109,10 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
               </>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary" onClick={() => {}}>
+              <button
+                className="btn btn-primary font-semibold"
+                onClick={() => {}}
+              >
                 Add Volume
               </button>
             </div>

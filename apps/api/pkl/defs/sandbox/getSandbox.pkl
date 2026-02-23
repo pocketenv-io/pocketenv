@@ -20,7 +20,7 @@ defs = new Mapping<String, Query> {
       encoding = "application/json"
       schema = new Ref {
         type = "ref"
-        ref = "io.pocketenv.actor.defs#profileViewDetailed"
+        ref = "io.pocketenv.sandbox.defs#sandboxViewBasic"
       }
     }
   }

@@ -7,7 +7,7 @@ import { lexicons } from "../../../../lexicons";
 import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
 import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
-import type * as IoPocketenvActorDefs from "../actor/defs";
+import type * as IoPocketenvSandboxDefs from "./defs";
 
 export interface QueryParams {
   /** The sandbox ID or URI to retrieve */
@@ -15,7 +15,7 @@ export interface QueryParams {
 }
 
 export type InputSchema = undefined;
-export type OutputSchema = IoPocketenvActorDefs.ProfileViewDetailed;
+export type OutputSchema = IoPocketenvSandboxDefs.SandboxViewBasic;
 export type HandlerInput = undefined;
 
 export interface HandlerSuccess {

@@ -598,7 +598,7 @@ export const schemaDict = {
           encoding: "application/json",
           schema: {
             type: "ref",
-            ref: "lex:io.pocketenv.actor.defs#profileViewDetailed",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
           },
         },
       },

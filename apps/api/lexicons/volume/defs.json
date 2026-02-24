@@ -2,6 +2,19 @@
   "lexicon": 1,
   "id": "io.pocketenv.volume.defs",
   "defs": {
+    "volumeView": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the volume."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the volume, e.g. 'data-volume', 'logs', etc."
+        }
+      }
+    },
     "volumes": {
       "type": "array",
       "items": {
@@ -19,14 +32,6 @@
         "name": {
           "type": "string",
           "description": "Name of the volume, e.g. 'data-volume', 'logs', etc."
-        },
-        "path": {
-          "type": "string",
-          "description": "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc."
-        },
-        "readOnly": {
-          "type": "boolean",
-          "description": "Whether the volume should be mounted as read-only"
         }
       }
     }

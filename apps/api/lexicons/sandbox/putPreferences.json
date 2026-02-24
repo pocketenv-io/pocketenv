@@ -1,0 +1,25 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.putPreferences",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Update sandbox preferences.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "preferences"
+          ],
+          "properties": {
+            "preferences": {
+              "type": "ref",
+              "ref": "io.pocketenv.sandbox.defs#preferences"
+            }
+          }
+        }
+      }
+    }
+  }
+}

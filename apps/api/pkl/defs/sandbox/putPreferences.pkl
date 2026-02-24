@@ -1,0 +1,23 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.putPreferences"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    description = "Update sandbox preferences."
+    input {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        required = List("preferences")
+        properties {
+          ["preferences"] = new Ref {
+            type = "ref"
+            ref = "io.pocketenv.sandbox.defs#preferences"
+          }
+        }
+      }
+    }
+  }
+}

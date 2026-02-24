@@ -2,6 +2,23 @@
   "lexicon": 1,
   "id": "io.pocketenv.variable.defs",
   "defs": {
+    "variableView": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the environment variable."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc."
+        },
+        "value": {
+          "type": "string",
+          "description": "Value of the environment variable. This will be visible in API responses and should not contain sensitive information."
+        }
+      }
+    },
     "variable": {
       "type": "object",
       "required": [

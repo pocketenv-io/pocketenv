@@ -94,3 +94,133 @@ export function isSandboxViewDetailed(v: unknown): v is SandboxViewDetailed {
 export function validateSandboxViewDetailed(v: unknown): ValidationResult {
   return lexicons.validate("io.pocketenv.sandbox.defs#sandboxViewDetailed", v);
 }
+
+export interface SandboxDetailsPref {
+  /** The name of the sandbox */
+  name?: string;
+  /** A description for the sandbox */
+  description?: string;
+  /** A list of topics/tags to associate with the sandbox */
+  topics?: string[];
+  /** A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo. */
+  repo?: string;
+  /** The number of virtual CPUs to allocate for the sandbox */
+  vcpus?: number;
+  /** The amount of memory (in GB) to allocate for the sandbox */
+  memory?: number;
+  /** The amount of disk space (in GB) to allocate for the sandbox */
+  disk?: number;
+  /** A URI to a README for the sandbox. */
+  readme?: string;
+  [k: string]: unknown;
+}
+
+export function isSandboxDetailsPref(v: unknown): v is SandboxDetailsPref {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#sandboxDetailsPref"
+  );
+}
+
+export function validateSandboxDetailsPref(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#sandboxDetailsPref", v);
+}
+
+export interface SecretPref {
+  /** The name of the secret */
+  name?: string;
+  /** The value of the secret. This will be encrypted at rest and redacted in any API responses. */
+  value?: string;
+  [k: string]: unknown;
+}
+
+export function isSecretPref(v: unknown): v is SecretPref {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#secretPref"
+  );
+}
+
+export function validateSecretPref(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#secretPref", v);
+}
+
+/** A variable to add to the sandbox */
+export interface VariablePref {
+  /** The name of the variable */
+  name?: string;
+  /** The value of the variable. This will be visible in API responses and should not contain sensitive information. */
+  value?: string;
+  [k: string]: unknown;
+}
+
+export function isVariablePref(v: unknown): v is VariablePref {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#variablePref"
+  );
+}
+
+export function validateVariablePref(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#variablePref", v);
+}
+
+/** A file to add to the sandbox */
+export interface FilePref {
+  /** The name of the file */
+  name?: string;
+  /** The content of the file. */
+  content?: string;
+  /** Whether the file content should be encrypted at rest and redacted in API responses. This is useful for files that may contain sensitive information. */
+  encrypt?: boolean;
+  /** The path within the sandbox where the file will be created, e.g. '/app/config.json'. If not provided, the file will be created in the root directory of the sandbox. */
+  path?: string;
+  [k: string]: unknown;
+}
+
+export function isFilePref(v: unknown): v is FilePref {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#filePref"
+  );
+}
+
+export function validateFilePref(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#filePref", v);
+}
+
+/** A volume to add to the sandbox */
+export interface VolumePref {
+  /** The name of the volume */
+  name?: string;
+  /** The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc. */
+  path?: string;
+  /** Whether the volume should be mounted as read-only */
+  readOnly?: boolean;
+  [k: string]: unknown;
+}
+
+export function isVolumePref(v: unknown): v is VolumePref {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#volumePref"
+  );
+}
+
+export function validateVolumePref(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#volumePref", v);
+}
+
+export type Preferences = (
+  | SandboxDetailsPref
+  | SecretPref
+  | VariablePref
+  | FilePref
+  | VolumePref
+  | { $type: string; [k: string]: unknown }
+)[];

@@ -1,0 +1,9 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.volume.addVolume",
+  "defs": {
+    "main": {
+      "type": "procedure"
+    }
+  }
+}

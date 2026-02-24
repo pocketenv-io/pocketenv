@@ -1,0 +1,19 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.volume.deleteVolume"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    parameters {
+      type = "params"
+      required = List("id")
+      properties {
+        ["id"] = new StringType {
+          type = "string"
+          description = "The ID of the volume to delete."
+        }
+      }
+    }
+  }
+}

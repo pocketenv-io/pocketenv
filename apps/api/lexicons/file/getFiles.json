@@ -1,0 +1,44 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.file.getFiles",
+  "defs": {
+    "main": {
+      "type": "query",
+      "parameters": {
+        "type": "params",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "The maximum number of files to return.",
+            "minimum": 1
+          },
+          "offset": {
+            "type": "integer",
+            "description": "The number of files to skip before starting to collect the result set.",
+            "minimum": 0
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "io.pocketenv.file.defs#fileView"
+              }
+            },
+            "total": {
+              "type": "integer",
+              "description": "The total number of files available.",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}

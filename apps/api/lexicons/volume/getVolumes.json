@@ -1,0 +1,44 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.volume.getVolumes",
+  "defs": {
+    "main": {
+      "type": "query",
+      "parameters": {
+        "type": "params",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "The maximum number of volumes to return.",
+            "minimum": 1
+          },
+          "offset": {
+            "type": "integer",
+            "description": "The number of volumes to skip before starting to collect the result set.",
+            "minimum": 0
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "volumes": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "io.pocketenv.volume.defs#volumeView"
+              }
+            },
+            "total": {
+              "type": "integer",
+              "description": "The total number of volumes available.",
+              "minimum": 0
+            }
+          }
+        }
+      }
+    }
+  }
+}

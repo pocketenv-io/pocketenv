@@ -1,0 +1,24 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.variable.addVariable",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "variable"
+          ],
+          "properties": {
+            "variable": {
+              "type": "ref",
+              "ref": "io.pocketenv.variable.defs#variable"
+            }
+          }
+        }
+      }
+    }
+  }
+}

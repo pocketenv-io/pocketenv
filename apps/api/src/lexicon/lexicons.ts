@@ -207,6 +207,28 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvFileAddFile: {
+    lexicon: 1,
+    id: "io.pocketenv.file.addFile",
+    defs: {
+      main: {
+        type: "procedure",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["file"],
+            properties: {
+              file: {
+                type: "ref",
+                ref: "lex:io.pocketenv.file.defs#file",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvFileDefs: {
     lexicon: 1,
     id: "io.pocketenv.file.defs",
@@ -233,6 +255,73 @@ export const schemaDict = {
           type: "ref",
           description: "A file to add to the sandbox",
           ref: "lex:io.pocketenv.file.defs#file",
+        },
+      },
+    },
+  },
+  IoPocketenvFileDeleteFile: {
+    lexicon: 1,
+    id: "io.pocketenv.file.deleteFile",
+    defs: {
+      main: {
+        type: "procedure",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["file"],
+            properties: {
+              file: {
+                type: "ref",
+                ref: "lex:io.pocketenv.file.defs#file",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvFileGetFiles: {
+    lexicon: 1,
+    id: "io.pocketenv.file.getFiles",
+    defs: {
+      main: {
+        type: "query",
+        parameters: {
+          type: "params",
+          properties: {
+            limit: {
+              type: "integer",
+              description: "The maximum number of files to return.",
+              minimum: 1,
+            },
+            offset: {
+              type: "integer",
+              description:
+                "The number of files to skip before starting to collect the result set.",
+              minimum: 0,
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              files: {
+                type: "array",
+                items: {
+                  type: "ref",
+                  ref: "lex:io.pocketenv.file.defs#fileView",
+                },
+              },
+              total: {
+                type: "integer",
+                description: "The total number of files available.",
+                minimum: 0,
+              },
+            },
+          },
         },
       },
     },
@@ -548,6 +637,146 @@ export const schemaDict = {
           },
         },
       },
+      sandboxDetailsPref: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            description: "The name of the sandbox",
+            minLength: 1,
+          },
+          description: {
+            type: "string",
+            description: "A description for the sandbox",
+          },
+          topics: {
+            type: "array",
+            description: "A list of topics/tags to associate with the sandbox",
+            items: {
+              type: "string",
+              maxLength: 50,
+            },
+          },
+          repo: {
+            type: "string",
+            description:
+              "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+            format: "uri",
+          },
+          vcpus: {
+            type: "integer",
+            description:
+              "The number of virtual CPUs to allocate for the sandbox",
+            minimum: 1,
+          },
+          memory: {
+            type: "integer",
+            description:
+              "The amount of memory (in GB) to allocate for the sandbox",
+            minimum: 1,
+          },
+          disk: {
+            type: "integer",
+            description:
+              "The amount of disk space (in GB) to allocate for the sandbox",
+            minimum: 3,
+          },
+          readme: {
+            type: "string",
+            description: "A URI to a README for the sandbox.",
+            format: "uri",
+          },
+        },
+      },
+      secretPref: {
+        type: "object",
+        properties: {
+          name: {
+            type: "string",
+            description: "The name of the secret",
+            minLength: 1,
+          },
+          value: {
+            type: "string",
+            description:
+              "The value of the secret. This will be encrypted at rest and redacted in any API responses.",
+          },
+        },
+      },
+      variablePref: {
+        type: "object",
+        description: "A variable to add to the sandbox",
+        properties: {
+          name: {
+            type: "string",
+            description: "The name of the variable",
+            minLength: 1,
+          },
+          value: {
+            type: "string",
+            description:
+              "The value of the variable. This will be visible in API responses and should not contain sensitive information.",
+          },
+        },
+      },
+      filePref: {
+        type: "object",
+        description: "A file to add to the sandbox",
+        properties: {
+          name: {
+            type: "string",
+            description: "The name of the file",
+            minLength: 1,
+          },
+          content: {
+            type: "string",
+            description: "The content of the file.",
+          },
+          encrypt: {
+            type: "boolean",
+            description:
+              "Whether the file content should be encrypted at rest and redacted in API responses. This is useful for files that may contain sensitive information.",
+          },
+          path: {
+            type: "string",
+            description:
+              "The path within the sandbox where the file will be created, e.g. '/app/config.json'. If not provided, the file will be created in the root directory of the sandbox.",
+          },
+        },
+      },
+      volumePref: {
+        type: "object",
+        description: "A volume to add to the sandbox",
+        properties: {
+          name: {
+            type: "string",
+            description: "The name of the volume",
+            minLength: 1,
+          },
+          path: {
+            type: "string",
+            description:
+              "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc.",
+          },
+          readOnly: {
+            type: "boolean",
+            description: "Whether the volume should be mounted as read-only",
+          },
+        },
+      },
+      preferences: {
+        type: "array",
+        items: {
+          type: "union",
+          refs: [
+            "lex:io.pocketenv.sandbox.defs#sandboxDetailsPref",
+            "lex:io.pocketenv.sandbox.defs#secretPref",
+            "lex:io.pocketenv.sandbox.defs#variablePref",
+            "lex:io.pocketenv.sandbox.defs#filePref",
+            "lex:io.pocketenv.sandbox.defs#volumePref",
+          ],
+        },
+      },
     },
   },
   IoPocketenvSandboxDeleteSandbox: {
@@ -572,6 +801,33 @@ export const schemaDict = {
           schema: {
             type: "ref",
             ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxGetPreferences: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.getPreferences",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get sandbox preferences",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID or URI to retrieve",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#preferences",
           },
         },
       },
@@ -643,6 +899,29 @@ export const schemaDict = {
                 type: "integer",
                 description: "The total number of sandboxes available.",
                 minimum: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxPutPreferences: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.putPreferences",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Update sandbox preferences.",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["preferences"],
+            properties: {
+              preferences: {
+                type: "ref",
+                ref: "lex:io.pocketenv.sandbox.defs#preferences",
               },
             },
           },
@@ -914,10 +1193,46 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSecretAddSecret: {
+    lexicon: 1,
+    id: "io.pocketenv.secret.addSecret",
+    defs: {
+      main: {
+        type: "procedure",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["secret"],
+            properties: {
+              secret: {
+                type: "ref",
+                ref: "lex:io.pocketenv.secret.defs#secret",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvSecretDefs: {
     lexicon: 1,
     id: "io.pocketenv.secret.defs",
     defs: {
+      secretView: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "Unique identifier of the secret.",
+          },
+          name: {
+            type: "string",
+            description:
+              "Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc.",
+          },
+        },
+      },
       secret: {
         type: "object",
         required: ["name", "value"],
@@ -944,10 +1259,115 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSecretDeleteSecret: {
+    lexicon: 1,
+    id: "io.pocketenv.secret.deleteSecret",
+    defs: {
+      main: {
+        type: "procedure",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The ID of the secret to delete",
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSecretGetSecrets: {
+    lexicon: 1,
+    id: "io.pocketenv.secret.getSecrets",
+    defs: {
+      main: {
+        type: "query",
+        parameters: {
+          type: "params",
+          properties: {
+            limit: {
+              type: "integer",
+              description: "The maximum number of secrets to return.",
+              minimum: 1,
+            },
+            offset: {
+              type: "integer",
+              description:
+                "The number of secrets to skip before starting to collect the result set.",
+              minimum: 0,
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              secrets: {
+                type: "array",
+                items: {
+                  type: "ref",
+                  ref: "lex:io.pocketenv.secret.defs#secretView",
+                },
+              },
+              total: {
+                type: "integer",
+                description: "The total number of secrets available.",
+                minimum: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvVariableAddVariable: {
+    lexicon: 1,
+    id: "io.pocketenv.variable.addVariable",
+    defs: {
+      main: {
+        type: "procedure",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["variable"],
+            properties: {
+              variable: {
+                type: "ref",
+                ref: "lex:io.pocketenv.variable.defs#variable",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvVariableDefs: {
     lexicon: 1,
     id: "io.pocketenv.variable.defs",
     defs: {
+      variableView: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "Unique identifier of the environment variable.",
+          },
+          name: {
+            type: "string",
+            description:
+              "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc.",
+          },
+          value: {
+            type: "string",
+            description:
+              "Value of the environment variable. This will be visible in API responses and should not contain sensitive information.",
+          },
+        },
+      },
       variable: {
         type: "object",
         required: ["name", "value"],
@@ -974,10 +1394,96 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvVariableDeleteVariable: {
+    lexicon: 1,
+    id: "io.pocketenv.variable.deleteVariable",
+    defs: {
+      main: {
+        type: "procedure",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The ID of the environment variable to delete",
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvVariableGetVariables: {
+    lexicon: 1,
+    id: "io.pocketenv.variable.getVariables",
+    defs: {
+      main: {
+        type: "query",
+        parameters: {
+          type: "params",
+          properties: {
+            limit: {
+              type: "integer",
+              description: "The maximum number of variables to return.",
+              minimum: 1,
+            },
+            offset: {
+              type: "integer",
+              description:
+                "The number of variables to skip before starting to collect the result set.",
+              minimum: 0,
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              variables: {
+                type: "array",
+                items: {
+                  type: "ref",
+                  ref: "lex:io.pocketenv.variable.defs#variableView",
+                },
+              },
+              total: {
+                type: "integer",
+                description: "The total number of variables available.",
+                minimum: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvVolumeAddVolume: {
+    lexicon: 1,
+    id: "io.pocketenv.volume.addVolume",
+    defs: {
+      main: {
+        type: "procedure",
+      },
+    },
+  },
   IoPocketenvVolumeDefs: {
     lexicon: 1,
     id: "io.pocketenv.volume.defs",
     defs: {
+      volumeView: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "Unique identifier of the volume.",
+          },
+          name: {
+            type: "string",
+            description: "Name of the volume, e.g. 'data-volume', 'logs', etc.",
+          },
+        },
+      },
       volumes: {
         type: "array",
         items: {
@@ -994,14 +1500,69 @@ export const schemaDict = {
             type: "string",
             description: "Name of the volume, e.g. 'data-volume', 'logs', etc.",
           },
-          path: {
-            type: "string",
-            description:
-              "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc.",
+        },
+      },
+    },
+  },
+  IoPocketenvVolumeDeleteVolume: {
+    lexicon: 1,
+    id: "io.pocketenv.volume.deleteVolume",
+    defs: {
+      main: {
+        type: "procedure",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The ID of the volume to delete.",
+            },
           },
-          readOnly: {
-            type: "boolean",
-            description: "Whether the volume should be mounted as read-only",
+        },
+      },
+    },
+  },
+  IoPocketenvVolumeGetVolumes: {
+    lexicon: 1,
+    id: "io.pocketenv.volume.getVolumes",
+    defs: {
+      main: {
+        type: "query",
+        parameters: {
+          type: "params",
+          properties: {
+            limit: {
+              type: "integer",
+              description: "The maximum number of volumes to return.",
+              minimum: 1,
+            },
+            offset: {
+              type: "integer",
+              description:
+                "The number of volumes to skip before starting to collect the result set.",
+              minimum: 0,
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              volumes: {
+                type: "array",
+                items: {
+                  type: "ref",
+                  ref: "lex:io.pocketenv.volume.defs#volumeView",
+                },
+              },
+              total: {
+                type: "integer",
+                description: "The total number of volumes available.",
+                minimum: 0,
+              },
+            },
           },
         },
       },
@@ -1068,21 +1629,35 @@ export const ids = {
   IoPocketenvActorGetProfile: "io.pocketenv.actor.getProfile",
   IoPocketenvActorGetTerminalToken: "io.pocketenv.actor.getTerminalToken",
   AppBskyActorProfile: "app.bsky.actor.profile",
+  IoPocketenvFileAddFile: "io.pocketenv.file.addFile",
   IoPocketenvFileDefs: "io.pocketenv.file.defs",
+  IoPocketenvFileDeleteFile: "io.pocketenv.file.deleteFile",
+  IoPocketenvFileGetFiles: "io.pocketenv.file.getFiles",
   IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",
   IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",
   IoPocketenvSandboxDefs: "io.pocketenv.sandbox.defs",
   IoPocketenvSandboxDeleteSandbox: "io.pocketenv.sandbox.deleteSandbox",
+  IoPocketenvSandboxGetPreferences: "io.pocketenv.sandbox.getPreferences",
   IoPocketenvSandboxGetSandbox: "io.pocketenv.sandbox.getSandbox",
   IoPocketenvSandboxGetSandboxes: "io.pocketenv.sandbox.getSandboxes",
+  IoPocketenvSandboxPutPreferences: "io.pocketenv.sandbox.putPreferences",
   IoPocketenvSandbox: "io.pocketenv.sandbox",
   IoPocketenvSandboxStartSandbox: "io.pocketenv.sandbox.startSandbox",
   IoPocketenvSandboxStopSandbox: "io.pocketenv.sandbox.stopSandbox",
   IoPocketenvSandboxUpdateSandboxSettings:
     "io.pocketenv.sandbox.updateSandboxSettings",
+  IoPocketenvSecretAddSecret: "io.pocketenv.secret.addSecret",
   IoPocketenvSecretDefs: "io.pocketenv.secret.defs",
+  IoPocketenvSecretDeleteSecret: "io.pocketenv.secret.deleteSecret",
+  IoPocketenvSecretGetSecrets: "io.pocketenv.secret.getSecrets",
+  IoPocketenvVariableAddVariable: "io.pocketenv.variable.addVariable",
   IoPocketenvVariableDefs: "io.pocketenv.variable.defs",
+  IoPocketenvVariableDeleteVariable: "io.pocketenv.variable.deleteVariable",
+  IoPocketenvVariableGetVariables: "io.pocketenv.variable.getVariables",
+  IoPocketenvVolumeAddVolume: "io.pocketenv.volume.addVolume",
   IoPocketenvVolumeDefs: "io.pocketenv.volume.defs",
+  IoPocketenvVolumeDeleteVolume: "io.pocketenv.volume.deleteVolume",
+  IoPocketenvVolumeGetVolumes: "io.pocketenv.volume.getVolumes",
   IoPocketenvPublicKey: "io.pocketenv.publicKey",
   ComAtprotoRepoStrongRef: "com.atproto.repo.strongRef",
 };

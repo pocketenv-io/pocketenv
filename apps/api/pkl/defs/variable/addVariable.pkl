@@ -1,0 +1,22 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.variable.addVariable"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    input {
+      encoding = "application/json"
+      schema {
+        type = "object"
+        required = List("variable")
+        properties {
+          ["variable"] = new Ref {
+            type = "ref"
+            ref = "io.pocketenv.variable.defs#variable"
+          }
+        }
+      }
+    }
+  }
+}

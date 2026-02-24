@@ -1,0 +1,43 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.volume.getVolumes"
+defs = new Mapping<String, Query> {
+  ["main"] {
+    type = "query"
+    parameters {
+      type = "params"
+      properties {
+        ["limit"] = new IntegerType {
+          type = "integer"
+          description = "The maximum number of volumes to return."
+          minimum = 1
+        }
+        ["offset"] = new IntegerType {
+          type = "integer"
+          description = "The number of volumes to skip before starting to collect the result set."
+          minimum = 0
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        properties {
+          ["volumes"] = new Array {
+            type = "array"
+            items = new Ref {
+              ref = "io.pocketenv.volume.defs#volumeView"
+            }
+          }
+          ["total"] = new IntegerType {
+            type = "integer"
+            description = "The total number of volumes available."
+            minimum = 0
+          }
+        }
+      }
+    }
+  }
+}

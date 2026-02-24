@@ -1,0 +1,21 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.volume.deleteVolume",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the volume to delete."
+          }
+        }
+      }
+    }
+  }
+}

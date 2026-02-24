@@ -178,6 +178,137 @@
           "ref": "io.pocketenv.user.defs#userViewBasic"
         }
       }
+    },
+    "sandboxDetailsPref": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the sandbox",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "description": "A description for the sandbox"
+        },
+        "topics": {
+          "type": "array",
+          "description": "A list of topics/tags to associate with the sandbox",
+          "items": {
+            "type": "string",
+            "maxLength": 50
+          }
+        },
+        "repo": {
+          "type": "string",
+          "description": "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+          "format": "uri"
+        },
+        "vcpus": {
+          "type": "integer",
+          "description": "The number of virtual CPUs to allocate for the sandbox",
+          "minimum": 1
+        },
+        "memory": {
+          "type": "integer",
+          "description": "The amount of memory (in GB) to allocate for the sandbox",
+          "minimum": 1
+        },
+        "disk": {
+          "type": "integer",
+          "description": "The amount of disk space (in GB) to allocate for the sandbox",
+          "minimum": 3
+        },
+        "readme": {
+          "type": "string",
+          "description": "A URI to a README for the sandbox.",
+          "format": "uri"
+        }
+      }
+    },
+    "secretPref": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the secret",
+          "minLength": 1
+        },
+        "value": {
+          "type": "string",
+          "description": "The value of the secret. This will be encrypted at rest and redacted in any API responses."
+        }
+      }
+    },
+    "variablePref": {
+      "type": "object",
+      "description": "A variable to add to the sandbox",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the variable",
+          "minLength": 1
+        },
+        "value": {
+          "type": "string",
+          "description": "The value of the variable. This will be visible in API responses and should not contain sensitive information."
+        }
+      }
+    },
+    "filePref": {
+      "type": "object",
+      "description": "A file to add to the sandbox",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the file",
+          "minLength": 1
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the file."
+        },
+        "encrypt": {
+          "type": "boolean",
+          "description": "Whether the file content should be encrypted at rest and redacted in API responses. This is useful for files that may contain sensitive information."
+        },
+        "path": {
+          "type": "string",
+          "description": "The path within the sandbox where the file will be created, e.g. '/app/config.json'. If not provided, the file will be created in the root directory of the sandbox."
+        }
+      }
+    },
+    "volumePref": {
+      "type": "object",
+      "description": "A volume to add to the sandbox",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the volume",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "description": "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc."
+        },
+        "readOnly": {
+          "type": "boolean",
+          "description": "Whether the volume should be mounted as read-only"
+        }
+      }
+    },
+    "preferences": {
+      "type": "array",
+      "items": {
+        "type": "union",
+        "refs": [
+          "#sandboxDetailsPref",
+          "#secretPref",
+          "#variablePref",
+          "#filePref",
+          "#volumePref"
+        ]
+      }
     }
   }
 }

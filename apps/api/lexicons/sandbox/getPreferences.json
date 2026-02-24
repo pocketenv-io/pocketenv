@@ -1,0 +1,29 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.getPreferences",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get sandbox preferences",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The sandbox ID or URI to retrieve"
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "io.pocketenv.sandbox.defs#preferences"
+        }
+      }
+    }
+  }
+}

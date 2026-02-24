@@ -181,4 +181,139 @@ defs = new Mapping<String, ObjectType | Array> {
       }
     }
   }
+  ["sandboxDetailsPref"] = new ObjectType {
+    type = "object"
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "The name of the sandbox"
+        minLength = 1
+      }
+      ["description"] = new StringType {
+        type = "string"
+        description = "A description for the sandbox"
+      }
+      ["topics"] = new Array {
+        type = "array"
+        description = "A list of topics/tags to associate with the sandbox"
+        items = new StringType {
+          type = "string"
+          maxLength = 50
+        }
+      }
+      ["repo"] = new StringType {
+        type = "string"
+        description =
+          "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo."
+        format = "uri"
+      }
+      ["vcpus"] = new IntegerType {
+        type = "integer"
+        description = "The number of virtual CPUs to allocate for the sandbox"
+        minimum = 1
+      }
+      ["memory"] = new IntegerType {
+        type = "integer"
+        description = "The amount of memory (in GB) to allocate for the sandbox"
+        minimum = 1
+      }
+      ["disk"] = new IntegerType {
+        type = "integer"
+        description = "The amount of disk space (in GB) to allocate for the sandbox"
+        minimum = 3
+      }
+      ["readme"] = new StringType {
+        type = "string"
+        description = "A URI to a README for the sandbox."
+        format = "uri"
+      }
+    }
+  }
+  ["secretPref"] = new ObjectType {
+    type = "object"
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "The name of the secret"
+        minLength = 1
+      }
+      ["value"] = new StringType {
+        type = "string"
+        description = "The value of the secret. This will be encrypted at rest and redacted in any API responses."
+      }
+    }
+  }
+  ["variablePref"] = new ObjectType {
+    type = "object"
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "The name of the variable"
+        minLength = 1
+      }
+      ["value"] = new StringType {
+        type = "string"
+        description = "The value of the variable. This will be visible in API responses and should not contain sensitive information."
+      }
+    }
+    description = "A variable to add to the sandbox"
+  }
+  ["filePref"] = new ObjectType {
+    type = "object"
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "The name of the file"
+        minLength = 1
+      }
+      ["content"] = new StringType {
+        type = "string"
+        description = "The content of the file."
+      }
+      ["encrypt"] = new BooleanType {
+        type = "boolean"
+        description =
+          "Whether the file content should be encrypted at rest and redacted in API responses. This is useful for files that may contain sensitive information."
+      }
+      ["path"] = new StringType {
+        type = "string"
+        description =
+          "The path within the sandbox where the file will be created, e.g. '/app/config.json'. If not provided, the file will be created in the root directory of the sandbox."
+      }
+    }
+    description = "A file to add to the sandbox"
+  }
+  ["volumePref"] = new ObjectType {
+    type = "object"
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "The name of the volume"
+        minLength = 1
+      }
+      ["path"] = new StringType {
+        type = "string"
+        description =
+          "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc."
+      }
+       ["readOnly"] = new BooleanType {
+        type = "boolean"
+        description = "Whether the volume should be mounted as read-only"
+       }
+    }
+    description = "A volume to add to the sandbox"
+  }
+  ["preferences"] = new Array {
+    type = "array"
+    items = new Union {
+      type = "union"
+      refs = List(
+        "#sandboxDetailsPref", 
+        "#secretPref", 
+        "#variablePref", 
+        "#filePref", 
+        "#volumePref"
+      )
+    }
+  }
 }

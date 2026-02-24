@@ -1,0 +1,19 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.variable.deleteVariable"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    parameters {
+      type = "params"
+      required = List("id")
+      properties {
+        ["id"] = new StringType {
+          type = "string"
+          description = "The ID of the environment variable to delete"
+        }
+      }
+    }
+  }
+}

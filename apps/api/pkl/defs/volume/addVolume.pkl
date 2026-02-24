@@ -1,0 +1,9 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.volume.addVolume"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+  }
+}

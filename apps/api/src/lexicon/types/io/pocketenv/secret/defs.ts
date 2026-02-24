@@ -6,6 +6,26 @@ import { lexicons } from "../../../../lexicons";
 import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
 
+export interface SecretView {
+  /** Unique identifier of the secret. */
+  id?: string;
+  /** Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc. */
+  name?: string;
+  [k: string]: unknown;
+}
+
+export function isSecretView(v: unknown): v is SecretView {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.secret.defs#secretView"
+  );
+}
+
+export function validateSecretView(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.secret.defs#secretView", v);
+}
+
 export interface Secret {
   /** Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc. */
   name: string;

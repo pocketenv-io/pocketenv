@@ -1,19 +1,16 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import type { Context } from "context";
 import type { Server } from "lexicon";
-import type { HandlerInput } from "lexicon/types/io/pocketenv/sandbox/updateSandboxSettings";
+import type { QueryParams } from "lexicon/types/io/pocketenv/file/getFiles";
 
 export default function (server: Server, ctx: Context) {
-  const updateSandboxSettings = async (
-    input: HandlerInput,
-    auth: HandlerAuth,
-  ) => {
+  const getFiles = async (params: QueryParams, auth: HandlerAuth) => {
     return {};
   };
-  server.io.pocketenv.sandbox.updateSandboxSettings({
+  server.io.pocketenv.file.getFiles({
     auth: ctx.authVerifier,
-    handler: async ({ input, auth }) => {
-      const result = await updateSandboxSettings(input, auth);
+    handler: async ({ params, auth }) => {
+      const result = await getFiles(params, auth);
       return {
         encoding: "application/json",
         body: result,

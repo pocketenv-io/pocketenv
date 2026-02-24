@@ -1,0 +1,21 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.variable.deleteVariable",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the environment variable to delete"
+          }
+        }
+      }
+    }
+  }
+}

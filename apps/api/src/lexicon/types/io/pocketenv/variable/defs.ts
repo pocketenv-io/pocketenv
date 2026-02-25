@@ -29,6 +29,8 @@ export function validateVariableView(v: unknown): ValidationResult {
 }
 
 export interface Variable {
+  /** The ID of the sandbox to which the environment variable belongs. This is used to associate the variable with a specific sandbox environment. */
+  sandboxId?: string;
   /** Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc. */
   name: string;
   /** Value of the environment variable. This will be visible in API responses and should not contain sensitive information. */

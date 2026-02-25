@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useAddVariableMutation } from "../../../hooks/useVariable";
 
 export type AddEnvironmentVariableModalProps = {
   isOpen: boolean;
@@ -12,6 +13,7 @@ function AddEnvironmentVariableModal({
   onClose,
   sandboxId,
 }: AddEnvironmentVariableModalProps) {
+  const { mutateAsync } = useAddVariableMutation(sandboxId, "", "");
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
@@ -37,6 +39,11 @@ function AddEnvironmentVariableModal({
   };
 
   const handleCloseButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onClose();
+  };
+
+  const onAddVariable = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     onClose();
   };
@@ -108,7 +115,7 @@ function AddEnvironmentVariableModal({
             <div className="modal-footer">
               <button
                 className="btn btn-primary w-35 font-semibold"
-                onClick={() => {}}
+                onClick={onAddVariable}
               >
                 Add Variable
               </button>

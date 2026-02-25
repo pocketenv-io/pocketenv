@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useAddVolumeMutation } from "../../../hooks/useVolume";
 
 export type AddVolumeModalProps = {
   isOpen: boolean;
@@ -8,6 +9,7 @@ export type AddVolumeModalProps = {
 };
 
 function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
+  const { mutateAsync } = useAddVolumeMutation(sandboxId, "", "");
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
@@ -33,6 +35,11 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
   };
 
   const handleCloseButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onClose();
+  };
+
+  const onAddVolume = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     onClose();
   };
@@ -111,7 +118,7 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
             <div className="modal-footer">
               <button
                 className="btn btn-primary font-semibold"
-                onClick={() => {}}
+                onClick={onAddVolume}
               >
                 Add Volume
               </button>

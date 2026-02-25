@@ -237,6 +237,11 @@ export const schemaDict = {
         type: "object",
         required: ["path", "content"],
         properties: {
+          sandboxId: {
+            type: "string",
+            description:
+              "The ID of the sandbox to which the file belongs. This is used to associate the file with a specific sandbox environment.",
+          },
           path: {
             type: "string",
             description:
@@ -265,16 +270,13 @@ export const schemaDict = {
     defs: {
       main: {
         type: "procedure",
-        input: {
-          encoding: "application/json",
-          schema: {
-            type: "object",
-            required: ["file"],
-            properties: {
-              file: {
-                type: "ref",
-                ref: "lex:io.pocketenv.file.defs#file",
-              },
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The ID of the file to delete",
             },
           },
         },
@@ -1237,6 +1239,11 @@ export const schemaDict = {
         type: "object",
         required: ["name", "value"],
         properties: {
+          sandboxId: {
+            type: "string",
+            description:
+              "The ID of the sandbox to which the secret belongs. This is used to associate the secret with a specific sandbox environment.",
+          },
           name: {
             type: "string",
             description:
@@ -1372,6 +1379,11 @@ export const schemaDict = {
         type: "object",
         required: ["name", "value"],
         properties: {
+          sandboxId: {
+            type: "string",
+            description:
+              "The ID of the sandbox to which the environment variable belongs. This is used to associate the variable with a specific sandbox environment.",
+          },
           name: {
             type: "string",
             description:
@@ -1464,6 +1476,19 @@ export const schemaDict = {
     defs: {
       main: {
         type: "procedure",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["volume"],
+            properties: {
+              volume: {
+                type: "ref",
+                ref: "lex:io.pocketenv.volume.defs#volume",
+              },
+            },
+          },
+        },
       },
     },
   },
@@ -1496,9 +1521,24 @@ export const schemaDict = {
         type: "object",
         required: ["name"],
         properties: {
+          sandboxId: {
+            type: "string",
+            description:
+              "The ID of the sandbox to which the volume belongs. This is used to associate the volume with a specific sandbox environment.",
+          },
           name: {
             type: "string",
             description: "Name of the volume, e.g. 'data-volume', 'logs', etc.",
+          },
+          path: {
+            type: "string",
+            description:
+              "The path within the sandbox where the volume will be mounted, e.g. '/data', '/logs', etc.",
+          },
+          readOnly: {
+            type: "boolean",
+            description:
+              "Whether the volume should be mounted as read-only within the sandbox. Defaults to false (read-write).",
           },
         },
       },

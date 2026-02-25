@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useAddSecretMutation } from "../../../hooks/useSecret";
 
 export type AddSecretModalProps = {
   isOpen: boolean;
@@ -8,6 +9,7 @@ export type AddSecretModalProps = {
 };
 
 function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
+  const { mutateAsync } = useAddSecretMutation(sandboxId, "", "");
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
@@ -33,6 +35,11 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
   };
 
   const handleCloseButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onClose();
+  };
+
+  const onAddSecret = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     onClose();
   };
@@ -102,7 +109,7 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
               </>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-primary" onClick={() => {}}>
+              <button className="btn btn-primary" onClick={onAddSecret}>
                 Add Secret
               </button>
             </div>

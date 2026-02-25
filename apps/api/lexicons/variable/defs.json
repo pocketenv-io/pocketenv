@@ -26,6 +26,10 @@
         "value"
       ],
       "properties": {
+        "sandboxId": {
+          "type": "string",
+          "description": "The ID of the sandbox to which the environment variable belongs. This is used to associate the variable with a specific sandbox environment."
+        },
         "name": {
           "type": "string",
           "description": "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc."

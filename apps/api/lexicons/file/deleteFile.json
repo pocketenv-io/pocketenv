@@ -4,18 +4,15 @@
   "defs": {
     "main": {
       "type": "procedure",
-      "input": {
-        "encoding": "application/json",
-        "schema": {
-          "type": "object",
-          "required": [
-            "file"
-          ],
-          "properties": {
-            "file": {
-              "type": "ref",
-              "ref": "io.pocketenv.file.defs#file"
-            }
+      "parameters": {
+        "type": "params",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the file to delete"
           }
         }
       }

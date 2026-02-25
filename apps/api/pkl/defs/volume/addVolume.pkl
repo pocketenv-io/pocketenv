@@ -5,5 +5,18 @@ id = "io.pocketenv.volume.addVolume"
 defs = new Mapping<String, Procedure> {
   ["main"] {
     type = "procedure"
+    input {
+      encoding = "application/json"
+      schema {
+        type = "object"
+        required = List("volume")
+        properties {
+          ["volume"] = new Ref {
+            type = "ref"
+            ref = "io.pocketenv.volume.defs#volume"
+          }
+        }
+      }
+    }
   }
 }

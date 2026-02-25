@@ -3,7 +3,22 @@
   "id": "io.pocketenv.volume.addVolume",
   "defs": {
     "main": {
-      "type": "procedure"
+      "type": "procedure",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "volume"
+          ],
+          "properties": {
+            "volume": {
+              "type": "ref",
+              "ref": "io.pocketenv.volume.defs#volume"
+            }
+          }
+        }
+      }
     }
   }
 }

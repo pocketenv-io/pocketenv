@@ -27,6 +27,8 @@ export function validateSecretView(v: unknown): ValidationResult {
 }
 
 export interface Secret {
+  /** The ID of the sandbox to which the secret belongs. This is used to associate the secret with a specific sandbox environment. */
+  sandboxId?: string;
   /** Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc. */
   name: string;
   /** Value of the secret. This will be encrypted at rest and redacted in any API responses. */

@@ -7,19 +7,14 @@ import { lexicons } from "../../../../lexicons";
 import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
 import { type HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
-import type * as IoPocketenvFileDefs from "./defs";
 
-export type QueryParams = {};
-
-export interface InputSchema {
-  file: IoPocketenvFileDefs.File;
-  [k: string]: unknown;
+export interface QueryParams {
+  /** The ID of the file to delete */
+  id: string;
 }
 
-export interface HandlerInput {
-  encoding: "application/json";
-  body: InputSchema;
-}
+export type InputSchema = undefined;
+export type HandlerInput = undefined;
 
 export interface HandlerError {
   status: number;

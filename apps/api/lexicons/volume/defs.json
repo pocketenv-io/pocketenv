@@ -29,9 +29,21 @@
         "name"
       ],
       "properties": {
+        "sandboxId": {
+          "type": "string",
+          "description": "The ID of the sandbox to which the volume belongs. This is used to associate the volume with a specific sandbox environment."
+        },
         "name": {
           "type": "string",
           "description": "Name of the volume, e.g. 'data-volume', 'logs', etc."
+        },
+        "path": {
+          "type": "string",
+          "description": "The path within the sandbox where the volume will be mounted, e.g. '/data', '/logs', etc."
+        },
+        "readOnly": {
+          "type": "boolean",
+          "description": "Whether the volume should be mounted as read-only within the sandbox. Defaults to false (read-write)."
         }
       }
     }

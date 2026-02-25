@@ -19,6 +19,8 @@ import getSecrets from "./io/pocketenv/secret/getSecrets";
 import addVolume from "./io/pocketenv/volume/addVolume";
 import deleteVolume from "./io/pocketenv/volume/deleteVolume";
 import getVolumes from "./io/pocketenv/volume/getVolumes";
+import putPreferences from "./io/pocketenv/sandbox/putPreferences";
+import getPreferences from "./io/pocketenv/sandbox/getPreferences";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
@@ -32,6 +34,8 @@ export default function (server: Server, ctx: Context) {
   claimSandbox(server, ctx);
   getProfile(server, ctx);
   getTerminalToken(server, ctx);
+  putPreferences(server, ctx);
+  getPreferences(server, ctx);
   addFile(server, ctx);
   deleteFile(server, ctx);
   getFiles(server, ctx);

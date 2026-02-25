@@ -25,6 +25,11 @@ defs = new Mapping<String, StringType | Array | ObjectType> {
     type = "object"
     required = List("name", "value")
     properties {
+      ["sandboxId"] = new StringType {
+        type = "string"
+        description =
+          "The ID of the sandbox to which the environment variable belongs. This is used to associate the variable with a specific sandbox environment."
+      }
       ["name"] = new StringType {
         type = "string"
         description = "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc."

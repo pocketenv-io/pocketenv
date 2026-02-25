@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useDeleteSandboxMutation } from "../../../hooks/useSandbox";
 
 export type DeleteSandboxModalProps = {
   isOpen: boolean;
@@ -12,6 +13,7 @@ function DeleteSandboxModal({
   onClose,
   sandboxId,
 }: DeleteSandboxModalProps) {
+  const { mutateAsync } = useDeleteSandboxMutation();
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {

@@ -72,3 +72,21 @@ export const startSandbox = (id: string) =>
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
+
+export const putPreferences = () =>
+  client.post(
+    `/xrpc/io.pocketenv.sandbox.putPreferences`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  );
+
+export const getPreferences = () =>
+  client.get(`/xrpc/io.pocketenv.sandbox.getPreferences`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });

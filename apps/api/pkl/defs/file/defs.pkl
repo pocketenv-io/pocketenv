@@ -7,6 +7,11 @@ defs = new Mapping<String, ObjectType | StringType | Array> {
     type = "object"
     required = List("path", "content")
     properties {
+      ["sandboxId"] = new StringType {
+        type = "string"
+        description =
+          "The ID of the sandbox to which the file belongs. This is used to associate the file with a specific sandbox environment."
+      }
       ["path"] = new StringType {
         type = "string"
         description = "The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc."

@@ -7,6 +7,8 @@ import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
 
 export interface File {
+  /** The ID of the sandbox to which the file belongs. This is used to associate the file with a specific sandbox environment. */
+  sandboxId?: string;
   /** The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc. */
   path: string;
   /** The content of the file. This will be written to the specified path within the sandbox. The content should be base64 encoded if it's binary data. */

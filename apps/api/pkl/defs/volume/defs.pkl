@@ -28,9 +28,24 @@ defs = new Mapping<String, Array | ObjectType | StringType | BooleanType> {
     type = "object"
     required = List("name")
     properties {
+      ["sandboxId"] = new StringType {
+        type = "string"
+        description =
+          "The ID of the sandbox to which the volume belongs. This is used to associate the volume with a specific sandbox environment."
+      }
       ["name"] = new StringType {
         type = "string"
         description = "Name of the volume, e.g. 'data-volume', 'logs', etc."
+      }
+      ["path"] = new StringType {
+        type = "string"
+        description =
+          "The path within the sandbox where the volume will be mounted, e.g. '/data', '/logs', etc."
+      }
+      ["readOnly"] = new BooleanType {
+        type = "boolean"
+        description =
+          "Whether the volume should be mounted as read-only within the sandbox. Defaults to false (read-write)."
       }
     }
   }

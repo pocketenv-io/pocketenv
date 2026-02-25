@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useAddFileMutation } from "../../../hooks/useFile";
 
 export type AddFileModalProps = {
   isOpen: boolean;
@@ -8,6 +9,7 @@ export type AddFileModalProps = {
 };
 
 function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
+  const { mutateAsync } = useAddFileMutation(sandboxId, "", "");
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
@@ -33,6 +35,11 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
   };
 
   const handleCloseButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onClose();
+  };
+
+  const onAddFile = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     onClose();
   };
@@ -102,7 +109,7 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
             <div className="modal-footer">
               <button
                 className="btn btn-primary w-35 font-semibold"
-                onClick={() => {}}
+                onClick={onAddFile}
               >
                 Add File
               </button>

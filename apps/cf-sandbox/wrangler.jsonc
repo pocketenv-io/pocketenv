@@ -31,6 +31,7 @@
    * https://developers.cloudflare.com/workers/wrangler/configuration/#environment-variables
    */
   // "vars": { "MY_VARIABLE": "production_value" }
+  "vars": { "SANDBOX_TRANSPORT": "websocket" },
   /**
    * Note: Use secrets to store sensitive data.
    * https://developers.cloudflare.com/workers/configuration/secrets/

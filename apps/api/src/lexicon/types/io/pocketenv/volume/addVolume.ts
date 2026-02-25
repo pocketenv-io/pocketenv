@@ -7,11 +7,19 @@ import { lexicons } from "../../../../lexicons";
 import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
 import { type HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
+import type * as IoPocketenvVolumeDefs from "./defs";
 
 export type QueryParams = {};
 
-export type InputSchema = undefined;
-export type HandlerInput = undefined;
+export interface InputSchema {
+  volume: IoPocketenvVolumeDefs.Volume;
+  [k: string]: unknown;
+}
+
+export interface HandlerInput {
+  encoding: "application/json";
+  body: InputSchema;
+}
 
 export interface HandlerError {
   status: number;

@@ -1,15 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addVariable, deleteVariable, getVariables } from "../api/variable";
 
-export const useAddVariableMutation = (
-  sandboxId: string,
-  name: string,
-  value: string,
-) => {
+export const useAddVariableMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["addVariable"],
-    mutationFn: async () => addVariable(sandboxId, name, value),
+    mutationFn: async ({
+      sandboxId,
+      name,
+      value,
+    }: {
+      sandboxId: string;
+      name: string;
+      value: string;
+    }) => addVariable(sandboxId, name, value),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["variables"] });
     },

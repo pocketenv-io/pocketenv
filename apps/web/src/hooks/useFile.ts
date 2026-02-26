@@ -1,15 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addFile, deleteFile, getFiles } from "../api/file";
 
-export const useAddFileMutation = (
-  sandboxId: string,
-  path: string,
-  content: string,
-) => {
+export const useAddFileMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["addFile"],
-    mutationFn: async () => addFile(sandboxId, path, content),
+    mutationFn: async ({
+      sandboxId,
+      path,
+      content,
+    }: {
+      sandboxId: string;
+      path: string;
+      content: string;
+    }) => addFile(sandboxId, path, content),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["files"] });
     },

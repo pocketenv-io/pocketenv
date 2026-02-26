@@ -1,6 +1,16 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddSecretMutation } from "../../../hooks/useSecret";
+
+const schema = z.object({
+  name: z.string().min(1, "Name is required"),
+  value: z.string().min(1, "Value is required"),
+});
+
+type FormValues = z.infer<typeof schema>;
 
 export type AddSecretModalProps = {
   isOpen: boolean;
@@ -9,7 +19,16 @@ export type AddSecretModalProps = {
 };
 
 function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
-  const { mutateAsync } = useAddSecretMutation(sandboxId, "", "");
+  const { mutateAsync } = useAddSecretMutation();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+  });
+
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
@@ -39,8 +58,13 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
     onClose();
   };
 
-  const onAddSecret = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
+  const onSubmit = async (data: FormValues) => {
+    await mutateAsync({
+      sandboxId,
+      name: data.name,
+      value: data.value,
+    });
+    reset();
     onClose();
   };
 
@@ -73,8 +97,8 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
                 <span className="icon-[tabler--x] size-4"></span>
               </button>
             </div>
-            <div className="modal-body">
-              <>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="modal-body">
                 <div className="form-control w-full">
                   <label className="label">
                     <span className="label-text font-bold mb-1 text-[14px]">
@@ -87,12 +111,17 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
                       placeholder="YOUR_SECRET_NAME"
                       className="grow"
                       autoComplete="off"
-                      name="search-filter"
                       data-1p-ignore
                       data-lpignore="true"
                       data-form-type="other"
+                      {...register("name")}
                     />
                   </div>
+                  {errors.name && (
+                    <span className="text-error text-[12px] mt-1">
+                      {errors.name.message}
+                    </span>
+                  )}
                   <div className="mt-5">
                     <label className="label">
                       <span className="label-text font-bold mb-1 text-[14px]">
@@ -103,16 +132,22 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
                       className="textarea max-w-full h-[250px] text-[14px] font-semibold"
                       aria-label="Textarea"
                       placeholder="Secret Value"
+                      {...register("value")}
                     ></textarea>
+                    {errors.value && (
+                      <span className="text-error text-[12px] mt-1 block">
+                        {errors.value.message}
+                      </span>
+                    )}
                   </div>
                 </div>
-              </>
-            </div>
-            <div className="modal-footer">
-              <button className="btn btn-primary" onClick={onAddSecret}>
-                Add Secret
-              </button>
-            </div>
+              </div>
+              <div className="modal-footer">
+                <button type="submit" className="btn btn-primary">
+                  Add Secret
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

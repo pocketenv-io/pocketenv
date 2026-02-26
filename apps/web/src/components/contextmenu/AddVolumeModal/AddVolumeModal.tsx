@@ -1,6 +1,16 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddVolumeMutation } from "../../../hooks/useVolume";
+
+const schema = z.object({
+  name: z.string().min(1, "Name is required"),
+  path: z.string().min(1, "Path is required"),
+});
+
+type FormValues = z.infer<typeof schema>;
 
 export type AddVolumeModalProps = {
   isOpen: boolean;
@@ -9,7 +19,16 @@ export type AddVolumeModalProps = {
 };
 
 function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
-  const { mutateAsync } = useAddVolumeMutation(sandboxId, "", "");
+  const { mutateAsync } = useAddVolumeMutation();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+  });
+
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
@@ -39,8 +58,13 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
     onClose();
   };
 
-  const onAddVolume = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
+  const onSubmit = async (data: FormValues) => {
+    await mutateAsync({
+      sandboxId,
+      name: data.name,
+      path: data.path,
+    });
+    reset();
     onClose();
   };
 
@@ -73,8 +97,8 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                 <span className="icon-[tabler--x] size-4"></span>
               </button>
             </div>
-            <div className="modal-body " style={{ height: 300 }}>
-              <>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="modal-body" style={{ height: 300 }}>
                 <div className="form-control w-full">
                   <label className="label">
                     <span className="label-text font-bold mb-1 text-[14px]">
@@ -87,12 +111,17 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                       placeholder="Your Volume Name"
                       className="grow"
                       autoComplete="off"
-                      name="search-filter"
                       data-1p-ignore
                       data-lpignore="true"
                       data-form-type="other"
+                      {...register("name")}
                     />
                   </div>
+                  {errors.name && (
+                    <span className="text-error text-[12px] mt-1">
+                      {errors.name.message}
+                    </span>
+                  )}
                   <div className="mt-5">
                     <label className="label">
                       <span className="label-text font-bold mb-1 text-[14px]">
@@ -105,24 +134,26 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                         placeholder="Mount Path, e.g /data"
                         className="grow"
                         autoComplete="off"
-                        name="search-filter"
                         data-1p-ignore
                         data-lpignore="true"
                         data-form-type="other"
+                        {...register("path")}
                       />
                     </div>
+                    {errors.path && (
+                      <span className="text-error text-[12px] mt-1 block">
+                        {errors.path.message}
+                      </span>
+                    )}
                   </div>
                 </div>
-              </>
-            </div>
-            <div className="modal-footer">
-              <button
-                className="btn btn-primary font-semibold"
-                onClick={onAddVolume}
-              >
-                Add Volume
-              </button>
-            </div>
+              </div>
+              <div className="modal-footer">
+                <button type="submit" className="btn btn-primary font-semibold">
+                  Add Volume
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

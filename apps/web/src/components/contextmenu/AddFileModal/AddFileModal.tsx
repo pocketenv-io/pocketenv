@@ -1,6 +1,16 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddFileMutation } from "../../../hooks/useFile";
+
+const schema = z.object({
+  path: z.string().min(1, "Path is required"),
+  content: z.string().min(1, "Content is required"),
+});
+
+type FormValues = z.infer<typeof schema>;
 
 export type AddFileModalProps = {
   isOpen: boolean;
@@ -9,7 +19,16 @@ export type AddFileModalProps = {
 };
 
 function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
-  const { mutateAsync } = useAddFileMutation(sandboxId, "", "");
+  const { mutateAsync } = useAddFileMutation();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+  });
+
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
@@ -39,8 +58,13 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
     onClose();
   };
 
-  const onAddFile = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
+  const onSubmit = async (data: FormValues) => {
+    await mutateAsync({
+      sandboxId,
+      path: data.path,
+      content: data.content,
+    });
+    reset();
     onClose();
   };
 
@@ -73,8 +97,8 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
                 <span className="icon-[tabler--x] size-4"></span>
               </button>
             </div>
-            <div className="modal-body ">
-              <>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="modal-body">
                 <label className="label">
                   <span className="label-text font-bold mb-1 text-[14px]">
                     Path
@@ -86,12 +110,17 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
                     placeholder="File Mount Path, e.g /root/.openclaw/openclaw.json"
                     className="grow"
                     autoComplete="off"
-                    name="search-filter"
                     data-1p-ignore
                     data-lpignore="true"
                     data-form-type="other"
+                    {...register("path")}
                   />
                 </div>
+                {errors.path && (
+                  <span className="text-error text-[12px] mt-1">
+                    {errors.path.message}
+                  </span>
+                )}
                 <div className="mt-5">
                   <label className="label">
                     <span className="label-text font-bold mb-1 text-[14px]">
@@ -102,18 +131,24 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
                     className="textarea max-w-full h-[250px] text-[14px] font-semibold"
                     aria-label="Textarea"
                     placeholder="File Content"
+                    {...register("content")}
                   ></textarea>
+                  {errors.content && (
+                    <span className="text-error text-[12px] mt-1 block">
+                      {errors.content.message}
+                    </span>
+                  )}
                 </div>
-              </>
-            </div>
-            <div className="modal-footer">
-              <button
-                className="btn btn-primary w-35 font-semibold"
-                onClick={onAddFile}
-              >
-                Add File
-              </button>
-            </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="submit"
+                  className="btn btn-primary w-35 font-semibold"
+                >
+                  Add File
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

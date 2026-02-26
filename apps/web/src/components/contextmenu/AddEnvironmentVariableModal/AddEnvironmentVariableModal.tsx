@@ -1,6 +1,16 @@
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddVariableMutation } from "../../../hooks/useVariable";
+
+const schema = z.object({
+  name: z.string().min(1, "Name is required"),
+  value: z.string().min(1, "Value is required"),
+});
+
+type FormValues = z.infer<typeof schema>;
 
 export type AddEnvironmentVariableModalProps = {
   isOpen: boolean;
@@ -13,7 +23,16 @@ function AddEnvironmentVariableModal({
   onClose,
   sandboxId,
 }: AddEnvironmentVariableModalProps) {
-  const { mutateAsync } = useAddVariableMutation(sandboxId, "", "");
+  const { mutateAsync } = useAddVariableMutation();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
+    resolver: zodResolver(schema),
+  });
+
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
@@ -43,8 +62,13 @@ function AddEnvironmentVariableModal({
     onClose();
   };
 
-  const onAddVariable = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
+  const onSubmit = async (data: FormValues) => {
+    await mutateAsync({
+      sandboxId,
+      name: data.name,
+      value: data.value,
+    });
+    reset();
     onClose();
   };
 
@@ -77,8 +101,8 @@ function AddEnvironmentVariableModal({
                 <span className="icon-[tabler--x] size-4"></span>
               </button>
             </div>
-            <div className="modal-body ">
-              <>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="modal-body">
                 <div className="form-control w-full">
                   <label className="label">
                     <span className="label-text font-bold mb-1 text-[14px]">
@@ -91,12 +115,17 @@ function AddEnvironmentVariableModal({
                       placeholder="YOUR_VARIABLE_NAME"
                       className="grow"
                       autoComplete="off"
-                      name="search-filter"
                       data-1p-ignore
                       data-lpignore="true"
                       data-form-type="other"
+                      {...register("name")}
                     />
                   </div>
+                  {errors.name && (
+                    <span className="text-error text-[12px] mt-1">
+                      {errors.name.message}
+                    </span>
+                  )}
                   <div className="mt-5">
                     <label className="label">
                       <span className="label-text font-bold mb-1 text-[14px]">
@@ -107,19 +136,25 @@ function AddEnvironmentVariableModal({
                       className="textarea max-w-full h-[250px] text-[14px] font-semibold"
                       aria-label="Textarea"
                       placeholder="Variable Value"
+                      {...register("value")}
                     ></textarea>
+                    {errors.value && (
+                      <span className="text-error text-[12px] mt-1 block">
+                        {errors.value.message}
+                      </span>
+                    )}
                   </div>
                 </div>
-              </>
-            </div>
-            <div className="modal-footer">
-              <button
-                className="btn btn-primary w-35 font-semibold"
-                onClick={onAddVariable}
-              >
-                Add Variable
-              </button>
-            </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="submit"
+                  className="btn btn-primary w-35 font-semibold"
+                >
+                  Add Variable
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>

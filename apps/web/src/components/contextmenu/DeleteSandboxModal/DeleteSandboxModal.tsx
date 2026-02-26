@@ -27,6 +27,12 @@ function DeleteSandboxModal({
     };
   }, [isOpen, onClose]);
 
+  const onDeleteSandbox = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    await mutateAsync(sandboxId);
+    e.stopPropagation();
+    onClose();
+  };
+
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     if (e.target === e.currentTarget) {
@@ -72,13 +78,16 @@ function DeleteSandboxModal({
                 <span className="icon-[tabler--x] size-4"></span>
               </button>
             </div>
-            <div className="modal-body p-0 pl-2 h-[200px]">
-              <></>
+            <div className="modal-body p-0 pl-2 h-[100px]">
+              <p className="font-semibold text-center">
+                Are you sure you want to delete this sandbox?
+              </p>
+              <p className="text-center ">This action cannot be undone.</p>
             </div>
             <div className="modal-footer">
               <button
                 className="btn btn-error font-semibold"
-                onClick={() => {}}
+                onClick={onDeleteSandbox}
               >
                 Delete Sandbox
               </button>

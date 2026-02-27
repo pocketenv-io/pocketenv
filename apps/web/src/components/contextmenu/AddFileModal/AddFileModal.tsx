@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,6 +19,7 @@ export type AddFileModalProps = {
 };
 
 function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync } = useAddFileMutation();
   const {
     register,
@@ -59,11 +60,13 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
   };
 
   const onSubmit = async (data: FormValues) => {
+    setIsLoading(true);
     await mutateAsync({
       sandboxId,
       path: data.path,
       content: data.content,
     });
+    setIsLoading(false);
     reset();
     onClose();
   };
@@ -143,8 +146,11 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
               <div className="modal-footer">
                 <button
                   type="submit"
-                  className="btn btn-primary w-35 font-semibold"
+                  className="btn btn-primary w-36 font-semibold"
                 >
+                  {isLoading && (
+                    <span className="loading loading-spinner loading-xs mr-1.5"></span>
+                  )}
                   Add File
                 </button>
               </div>

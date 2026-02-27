@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,6 +19,7 @@ export type AddSecretModalProps = {
 };
 
 function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync } = useAddSecretMutation();
   const {
     register,
@@ -59,11 +60,13 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
   };
 
   const onSubmit = async (data: FormValues) => {
+    setIsLoading(true);
     await mutateAsync({
       sandboxId,
       name: data.name,
       value: data.value,
     });
+    setIsLoading(false);
     reset();
     onClose();
   };
@@ -144,6 +147,9 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
               </div>
               <div className="modal-footer">
                 <button type="submit" className="btn btn-primary">
+                  {isLoading && (
+                    <span className="loading loading-spinner loading-xs mr-1.5"></span>
+                  )}
                   Add Secret
                 </button>
               </div>

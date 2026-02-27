@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,6 +19,7 @@ export type AddVolumeModalProps = {
 };
 
 function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync } = useAddVolumeMutation();
   const {
     register,
@@ -59,11 +60,13 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
   };
 
   const onSubmit = async (data: FormValues) => {
+    setIsLoading(true);
     await mutateAsync({
       sandboxId,
       name: data.name,
       path: data.path,
     });
+    setIsLoading(false);
     reset();
     onClose();
   };
@@ -150,6 +153,9 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
               </div>
               <div className="modal-footer">
                 <button type="submit" className="btn btn-primary font-semibold">
+                  {isLoading && (
+                    <span className="loading loading-spinner loading-xs mr-1.5"></span>
+                  )}
                   Add Volume
                 </button>
               </div>

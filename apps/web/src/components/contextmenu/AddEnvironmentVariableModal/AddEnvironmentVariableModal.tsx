@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -23,6 +23,7 @@ function AddEnvironmentVariableModal({
   onClose,
   sandboxId,
 }: AddEnvironmentVariableModalProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync } = useAddVariableMutation();
   const {
     register,
@@ -63,11 +64,13 @@ function AddEnvironmentVariableModal({
   };
 
   const onSubmit = async (data: FormValues) => {
+    setIsLoading(true);
     await mutateAsync({
       sandboxId,
       name: data.name,
       value: data.value,
     });
+    setIsLoading(false);
     reset();
     onClose();
   };
@@ -149,8 +152,11 @@ function AddEnvironmentVariableModal({
               <div className="modal-footer">
                 <button
                   type="submit"
-                  className="btn btn-primary w-35 font-semibold"
+                  className="btn btn-primary w-45 font-semibold"
                 >
+                  {isLoading && (
+                    <span className="loading loading-spinner loading-xs mr-1.5"></span>
+                  )}
                   Add Variable
                 </button>
               </div>

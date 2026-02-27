@@ -1,5 +1,7 @@
 FROM ubuntu:latest
 
+COPY --from=docker.io/cloudflare/sandbox:0.7.5 /container-server/sandbox /sandbox
+
 RUN apt-get update -y
 
 RUN apt-get install curl git -y
@@ -21,3 +23,8 @@ RUN nix profile add \
     'github:flox/flox/latest'
 
 RUN nix profile add nixpkgs#devenv
+
+EXPOSE 8080
+EXPOSE 3000/tcp
+
+ENTRYPOINT ["/sandbox"]

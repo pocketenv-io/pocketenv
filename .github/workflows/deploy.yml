@@ -21,9 +21,11 @@ jobs:
             crush,
             docker,
             gemini,
+            mise,
             kilo,
             kiro,
             nix,
+            pkgx,
             openclaw,
             opencode,
           ]

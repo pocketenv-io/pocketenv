@@ -12,16 +12,17 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        sandbox:
-          [
+        sandbox: [
             amp,
             claude,
             codex,
             copilot,
-            crush,
+            crush
+            docker,
             gemini,
             kilo,
             kiro,
+            nix,
             openclaw,
             opencode,
           ]

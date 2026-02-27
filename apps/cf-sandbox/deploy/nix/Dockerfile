@@ -19,3 +19,5 @@ RUN nix profile install \
     --experimental-features "nix-command flakes" \
     --accept-flake-config \
     'github:flox/flox/latest'
+
+RUN nix profile install nixpkgs#devenv

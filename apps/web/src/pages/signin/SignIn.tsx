@@ -40,7 +40,7 @@ function SignIn() {
             Sign In
           </button>
           <p className="text-center text-white/70">
-            Don't have an atproto handle yet? You can create one at
+            Don't have an atproto handle yet? You can create one at{" "}
             <a href={`${API_URL}/login?prompt=create`} className="text-primary">
               selfhosted.social
             </a>

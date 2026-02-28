@@ -84,7 +84,7 @@ function Home() {
                 © {dayjs().format("YYYY")} Pocketenv
               </div>
               <div className="flex justify-center items-center flex-1">
-                <div>Baked with ❤️ in Antananarivo, Madagascar</div>
+                <div>Baked with ❤️ in Antananarivo</div>
               </div>
               <div className="flex item-center justify-center">
                 <a href="https://bsky.app/profile/pocketenv.io" target="_blank">

@@ -127,6 +127,11 @@ function ContextMenu({ sandboxId }: ContextMenuProps) {
               Delete
             </div>
           </li>
+          <li>
+            <a href="/settings" className="dropdown-item cursor-pointer">
+              Settings
+            </a>
+          </li>
         </ul>
       </div>
       <AddEnvironmentVariableModal

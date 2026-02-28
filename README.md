@@ -14,7 +14,7 @@ Run code, test ideas, and prototype safely in isolated environments — without 
 
 ![](./preview.png)
 
-## Why Pocketenv?
+## 🤔 Why Pocketenv?
 
 Modern sandboxes are fragmented and vendor-specific. Each platform has its own API, its own format, and its own ecosystem.
 
@@ -27,7 +27,7 @@ Pocketenv solves this by providing:
 
 With Pocketenv, sandboxes become portable, shareable, and open.
 
-## Key Features
+## ✨ Key Features
 
 - **Secure Isolated Environments**  
   Run commands, agents, and code safely inside isolated sandboxes with strong separation.
@@ -48,7 +48,7 @@ With Pocketenv, sandboxes become portable, shareable, and open.
 - **Open Sandbox Definitions via AT Protocol**  
   Sandboxes defined with open lexicons and stored on [AT Protocol](https://atproto.com) PDS. Enables discoverable, shareable, versioned sandboxes and a growing community ecosystem.
 
-## Example Use Cases
+## 💡 Example Use Cases
 
 - Prototype and run **OpenClaw** agents safely in isolated environments
 - Prototype AI agents in complete safety
@@ -57,3 +57,19 @@ With Pocketenv, sandboxes become portable, shareable, and open.
 - Share reproducible developer environments
 - Spin up temporary / ephemeral dev sandboxes
 - Provide sandbox infrastructure as a service for your application
+
+## 📚 Documentation
+
+[View the full documentation](https://docs.pocketenv.io)
+
+## ✍️ Feedback
+
+This repository is the central place to collect feedback and issues related to Pocketenv.
+
+Please [**open an issue**](https://github.com/pocketenv-io/pocketenv/issues/new) if you want to leave feedback. Feel free to also join our [**Discord server**](https://discord.gg/V4U6dPskKc)
+
+## 🤝 Contributing
+
+We would love to hear your feedback or suggestions. The best way to reach us is on [Discord](https://discord.gg/9ada4pFUFS).
+
+We also welcome pull requests into this repo. See [CONTRIBUTING.md](CONTRIBUTING.md) for information on setting up this repo locally.

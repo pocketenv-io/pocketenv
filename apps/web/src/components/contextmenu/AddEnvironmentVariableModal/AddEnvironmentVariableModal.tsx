@@ -93,7 +93,7 @@ function AddEnvironmentVariableModal({
         >
           <div className="modal-content">
             <div className="modal-header">
-              <div className="flex-1">Add Environment Variable</div>
+              <div className="flex-1">Add Variable</div>
               <button
                 type="button"
                 className="btn btn-text btn-circle btn-sm absolute end-3 top-3"

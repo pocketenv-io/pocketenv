@@ -36,6 +36,11 @@ function Navbar() {
             <span className="icon-[mdi--github] size-7 mt-[8px]"></span>
           </a>
         </div>
+        <div className="flex item-center justify-center">
+          <a href="https://discord.gg/9ada4pFUFS" target="_blank">
+            <span className="icon-[line-md--discord] size-7 mt-[8px]"></span>
+          </a>
+        </div>
         <div className="ml-[10px]">
           <Link to="/signin" className="text-[15px]">
             Login

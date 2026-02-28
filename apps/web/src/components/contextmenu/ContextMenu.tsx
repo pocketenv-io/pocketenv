@@ -55,7 +55,7 @@ function ContextMenu({ sandboxId }: ContextMenuProps) {
     setIsAddSecretModalOpen(true);
   };
 
-  const onAddEnvironmentVariable = (e: React.MouseEvent) => {
+  const onAddVariable = (e: React.MouseEvent) => {
     e.stopPropagation();
     setOpen(false);
     setIsAddEnvironmentVariableModalOpen(true);
@@ -100,27 +100,30 @@ function ContextMenu({ sandboxId }: ContextMenuProps) {
           aria-labelledby="dropdown-avatar"
         >
           <li>
-            <div className="dropdown-item" onClick={onAddFile}>
+            <div className="dropdown-item cursor-pointer" onClick={onAddFile}>
               Add File
             </div>
           </li>
           <li>
-            <div className="dropdown-item" onClick={onAddSecret}>
+            <div className="dropdown-item cursor-pointer" onClick={onAddSecret}>
               Add Secret
             </div>
           </li>
           <li>
-            <div className="dropdown-item" onClick={onAddEnvironmentVariable}>
-              Add Environment Variable
+            <div
+              className="dropdown-item cursor-pointer"
+              onClick={onAddVariable}
+            >
+              Add Variable
             </div>
           </li>
           <li>
-            <div className="dropdown-item" onClick={onAddVolume}>
+            <div className="dropdown-item cursor-pointer" onClick={onAddVolume}>
               Add Volume
             </div>
           </li>
           <li>
-            <div className="dropdown-item" onClick={onDelete}>
+            <div className="dropdown-item cursor-pointer" onClick={onDelete}>
               Delete
             </div>
           </li>

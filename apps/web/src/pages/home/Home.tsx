@@ -3,6 +3,7 @@ import NewProject from "../../components/newproject";
 import { useEffect, useState } from "react";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { API_URL } from "../../consts";
+import dayjs from "dayjs";
 
 function Home() {
   const { did } = useSearch({ from: "/" });
@@ -78,6 +79,32 @@ function Home() {
                 </div>
               </div>
             </div>
+            <footer className="mt-[80px] w-[80%] m-auto  text-[#6d6d9c] h-[50px] flex flex-row pl-[21px] pr-[21px]">
+              <div className="flex justify-center items-center">
+                © {dayjs().format("YYYY")} Pocketenv
+              </div>
+              <div className="flex justify-center items-center flex-1">
+                <div>Baked with ❤️ in Antananarivo, Madagascar</div>
+              </div>
+              <div className="flex item-center justify-center">
+                <a href="https://bsky.app/profile/pocketenv.io" target="_blank">
+                  <span className="icon-[ri--bluesky-fill] size-7 mr-[8px] mt-[13px]"></span>
+                </a>
+              </div>
+              <div className="flex item-center justify-center">
+                <a href="https://discord.gg/9ada4pFUFS" target="_blank">
+                  <span className="icon-[prime--discord] size-8 mr-[8px] mt-[12px]"></span>
+                </a>
+              </div>
+              <div className="flex item-center justify-center">
+                <a
+                  href="https://github.com/pocketenv-io/pocketenv"
+                  target="_blank"
+                >
+                  <span className="icon-[mdi--github] size-7 mt-[13px]"></span>
+                </a>
+              </div>
+            </footer>
           </div>
           <NewProject
             isOpen={modalOpen}

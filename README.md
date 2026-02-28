@@ -10,6 +10,7 @@ Run code, test ideas, and prototype safely in isolated environments — without 
 >
 > This project is in early development. Expect breaking changes and rapid iteration.
 
+![](./preview.png)
 
 ## Why Pocketenv?
 

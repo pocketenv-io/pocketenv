@@ -76,7 +76,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
         style={{ outline: "none" }}
         onClick={handleBackdropClick}
       >
-        <div className="overlay-animation-target modal-dialog overlay-open:mt-4 overlay-open:duration-300 mt-12 transition-all ease-out h-[50%]">
+        <div className="overlay-animation-target modal-dialog overlay-open:mt-4 overlay-open:duration-300 mt-12 transition-all ease-out h-[65%]">
           <div className="modal-content">
             <div className="modal-header">
               <div className="form-control w-full">

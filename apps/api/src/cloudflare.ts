@@ -1,0 +1,16 @@
+export const workers = {
+  amp: "https://amp.pocketenv.io",
+  claude: "https://claudecode.pocketenv.io",
+  codex: "https://codex.pocketenv.io",
+  copilot: "https://copilot.pocketenv.io",
+  crush: "https://crush.pocketenv.io",
+  docker: "https://docker.pocketenv.io",
+  gemini: "https://gemini.pocketenv.io",
+  kilo: "https://kilo.pocketenv.io",
+  kiro: "https://kiro.pocketenv.io",
+  mise: "https://mise.pocketenv.io",
+  nix: "https://nix.pocketenv.io",
+  openclaw: "https://openclaw.pocketenv.io",
+  opencode: "https://opencode.pocketenv.io",
+  pkgx: "https://pkgx.pocketenv.io",
+};

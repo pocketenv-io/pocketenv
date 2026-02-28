@@ -119,7 +119,7 @@ function TerminalModal({
               </button>
             </div>
             <div
-              className="modal-body p-0 pl-2"
+              className="modal-body p-0 pl-2 overflow-y-hidden"
               style={
                 isFullscreen
                   ? { height: "calc(100vh - 56px)" }

@@ -66,7 +66,7 @@ With Pocketenv, sandboxes become portable, shareable, and open.
 
 This repository is the central place to collect feedback and issues related to Pocketenv.
 
-Please [**open an issue**](https://github.com/pocketenv-io/pocketenv/issues/new) if you want to leave feedback. Feel free to also join our [**Discord server**](https://discord.gg/V4U6dPskKc)
+Please [**open an issue**](https://github.com/pocketenv-io/pocketenv/issues/new) if you want to leave feedback. Feel free to also join our [**Discord server**](https://discord.gg/9ada4pFUFS)
 
 ## 🤝 Contributing
 

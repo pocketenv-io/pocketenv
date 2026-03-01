@@ -9,7 +9,7 @@ import type {
 import type { SelectSandbox } from "schema/sandboxes";
 import { consola } from "consola";
 import schema from "schema";
-import { count, eq, desc, or } from "drizzle-orm";
+import { count, eq, desc, or, and, not } from "drizzle-orm";
 
 export default function (server: Server, ctx: Context) {
   const getSandboxes = (params: QueryParams, auth: HandlerAuth) =>
@@ -50,7 +50,12 @@ const retrieve = ({
           .select()
           .from(schema.sandboxes)
           .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
-          .where(eq(schema.users.handle, "pocketenv.io"))
+          .where(
+            and(
+              eq(schema.users.handle, "pocketenv.io"),
+              not(eq(schema.sandboxes.name, "crush")),
+            ),
+          )
           .orderBy(desc(schema.sandboxes.installs))
           .limit(params.limit ?? 30)
           .offset(params.offset ?? 0)
@@ -60,7 +65,12 @@ const retrieve = ({
           .select({ count: count() })
           .from(schema.sandboxes)
           .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
-          .where(eq(schema.users.handle, "pocketenv.io"))
+          .where(
+            and(
+              eq(schema.users.handle, "pocketenv.io"),
+              not(eq(schema.sandboxes.name, "crush")),
+            ),
+          )
           .execute()
           .then((result) => result[0]?.count ?? 0),
       ]),

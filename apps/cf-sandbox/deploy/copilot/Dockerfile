@@ -31,7 +31,7 @@ RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akin
     echo 'source -- ~/.local/share/blesh/ble.sh' >> ~/.bashrc
 
 RUN curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee /root/.tokyonight_storm.omp.json >/dev/null && \
-    echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"\n' >> /root/.bashrc
+    echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"' >> /root/.bashrc
 
 
 RUN case "${TARGETARCH}" in \

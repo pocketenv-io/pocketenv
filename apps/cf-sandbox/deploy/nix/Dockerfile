@@ -11,7 +11,7 @@ RUN apt-get install curl git unzip tmux wget -y
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 
 RUN curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee /root/.tokyonight_storm.omp.json >/dev/null && \
-    echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"\n' >> /root/.bashrc
+    echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"' >> /root/.bashrc
 
 
 RUN case "${TARGETARCH}" in \

@@ -32,4 +32,4 @@ jobs:
           echo 'VITE_PUBLIC_KEY=2bf96e12d109e6948046a7803ef1696e12c11f04f20a6ce64dbd4bcd93db9341' >> .env.prod
           echo 'VITE_CF_SITE_KEY=0x4AAAAAACkQFFUkG5rsjMDo' >> .env.prod
           bun run build:prod
-          bunx wrangler pages deploy --project-name pocketenv
+          bunx wrangler pages deploy dist --project-name pocketenv

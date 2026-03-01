@@ -46,6 +46,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@types/lodash": "^4.17.23",
     "@types/node": "^24.10.1",
+    "@types/numeral": "^2.0.5",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.2.2",

@@ -112,7 +112,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
                 </div>
               </div>
             </div>
-            <div className="modal-body">
+            <div className="modal-body h-[400px] overflow-y-auto">
               {isOpen && (
                 <Turnstile
                   sitekey={CF_SITE_KEY}

@@ -269,7 +269,7 @@ function New() {
                     <div
                       style={
                         isFullscreen
-                          ? { flex: 1, minHeight: 0 }
+                          ? { flex: 1, minHeight: 0, paddingBottom: 20 }
                           : { height: "400px" }
                       }
                     >

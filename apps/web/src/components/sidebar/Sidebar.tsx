@@ -71,38 +71,40 @@ function Sidebar() {
                 {!isCollapsed && "Projects"}
               </Link>
             </li>
-            <li>
-              <Link
-                to="/volumes"
-                className={`${
-                  isActive("/volumes")
-                    ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
-                    : "rounded-full hover:text-white"
-                } ${isCollapsed ? "justify-center px-2" : ""}`}
-                title={isCollapsed ? "Volumes" : undefined}
-              >
-                <span
-                  className={`icon-[icon-park-outline--hard-disk] size-5 ${isCollapsed ? "" : "mr-2"}`}
-                ></span>
-                {!isCollapsed && "Volumes"}
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/secrets"
-                className={`${
-                  isActive("/secrets")
-                    ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
-                    : "rounded-full hover:text-white"
-                } ${isCollapsed ? "justify-center px-2" : ""}`}
-                title={isCollapsed ? "Secrets" : undefined}
-              >
-                <span
-                  className={`icon-[tabler--key] size-6 ${isCollapsed ? "" : "mr-2"}`}
-                ></span>
-                {!isCollapsed && "Secrets"}
-              </Link>
-            </li>
+
+            {/*  <li>
+                <Link
+                  to="/volumes"
+                  className={`${
+                    isActive("/volumes")
+                      ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
+                      : "rounded-full hover:text-white"
+                  } ${isCollapsed ? "justify-center px-2" : ""}`}
+                  title={isCollapsed ? "Volumes" : undefined}
+                >
+                  <span
+                    className={`icon-[icon-park-outline--hard-disk] size-5 ${isCollapsed ? "" : "mr-2"}`}
+                  ></span>
+                  {!isCollapsed && "Volumes"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/secrets"
+                  className={`${
+                    isActive("/secrets")
+                      ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
+                      : "rounded-full hover:text-white"
+                  } ${isCollapsed ? "justify-center px-2" : ""}`}
+                  title={isCollapsed ? "Secrets" : undefined}
+                >
+                  <span
+                    className={`icon-[tabler--key] size-6 ${isCollapsed ? "" : "mr-2"}`}
+                  ></span>
+                  {!isCollapsed && "Secrets"}
+                </Link>
+              </li>
+              */}
           </ul>
         </div>
       </aside>

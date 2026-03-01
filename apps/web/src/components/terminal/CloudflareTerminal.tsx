@@ -130,7 +130,7 @@ function TerminalContent({
         if (sessionId) params.set("session", sessionId);
         if (terminalToken) params.set("t", terminalToken.token);
         const url = new URL(
-          `${CF_URL.replace("sbx", worker)}/v1/sandboxes/${addonSandboxId}/ws/terminal`,
+          `${CF_URL.replace("sbx", worker).replace("claude-code", "claudecode")}/v1/sandboxes/${addonSandboxId}/ws/terminal`,
         );
         url.search = params.toString();
         return url.toString();

@@ -1,6 +1,6 @@
-export const workers = {
+export const workers: Record<string, string> = {
   amp: "https://amp.pocketenv.io",
-  claude: "https://claudecode.pocketenv.io",
+  "claude-code": "https://claudecode.pocketenv.io",
   codex: "https://codex.pocketenv.io",
   copilot: "https://copilot.pocketenv.io",
   crush: "https://crush.pocketenv.io",

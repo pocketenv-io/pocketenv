@@ -1,6 +1,6 @@
 import { PRIVATE_KEY_USAGE } from "@atproto/oauth-client-node";
 import dotenv from "dotenv";
-import { cleanEnv, host, port, str } from "envalid";
+import { bool, cleanEnv, host, port, str } from "envalid";
 
 dotenv.config();
 
@@ -28,4 +28,5 @@ export const env = cleanEnv(process.env, {
   SANDBOX_API_URL: str({ default: "http://localhost:8788" }),
   CF_SANDBOX_API_URL: str({ default: "http://localhost:8787" }),
   CF_SECRET_KEY: str({}),
+  CF_LOCAL: bool({ default: false }),
 });

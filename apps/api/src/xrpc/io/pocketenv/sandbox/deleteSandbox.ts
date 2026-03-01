@@ -21,7 +21,9 @@ export default function (server: Server, ctx: Context) {
     }
 
     const sandbox =
-      record.provider === Providers.CLOUDFLARE ? ctx.cfsandbox : ctx.sandbox;
+      record.provider === Providers.CLOUDFLARE
+        ? ctx.cfsandbox(record.base!)
+        : ctx.sandbox();
 
     try {
       await sandbox.delete(`/v1/sandboxes/${params.id}`, {

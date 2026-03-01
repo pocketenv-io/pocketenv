@@ -36,13 +36,16 @@ function SignIn({ isOpen, onClose }: SignInProps) {
         setHandle("");
         onClose();
       }
+      if (event.key === "Enter" && isOpen && handle) {
+        onSignIn();
+      }
     };
 
     document.addEventListener("keydown", handleEscapeKey);
     return () => {
       document.removeEventListener("keydown", handleEscapeKey);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, handle, onSignIn]);
 
   return (
     <>

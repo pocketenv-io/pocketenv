@@ -2,7 +2,7 @@ FROM node:24-slim
 
 ARG TARGETARCH
 
-COPY --from=docker.io/cloudflare/sandbox:0.7.5 /container-server/sandbox /sandbox
+COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbox
 
 RUN echo "deb [signed-by=/etc/apt/keyrings/doppler.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | tee /etc/apt/sources.list.d/doppler-cli.list
 

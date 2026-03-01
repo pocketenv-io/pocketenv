@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 ARG TARGETARCH
 
-COPY --from=docker.io/cloudflare/sandbox:0.7.5 /container-server/sandbox /sandbox
+COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbox
 
 RUN apt-get update -y
 

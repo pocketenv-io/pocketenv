@@ -73,6 +73,9 @@ function ContextMenu({ sandboxId }: ContextMenuProps) {
     setIsDeleteSandboxModalOpen(true);
   };
 
+  // disable context menu temporarily
+  return <></>;
+
   return (
     <>
       <div

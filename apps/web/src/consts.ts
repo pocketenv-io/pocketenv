@@ -2,3 +2,5 @@ export const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8789";
 export const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8790";
 export const POCKETENV_DID = "did:plc:aturpi2ls3yvsmhc6wybomun";
 export const CF_URL = import.meta.env.VITE_CF_URL || "http://localhost:8787";
+export const CF_SITE_KEY =
+  import.meta.env.VITE_CF_SITE_KEY || "1x00000000000000000000BB";

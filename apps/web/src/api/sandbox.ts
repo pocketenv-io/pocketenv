@@ -5,9 +5,11 @@ import type { Sandbox } from "../types/sandbox";
 export const createSandbox = ({
   base,
   provider,
+  challenge,
 }: {
   base: string;
   provider: Provider;
+  challenge: string | null;
 }) =>
   client.post<Sandbox | undefined>(
     "/xrpc/io.pocketenv.sandbox.createSandbox",
@@ -18,6 +20,7 @@ export const createSandbox = ({
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "X-Challenge": challenge ?? "",
       },
     },
   );

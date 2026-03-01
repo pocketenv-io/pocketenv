@@ -118,7 +118,9 @@ function New() {
                       Sandbox
                     </span>
                     {((profile && data?.sandbox?.owner?.did === profile.did) ||
-                      !data?.sandbox?.owner) && <ContextMenu />}
+                      !data?.sandbox?.owner) && (
+                      <ContextMenu sandboxId={data?.sandbox?.id} />
+                    )}
                   </div>
 
                   <div className="w-[50%] overflow-x-auto mt-5 ml-[-18px]">

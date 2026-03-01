@@ -2,14 +2,29 @@ import type { AuthOutput } from "@atproto/xrpc-server";
 import type express from "express";
 import jwt from "jsonwebtoken";
 import { env } from "./env";
+import validateTurnstile from "./turnstile";
 
 type ReqCtx = {
   req: express.Request;
 };
 
-export default function authVerifier(ctx: ReqCtx): AuthOutput {
+export default async function authVerifier(ctx: ReqCtx): Promise<AuthOutput> {
+  const challenge = ctx.req.headers["x-challenge"]?.toString();
+  let artifacts = false;
+
+  if (challenge) {
+    const ip: string =
+      ctx.req.headers["cf-connecting-ip"]?.toString() ||
+      ctx.req.headers["x-forwarded-for"]?.toString() ||
+      "unknown";
+    const validation = await validateTurnstile(challenge, ip);
+    artifacts = (validation as { success: boolean }).success;
+  }
+
   if (!ctx.req.headers.authorization) {
-    return {};
+    return {
+      artifacts,
+    };
   }
 
   const bearer = (ctx.req.headers.authorization || "").split(" ")[1]?.trim();
@@ -21,8 +36,11 @@ export default function authVerifier(ctx: ReqCtx): AuthOutput {
 
     return {
       credentials,
+      artifacts,
     };
   }
 
-  return {};
+  return {
+    artifacts,
+  };
 }

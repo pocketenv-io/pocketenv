@@ -1,9 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import ContentLoader from "react-content-loader";
 import {
   useCreateSandboxMutation,
   useSandboxesQuery,
 } from "../../hooks/useSandbox";
 import { useNavigate } from "@tanstack/react-router";
+import { Turnstile, useTurnstile } from "react-turnstile";
+import { CF_SITE_KEY } from "../../consts";
 
 export type NewProjectProps = {
   isOpen: boolean;
@@ -17,6 +20,8 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
   const { data, isLoading } = useSandboxesQuery();
   const navigate = useNavigate();
   const { mutateAsync } = useCreateSandboxMutation();
+  const turnstile = useTurnstile();
+  const [challenge, setChallenge] = useState<string | null>(null);
 
   const sandboxes = data?.sandboxes.filter((sandbox) =>
     filter
@@ -35,6 +40,8 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
       if (event.key === "Escape" && isOpen) {
         onClose();
         setFilter("");
+        turnstile.reset();
+        setChallenge(null);
       }
     };
 
@@ -42,12 +49,14 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
     return () => {
       document.removeEventListener("keydown", handleEscapeKey);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, turnstile]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
       setFilter("");
+      turnstile.reset();
+      setChallenge(null);
     }
   };
 
@@ -57,7 +66,11 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
 
   const onSelect = async (id: string) => {
     setSelected(id);
-    const res = await mutateAsync({ base: id, provider: "cloudflare" });
+    const res = await mutateAsync({
+      base: id,
+      provider: "cloudflare",
+      challenge,
+    });
     await navigate({
       to: res.data?.uri
         ? `/${res.data?.uri.split("at://")[1].replace("io.pocketenv.", "")}`
@@ -66,6 +79,8 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
     setSelected(null);
     onClose();
     setFilter("");
+    turnstile.reset();
+    setChallenge(null);
   };
 
   return (
@@ -98,7 +113,16 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
               </div>
             </div>
             <div className="modal-body">
+              {isOpen && (
+                <Turnstile
+                  sitekey={CF_SITE_KEY}
+                  onVerify={(token) => {
+                    setChallenge(token);
+                  }}
+                />
+              )}
               {!isLoading &&
+                challenge &&
                 sandboxes?.map((item) => (
                   <div
                     key={item.id}
@@ -109,11 +133,43 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
                       {item.displayName}
                     </div>
                     {selected === item.uri && (
-                      <span className="loading loading-spinner loadiing-md text-pink-500"></span>
+                      <span className="loading loading-spinner loading-md text-pink-500"></span>
                     )}
                   </div>
                 ))}
-              {!isLoading && sandboxes?.length === 0 && (
+              {isLoading ||
+                (!challenge && (
+                  <div className="flex flex-col gap-2 p-3">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                      <ContentLoader
+                        key={i}
+                        speed={1.5}
+                        width="100%"
+                        height={44}
+                        backgroundColor="#ffffff10"
+                        foregroundColor="#ffffff20"
+                      >
+                        <rect
+                          x="0"
+                          y="10"
+                          rx="6"
+                          ry="6"
+                          width="40%"
+                          height="14"
+                        />
+                        <rect
+                          x="0"
+                          y="30"
+                          rx="4"
+                          ry="4"
+                          width="25%"
+                          height="8"
+                        />
+                      </ContentLoader>
+                    ))}
+                  </div>
+                ))}
+              {!isLoading && !challenge && sandboxes?.length === 0 && (
                 <div className="p-3 text-center font-semibold opacity-70">
                   No results found for <br />
                   <b>{filter}</b>
@@ -133,6 +189,8 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
           onClick={() => {
             onClose();
             setFilter("");
+            turnstile.reset();
+            setChallenge(null);
           }}
         ></div>
       )}

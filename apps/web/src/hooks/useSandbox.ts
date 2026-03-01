@@ -40,8 +40,11 @@ export const useSandboxQuery = (id: string) =>
 export const useCreateSandboxMutation = () =>
   useMutation({
     mutationKey: ["createSandbox"],
-    mutationFn: async (params: { base: string; provider: Provider }) =>
-      createSandbox(params),
+    mutationFn: async (params: {
+      base: string;
+      provider: Provider;
+      challenge: string | null;
+    }) => createSandbox(params),
   });
 
 export const useClaimSandboxMutation = () =>

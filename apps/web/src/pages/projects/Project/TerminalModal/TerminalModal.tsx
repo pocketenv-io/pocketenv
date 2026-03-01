@@ -81,7 +81,7 @@ function TerminalModal({
         <div
           className={`overlay-animation-target modal-dialog overlay-open:duration-300 transition-all ease-out ${
             isFullscreen
-              ? "fixed inset-0 !m-0 !max-w-none !w-screen !h-screen !rounded-none"
+              ? "fixed inset-0 m-0! max-w-none! w-screen! h-screen! rounded-none!"
               : "modal-dialog-xl overlay-open:mt-4 mt-12"
           }`}
           onClick={handleContentClick}
@@ -89,7 +89,7 @@ function TerminalModal({
           style={isFullscreen ? { maxHeight: "100vh" } : undefined}
         >
           <div
-            className={`modal-content ${isFullscreen ? "!rounded-none h-full" : ""}`}
+            className={`modal-content ${isFullscreen ? "rounded-none! h-full!" : ""}`}
           >
             <div className="modal-header">
               <div className="flex-1 text-center">{title}</div>
@@ -122,7 +122,7 @@ function TerminalModal({
               className="modal-body p-0 pl-2 overflow-y-hidden"
               style={
                 isFullscreen
-                  ? { height: "calc(100vh - 56px)" }
+                  ? { height: "100vh", paddingBottom: 20 }
                   : { height: "60vh" }
               }
             >

@@ -39,6 +39,7 @@ export default function (server: Server, ctx: Context) {
         "/v1/sandboxes",
         {
           provider,
+          base: input.body.base.split("/").pop()!,
         },
         {
           headers: {
@@ -82,7 +83,7 @@ export default function (server: Server, ctx: Context) {
         const base = await ctx.db
           .select()
           .from(schema.sandboxes)
-          .where(eq(schema.sandboxes.name, "openclaw"))
+          .where(eq(schema.sandboxes.name, input.body.base.split("/").pop()!))
           .execute()
           .then(([row]) => row);
 

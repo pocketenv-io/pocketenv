@@ -22,6 +22,8 @@ RUN case "${TARGETARCH}" in \
 
 COPY --from=docker.io/cloudflare/sandbox:0.7.4 /container-server/sandbox /sandbox
 
+WORKDIR /workspace
+
 EXPOSE 8080
 EXPOSE 3000/tcp
 

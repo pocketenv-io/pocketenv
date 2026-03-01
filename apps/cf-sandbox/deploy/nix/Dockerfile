@@ -31,6 +31,8 @@ RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/
     --no-confirm
 ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
 
+WORKDIR /workspace
+
 EXPOSE 8080
 EXPOSE 3000/tcp
 

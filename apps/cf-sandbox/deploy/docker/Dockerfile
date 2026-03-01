@@ -21,7 +21,12 @@ RUN printf '#!/bin/sh\n\
     echo "Docker is ready"\n\
     wait\n' > /home/rootless/boot-docker-for-dind.sh && chmod +x /home/rootless/boot-docker-for-dind.sh
 
+WORKDIR /workspace
+
 ENV COMMAND_TIMEOUT_MS=300000
+
+EXPOSE 8080
+EXPOSE 3000/tcp
 
 ENTRYPOINT ["/sandbox"]
 

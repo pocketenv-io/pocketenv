@@ -140,7 +140,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
               {isLoading ||
                 (!challenge && (
                   <div className="flex flex-col gap-2 p-3">
-                    {Array.from({ length: 6 }).map((_, i) => (
+                    {Array.from({ length: 7 }).map((_, i) => (
                       <ContentLoader
                         key={i}
                         speed={1.5}
@@ -154,7 +154,7 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
                           y="10"
                           rx="6"
                           ry="6"
-                          width="40%"
+                          width="70%"
                           height="14"
                         />
                         <rect

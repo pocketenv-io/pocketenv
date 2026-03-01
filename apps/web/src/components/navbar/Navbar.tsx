@@ -20,18 +20,22 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [signInModalOpen, setSignInModalOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const { data: profile } = useCurrentProfileQuery();
 
   const toggleDropdown = () => setOpen(!open);
   const toggleModal = () => {
     setModalOpen(!modalOpen);
+    setMobileMenuOpen(false);
   };
 
   const onSignOut = () => {
     localStorage.removeItem("token");
     setOpen(false);
+    setMobileMenuOpen(false);
     navigate({ to: "/" });
   };
 
@@ -60,50 +64,73 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
     };
   }, [open]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node)
+      ) {
+        setMobileMenuOpen(false);
+      }
+    };
+
+    if (mobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [mobileMenuOpen]);
+
   const isAuthenticated = !!localStorage.getItem("token");
 
   return (
-    <nav className="navbar bg-base-100 h-[65px]">
-      <div className="flex flex-1 items-center">
+    <nav className="navbar bg-base-100 h-[65px] relative">
+      {/* Left: Logo + Title */}
+      <div className="flex flex-1 items-center min-w-0">
         {withLogo && (
           <Link to="/">
-            <img src={Logo} className="max-h-[40px] mr-[15px]" />
+            <img src={Logo} className="max-h-[40px] mr-[15px] flex-shrink-0" />
           </Link>
         )}
-        <div className="text-base-content link-neutral  font-semibold no-underline text-[23px]">
+        <div className="text-base-content font-semibold no-underline text-[23px] truncate">
           {title}
         </div>
-        <div className="text-[15px]">{project}</div>
+        {project && (
+          <div className="text-[15px] ml-1 truncate hidden sm:block">
+            {project}
+          </div>
+        )}
       </div>
-      <div className="navbar-end flex items-center gap-4">
-        <div>
-          <button
-            className="btn btn-primary btn-block"
-            aria-haspopup="dialog"
-            aria-expanded={modalOpen}
-            onClick={toggleModal}
-          >
-            <span className="icon-[tabler--plus] size-5"></span>
-          </button>
-        </div>
-        <div className="ml-[10px]">
-          <a
-            href="https://github.com/pocketenv-io/pocketenv/issues/new"
-            className="text-[15px]"
-            target="_blank"
-          >
-            Feedback
-          </a>
-        </div>
-        <div className="ml-[10px]">
-          <a
-            href="https://docs.pocketenv.io"
-            className="text-[15px]"
-            target="_blank"
-          >
-            Docs
-          </a>
-        </div>
+
+      {/* Desktop nav-end */}
+      <div className="navbar-end hidden md:flex items-center gap-4">
+        <button
+          className="btn btn-primary"
+          aria-haspopup="dialog"
+          aria-expanded={modalOpen}
+          onClick={toggleModal}
+        >
+          <span className="icon-[tabler--plus] size-5"></span>
+        </button>
+
+        <a
+          href="https://github.com/pocketenv-io/pocketenv/issues/new"
+          className="text-[15px]"
+          target="_blank"
+        >
+          Feedback
+        </a>
+
+        <a
+          href="https://docs.pocketenv.io"
+          className="text-[15px]"
+          target="_blank"
+        >
+          Docs
+        </a>
+
         {isAuthenticated && (
           <div
             ref={dropdownRef}
@@ -121,12 +148,11 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
               onClick={toggleDropdown}
             >
               <div className="avatar avatar-placeholder">
-                <div className="bg-secondary/10  w-10 rounded-full flex items-center justify-center">
-                  {profile?.avatar && (
-                    <img src={profile.avatar} alt="avatar 1" />
-                  )}
-                  {!profile?.avatar && (
-                    <span className="icon-[tabler--user] size-5 "></span>
+                <div className="bg-secondary/10 w-10 rounded-full flex items-center justify-center">
+                  {profile?.avatar ? (
+                    <img src={profile.avatar} alt="avatar" />
+                  ) : (
+                    <span className="icon-[tabler--user] size-5"></span>
                   )}
                 </div>
               </div>
@@ -142,11 +168,10 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
               <li className="dropdown-header gap-2">
                 <div className="avatar">
                   <div className="w-10 rounded-full">
-                    {profile?.avatar && (
-                      <img src={profile.avatar} alt="avatar 1" />
-                    )}
-                    {!profile?.avatar && (
-                      <span className="icon-[tabler--user] size-5 "></span>
+                    {profile?.avatar ? (
+                      <img src={profile.avatar} alt="avatar" />
+                    ) : (
+                      <span className="icon-[tabler--user] size-5"></span>
                     )}
                   </div>
                 </div>
@@ -198,15 +223,136 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
             </ul>
           </div>
         )}
+
         {!isAuthenticated && (
           <button
             onClick={() => setSignInModalOpen(true)}
-            className="btn btn-block  bg-blue-600/20 border-none text-blue-500 font-extrabold w-[100px]"
+            className="btn btn-block bg-blue-600/20 border-none text-blue-500 font-extrabold w-[100px]"
           >
             Sign in
           </button>
         )}
       </div>
+
+      <div className="flex md:hidden items-center" ref={mobileMenuRef}>
+        <button
+          aria-label="Open menu"
+          aria-expanded={mobileMenuOpen}
+          onClick={() => setMobileMenuOpen((prev) => !prev)}
+        >
+          {mobileMenuOpen ? (
+            <span className="icon-[tabler--x] size-6"></span>
+          ) : (
+            <span className="icon-[tabler--menu-2] size-6"></span>
+          )}
+        </button>
+
+        {mobileMenuOpen && (
+          <div className="absolute top-[65px] left-0 right-0 bg-base-100 border-t border-base-300 shadow-lg z-50 flex flex-col py-3 px-4 gap-3">
+            {/* New Project */}
+            <button
+              className="btn btn-primary w-full"
+              aria-haspopup="dialog"
+              aria-expanded={modalOpen}
+              onClick={toggleModal}
+            >
+              <span className="icon-[tabler--plus] size-5"></span>
+              New Project
+            </button>
+
+            <a
+              href="https://github.com/pocketenv-io/pocketenv/issues/new"
+              className="flex items-center gap-2 text-[15px] py-2 px-3 rounded-lg hover:bg-base-200 transition-colors"
+              target="_blank"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span className="icon-[tabler--message-circle] size-5"></span>
+              Feedback
+            </a>
+
+            <a
+              href="https://docs.pocketenv.io"
+              className="flex items-center gap-2 text-[15px] py-2 px-3 rounded-lg hover:bg-base-200 transition-colors"
+              target="_blank"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span className="icon-[tabler--book] size-5"></span>
+              Docs
+            </a>
+
+            <div className="divider my-1"></div>
+
+            {isAuthenticated ? (
+              <>
+                <div className="flex items-center gap-3 px-3 py-2">
+                  <div className="avatar avatar-placeholder">
+                    <div className="bg-secondary/10 w-10 rounded-full flex items-center justify-center">
+                      {profile?.avatar ? (
+                        <img src={profile.avatar} alt="avatar" />
+                      ) : (
+                        <span className="icon-[tabler--user] size-5"></span>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    {profile?.displayName && (
+                      <p className="text-base-content font-semibold text-sm">
+                        {profile.displayName}
+                      </p>
+                    )}
+                    <a
+                      href={`https://bsky.app/profile/${profile?.handle}`}
+                      target="_blank"
+                    >
+                      <small className="text-base-content/50">
+                        @{profile?.handle}
+                      </small>
+                    </a>
+                  </div>
+                </div>
+
+                <Link
+                  className="flex items-center gap-2 text-[15px] py-2 px-3 rounded-lg hover:bg-base-200 transition-colors"
+                  to="/projects"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="icon-[tabler--layout-dashboard] size-5"></span>
+                  Dashboard
+                </Link>
+
+                <a
+                  className="flex items-center gap-2 text-[15px] py-2 px-3 rounded-lg hover:bg-base-200 transition-colors"
+                  href="https://docs.pocketenv.io/faqs"
+                  target="_blank"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="icon-[tabler--help-triangle] size-5"></span>
+                  FAQs
+                </a>
+
+                <button
+                  className="btn btn-primary btn-block mt-1"
+                  onClick={onSignOut}
+                >
+                  <span className="icon-[tabler--logout]"></span>
+                  Sign out
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => {
+                  setSignInModalOpen(true);
+                  setMobileMenuOpen(false);
+                }}
+                className="btn btn-block bg-blue-600/20 border-none text-blue-500 font-extrabold"
+              >
+                Sign in
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
       <NewProject
         isOpen={modalOpen}
         onClose={() => {

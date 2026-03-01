@@ -1,5 +1,7 @@
 FROM jdxcode/mise:latest
 
+ARG TARGETARCH
+
 RUN apt-get update -y && apt-get install curl git unzip tmux build-essential gawk sed procps wget -y
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
@@ -13,7 +15,13 @@ RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akin
     rm -rf ble.sh && \
     echo 'source -- ~/.local/share/blesh/ble.sh' >> ~/.bashrc
 
-RUN wget -qO /tmp/eza.tar.gz "https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-musl.tar.gz" && \
+
+RUN case "${TARGETARCH}" in \
+    amd64) EZA_ARCH="x86_64-unknown-linux-musl" ;; \
+    arm64) EZA_ARCH="aarch64-unknown-linux-musl" ;; \
+    *) echo "Unsupported arch: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    wget -qO /tmp/eza.tar.gz "https://github.com/eza-community/eza/releases/latest/download/eza_${EZA_ARCH}.tar.gz" && \
     tar -xzf /tmp/eza.tar.gz -C /root/.local/bin && \
     chmod +x /root/.local/bin/eza && \
     rm /tmp/eza.tar.gz && \

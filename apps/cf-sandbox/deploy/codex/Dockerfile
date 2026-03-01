@@ -1,5 +1,7 @@
 FROM node:24-slim
 
+ARG TARGETARCH
+
 COPY --from=docker.io/cloudflare/sandbox:0.7.5 /container-server/sandbox /sandbox
 
 RUN echo "deb [signed-by=/etc/apt/keyrings/doppler.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | tee /etc/apt/sources.list.d/doppler-cli.list
@@ -31,7 +33,12 @@ RUN curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/hea
     echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"\n' >> /root/.bashrc
 
 
-RUN wget -qO /tmp/eza.tar.gz "https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-musl.tar.gz" && \
+RUN case "${TARGETARCH}" in \
+    amd64) EZA_ARCH="x86_64-unknown-linux-musl" ;; \
+    arm64) EZA_ARCH="aarch64-unknown-linux-musl" ;; \
+    *) echo "Unsupported arch: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    wget -qO /tmp/eza.tar.gz "https://github.com/eza-community/eza/releases/latest/download/eza_${EZA_ARCH}.tar.gz" && \
     tar -xzf /tmp/eza.tar.gz -C /root/.local/bin && \
     chmod +x /root/.local/bin/eza && \
     rm /tmp/eza.tar.gz && \

@@ -15,14 +15,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     tmux \
     gawk \
-    sed
+    sed \
+    procps \
+    wget
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 
 RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git && \
-    make -C ble.sh install PREFIX=~/.local && \
+    mkdir -p /root/.local && \
+    make -C ble.sh install PREFIX=/root/.local && \
     rm -rf ble.sh && \
     echo 'source -- ~/.local/share/blesh/ble.sh' >> ~/.bashrc
+
+RUN wget -qO /tmp/eza.tar.gz "https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-musl.tar.gz" && \
+    tar -xzf /tmp/eza.tar.gz -C /root/.local/bin && \
+    chmod +x /root/.local/bin/eza && \
+    rm /tmp/eza.tar.gz && \
+    echo 'alias ls="eza -l"' >> ~/.bashrc
 
 RUN curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee /root/.tokyonight_storm.omp.json >/dev/null && \
     echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"\n' >> /root/.bashrc

@@ -15,17 +15,29 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     tmux \
     gawk \
-    sed
+    sed \
+    procps \
+    wget
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 
 RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git && \
-    make -C ble.sh install PREFIX=~/.local && \
+    mkdir -p /root/.local && \
+    make -C ble.sh install PREFIX=/root/.local && \
     rm -rf ble.sh && \
     echo 'source -- ~/.local/share/blesh/ble.sh' >> ~/.bashrc
 
 RUN curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee /root/.tokyonight_storm.omp.json >/dev/null && \
     echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"\n' >> /root/.bashrc
+
+
+RUN mkdir -p /etc/apt/keyrings && \
+    wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | gpg --dearmor -o /etc/apt/keyrings/gierens.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | tee /etc/apt/sources.list.d/gierens.list && \
+    chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list && \
+    apt-get update && \
+    apt-get install -y eza && \
+    echo 'alias ls="eza -l"' >> ~/.bashrc
 
 RUN curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' | gpg --dearmor | tee /etc/apt/keyrings/doppler.gpg >/dev/null \
     && echo "deb [signed-by=/etc/apt/keyrings/doppler.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | tee /etc/apt/sources.list.d/doppler-cli.list \

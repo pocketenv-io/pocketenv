@@ -180,6 +180,7 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
                 <a
                   className="dropdown-item"
                   href="https://docs.pocketenv.io/faqs"
+                  target="_blank"
                 >
                   <span className="icon-[tabler--help-triangle]"></span>
                   FAQs

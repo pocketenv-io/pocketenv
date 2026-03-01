@@ -80,7 +80,7 @@ function TerminalContent({
       cursorBlink: true,
       cursorStyle: "block" as const,
       fontFamily:
-        '"Cascadia Code", "JetBrains Mono", "Fira Code", Menlo, Monaco, monospace',
+        '"CaskaydiaNerdFontMonoRegular", "JetBrains Mono", "Fira Code", Menlo, Monaco, monospace',
       fontSize: 14,
       lineHeight: 1.2,
       letterSpacing: 0,

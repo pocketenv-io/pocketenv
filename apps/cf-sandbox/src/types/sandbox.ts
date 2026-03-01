@@ -31,7 +31,25 @@ export const SandboxConfigSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
   provider: z.enum(["cloudflare"]).optional().default("cloudflare"),
-  base: z.enum(["openclaw"]).optional().default("openclaw"),
+  base: z
+    .enum([
+      "openclaw",
+      "pkgx",
+      "opencode",
+      "nix",
+      "mise",
+      "kiro",
+      "kilo",
+      "gemini",
+      "docker",
+      "crush",
+      "copilot",
+      "codex",
+      "claude-code",
+      "amp",
+    ])
+    .optional()
+    .default("openclaw"),
   keepAlive: z.boolean().optional().default(false),
   vcpus: z.number().int().positive().optional().default(2),
   memory: z.number().int().positive().optional().default(4),

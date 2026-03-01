@@ -1,8 +1,8 @@
-FROM ubuntu:latest
+FROM node:24-slim
 
 ARG TARGETARCH
 
-COPY --from=docker.io/cloudflare/sandbox:0.7.5 /container-server/sandbox /sandbox
+COPY --from=docker.io/cloudflare/sandbox:0.7.4 /container-server/sandbox /sandbox
 
 RUN apt-get update -y
 

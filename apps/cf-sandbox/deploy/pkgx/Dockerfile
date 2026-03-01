@@ -2,7 +2,7 @@ FROM pkgxdev/pkgx:latest
 
 ARG TARGETARCH
 
-RUN apt-get update -y && apt-get install curl git unzip tmux gawk sed build-essential procps wget -y
+RUN apt-get update -y && apt-get install curl git unzip tmux gawk sed build-essential procps wget bash -y
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 

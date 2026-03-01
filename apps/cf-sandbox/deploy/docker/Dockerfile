@@ -2,6 +2,8 @@ FROM docker:dind-rootless
 
 USER root
 
+RUN apk update && apk add --no-cache bash
+
 # Use the musl build so it runs on Alpine-based docker:dind-rootless
 COPY --from=docker.io/cloudflare/sandbox:0.7.5-musl /container-server/sandbox /sandbox
 COPY --from=docker.io/cloudflare/sandbox:0.7.5-musl /usr/lib/libstdc++.so.6 /usr/lib/libstdc++.so.6

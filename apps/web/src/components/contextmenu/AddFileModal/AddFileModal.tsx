@@ -33,6 +33,7 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
+        reset();
         onClose();
       }
     };
@@ -41,11 +42,12 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
     return () => {
       document.removeEventListener("keydown", handleEscapeKey);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, reset]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     if (e.target === e.currentTarget) {
+      reset();
       onClose();
     }
   };
@@ -55,6 +57,7 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
   };
 
   const handleCloseButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+    reset();
     e.stopPropagation();
     onClose();
   };
@@ -111,7 +114,7 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
                   <input
                     type="text"
                     placeholder="File Mount Path, e.g /root/.openclaw/openclaw.json"
-                    className="grow"
+                    className={`grow ${errors.path ? "is-invalid" : ""}`}
                     autoComplete="off"
                     data-1p-ignore
                     data-lpignore="true"
@@ -131,13 +134,13 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
                     </span>
                   </label>
                   <textarea
-                    className="textarea max-w-full h-[250px] text-[14px] font-semibold"
+                    className={`textarea max-w-full h-[250px] text-[14px] font-semibold ${errors.content ? "is-invalid" : ""}`}
                     aria-label="Textarea"
                     placeholder="File Content"
                     {...register("content")}
                   ></textarea>
                   {errors.content && (
-                    <span className="text-error text-[12px] mt-1 block">
+                    <span className="helper-text text-[12px] mt-1 block">
                       {errors.content.message}
                     </span>
                   )}

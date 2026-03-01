@@ -33,6 +33,7 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
+        reset();
         onClose();
       }
     };
@@ -41,11 +42,12 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
     return () => {
       document.removeEventListener("keydown", handleEscapeKey);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, reset]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     if (e.target === e.currentTarget) {
+      reset();
       onClose();
     }
   };
@@ -56,6 +58,7 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
 
   const handleCloseButton = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    reset();
     onClose();
   };
 
@@ -108,11 +111,13 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                       Name
                     </span>
                   </label>
-                  <div className="input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent">
+                  <div
+                    className={`input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent ${errors.name ? "is-invalid" : ""}`}
+                  >
                     <input
                       type="text"
                       placeholder="Your Volume Name"
-                      className="grow"
+                      className={`grow ${errors.name ? "is-invalid" : ""}`}
                       autoComplete="off"
                       data-1p-ignore
                       data-lpignore="true"
@@ -131,11 +136,13 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                         Path
                       </span>
                     </label>
-                    <div className="input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent">
+                    <div
+                      className={`input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent ${errors.path ? "is-invalid" : ""}`}
+                    >
                       <input
                         type="text"
                         placeholder="Mount Path, e.g /data"
-                        className="grow"
+                        className={`grow ${errors.path ? "is-invalid" : ""}`}
                         autoComplete="off"
                         data-1p-ignore
                         data-lpignore="true"
@@ -144,7 +151,7 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                       />
                     </div>
                     {errors.path && (
-                      <span className="text-error text-[12px] mt-1 block">
+                      <span className="helper-text text-[12px] mt-1 block">
                         {errors.path.message}
                       </span>
                     )}

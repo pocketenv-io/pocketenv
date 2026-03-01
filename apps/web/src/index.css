@@ -167,3 +167,7 @@ body {
 .modal-footer .btn {
   border-color: rgba(229, 229, 229, 0.2);
 }
+
+.is-invalid {
+  border-color: var(--color-error) !important;
+}

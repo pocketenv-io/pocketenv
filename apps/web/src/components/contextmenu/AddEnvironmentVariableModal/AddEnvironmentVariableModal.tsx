@@ -50,6 +50,7 @@ function AddEnvironmentVariableModal({
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     if (e.target === e.currentTarget) {
+      reset();
       onClose();
     }
   };
@@ -59,6 +60,7 @@ function AddEnvironmentVariableModal({
   };
 
   const handleCloseButton = (e: React.MouseEvent<HTMLButtonElement>) => {
+    reset();
     e.stopPropagation();
     onClose();
   };
@@ -71,6 +73,7 @@ function AddEnvironmentVariableModal({
       value: data.value,
     });
     setIsLoading(false);
+    reset();
     reset();
     onClose();
   };
@@ -116,7 +119,7 @@ function AddEnvironmentVariableModal({
                     <input
                       type="text"
                       placeholder="YOUR_VARIABLE_NAME"
-                      className="grow"
+                      className={`grow ${errors.name ? "is-invalid" : ""}`}
                       autoComplete="off"
                       data-1p-ignore
                       data-lpignore="true"
@@ -125,7 +128,7 @@ function AddEnvironmentVariableModal({
                     />
                   </div>
                   {errors.name && (
-                    <span className="text-error text-[12px] mt-1">
+                    <span className="helper-text text-[12px] mt-1">
                       {errors.name.message}
                     </span>
                   )}
@@ -136,13 +139,13 @@ function AddEnvironmentVariableModal({
                       </span>
                     </label>
                     <textarea
-                      className="textarea max-w-full h-[250px] text-[14px] font-semibold"
+                      className={`textarea max-w-full h-[250px] text-[14px] font-semibold ${errors.value ? "is-invalid" : ""}`}
                       aria-label="Textarea"
                       placeholder="Variable Value"
                       {...register("value")}
                     ></textarea>
                     {errors.value && (
-                      <span className="text-error text-[12px] mt-1 block">
+                      <span className="helper-text text-[12px] mt-1 block">
                         {errors.value.message}
                       </span>
                     )}

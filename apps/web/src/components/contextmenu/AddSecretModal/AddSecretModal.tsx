@@ -33,6 +33,7 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
+        reset();
         onClose();
       }
     };
@@ -41,11 +42,12 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
     return () => {
       document.removeEventListener("keydown", handleEscapeKey);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, reset]);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     if (e.target === e.currentTarget) {
+      reset();
       onClose();
     }
   };
@@ -56,6 +58,7 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
 
   const handleCloseButton = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    reset();
     onClose();
   };
 
@@ -108,11 +111,13 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
                       Name
                     </span>
                   </label>
-                  <div className="input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent">
+                  <div
+                    className={`input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent ${errors.name ? "input-error" : ""}`}
+                  >
                     <input
                       type="text"
                       placeholder="YOUR_SECRET_NAME"
-                      className="grow"
+                      className={`grow ${errors.name ? "is-invalid" : ""}`}
                       autoComplete="off"
                       data-1p-ignore
                       data-lpignore="true"
@@ -121,7 +126,7 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
                     />
                   </div>
                   {errors.name && (
-                    <span className="text-error text-[12px] mt-1">
+                    <span className="helper-text text-[12px] mt-1">
                       {errors.name.message}
                     </span>
                   )}
@@ -132,13 +137,13 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
                       </span>
                     </label>
                     <textarea
-                      className="textarea max-w-full h-[250px] text-[14px] font-semibold"
+                      className={`textarea max-w-full h-[250px] text-[14px] font-semibold ${errors.value ? "is-invalid" : ""}`}
                       aria-label="Textarea"
                       placeholder="Secret Value"
                       {...register("value")}
                     ></textarea>
                     {errors.value && (
-                      <span className="text-error text-[12px] mt-1 block">
+                      <span className="helper-text text-[12px] mt-1 block">
                         {errors.value.message}
                       </span>
                     )}

@@ -30,6 +30,8 @@ COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbo
 
 ENV PATH="/root/.local/bin:${PATH}"
 
+RUN echo '. "$HOME/.bashrc"' >> ~/.profile
+
 WORKDIR /workspace
 
 EXPOSE 8080

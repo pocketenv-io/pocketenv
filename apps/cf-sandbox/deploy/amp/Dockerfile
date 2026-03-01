@@ -62,7 +62,8 @@ RUN curl -fsSL https://bun.sh/install | bash
 
 ENV PATH="/root/.deno/bin:/root/.local/bin:${PATH}"
 
-RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc
+RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
+    echo '. "$HOME/.bashrc"' >> ~/.profile
 
 WORKDIR /workspace
 

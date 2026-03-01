@@ -1,23 +1,17 @@
-FROM node:24-slim
+FROM ubuntu:latest
 
 ARG TARGETARCH
 
-COPY --from=docker.io/cloudflare/sandbox:0.7.4 /container-server/sandbox /sandbox
+COPY --from=docker.io/cloudflare/sandbox:0.7.5 /container-server/sandbox /sandbox
 
 RUN apt-get update -y
 
-RUN apt-get install curl git unzip tmux gawk sed build-essential procps wget bash -y
+RUN apt-get install curl git unzip wget -y
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 
 RUN curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee /root/.tokyonight_storm.omp.json >/dev/null && \
     echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"\n' >> /root/.bashrc
-
-RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git && \
-    mkdir -p /root/.local && \
-    make -C ble.sh install PREFIX=/root/.local && \
-    rm -rf ble.sh && \
-    echo 'source -- ~/.local/share/blesh/ble.sh' >> ~/.bashrc
 
 
 RUN case "${TARGETARCH}" in \
@@ -36,18 +30,6 @@ RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/
     --init none \
     --no-confirm
 ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
-
-RUN curl -fsSL https://get.jetify.com/devbox | bash -s -- -f
-
-RUN echo 'extra-trusted-substituters = https://cache.flox.dev' >> /etc/nix/nix.custom.conf \
-    && echo 'extra-trusted-public-keys = flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs=' >> /etc/nix/nix.custom.conf
-
-RUN nix profile add \
-    --experimental-features "nix-command flakes" \
-    --accept-flake-config \
-    'github:flox/flox/latest'
-
-RUN nix profile add nixpkgs#devenv
 
 EXPOSE 8080
 EXPOSE 3000/tcp

@@ -110,7 +110,7 @@ function Project({ sandbox }: ProjectProps) {
               className={`icon-[mingcute--terminal-fill] size-5 ${sandbox.status !== "RUNNING" ? "" : "hover:text-white"}`}
             ></span>
           </button>
-          <ContextMenu />
+          <ContextMenu sandboxId={sandbox.id} />
         </div>
 
         <TerminalModal
@@ -121,6 +121,7 @@ function Project({ sandbox }: ProjectProps) {
           }}
           sandboxId={sandbox.id}
           isCloudflare={sandbox.provider === "cloudflare"}
+          worker={sandbox.baseSandbox}
         />
       </td>
     </tr>

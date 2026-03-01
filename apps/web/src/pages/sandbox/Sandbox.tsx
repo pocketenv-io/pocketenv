@@ -279,6 +279,7 @@ function New() {
                         <Terminal
                           sandboxId={data.sandbox.id}
                           onClose={() => {}}
+                          worker={data.sandbox.baseSandbox}
                           isCloudflare={data.sandbox.provider === "cloudflare"}
                         />
                       )}

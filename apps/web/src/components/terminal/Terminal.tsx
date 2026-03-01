@@ -218,7 +218,7 @@ function TerminalContent({
           onClose();
         });
 
-        es.addEventListener("error", (e: any) => {
+        es.addEventListener("error", () => {
           // EventSource error can be a reconnect or a real error
           if (es.readyState === EventSource.CLOSED) {
             instance.write("\r\n\x1b[38;5;203mSSH connection lost.\x1b[0m\r\n");
@@ -262,7 +262,7 @@ function TerminalContent({
         sessionIdRef.current = null;
       }
     };
-  }, [instance, sendInput, sendResize, sandboxId]);
+  }, [instance, sendInput, sendResize, sandboxId, onClose]);
 
   return (
     <div
@@ -278,6 +278,7 @@ function TerminalContent({
 
 export interface TerminalProps {
   sandboxId: string;
+  worker: string;
   onClose: () => void;
 }
 

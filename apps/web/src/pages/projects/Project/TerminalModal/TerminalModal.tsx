@@ -6,6 +6,7 @@ export type TerminalModalProps = {
   isOpen: boolean;
   onClose: () => void;
   sandboxId: string;
+  worker: string;
   title?: string;
   isCloudflare?: boolean;
 };
@@ -14,6 +15,7 @@ function TerminalModal({
   isOpen,
   onClose,
   title,
+  worker,
   sandboxId,
   isCloudflare,
 }: TerminalModalProps) {
@@ -130,6 +132,7 @@ function TerminalModal({
                 sandboxId={sandboxId}
                 onClose={onClose}
                 isCloudflare={isCloudflare}
+                worker={worker}
               />
             </div>
           </div>

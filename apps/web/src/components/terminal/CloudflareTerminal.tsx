@@ -67,12 +67,14 @@ const lightTheme = {
 interface TerminalContentProps {
   isDarkMode: boolean;
   sandboxId: string;
+  worker: string;
   onClose: () => void;
 }
 
 function TerminalContent({
   isDarkMode,
   sandboxId,
+  worker,
   onClose,
 }: TerminalContentProps) {
   const fitAddonRef = useRef<FitAddon | null>(null);
@@ -128,7 +130,7 @@ function TerminalContent({
         if (sessionId) params.set("session", sessionId);
         if (terminalToken) params.set("t", terminalToken.token);
         const url = new URL(
-          `${CF_URL}/v1/sandboxes/${addonSandboxId}/ws/terminal`,
+          `${CF_URL.replace("sbx", worker)}/v1/sandboxes/${addonSandboxId}/ws/terminal`,
         );
         url.search = params.toString();
         return url.toString();
@@ -196,10 +198,11 @@ function TerminalContent({
 
 export interface TerminalProps {
   sandboxId: string;
+  worker: string;
   onClose: () => void;
 }
 
-function CloudflareTerminal({ sandboxId, onClose }: TerminalProps) {
+function CloudflareTerminal({ sandboxId, worker, onClose }: TerminalProps) {
   const [isDarkMode, setIsDarkMode] = useState(
     document.documentElement.classList.contains("dark"),
   );
@@ -226,6 +229,7 @@ function CloudflareTerminal({ sandboxId, onClose }: TerminalProps) {
       key={isDarkMode ? "dark" : "light"}
       isDarkMode={isDarkMode}
       sandboxId={sandboxId}
+      worker={worker}
       onClose={onClose}
     />
   );

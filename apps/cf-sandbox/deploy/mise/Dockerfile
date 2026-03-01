@@ -26,7 +26,7 @@ RUN case "${TARGETARCH}" in \
     rm /tmp/eza.tar.gz && \
     echo 'alias ls="eza -l"' >> ~/.bashrc
 
-COPY --from=docker.io/cloudflare/sandbox:0.7.4 /container-server/sandbox /sandbox
+COPY --from=docker.io/cloudflare/sandbox:0.7.5 /container-server/sandbox /sandbox
 
 ENV PATH="/root/.local/bin:${PATH}"
 

@@ -138,10 +138,10 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
                     )}
                     {item.installs > 0 && selected !== item.uri && (
                       <div className="text-sm text-gray-500 flex items-center">
-                        <span className="icon-[prime--download] size-5 mr-1"></span>
                         <span className="mt-1.25">
                           {numeral(item.installs).format("0,0")}{" "}
                         </span>
+                        <span className="icon-[prime--download] size-5 ml-1"></span>
                       </div>
                     )}
                   </div>

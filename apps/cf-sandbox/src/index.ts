@@ -181,6 +181,19 @@ app.post("/v1/sandboxes", async (c) => {
         .returning()
         .execute();
 
+      const baseSandbox = await tx
+        .select()
+        .from(sandboxes)
+        .where(eq(sandboxes.name, params.base))
+        .execute()
+        .then((rows) => rows[0]);
+
+      await tx
+        .update(sandboxes)
+        .set({ installs: (baseSandbox?.installs || 0) + 1 })
+        .where(eq(sandboxes.name, params.base))
+        .execute();
+
       return record;
     });
 

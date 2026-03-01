@@ -45,6 +45,9 @@ RUN nix profile add nixpkgs#devenv
 
 ENV PATH="/root/.local/bin:${PATH}"
 
+RUN echo 'stty sane' >> ~/.bashrc && \
+    echo '. "$HOME/.bashrc"' >> ~/.profile
+
 WORKDIR /workspace
 
 EXPOSE 8080

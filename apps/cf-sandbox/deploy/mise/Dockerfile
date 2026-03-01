@@ -32,4 +32,6 @@ COPY --from=docker.io/cloudflare/sandbox:0.7.5 /container-server/sandbox /sandbo
 EXPOSE 8080
 EXPOSE 3000/tcp
 
+ENV COMMAND_TIMEOUT_MS=300000
+
 ENTRYPOINT ["/sandbox"]

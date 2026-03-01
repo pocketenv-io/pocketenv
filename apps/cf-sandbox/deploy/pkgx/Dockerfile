@@ -2,7 +2,7 @@ FROM pkgxdev/pkgx:latest
 
 ARG TARGETARCH
 
-RUN apt-get update -y && apt-get install curl git unzip tmux gawk sed build-essential procps wget bash -y
+RUN apt-get update -y && apt-get install curl git unzip tmux gawk sed build-essential procps wget -y
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 
@@ -31,5 +31,7 @@ COPY --from=docker.io/cloudflare/sandbox:0.7.5 /container-server/sandbox /sandbo
 
 EXPOSE 8080
 EXPOSE 3000/tcp
+
+ENV COMMAND_TIMEOUT_MS=300000
 
 ENTRYPOINT ["/sandbox"]

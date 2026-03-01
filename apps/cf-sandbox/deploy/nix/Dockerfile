@@ -52,4 +52,6 @@ RUN nix profile add nixpkgs#devenv
 EXPOSE 8080
 EXPOSE 3000/tcp
 
+ENV COMMAND_TIMEOUT_MS=300000
+
 ENTRYPOINT ["/sandbox"]

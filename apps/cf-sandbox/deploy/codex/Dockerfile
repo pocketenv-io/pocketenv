@@ -31,12 +31,10 @@ RUN curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/hea
     echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"\n' >> /root/.bashrc
 
 
-RUN mkdir -p /etc/apt/keyrings && \
-    wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | gpg --dearmor -o /etc/apt/keyrings/gierens.gpg && \
-    echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | tee /etc/apt/sources.list.d/gierens.list && \
-    chmod 644 /etc/apt/keyrings/gierens.gpg /etc/apt/sources.list.d/gierens.list && \
-    apt-get update && \
-    apt-get install -y eza && \
+RUN wget -qO /tmp/eza.tar.gz "https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-musl.tar.gz" && \
+    tar -xzf /tmp/eza.tar.gz -C /root/.local/bin && \
+    chmod +x /root/.local/bin/eza && \
+    rm /tmp/eza.tar.gz && \
     echo 'alias ls="eza -l"' >> ~/.bashrc
 
 RUN curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' | gpg --dearmor | tee /etc/apt/keyrings/doppler.gpg >/dev/null \

@@ -79,29 +79,25 @@ function Home() {
                 </div>
               </div>
             </div>
-            <footer className="mt-[80px] w-[80%] m-auto  text-[#6d6d9c] h-[50px] flex flex-row pl-[21px] pr-[21px]">
+            <footer className="mt-[80px] w-[90%] md:w-[80%] m-auto text-[#6d6d9c] py-4 px-4 md:px-[21px] flex flex-col md:flex-row md:h-[50px] gap-3 md:gap-0 items-center">
               <div className="flex justify-center items-center">
                 © {dayjs().format("YYYY")} Pocketenv
               </div>
-              <div className="flex justify-center items-center flex-1">
+              <div className="flex justify-center items-center md:flex-1">
                 <div>Baked with ❤️ in Antananarivo</div>
               </div>
-              <div className="flex item-center justify-center">
+              <div className="flex items-center justify-center gap-2">
                 <a href="https://bsky.app/profile/pocketenv.io" target="_blank">
-                  <span className="icon-[ri--bluesky-fill] size-7 mr-[8px] mt-[13px]"></span>
+                  <span className="icon-[ri--bluesky-fill] size-7"></span>
                 </a>
-              </div>
-              <div className="flex item-center justify-center">
                 <a href="https://discord.gg/9ada4pFUFS" target="_blank">
-                  <span className="icon-[prime--discord] size-8 mr-[8px] mt-[12px]"></span>
+                  <span className="icon-[prime--discord] size-8"></span>
                 </a>
-              </div>
-              <div className="flex item-center justify-center">
                 <a
                   href="https://github.com/pocketenv-io/pocketenv"
                   target="_blank"
                 >
-                  <span className="icon-[mdi--github] size-7 mt-[13px]"></span>
+                  <span className="icon-[mdi--github] size-7"></span>
                 </a>
               </div>
             </footer>

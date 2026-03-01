@@ -11,6 +11,12 @@ function SignIn() {
     window.location.href = `${API_URL}/login?handle=${handle}`;
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && handle) {
+      onSignIn();
+    }
+  };
+
   return (
     <>
       <div className="flex items-center justify-center min-h-screen bg-base-100">
@@ -27,7 +33,8 @@ function SignIn() {
                 placeholder="alice.bsky.social"
                 className="grow "
                 value={handle}
-                onChange={(e) => setHandle(e.target.value)}
+                onChange={(e) => setHandle(e.target.value.trim())}
+                onKeyDown={handleKeyDown}
                 autoFocus
               />
             </div>

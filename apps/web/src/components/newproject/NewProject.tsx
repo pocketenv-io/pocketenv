@@ -7,6 +7,7 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 import { Turnstile, useTurnstile } from "react-turnstile";
 import { CF_SITE_KEY } from "../../consts";
+import numeral from "numeral";
 
 export type NewProjectProps = {
   isOpen: boolean;
@@ -134,6 +135,14 @@ function NewProject({ isOpen, onClose }: NewProjectProps) {
                     </div>
                     {selected === item.uri && (
                       <span className="loading loading-spinner loading-md text-pink-500"></span>
+                    )}
+                    {item.installs > 0 && selected !== item.uri && (
+                      <div className="text-sm text-gray-500 flex items-center">
+                        <span className="icon-[prime--download] size-5 mr-1"></span>
+                        <span className="mt-1.25">
+                          {numeral(item.installs).format("0,0")}{" "}
+                        </span>
+                      </div>
                     )}
                   </div>
                 ))}

@@ -31,6 +31,7 @@
     "flyonui": "^2.4.1",
     "jotai": "^2.17.1",
     "lodash": "^4.17.23",
+    "numeral": "^2.0.6",
     "ramda": "^0.32.0",
     "react": "^19.2.0",
     "react-content-loader": "^7.1.2",

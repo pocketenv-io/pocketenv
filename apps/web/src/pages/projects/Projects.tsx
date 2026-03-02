@@ -16,6 +16,37 @@ function Projects() {
   const [currentPage, setCurrentPage] = useState(1);
   const offset = (currentPage - 1) * PAGE_SIZE;
 
+  // When this is an OAuth callback, we must wait until the token is stored
+  // before mounting <Main> (which checks localStorage for auth).
+  const [tokenReady, setTokenReady] = useState(() => {
+    // If there's no OAuth `did` param, the token should already be present.
+    if (!did) return true;
+    return !!localStorage.getItem("token");
+  });
+
+  useEffect(() => {
+    if (!did) return;
+
+    fetch(`${API_URL}/token`, {
+      headers: {
+        "session-did": did,
+      },
+    })
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error("Failed to fetch token");
+      })
+      .then(({ token }) => {
+        localStorage.setItem("token", token);
+        setTokenReady(true);
+      })
+      .catch(() => {
+        // Token fetch failed — still unblock rendering so the route guard
+        // can redirect the user back to "/" via the next navigation.
+        setTokenReady(true);
+      });
+  }, [did]);
+
   const { data, isLoading } = useActorSandboxesQuery(
     profile?.did || "",
     offset,
@@ -28,23 +59,9 @@ function Projects() {
     setCurrentPage(page);
   };
 
-  useEffect(() => {
-    if (did) {
-      fetch(`${API_URL}/token`, {
-        headers: {
-          "session-did": did,
-        },
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-        })
-        .then(({ token }) => {
-          localStorage.setItem("token", token);
-        });
-    }
-  }, [did]);
+  if (!tokenReady) {
+    return null;
+  }
 
   return (
     <Main>

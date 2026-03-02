@@ -1,12 +1,10 @@
 import Navbar from "./Navbar";
 import NewProject from "../../components/newproject";
-import { useEffect, useState } from "react";
-import { useNavigate, useSearch } from "@tanstack/react-router";
-import { API_URL } from "../../consts";
+import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 
 function Home() {
-  const { did } = useSearch({ from: "/" });
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const banner = `
@@ -24,24 +22,6 @@ function Home() {
     navigate({ to: "/projects" });
   }
 
-  useEffect(() => {
-    if (did) {
-      fetch(`${API_URL}/token`, {
-        headers: {
-          "session-did": did,
-        },
-      })
-        .then((res) => {
-          if (res.ok) {
-            return res.json();
-          }
-        })
-        .then(({ token }) => {
-          localStorage.setItem("token", token);
-          navigate({ to: "/projects" });
-        });
-    }
-  }, [did, navigate]);
   return (
     <>
       {!isAuthenticated && (

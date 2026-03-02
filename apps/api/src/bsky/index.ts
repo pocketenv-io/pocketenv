@@ -123,7 +123,7 @@ app.get("/oauth/callback", async (req, res) => {
     return;
   }
 
-  const url = new URL(env.FRONTEND_URL);
+  const url = new URL(`${env.FRONTEND_URL}/projects`);
   url.searchParams.set("did", did);
   if (cli) {
     url.searchParams.set("cli", "1");

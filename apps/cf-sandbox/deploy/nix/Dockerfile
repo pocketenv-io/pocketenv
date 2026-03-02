@@ -6,7 +6,11 @@ COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbo
 
 RUN apt-get update -y
 
-RUN apt-get install curl git unzip tmux build-essential gawk sed procps wget -y
+RUN apt-get install -y curl git unzip tmux build-essential gawk sed procps  wget locales-all
+
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
     echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \

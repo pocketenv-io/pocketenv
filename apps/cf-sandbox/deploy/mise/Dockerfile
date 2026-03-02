@@ -2,7 +2,11 @@ FROM jdxcode/mise:latest
 
 ARG TARGETARCH
 
-RUN apt-get update -y && apt-get install curl git unzip tmux build-essential gawk sed procps wget -y
+RUN apt-get update -y && apt-get install curl git unzip tmux build-essential gawk sed procps wget locales-all
+
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 

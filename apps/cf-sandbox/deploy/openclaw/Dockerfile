@@ -38,6 +38,10 @@ RUN case "${TARGETARCH}" in \
     rm /tmp/eza.tar.gz && \
     echo 'alias ls="eza -l"' >> ~/.bashrc
 
+RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
+    echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \
+    echo 'eval "$(atuin init bash)"' >> ~/.bashrc
+
 RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git && \
     mkdir -p /root/.local && \
     make -C ble.sh install PREFIX=/root/.local && \

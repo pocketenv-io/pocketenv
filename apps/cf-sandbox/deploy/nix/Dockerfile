@@ -8,6 +8,10 @@ RUN apt-get update -y
 
 RUN apt-get install curl git unzip tmux build-essential gawk sed procps wget -y
 
+RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
+    echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \
+    echo 'eval "$(atuin init bash)"' >> ~/.bashrc
+
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 
 RUN curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee /root/.tokyonight_storm.omp.json >/dev/null && \

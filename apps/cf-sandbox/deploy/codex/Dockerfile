@@ -33,6 +33,9 @@ RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akin
 RUN curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee /root/.tokyonight_storm.omp.json >/dev/null && \
     echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"' >> /root/.bashrc
 
+RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
+    echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \
+    echo 'eval "$(atuin init bash)"' >> ~/.bashrc
 
 RUN case "${TARGETARCH}" in \
     amd64) EZA_ARCH="x86_64-unknown-linux-musl" ;; \

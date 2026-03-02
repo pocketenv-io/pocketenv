@@ -6,7 +6,7 @@ COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbo
 
 RUN apt-get update -y
 
-RUN apt-get install curl git unzip tmux wget -y
+RUN apt-get install curl git unzip tmux build-essential gawk sed procps wget -y
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 

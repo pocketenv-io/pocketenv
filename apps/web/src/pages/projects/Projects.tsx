@@ -5,12 +5,12 @@ import { useActorSandboxesQuery } from "../../hooks/useSandbox";
 import Main from "../../layouts/Main";
 import Project from "./Project";
 import Pagination from "../../components/pagination";
-import { useSearch } from "@tanstack/react-router";
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { API_URL } from "../../consts";
 
 function Projects() {
   const { did } = useSearch({ from: "/projects" });
-
+  const navigate = useNavigate();
   const profile = useAtomValue(profileAtom);
   const PAGE_SIZE = 12;
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,6 +38,7 @@ function Projects() {
       })
       .then(({ token }) => {
         localStorage.setItem("token", token);
+        navigate({ to: "/projects" });
         setTokenReady(true);
       })
       .catch(() => {

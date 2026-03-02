@@ -13,6 +13,12 @@ RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 RUN curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee /root/.tokyonight_storm.omp.json >/dev/null && \
     echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"' >> /root/.bashrc
 
+RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git && \
+    mkdir -p /root/.local && \
+    make -C ble.sh install PREFIX=/root/.local && \
+    rm -rf ble.sh && \
+    echo 'export LANG=en_US.UTF-8' >> ~/.bashrc && \
+    echo 'source -- ~/.local/share/blesh/ble.sh' >> ~/.bashrc
 
 RUN case "${TARGETARCH}" in \
     amd64) EZA_ARCH="x86_64-unknown-linux-musl" ;; \

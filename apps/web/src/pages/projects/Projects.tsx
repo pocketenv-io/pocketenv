@@ -9,7 +9,7 @@ import { useSearch } from "@tanstack/react-router";
 import { API_URL } from "../../consts";
 
 function Projects() {
-  const { did } = useSearch({ from: "/" });
+  const { did } = useSearch({ from: "/projects" });
 
   const profile = useAtomValue(profileAtom);
   const PAGE_SIZE = 12;

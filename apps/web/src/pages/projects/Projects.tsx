@@ -45,8 +45,9 @@ function Projects() {
         // Token fetch failed — still unblock rendering so the route guard
         // can redirect the user back to "/" via the next navigation.
         setTokenReady(true);
+        navigate({ to: "/projects" });
       });
-  }, [did]);
+  }, [did, navigate]);
 
   const { data, isLoading } = useActorSandboxesQuery(
     profile?.did || "",

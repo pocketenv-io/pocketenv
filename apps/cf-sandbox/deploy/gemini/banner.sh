@@ -20,7 +20,7 @@ ${NO_COLOR}
 🧠 Ephemeral. Isolated.
 🔐 Safe environment — experiment freely.
 
-Type ${MAGENTA}gemini${NO_COLOR} to get started.
+Type ${GREEN}gemini${NO_COLOR} to get started.
 
 Happy hacking!
 

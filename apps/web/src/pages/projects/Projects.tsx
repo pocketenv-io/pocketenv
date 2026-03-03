@@ -4,6 +4,7 @@ import { profileAtom } from "../../atoms/profile";
 import { useActorSandboxesQuery } from "../../hooks/useSandbox";
 import Main from "../../layouts/Main";
 import Project from "./Project";
+import ProjectRowSkeleton from "./ProjectRowSkeleton";
 import Pagination from "../../components/pagination";
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { API_URL } from "../../consts";
@@ -84,10 +85,13 @@ function Projects() {
               </tr>
             </thead>
             <tbody>
-              {!isLoading &&
-                data?.sandboxes?.map((sandbox) => (
-                  <Project sandbox={sandbox} key={sandbox.id} />
-                ))}
+              {isLoading
+                ? Array.from({ length: PAGE_SIZE }).map((_, i) => (
+                    <ProjectRowSkeleton key={i} index={i} />
+                  ))
+                : data?.sandboxes?.map((sandbox) => (
+                    <Project sandbox={sandbox} key={sandbox.id} />
+                  ))}
             </tbody>
           </table>
         </div>

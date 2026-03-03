@@ -9,9 +9,9 @@ RUN case "${TARGETARCH}" in \
     arm64) OPENCRUST_ARCH="aarch64" ;; \
     *) echo "Unsupported arch: ${TARGETARCH}" && exit 1 ;; \
     esac && \
-    wget -qO opencrust "https://github.com/opencrust-org/opencrust/releases/download/v0.1.19/opencrust-linux-${OPENCRUST_ARCH}" && \
-    mkdir -p /home/daytona/.local/bin && \
-    mv opencrust /home/daytona/.local/bin && \
-    chmod +x /home/daytona/.local/bin/opencrust
+    sudo wget -qO opencrust "https://github.com/opencrust-org/opencrust/releases/download/v0.1.19/opencrust-linux-${OPENCRUST_ARCH}" && \
+    sudo mkdir -p /home/daytona/.local/bin && \
+    sudo mv opencrust /home/daytona/.local/bin && \
+    sudo chmod +x /home/daytona/.local/bin/opencrust
 
 ENV PATH="${PATH}:/home/daytona/.local/bin"

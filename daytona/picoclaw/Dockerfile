@@ -9,9 +9,9 @@ RUN case "${TARGETARCH}" in \
     arm64) PICOCLAW_ARCH="arm64" ;; \
     *) echo "Unsupported arch: ${TARGETARCH}" && exit 1 ;; \
     esac && \
-    wget -qO /tmp/picoclaw.tar.gz "https://github.com/sipeed/picoclaw/releases/download/v0.2.0/picoclaw_Linux_${PICOCLAW_ARCH}.tar.gz" && \
-    mkdir -p /home/daytona/.local/bin && \
-    tar -xzf /tmp/picoclaw.tar.gz -C /home/daytona/.local/bin && \
-    chmod +x /home/daytona/.local/bin/picoclaw
+    sudo wget -qO /tmp/picoclaw.tar.gz "https://github.com/sipeed/picoclaw/releases/download/v0.2.0/picoclaw_Linux_${PICOCLAW_ARCH}.tar.gz" && \
+    sudo mkdir -p /home/daytona/.local/bin && \
+    sudo tar -xzf /tmp/picoclaw.tar.gz -C /home/daytona/.local/bin && \
+    sudo chmod +x /home/daytona/.local/bin/picoclaw
 
 ENV PATH="${PATH}:/home/daytona/.local/bin"

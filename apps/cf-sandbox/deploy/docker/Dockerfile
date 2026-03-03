@@ -26,9 +26,9 @@ RUN printf '#!/bin/sh\n\
     wait\n' > /home/rootless/boot-docker-for-dind.sh && chmod +x /home/rootless/boot-docker-for-dind.sh
 
 
-COPY banner.sh /root/.local/bin
+COPY banner.sh /usr/bin
 
-RUN chmod a+x /root/.local/bin/banner.sh && \
+RUN chmod a+x /usr/bin/banner.sh && \
     echo banner.sh >> ~/.bashrc
 
 WORKDIR /workspace

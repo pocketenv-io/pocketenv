@@ -3,10 +3,11 @@
 readonly MAGENTA="$(tput setaf 5 2>/dev/null || echo '')"
 readonly GREEN="$(tput setaf 2 2>/dev/null || echo '')"
 readonly CYAN="$(tput setaf 6 2>/dev/null || echo '')"
+readonly NEON="$(tput setaf 50 2>/dev/null || echo '')"
 readonly NO_COLOR="$(tput sgr0 2>/dev/null || echo '')"
 
 cat << EOF
-${CYAN}
+${NEON}
 ██████╗  ██████╗  ██████╗██╗  ██╗███████╗████████╗███████╗███╗   ██╗██╗   ██╗
 ██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗  ██║██║   ██║
 ██████╔╝██║   ██║██║     █████╔╝ █████╗     ██║   █████╗  ██╔██╗ ██║██║   ██║
@@ -14,14 +15,18 @@ ${CYAN}
 ██║     ╚██████╔╝╚██████╗██║  ██╗███████╗   ██║   ███████╗██║ ╚████║ ╚████╔╝
 ╚═╝      ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═══╝  ╚═══╝
 ${NO_COLOR}
-                🚀  Pocketenv Sandbox Ready
-──────────────────────────────────────────────────────────────────────
 
-🧠 Ephemeral. Isolated.
-🔐 Safe environment — experiment freely.
+╭─────────────────────────────────────────────────────────────╮
+│  This environment is ephemeral.                             │
+│  What you build here lives fast and dies clean.             │
+│                                                             │
+│  Break systems.                                             │
+│  Spawn agents.                                              │
+│  Ship experiments.                                          │
+╰─────────────────────────────────────────────────────────────╯
 
-Type ${GREEN}openclaw${NO_COLOR} to get started.
+Type ${NEON}openclaw${NO_COLOR} to get started.
 
-Happy hacking!
+Happy hacking! 🎉
 
 EOF

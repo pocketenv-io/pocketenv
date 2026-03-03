@@ -7,7 +7,7 @@ import { CF_URL } from "../../consts";
 import { useTerminalTokenQuery } from "../../hooks/useTerminal";
 import { createId } from "@paralleldrive/cuid2";
 import { useAtom } from "jotai";
-import { sessionsAtom } from "../../atoms/sessions";
+import { sessionsAtom, initializedSandboxesAtom } from "../../atoms/sessions";
 import { useLocation, useSearch } from "@tanstack/react-router";
 
 const darkTheme = {
@@ -81,9 +81,11 @@ function TerminalContent({
 }: TerminalContentProps) {
   const fitAddonRef = useRef<FitAddon | null>(null);
   const sandboxAddonRef = useRef<SandboxAddon | null>(null);
-  const initialCommandFiredRef = useRef(false);
   const { data: terminalToken, isLoading } = useTerminalTokenQuery();
   const [sessions, setSessions] = useAtom(sessionsAtom);
+  const [initializedSandboxes, setInitializedSandboxes] = useAtom(
+    initializedSandboxesAtom,
+  );
   const location = useLocation();
   const params = useSearch({
     from: location.pathname.startsWith("/sandbox/")
@@ -147,9 +149,9 @@ function TerminalContent({
         if (
           state === "connected" &&
           initialCommand &&
-          !initialCommandFiredRef.current
+          !initializedSandboxes[sandboxId]
         ) {
-          initialCommandFiredRef.current = true;
+          setInitializedSandboxes((prev) => ({ ...prev, [sandboxId]: true }));
           setTimeout(() => instance.paste(initialCommand + "\n"), 300);
         }
         if (state === "disconnected") {

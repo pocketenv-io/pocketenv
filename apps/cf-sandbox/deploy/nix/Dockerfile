@@ -62,6 +62,11 @@ ENV PATH="/root/.local/bin:${PATH}"
 RUN echo 'stty sane' >> ~/.bashrc && \
     echo '. "$HOME/.bashrc"' >> ~/.profile
 
+COPY banner.sh /root/.local/bin
+
+RUN chmod a+x /root/.local/bin/banner.sh && \
+    echo banner.sh >> ~/.bashrc
+
 WORKDIR /workspace
 
 EXPOSE 8080

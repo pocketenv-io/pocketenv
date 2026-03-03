@@ -25,6 +25,12 @@ RUN printf '#!/bin/sh\n\
     echo "Docker is ready"\n\
     wait\n' > /home/rootless/boot-docker-for-dind.sh && chmod +x /home/rootless/boot-docker-for-dind.sh
 
+
+COPY banner.sh /root/.local/bin
+
+RUN chmod a+x /root/.local/bin/banner.sh && \
+    echo banner.sh >> ~/.bashrc
+
 WORKDIR /workspace
 
 ENV COMMAND_TIMEOUT_MS=300000

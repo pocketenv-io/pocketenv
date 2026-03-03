@@ -76,6 +76,11 @@ RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
     echo 'stty sane' >> ~/.bashrc && \
     echo '. "$HOME/.bashrc"' >> ~/.profile
 
+COPY banner.sh /root/.local/bin
+
+RUN chmod a+x /root/.local/bin/banner.sh && \
+    echo banner.sh >> ~/.bashrc
+
 WORKDIR /workspace
 
 ENV COMMAND_TIMEOUT_MS=300000

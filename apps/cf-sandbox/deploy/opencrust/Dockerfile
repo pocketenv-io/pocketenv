@@ -76,6 +76,11 @@ RUN case "${TARGETARCH}" in \
     mv opencrust /root/.local/bin && \
     chmod +x /root/.local/bin/opencrust
 
+COPY banner.sh /root/.local/bin
+
+RUN chmod a+x /root/.local/bin/banner.sh && \
+    echo banner.sh >> ~/.bashrc
+
 WORKDIR /workspace
 
 ENV COMMAND_TIMEOUT_MS=300000

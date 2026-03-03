@@ -77,6 +77,11 @@ RUN case "${TARGETARCH}" in \
     tar -xzf /tmp/zeroclaw.tar.gz -C /root/.local/bin && \
     chmod +x /root/.local/bin/zeroclaw
 
+COPY banner.sh /root/.local/bin
+
+RUN chmod a+x /root/.local/bin/banner.sh && \
+    echo banner.sh >> ~/.bashrc
+
 WORKDIR /workspace
 
 ENV COMMAND_TIMEOUT_MS=300000

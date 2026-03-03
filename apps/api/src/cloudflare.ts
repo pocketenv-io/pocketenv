@@ -10,7 +10,11 @@ export const workers: Record<string, string> = {
   kiro: "https://kiro.pocketenv.io",
   mise: "https://mise.pocketenv.io",
   nix: "https://nix.pocketenv.io",
+  nullclaw: "https://nullclaw.pocketenv.io",
   openclaw: "https://openclaw.pocketenv.io",
   opencode: "https://opencode.pocketenv.io",
+  opencrust: "https://opencrust.pocketenv.io",
+  picoclaw: "https://picoclaw.pocketenv.io",
   pkgx: "https://pkgx.pocketenv.io",
+  zeroclaw: "https://zeroclaw.pocketenv.io",
 };

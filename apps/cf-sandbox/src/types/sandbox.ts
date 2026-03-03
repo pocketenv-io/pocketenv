@@ -47,6 +47,10 @@ export const SandboxConfigSchema = z.object({
       "codex",
       "claude-code",
       "amp",
+      "opencrust",
+      "nullclaw",
+      "picoclaw",
+      "zeroclaw",
     ])
     .optional()
     .default("openclaw"),

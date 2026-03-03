@@ -1,6 +1,6 @@
 FROM daytonaio/sandbox:0.6.0
 
-RUN apt-get update && apt-get install -y wget
+RUN sudo apt-get update && sudo apt-get install -y wget
 
 RUN case "${TARGETARCH}" in \
     amd64) ZEROCLAW_ARCH="x86_64" ;; \

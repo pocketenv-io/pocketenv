@@ -53,9 +53,9 @@ RUN echo 'extra-trusted-substituters = https://cache.flox.dev' >> /etc/nix/nix.c
 RUN nix profile add \
     --experimental-features "nix-command flakes" \
     --accept-flake-config \
-    'github:flox/flox/latest'
+    'github:flox/flox/latest' || true
 
-RUN nix profile add nixpkgs#devenv
+RUN nix profile add nixpkgs#devenv || true
 
 ENV PATH="/root/.local/bin:${PATH}"
 

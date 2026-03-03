@@ -25,9 +25,13 @@ jobs:
             kilo,
             kiro,
             nix,
+            nullclaw,
             pkgx,
             openclaw,
             opencode,
+            opencrust,
+            picoclaw,
+            zeroclaw,
           ]
     steps:
       - name: Checkout repository

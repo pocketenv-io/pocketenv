@@ -79,7 +79,7 @@ RUN case "${TARGETARCH}" in \
     arm64) PICOCLAW_ARCH="arm64" ;; \
     *) echo "Unsupported arch: ${TARGETARCH}" && exit 1 ;; \
     esac && \
-    wget -qO picoclaw.tar.gz "https://github.com/sipeed/picoclaw/releases/download/v0.2.0/picoclaw_Linux_${PICOCLAW_ARCH}.tar.gz" && \
+    wget -qO /tmp/picoclaw.tar.gz "https://github.com/sipeed/picoclaw/releases/download/v0.2.0/picoclaw_Linux_${PICOCLAW_ARCH}.tar.gz" && \
     tar -xzf /tmp/picoclaw.tar.gz -C /root/.local/bin && \
     chmod +x /root/.local/bin/picoclaw
 

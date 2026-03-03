@@ -4,8 +4,6 @@ ARG TARGETARCH
 
 COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbox
 
-RUN echo "deb [signed-by=/etc/apt/keyrings/doppler.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | tee /etc/apt/sources.list.d/doppler-cli.list
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssh-client \
     git \
@@ -52,10 +50,6 @@ RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akin
     rm -rf ble.sh && \
     echo 'export LANG=en_US.UTF-8' >> ~/.bashrc && \
     echo 'source -- ~/.local/share/blesh/ble.sh' >> ~/.bashrc
-
-RUN curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' | gpg --dearmor | tee /etc/apt/keyrings/doppler.gpg >/dev/null \
-    && echo "deb [signed-by=/etc/apt/keyrings/doppler.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | tee /etc/apt/sources.list.d/doppler-cli.list \
-    && apt-get update && apt-get install -y doppler && doppler --version
 
 RUN curl -fsSL https://tailscale.com/install.sh | sh
 

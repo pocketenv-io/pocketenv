@@ -69,6 +69,7 @@ interface TerminalContentProps {
   sandboxId: string;
   worker: string;
   onClose: () => void;
+  initialCommand?: string;
 }
 
 function TerminalContent({
@@ -76,9 +77,11 @@ function TerminalContent({
   sandboxId,
   worker,
   onClose,
+  initialCommand,
 }: TerminalContentProps) {
   const fitAddonRef = useRef<FitAddon | null>(null);
   const sandboxAddonRef = useRef<SandboxAddon | null>(null);
+  const initialCommandFiredRef = useRef(false);
   const { data: terminalToken, isLoading } = useTerminalTokenQuery();
   const [sessions, setSessions] = useAtom(sessionsAtom);
   const location = useLocation();
@@ -141,6 +144,14 @@ function TerminalContent({
             `\r\n\x1b[38;5;203mTerminal error: ${error.message || "unknown"}\x1b[0m\r\n`,
           );
         }
+        if (
+          state === "connected" &&
+          initialCommand &&
+          !initialCommandFiredRef.current
+        ) {
+          initialCommandFiredRef.current = true;
+          setTimeout(() => instance.paste(initialCommand + "\n"), 300);
+        }
         if (state === "disconnected") {
           onClose();
         }
@@ -168,6 +179,7 @@ function TerminalContent({
 
     instance.write(`\x1b[35mConnecting to terminal session...\x1b[0m\r\n`);
     sandboxAddon.connect({ sandboxId, sessionId: sessions[sandboxId] });
+    instance.paste("your-command-here\n");
     instance.focus();
 
     return () => {
@@ -200,9 +212,15 @@ export interface TerminalProps {
   sandboxId: string;
   worker: string;
   onClose: () => void;
+  initialCommand?: string;
 }
 
-function CloudflareTerminal({ sandboxId, worker, onClose }: TerminalProps) {
+function CloudflareTerminal({
+  sandboxId,
+  worker,
+  onClose,
+  initialCommand,
+}: TerminalProps) {
   const [isDarkMode, setIsDarkMode] = useState(
     document.documentElement.classList.contains("dark"),
   );
@@ -231,6 +249,7 @@ function CloudflareTerminal({ sandboxId, worker, onClose }: TerminalProps) {
       sandboxId={sandboxId}
       worker={worker}
       onClose={onClose}
+      initialCommand={initialCommand}
     />
   );
 }

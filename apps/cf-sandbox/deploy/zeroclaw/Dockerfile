@@ -80,7 +80,6 @@ RUN case "${TARGETARCH}" in \
 COPY banner.sh /root/.local/bin
 
 RUN chmod a+x /root/.local/bin/banner.sh && \
-    echo 'sleep 2' >> ~/.bashrc && \
     echo banner.sh >> ~/.bashrc
 
 WORKDIR /workspace

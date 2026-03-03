@@ -28,7 +28,6 @@ RUN printf '#!/bin/sh\n\
 COPY banner.sh /usr/bin
 
 RUN chmod a+x /usr/bin/banner.sh && \
-    echo 'sleep 2' >> ~/.bashrc && \
     echo banner.sh >> ~/.bashrc && \
     echo 'source /root/.bashrc' >> ~/.profile
 

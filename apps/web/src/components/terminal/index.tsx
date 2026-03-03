@@ -13,7 +13,7 @@ function Terminal(props: TerminalProps) {
   return (
     <>
       {isCloudflare ? (
-        <CloudflareTerminal {...props} />
+        <CloudflareTerminal {...props} initialCommand="banner.sh || true" />
       ) : (
         <SSHTerminal {...props} />
       )}

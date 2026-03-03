@@ -25,7 +25,6 @@ RUN printf '#!/bin/sh\n\
     echo "Docker is ready"\n\
     wait\n' > /home/rootless/boot-docker-for-dind.sh && chmod +x /home/rootless/boot-docker-for-dind.sh
 
-
 COPY banner.sh /usr/bin
 
 RUN chmod a+x /usr/bin/banner.sh && \

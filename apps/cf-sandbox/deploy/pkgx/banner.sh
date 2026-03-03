@@ -20,7 +20,7 @@ ${NO_COLOR}
 🧠 Ephemeral. Isolated.
 🔐 Safe environment — experiment freely.
 
-Type ${MAGENTA}`pkgx`${NO_COLOR} to get started.
+Type ${MAGENTA}pkgx${NO_COLOR} to get started.
 
 Happy hacking!
 

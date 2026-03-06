@@ -4,9 +4,11 @@ export const addSecret = (sandboxId: string, name: string, value: string) =>
   client.post(
     "/xrpc/io.pocketenv.secret.addSecret",
     {
-      sandboxId,
-      name,
-      value,
+      secret: {
+        sandboxId,
+        name,
+        value,
+      },
     },
     {
       headers: {

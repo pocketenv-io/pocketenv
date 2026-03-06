@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useDeleteSandboxMutation } from "../../../hooks/useSandbox";
 
@@ -13,7 +13,8 @@ function DeleteSandboxModal({
   onClose,
   sandboxId,
 }: DeleteSandboxModalProps) {
-  const { mutateAsync } = useDeleteSandboxMutation();
+  const [isLoading, setIsLoading] = useState(false);
+  const { mutateAsync: deleteSandbox } = useDeleteSandboxMutation();
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isOpen) {
@@ -28,7 +29,9 @@ function DeleteSandboxModal({
   }, [isOpen, onClose]);
 
   const onDeleteSandbox = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    await mutateAsync(sandboxId);
+    setIsLoading(true);
+    await deleteSandbox(sandboxId);
+    setIsLoading(false);
     e.stopPropagation();
     onClose();
   };
@@ -66,7 +69,7 @@ function DeleteSandboxModal({
           onMouseDown={handleContentClick}
         >
           <div className="modal-content">
-            <div className="modal-header">
+            <div className="modal-header pb-0">
               <div className="flex-1">Delete</div>
               <button
                 type="button"
@@ -78,7 +81,7 @@ function DeleteSandboxModal({
                 <span className="icon-[tabler--x] size-4"></span>
               </button>
             </div>
-            <div className="modal-body p-0 pl-2 h-[100px]">
+            <div className="modal-body p-0 pl-2 h-[100px] flex flex-col justify-center">
               <p className="font-semibold text-center">
                 Are you sure you want to delete this sandbox?
               </p>
@@ -89,6 +92,9 @@ function DeleteSandboxModal({
                 className="btn btn-error font-semibold"
                 onClick={onDeleteSandbox}
               >
+                {isLoading && (
+                  <span className="loading loading-spinner loading-xs mr-1.5"></span>
+                )}
                 Delete Sandbox
               </button>
             </div>

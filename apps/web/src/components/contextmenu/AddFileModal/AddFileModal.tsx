@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddFileMutation } from "../../../hooks/useFile";
+import { useSodium } from "../../../hooks/useSodium";
+import { PUBLIC_KEY } from "../../../consts";
 
 const schema = z.object({
   path: z.string().min(1, "Path is required"),
@@ -19,8 +21,9 @@ export type AddFileModalProps = {
 };
 
 function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
+  const sodium = useSodium();
   const [isLoading, setIsLoading] = useState(false);
-  const { mutateAsync } = useAddFileMutation();
+  const { mutateAsync: addFile } = useAddFileMutation();
   const {
     register,
     handleSubmit,
@@ -64,10 +67,17 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
-    await mutateAsync({
+    const sealed = sodium.cryptoBoxSeal(
+      sodium.fromString(data.content),
+      sodium.fromHex(PUBLIC_KEY),
+    );
+    await addFile({
       sandboxId,
       path: data.path,
-      content: data.content,
+      content: sodium.toBase64(
+        sealed,
+        sodium.base64Variants.URLSAFE_NO_PADDING,
+      ),
     });
     setIsLoading(false);
     reset();

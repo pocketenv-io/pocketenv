@@ -75,6 +75,8 @@ ENV PATH="/root/.deno/bin:/root/.local/bin:${PATH}"
 
 RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc
 
+COPY banner.sh /root/.local/bin
+
 WORKDIR /workspace
 
 ENV COMMAND_TIMEOUT_MS=300000

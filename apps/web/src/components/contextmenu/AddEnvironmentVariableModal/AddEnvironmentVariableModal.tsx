@@ -24,7 +24,7 @@ function AddEnvironmentVariableModal({
   sandboxId,
 }: AddEnvironmentVariableModalProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { mutateAsync } = useAddVariableMutation();
+  const { mutateAsync: addVariable } = useAddVariableMutation();
   const {
     register,
     handleSubmit,
@@ -67,7 +67,7 @@ function AddEnvironmentVariableModal({
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
-    await mutateAsync({
+    await addVariable({
       sandboxId,
       name: data.name,
       value: data.value,

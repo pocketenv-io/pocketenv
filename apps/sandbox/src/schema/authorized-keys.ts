@@ -11,7 +11,7 @@ const authorizedKeys = pgTable("authorized_keys", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export type SelectAuthorizedKeys = InferSelectModel<typeof authorizedKeys>;
-export type InsertAuthorizedKeys = InferInsertModel<typeof authorizedKeys>;
+export type SelectAuthorizedKey = InferSelectModel<typeof authorizedKeys>;
+export type InsertAuthorizedKey = InferInsertModel<typeof authorizedKeys>;
 
 export default authorizedKeys;

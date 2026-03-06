@@ -19,7 +19,7 @@ const sandboxSecrets = pgTable(
   (t) => [uniqueIndex("unique_sandbox_secret").on(t.sandboxId, t.secretId)],
 );
 
-export type SelectSandboxSecrets = InferSelectModel<typeof sandboxSecrets>;
-export type InsertSandboxSecrets = InferInsertModel<typeof sandboxSecrets>;
+export type SelectSandboxSecret = InferSelectModel<typeof sandboxSecrets>;
+export type InsertSandboxSecret = InferInsertModel<typeof sandboxSecrets>;
 
 export default sandboxSecrets;

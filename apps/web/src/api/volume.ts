@@ -4,9 +4,11 @@ export const addVolume = (sandboxId: string, name: string, path: string) =>
   client.post(
     "/xrpc/io.pocketenv.volume.addVolume",
     {
-      sandboxId,
-      name,
-      path,
+      volume: {
+        sandboxId,
+        name,
+        path,
+      },
     },
     {
       headers: {

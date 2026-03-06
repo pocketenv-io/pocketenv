@@ -7,6 +7,8 @@ import volumes from "./volumes.ts";
 import sandboxSecrets from "./sandbox-secrets.ts";
 import sandboxVariables from "./sandbox-variables.ts";
 import sandboxVolumes from "./sandbox-volumes.ts";
+import files from "./files.ts";
+import sandboxFiles from "./sandbox-files.ts";
 
 export {
   sandboxes,
@@ -18,4 +20,6 @@ export {
   sandboxSecrets,
   sandboxVariables,
   sandboxVolumes,
+  files,
+  sandboxFiles,
 };

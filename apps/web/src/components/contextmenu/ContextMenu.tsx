@@ -73,9 +73,6 @@ function ContextMenu({ sandboxId }: ContextMenuProps) {
     setIsDeleteSandboxModalOpen(true);
   };
 
-  // disable context menu temporarily
-  return <></>;
-
   return (
     <>
       <div
@@ -130,11 +127,11 @@ function ContextMenu({ sandboxId }: ContextMenuProps) {
               Delete
             </div>
           </li>
-          <li>
+          {/*<li>
             <a href="/settings" className="dropdown-item cursor-pointer">
               Settings
-            </a>
-          </li>
+            </a>*
+          </li>*/}
         </ul>
       </div>
       <AddEnvironmentVariableModal

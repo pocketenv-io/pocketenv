@@ -20,7 +20,7 @@ export type AddVolumeModalProps = {
 
 function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { mutateAsync } = useAddVolumeMutation();
+  const { mutateAsync: addVolume } = useAddVolumeMutation();
   const {
     register,
     handleSubmit,
@@ -64,7 +64,7 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
-    await mutateAsync({
+    await addVolume({
       sandboxId,
       name: data.name,
       path: data.path,

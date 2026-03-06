@@ -4,9 +4,11 @@ export const addVariable = (sandboxId: string, name: string, value: string) =>
   client.post(
     "/xrpc/io.pocketenv.variable.addVariable",
     {
-      sandboxId,
-      name,
-      value,
+      variable: {
+        sandboxId,
+        name,
+        value,
+      },
     },
     {
       headers: {

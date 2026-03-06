@@ -21,6 +21,7 @@ import deleteVolume from "./io/pocketenv/volume/deleteVolume";
 import getVolumes from "./io/pocketenv/volume/getVolumes";
 import putPreferences from "./io/pocketenv/sandbox/putPreferences";
 import getPreferences from "./io/pocketenv/sandbox/getPreferences";
+import addVariable from "./io/pocketenv/variable/addVariable";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
@@ -40,6 +41,7 @@ export default function (server: Server, ctx: Context) {
   deleteFile(server, ctx);
   getFiles(server, ctx);
   addSecret(server, ctx);
+  addVariable(server, ctx);
   deleteSecret(server, ctx);
   getSecrets(server, ctx);
   addVolume(server, ctx);

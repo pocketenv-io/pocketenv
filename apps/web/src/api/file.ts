@@ -4,9 +4,11 @@ export const addFile = (sandboxId: string, path: string, content: string) =>
   client.post(
     "/xrpc/io.pocketenv.file.addFile",
     {
-      sandboxId,
-      path,
-      content,
+      file: {
+        sandboxId,
+        path,
+        content,
+      },
     },
     {
       headers: {

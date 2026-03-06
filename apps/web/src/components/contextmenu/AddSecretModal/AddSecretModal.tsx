@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddSecretMutation } from "../../../hooks/useSecret";
+import { useSodium } from "../../../hooks/useSodium";
+import { PUBLIC_KEY } from "../../../consts";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -19,8 +21,9 @@ export type AddSecretModalProps = {
 };
 
 function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
+  const sodium = useSodium();
   const [isLoading, setIsLoading] = useState(false);
-  const { mutateAsync } = useAddSecretMutation();
+  const { mutateAsync: addSecret } = useAddSecretMutation();
   const {
     register,
     handleSubmit,
@@ -64,10 +67,14 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
-    await mutateAsync({
+    const sealed = sodium.cryptoBoxSeal(
+      sodium.fromString(data.value),
+      sodium.fromHex(PUBLIC_KEY),
+    );
+    await addSecret({
       sandboxId,
       name: data.name,
-      value: data.value,
+      value: sodium.toBase64(sealed, sodium.base64Variants.URLSAFE_NO_PADDING),
     });
     setIsLoading(false);
     reset();

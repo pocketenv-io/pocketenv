@@ -21,6 +21,6 @@ const sandboxVariables = pgTable(
   ],
 );
 
-export type SelectSandboxVariables = InferSelectModel<typeof sandboxVariables>;
-export type InsertSandboxVariables = InferInsertModel<typeof sandboxVariables>;
+export type SelectSandboxVariable = InferSelectModel<typeof sandboxVariables>;
+export type InsertSandboxVariable = InferInsertModel<typeof sandboxVariables>;
 export default sandboxVariables;

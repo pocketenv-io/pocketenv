@@ -7,6 +7,8 @@ import volumes from "./volumes";
 import sandboxSecrets from "./sandbox-secrets";
 import sandboxVariables from "./sandbox-variables";
 import sandboxVolumes from "./sandbox-volumes";
+import files from "./files";
+import sandboxFiles from "./sandbox-files";
 
 export default {
   sandboxes,
@@ -18,4 +20,6 @@ export default {
   sandboxSecrets,
   sandboxVariables,
   sandboxVolumes,
+  files,
+  sandboxFiles,
 };

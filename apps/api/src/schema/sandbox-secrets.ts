@@ -6,7 +6,9 @@ import secrets from "./secrets";
 const sandboxSecrets = pgTable(
   "sandbox_secrets",
   {
-    id: text("id").primaryKey().default(sql`xata_id()`),
+    id: text("id")
+      .primaryKey()
+      .default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id),
@@ -17,7 +19,7 @@ const sandboxSecrets = pgTable(
   (t) => [uniqueIndex("unique_sandbox_secret").on(t.sandboxId, t.secretId)],
 );
 
-export type SelectSandboxSecrets = InferSelectModel<typeof sandboxSecrets>;
-export type InsertSandboxSecrets = InferInsertModel<typeof sandboxSecrets>;
+export type SelectSandboxSecret = InferSelectModel<typeof sandboxSecrets>;
+export type InsertSandboxSecret = InferInsertModel<typeof sandboxSecrets>;
 
 export default sandboxSecrets;

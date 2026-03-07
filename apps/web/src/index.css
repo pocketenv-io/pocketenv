@@ -6,6 +6,7 @@
 @import "../node_modules/flyonui/variants.css";
 @source "../node_modules/flyonui/dist/index.js";
 @source "../node_modules/flyonui/dist/accordion.js";
+@import "flyonui/src/vendor/notyf.css";
 
 @font-face {
   font-family: "RockfordSansLight";

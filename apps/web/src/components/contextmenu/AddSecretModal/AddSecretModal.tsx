@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddSecretMutation } from "../../../hooks/useSecret";
 import { useSodium } from "../../../hooks/useSodium";
 import { PUBLIC_KEY } from "../../../consts";
+import { useNotyf } from "../../../hooks/useNotyf";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -22,6 +23,7 @@ export type AddSecretModalProps = {
 
 function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
   const sodium = useSodium();
+  const notyf = useNotyf();
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: addSecret } = useAddSecretMutation();
   const {
@@ -71,14 +73,25 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
       sodium.fromString(data.value),
       sodium.fromHex(PUBLIC_KEY),
     );
-    await addSecret({
-      sandboxId,
-      name: data.name,
-      value: sodium.toBase64(sealed, sodium.base64Variants.URLSAFE_NO_PADDING),
-    });
-    setIsLoading(false);
-    reset();
-    onClose();
+    try {
+      await addSecret({
+        sandboxId,
+        name: data.name,
+        value: sodium.toBase64(
+          sealed,
+          sodium.base64Variants.URLSAFE_NO_PADDING,
+        ),
+      });
+      setIsLoading(false);
+      reset();
+      onClose();
+      notyf.open("primary", "Secret added successfully!");
+    } catch {
+      notyf.open("error", "Failed to add secret!");
+      setIsLoading(false);
+      reset();
+      onClose();
+    }
   };
 
   if (!isOpen) return null;

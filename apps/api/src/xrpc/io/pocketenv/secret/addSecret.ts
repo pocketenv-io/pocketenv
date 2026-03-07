@@ -34,6 +34,7 @@ export default function (server: Server, ctx: Context) {
         .values({
           secretId: secret.id,
           sandboxId: input.body.secret.sandboxId,
+          name: input.body.secret.name,
         })
         .returning()
         .execute();

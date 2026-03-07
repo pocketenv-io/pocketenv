@@ -15,9 +15,11 @@ const sandboxVariables = pgTable(
     variableId: text("variable_id")
       .notNull()
       .references(() => variables.id),
+    name: text("name"),
   },
   (t) => [
     uniqueIndex("unique_sandbox_variables").on(t.sandboxId, t.variableId),
+    uniqueIndex("unique_sandbox_variables_by_name").on(t.sandboxId, t.name),
   ],
 );
 

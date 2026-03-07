@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddVariableMutation } from "../../../hooks/useVariable";
+import { useNotyf } from "../../../hooks/useNotyf";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -24,6 +25,7 @@ function AddEnvironmentVariableModal({
   sandboxId,
 }: AddEnvironmentVariableModalProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const notyf = useNotyf();
   const { mutateAsync: addVariable } = useAddVariableMutation();
   const {
     register,
@@ -67,15 +69,23 @@ function AddEnvironmentVariableModal({
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
-    await addVariable({
-      sandboxId,
-      name: data.name,
-      value: data.value,
-    });
-    setIsLoading(false);
-    reset();
-    reset();
-    onClose();
+    try {
+      await addVariable({
+        sandboxId,
+        name: data.name,
+        value: data.value,
+      });
+      setIsLoading(false);
+      reset();
+      onClose();
+      notyf.open("primary", "Variable added successfully!");
+    } catch {
+      notyf.open("error", "Failed to add variable!");
+      setIsLoading(false);
+      reset();
+      onClose();
+      return;
+    }
   };
 
   if (!isOpen) return null;

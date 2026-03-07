@@ -4,6 +4,7 @@ import "./index.css";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import "flyonui/flyonui";
+import "notyf/notyf.min.css";
 
 const queryClient = new QueryClient();
 const router = createRouter({ routeTree });

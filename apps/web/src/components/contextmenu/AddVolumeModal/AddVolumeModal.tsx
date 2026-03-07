@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddVolumeMutation } from "../../../hooks/useVolume";
+import { useNotyf } from "../../../hooks/useNotyf";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -19,6 +20,7 @@ export type AddVolumeModalProps = {
 };
 
 function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
+  const notyf = useNotyf();
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: addVolume } = useAddVolumeMutation();
   const {
@@ -64,14 +66,22 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
 
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
-    await addVolume({
-      sandboxId,
-      name: data.name,
-      path: data.path,
-    });
-    setIsLoading(false);
-    reset();
-    onClose();
+    try {
+      await addVolume({
+        sandboxId,
+        name: data.name,
+        path: data.path,
+      });
+      setIsLoading(false);
+      reset();
+      onClose();
+      notyf.open("primary", "Volume added successfully");
+    } catch {
+      setIsLoading(false);
+      reset();
+      onClose();
+      notyf.open("error", "Failed to add volume");
+    }
   };
 
   if (!isOpen) return null;

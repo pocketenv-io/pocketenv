@@ -15,8 +15,12 @@ const sandboxSecrets = pgTable(
     secretId: text("secret_id")
       .notNull()
       .references(() => secrets.id),
+    name: text("name"),
   },
-  (t) => [uniqueIndex("unique_sandbox_secret").on(t.sandboxId, t.secretId)],
+  (t) => [
+    uniqueIndex("unique_sandbox_secret").on(t.sandboxId, t.secretId),
+    uniqueIndex("unique_sandbox_secret_by_name").on(t.sandboxId, t.name),
+  ],
 );
 
 export type SelectSandboxSecret = InferSelectModel<typeof sandboxSecrets>;

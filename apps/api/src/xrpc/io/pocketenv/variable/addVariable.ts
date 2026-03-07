@@ -34,6 +34,7 @@ export default function (server: Server, ctx: Context) {
         .values({
           sandboxId: input.body.variable.sandboxId,
           variableId: variable.id,
+          name: input.body.variable.name,
         })
         .execute();
     });

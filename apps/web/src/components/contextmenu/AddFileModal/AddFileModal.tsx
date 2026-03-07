@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddFileMutation } from "../../../hooks/useFile";
 import { useSodium } from "../../../hooks/useSodium";
 import { PUBLIC_KEY } from "../../../consts";
+import { useNotyf } from "../../../hooks/useNotyf";
 
 const schema = z.object({
   path: z.string().min(1, "Path is required"),
@@ -22,6 +23,7 @@ export type AddFileModalProps = {
 
 function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
   const sodium = useSodium();
+  const notyf = useNotyf();
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: addFile } = useAddFileMutation();
   const {
@@ -71,17 +73,26 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
       sodium.fromString(data.content),
       sodium.fromHex(PUBLIC_KEY),
     );
-    await addFile({
-      sandboxId,
-      path: data.path,
-      content: sodium.toBase64(
-        sealed,
-        sodium.base64Variants.URLSAFE_NO_PADDING,
-      ),
-    });
-    setIsLoading(false);
-    reset();
-    onClose();
+    try {
+      await addFile({
+        sandboxId,
+        path: data.path,
+        content: sodium.toBase64(
+          sealed,
+          sodium.base64Variants.URLSAFE_NO_PADDING,
+        ),
+      });
+      setIsLoading(false);
+      reset();
+      onClose();
+      notyf.open("primary", "File added successfully!");
+    } catch {
+      notyf.open("error", "Failed to add file!");
+      setIsLoading(false);
+      reset();
+      onClose();
+      return;
+    }
   };
 
   if (!isOpen) return null;

@@ -186,3 +186,10 @@ body {
 .is-invalid {
   border-color: var(--color-error) !important;
 }
+
+.notyf__icon {
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  color: #fff;
+}

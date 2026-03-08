@@ -1,0 +1,1 @@
+ALTER TABLE "sandbox_variables" ALTER COLUMN "name" SET NOT NULL;

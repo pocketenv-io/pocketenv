@@ -134,6 +134,13 @@
       "when": 1772997231610,
       "tag": "0018_awesome_sally_floyd",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1773000076930,
+      "tag": "0019_hot_nextwave",
+      "breakpoints": true
     }
   ]
 }

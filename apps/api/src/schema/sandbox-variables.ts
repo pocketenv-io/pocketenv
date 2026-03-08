@@ -6,14 +6,16 @@ import variables from "./variables";
 const sandboxVariables = pgTable(
   "sandbox_variables",
   {
-    id: text("id").primaryKey().default(sql`xata_id()`),
+    id: text("id")
+      .primaryKey()
+      .default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id),
     variableId: text("variable_id")
       .notNull()
       .references(() => variables.id),
-    name: text("name"),
+    name: text("name").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },

@@ -7,7 +7,7 @@ function Tailscale() {
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const { data } = useSandboxQuery(
-    `at:/${pathname.replace("/ssh-keys", "").replace("sandbox", "io.pocketenv.sandbox")}`,
+    `at:/${pathname.replace("/tailscale", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
 
   return (

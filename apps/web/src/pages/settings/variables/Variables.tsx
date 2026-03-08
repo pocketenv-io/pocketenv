@@ -82,14 +82,16 @@ function Variables() {
           </p>
           <div className="w-full overflow-x-auto">
             <table className="table mb-20">
-              <thead>
-                <tr>
-                  <th className="normal-case text-[14px]">Name</th>
-                  <th className="normal-case text-[14px]">Value</th>
-                  <th className="normal-case text-[14px]">Created At</th>
-                  <th className="normal-case text-[14px]"></th>
-                </tr>
-              </thead>
+              {!!variables?.variables && (
+                <thead>
+                  <tr>
+                    <th className="normal-case text-[14px]">Name</th>
+                    <th className="normal-case text-[14px]">Value</th>
+                    <th className="normal-case text-[14px]">Created At</th>
+                    <th className="normal-case text-[14px]"></th>
+                  </tr>
+                </thead>
+              )}
               <tbody>
                 {isLoading
                   ? Array.from({ length: SKELETON_ROWS }).map((_, i) => (

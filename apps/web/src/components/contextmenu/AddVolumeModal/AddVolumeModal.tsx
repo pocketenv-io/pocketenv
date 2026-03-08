@@ -126,7 +126,7 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                   >
                     <input
                       type="text"
-                      placeholder="Your Volume Name"
+                      placeholder="Volume Name"
                       className={`grow ${errors.name ? "is-invalid" : ""}`}
                       autoComplete="off"
                       data-1p-ignore

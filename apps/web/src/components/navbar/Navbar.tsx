@@ -13,9 +13,11 @@ export type NavbarProps = {
   title: string;
   project?: string;
   withLogo?: boolean;
+  root?: string;
+  rootLink?: string;
 };
 
-function Navbar({ title, project, withLogo }: NavbarProps) {
+function Navbar({ title, project, withLogo, root, rootLink }: NavbarProps) {
   const [, setProfile] = useAtom(profileAtom);
   const [open, setOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -94,9 +96,30 @@ function Navbar({ title, project, withLogo }: NavbarProps) {
             <img src={Logo} className="max-h-[40px] mr-[15px] flex-shrink-0" />
           </Link>
         )}
-        <div className="text-base-content font-semibold no-underline text-[23px] truncate">
-          {title}
-        </div>
+        {root && (
+          <div className="breadcrumbs">
+            <ul>
+              <li>
+                <Link to="/projects">Projects</Link>
+              </li>
+              <li className="breadcrumbs-separator rtl:rotate-180">
+                <span className="icon-[tabler--chevron-right]"></span>
+              </li>
+              <li>
+                <Link to={rootLink!}>{root}</Link>
+              </li>
+              <li className="breadcrumbs-separator rtl:rotate-180">
+                <span className="icon-[tabler--chevron-right]"></span>
+              </li>
+              <li aria-current="page">{title}</li>
+            </ul>
+          </div>
+        )}
+        {!root && (
+          <div className="text-base-content font-semibold no-underline text-[23px] truncate">
+            {title}
+          </div>
+        )}
         {project && (
           <div className="text-[15px] ml-1 truncate hidden sm:block">
             {project}

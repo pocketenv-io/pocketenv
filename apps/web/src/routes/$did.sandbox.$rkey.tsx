@@ -1,6 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import Sandbox from "../pages/sandbox";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/$did/sandbox/$rkey")({
-  component: Sandbox,
+  component: SandboxLayout,
 });
+
+function SandboxLayout() {
+  return <Outlet />;
+}

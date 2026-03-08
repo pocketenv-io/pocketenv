@@ -110,7 +110,7 @@ function Project({ sandbox }: ProjectProps) {
               className={`icon-[mingcute--terminal-fill] size-5 ${sandbox.status !== "RUNNING" ? "" : "hover:text-white"}`}
             ></span>
           </button>
-          <ContextMenu sandboxId={sandbox.id} />
+          <ContextMenu sandboxId={sandbox.id} uri={sandbox.uri} />
         </div>
 
         <TerminalModal

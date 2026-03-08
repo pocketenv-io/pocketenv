@@ -4,12 +4,14 @@ import AddFileModal from "./AddFileModal";
 import AddVolumeModal from "./AddVolumeModal";
 import DeleteSandboxModal from "./DeleteSandboxModal";
 import AddSecretModal from "./AddSecretModal";
+import { Link } from "@tanstack/react-router";
 
 type ContextMenuProps = {
   sandboxId: string;
+  uri?: string;
 };
 
-function ContextMenu({ sandboxId }: ContextMenuProps) {
+function ContextMenu({ sandboxId, uri }: ContextMenuProps) {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [
@@ -123,15 +125,18 @@ function ContextMenu({ sandboxId }: ContextMenuProps) {
             </div>
           </li>
           <li>
+            <Link
+              to={`/${uri?.split("at://")[1]?.replace("io.pocketenv.", "")}/settings`}
+              className="dropdown-item cursor-pointer"
+            >
+              Settings
+            </Link>
+          </li>
+          <li>
             <div className="dropdown-item cursor-pointer" onClick={onDelete}>
               Delete
             </div>
           </li>
-          {/*<li>
-            <a href="/settings" className="dropdown-item cursor-pointer">
-              Settings
-            </a>*
-          </li>*/}
         </ul>
       </div>
       <AddEnvironmentVariableModal

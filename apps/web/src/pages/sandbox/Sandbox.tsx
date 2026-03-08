@@ -119,7 +119,10 @@ function New() {
                     </span>
                     {((profile && data?.sandbox?.owner?.did === profile.did) ||
                       !data?.sandbox?.owner) && (
-                      <ContextMenu sandboxId={data?.sandbox?.id} />
+                      <ContextMenu
+                        sandboxId={data?.sandbox?.id}
+                        uri={data?.sandbox?.uri}
+                      />
                     )}
                   </div>
 

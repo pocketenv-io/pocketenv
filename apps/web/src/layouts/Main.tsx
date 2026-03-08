@@ -6,10 +6,13 @@ import Sidebar from "../components/sidebar";
 import { sidebarCollapsedAtom } from "../atoms/sidebar";
 
 type MainProps = {
+  sidebar?: React.ReactNode;
   children: React.ReactNode;
+  root?: string;
+  rootLink?: string;
 };
 
-function Main({ children }: MainProps) {
+function Main({ children, sidebar, root, rootLink }: MainProps) {
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const isCollapsed = useAtomValue(sidebarCollapsedAtom);
@@ -21,6 +24,15 @@ function Main({ children }: MainProps) {
     if (path === "/volumes") return "Volumes";
     if (path === "/secrets") return "Secrets";
     if (path === "/settings") return "Settings";
+    if (
+      /^\/did:plc:[a-z0-9]+\/sandbox\/[a-z0-9]+\/settings$/.test(path) ||
+      /^\/did:plc:[a-z0-9]+\/sandbox\/[a-z0-9]+\/ssh-keys$/.test(path) ||
+      /^\/did:plc:[a-z0-9]+\/sandbox\/[a-z0-9]+\/variables$/.test(path) ||
+      /^\/did:plc:[a-z0-9]+\/sandbox\/[a-z0-9]+\/volumes$/.test(path) ||
+      /^\/did:plc:[a-z0-9]+\/sandbox\/[a-z0-9]+\/files$/.test(path) ||
+      /^\/did:plc:[a-z0-9]+\/sandbox\/[a-z0-9]+\/secrets$/.test(path)
+    )
+      return "Settings";
 
     return "";
   };
@@ -29,13 +41,13 @@ function Main({ children }: MainProps) {
 
   return (
     <div className="flex min-h-screen bg-base-100">
-      <Sidebar />
+      {sidebar ? sidebar : <Sidebar />}
       <div
         className={`flex flex-col flex-1 bg-base-100 ${
           isCollapsed ? "sm:ml-[72px]" : "sm:ml-64"
         }`}
       >
-        <Navbar title={title} />
+        <Navbar title={title} root={root} rootLink={rootLink} />
         <main className="flex-1 p-4 bg-base-100">{children}</main>
       </div>
     </div>

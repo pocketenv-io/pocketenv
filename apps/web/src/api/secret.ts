@@ -1,4 +1,5 @@
 import { client } from ".";
+import type { Secret } from "../types/secret";
 
 export const addSecret = (sandboxId: string, name: string, value: string) =>
   client.post(
@@ -24,9 +25,16 @@ export const deleteSecret = (id: string) =>
     },
   });
 
-export const getSecrets = () =>
-  client.get("/xrpc/io.pocketenv.secret.getSecrets", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+export const getSecrets = (
+  sandboxId?: string,
+  offset?: number,
+  limit?: number,
+) =>
+  client.get<{ secrets: Secret[]; total: number }>(
+    `/xrpc/io.pocketenv.secret.getSecrets?sandboxId=${sandboxId}&offset=${offset ?? 0}&limit=${limit ?? 30}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     },
-  });
+  );

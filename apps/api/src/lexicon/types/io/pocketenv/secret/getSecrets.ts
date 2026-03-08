@@ -10,6 +10,8 @@ import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
 import type * as IoPocketenvSecretDefs from "./defs";
 
 export interface QueryParams {
+  /** The ID of the sandbox for which to retrieve secrets. */
+  sandboxId?: string;
   /** The maximum number of secrets to return. */
   limit?: number;
   /** The number of secrets to skip before starting to collect the result set. */

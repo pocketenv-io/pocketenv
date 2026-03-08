@@ -7,6 +7,10 @@
       "parameters": {
         "type": "params",
         "properties": {
+          "sandboxId": {
+            "type": "string",
+            "description": "The ID of the sandbox for which to retrieve variables."
+          },
           "limit": {
             "type": "integer",
             "description": "The maximum number of variables to return.",

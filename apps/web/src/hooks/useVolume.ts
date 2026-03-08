@@ -29,9 +29,13 @@ export const useDeleteVolumeMutation = () => {
   });
 };
 
-export const useVolumesQuery = () =>
+export const useVolumesQuery = (
+  sandboxId?: string,
+  offset?: number,
+  limit?: number,
+) =>
   useQuery({
-    queryKey: ["volumes"],
-    queryFn: async () => getVolumes(),
+    queryKey: ["volumes", sandboxId, offset, limit],
+    queryFn: async () => getVolumes(sandboxId, offset, limit),
     select: (response) => response.data,
   });

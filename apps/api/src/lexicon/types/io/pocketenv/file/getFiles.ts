@@ -10,6 +10,8 @@ import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
 import type * as IoPocketenvFileDefs from "./defs";
 
 export interface QueryParams {
+  /** The ID of the sandbox for which to retrieve files. */
+  sandboxId?: string;
   /** The maximum number of files to return. */
   limit?: number;
   /** The number of files to skip before starting to collect the result set. */

@@ -1,4 +1,5 @@
 import { client } from ".";
+import type { Volume } from "../types/volume";
 
 export const addVolume = (sandboxId: string, name: string, path: string) =>
   client.post(
@@ -24,9 +25,16 @@ export const deleteVolume = (id: string) =>
     },
   });
 
-export const getVolumes = () =>
-  client.get("/xrpc/io.pocketenv.volume.getVolumes", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+export const getVolumes = (
+  sandboxId?: string,
+  offset?: number,
+  limit?: number,
+) =>
+  client.get<{ volumes: Volume[]; total: number }>(
+    `/xrpc/io.pocketenv.volume.getVolumes${sandboxId ? `?sandboxId=${sandboxId}` : ""}&offset=${offset ?? 0}&limit=${limit ?? 30}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     },
-  });
+  );

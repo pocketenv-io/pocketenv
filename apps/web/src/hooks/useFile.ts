@@ -31,9 +31,13 @@ export const useDeleteFileMutation = () => {
   });
 };
 
-export const useFilesQuery = () =>
+export const useFilesQuery = (
+  sandboxId?: string,
+  offset?: number,
+  limit?: number,
+) =>
   useQuery({
-    queryKey: ["files"],
-    queryFn: () => getFiles(),
+    queryKey: ["files", sandboxId, offset, limit],
+    queryFn: () => getFiles(sandboxId, offset, limit),
     select: (response) => response.data,
   });

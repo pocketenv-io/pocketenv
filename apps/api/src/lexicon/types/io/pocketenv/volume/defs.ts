@@ -11,6 +11,14 @@ export interface VolumeView {
   id?: string;
   /** Name of the volume, e.g. 'data-volume', 'logs', etc. */
   name?: string;
+  /** The path within the sandbox where the volume will be mounted, e.g. '/data', '/logs', etc. */
+  path?: string;
+  /** Whether the volume should be mounted as read-only within the sandbox. Defaults to false (read-write). */
+  readOnly?: boolean;
+  /** The timestamp when the volume was created. */
+  createdAt?: string;
+  /** The timestamp when the volume was last updated. */
+  updatedAt?: string;
   [k: string]: unknown;
 }
 

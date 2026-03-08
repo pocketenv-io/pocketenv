@@ -1,4 +1,5 @@
 import { client } from ".";
+import type { Variable } from "../types/variable";
 
 export const addVariable = (sandboxId: string, name: string, value: string) =>
   client.post(
@@ -28,9 +29,16 @@ export const deleteVariable = (id: string) =>
     },
   );
 
-export const getVariables = () =>
-  client.get("/xrpc/io.pocketenv.variable.getVariables", {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+export const getVariables = (
+  sandboxId?: string,
+  offset?: number,
+  limit?: number,
+) =>
+  client.get<{ variables: Variable[]; total: number }>(
+    `/xrpc/io.pocketenv.variable.getVariables${sandboxId ? `?sandboxId=${sandboxId}` : ""}&offset=${offset ?? 0}&limit=${limit ?? 30}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     },
-  });
+  );

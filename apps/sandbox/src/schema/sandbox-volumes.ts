@@ -1,5 +1,5 @@
 import { type InferInsertModel, type InferSelectModel, sql } from "drizzle-orm";
-import { pgTable, text, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import sandboxes from "./sandboxes.ts";
 import volumes from "./volumes.ts";
 
@@ -15,7 +15,10 @@ const sandboxVolumes = pgTable(
     volumeId: text("volume_id")
       .notNull()
       .references(() => volumes.id),
+    name: text("name"),
     path: text("path").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (t) => [
     uniqueIndex("unique_sandbox_volume").on(t.sandboxId, t.volumeId),

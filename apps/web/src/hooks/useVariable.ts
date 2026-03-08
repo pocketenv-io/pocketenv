@@ -31,9 +31,13 @@ export const useDeleteVariableMutation = (id: string) => {
   });
 };
 
-export const useVariablesQuery = () =>
+export const useVariablesQuery = (
+  sandboxId?: string,
+  offset?: number,
+  limit?: number,
+) =>
   useQuery({
-    queryKey: ["variables"],
-    queryFn: async () => getVariables(),
+    queryKey: ["variables", sandboxId, offset, limit],
+    queryFn: async () => getVariables(sandboxId, offset, limit),
     select: (response) => response.data,
   });

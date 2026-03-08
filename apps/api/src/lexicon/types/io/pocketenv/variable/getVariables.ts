@@ -10,6 +10,8 @@ import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
 import type * as IoPocketenvVariableDefs from "./defs";
 
 export interface QueryParams {
+  /** The ID of the sandbox for which to retrieve variables. */
+  sandboxId?: string;
   /** The maximum number of variables to return. */
   limit?: number;
   /** The number of variables to skip before starting to collect the result set. */

@@ -26,4 +26,28 @@ export function validateFile(v: unknown): ValidationResult {
   return lexicons.validate("io.pocketenv.file.defs#file", v);
 }
 
+export interface FileView {
+  /** Unique identifier of the file. */
+  id?: string;
+  /** The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc. */
+  path?: string;
+  /** The timestamp when the file was created. */
+  createdAt?: string;
+  /** The timestamp when the file was last updated. */
+  updatedAt?: string;
+  [k: string]: unknown;
+}
+
+export function isFileView(v: unknown): v is FileView {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.file.defs#fileView"
+  );
+}
+
+export function validateFileView(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.file.defs#fileView", v);
+}
+
 export type Files = File[];

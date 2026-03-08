@@ -2,13 +2,35 @@ import { useRouterState } from "@tanstack/react-router";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
+import AddVolumeModal from "../../../components/contextmenu/AddVolumeModal";
+import { useState } from "react";
+import { useVolumesQuery } from "../../../hooks/useVolume";
+import dayjs from "dayjs";
+import Pagination from "../../../components/pagination";
+
+const PAGE_SIZE = 12;
 
 function Volumes() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const offset = (currentPage - 1) * PAGE_SIZE;
+
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const { data } = useSandboxQuery(
     `at:/${pathname.replace("/volumes", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
+  const { data: volumes } = useVolumesQuery(
+    data?.sandbox?.id,
+    offset,
+    PAGE_SIZE,
+  );
+
+  const totalPages = volumes?.total ? Math.ceil(volumes.total / PAGE_SIZE) : 1;
+
+  const onPageChange = (page: number) => {
+    setCurrentPage(page);
+  };
 
   return (
     <Main
@@ -17,10 +39,16 @@ function Volumes() {
       rootLink={pathname.replace("/files", "")}
     >
       <>
-        <div className="w-[95%] m-auto">
+        <div
+          className="w-[95%] m-auto relative"
+          style={{ height: "calc(100vh - 80px)" }}
+        >
           <div className="flex flex-row items-center">
             <h1 className="mb-2 text-xl flex-1">Volumes</h1>
-            <button className="btn btn-primary font-semibold">
+            <button
+              className="btn btn-primary font-semibold"
+              onClick={() => setIsOpen(true)}
+            >
               New Volume
             </button>
           </div>
@@ -28,17 +56,45 @@ function Volumes() {
             Persistent storage mounted into the sandbox to keep data between
             sessions.
           </p>
-          <table className="table mb-20">
-            <thead>
-              <tr>
-                <th className="normal-case text-[14px]">Name</th>
-                <th className="normal-case text-[14px]">Mount Path</th>
-                <th className="normal-case text-[14px]"></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <div className="w-full overflow-x-auto">
+            <table className="table mb-20">
+              <thead>
+                <tr>
+                  <th className="normal-case text-[14px]">Name</th>
+                  <th className="normal-case text-[14px]">Mount Path</th>
+                  <th className="normal-case text-[14px]">Created At</th>
+                  <th className="normal-case text-[14px]"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {volumes?.volumes?.map((volume) => (
+                  <tr key={volume.id}>
+                    <td>{volume.name}</td>
+                    <td>{volume.path}</td>
+                    <td>
+                      {dayjs(volume.createdAt).format("M/D/YYYY, h:mm:ss A")}
+                    </td>
+                    <td></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="absolute bottom-3.75 w-full">
+            <div className="flex justify-center align-center">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={onPageChange}
+              />
+            </div>
+          </div>
         </div>
+        <AddVolumeModal
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          sandboxId={data?.sandbox?.id ?? ""}
+        />
       </>
     </Main>
   );

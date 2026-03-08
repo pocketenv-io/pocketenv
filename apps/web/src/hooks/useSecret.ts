@@ -31,9 +31,13 @@ export const useDeleteSecretMutation = () => {
   });
 };
 
-export const useSecretsQuery = () =>
+export const useSecretsQuery = (
+  sandboxId?: string,
+  offset?: number,
+  limit?: number,
+) =>
   useQuery({
-    queryKey: ["secrets"],
-    queryFn: () => getSecrets(),
+    queryKey: ["secrets", sandboxId, offset, limit],
+    queryFn: () => getSecrets(sandboxId, offset, limit),
     select: (response) => response.data,
   });

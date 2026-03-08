@@ -1,0 +1,1 @@
+ALTER TABLE "sandbox_volumes" ADD COLUMN "name" text;

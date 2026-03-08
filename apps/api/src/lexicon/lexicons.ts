@@ -254,6 +254,30 @@ export const schemaDict = {
           },
         },
       },
+      fileView: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "Unique identifier of the file.",
+          },
+          path: {
+            type: "string",
+            description:
+              "The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc.",
+          },
+          createdAt: {
+            type: "string",
+            description: "The timestamp when the file was created.",
+            format: "datetime",
+          },
+          updatedAt: {
+            type: "string",
+            description: "The timestamp when the file was last updated.",
+            format: "datetime",
+          },
+        },
+      },
       files: {
         type: "array",
         items: {
@@ -292,6 +316,10 @@ export const schemaDict = {
         parameters: {
           type: "params",
           properties: {
+            sandboxId: {
+              type: "string",
+              description: "The ID of the sandbox for which to retrieve files.",
+            },
             limit: {
               type: "integer",
               description: "The maximum number of files to return.",
@@ -1294,6 +1322,11 @@ export const schemaDict = {
         parameters: {
           type: "params",
           properties: {
+            sandboxId: {
+              type: "string",
+              description:
+                "The ID of the sandbox for which to retrieve secrets.",
+            },
             limit: {
               type: "integer",
               description: "The maximum number of secrets to return.",
@@ -1434,6 +1467,11 @@ export const schemaDict = {
         parameters: {
           type: "params",
           properties: {
+            sandboxId: {
+              type: "string",
+              description:
+                "The ID of the sandbox for which to retrieve variables.",
+            },
             limit: {
               type: "integer",
               description: "The maximum number of variables to return.",
@@ -1507,6 +1545,26 @@ export const schemaDict = {
             type: "string",
             description: "Name of the volume, e.g. 'data-volume', 'logs', etc.",
           },
+          path: {
+            type: "string",
+            description:
+              "The path within the sandbox where the volume will be mounted, e.g. '/data', '/logs', etc.",
+          },
+          readOnly: {
+            type: "boolean",
+            description:
+              "Whether the volume should be mounted as read-only within the sandbox. Defaults to false (read-write).",
+          },
+          createdAt: {
+            type: "string",
+            description: "The timestamp when the volume was created.",
+            format: "datetime",
+          },
+          updatedAt: {
+            type: "string",
+            description: "The timestamp when the volume was last updated.",
+            format: "datetime",
+          },
         },
       },
       volumes: {
@@ -1572,6 +1630,11 @@ export const schemaDict = {
         parameters: {
           type: "params",
           properties: {
+            sandboxId: {
+              type: "string",
+              description:
+                "The ID of the sandbox for which to retrieve volumes.",
+            },
             limit: {
               type: "integer",
               description: "The maximum number of volumes to return.",

@@ -10,6 +10,8 @@ import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
 import type * as IoPocketenvVolumeDefs from "./defs";
 
 export interface QueryParams {
+  /** The ID of the sandbox for which to retrieve volumes. */
+  sandboxId?: string;
   /** The maximum number of volumes to return. */
   limit?: number;
   /** The number of volumes to skip before starting to collect the result set. */

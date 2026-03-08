@@ -2,6 +2,7 @@ import { useRouterState } from "@tanstack/react-router";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
+import NewWebhook from "./NewWebhook";
 
 function Integrations() {
   const routerState = useRouterState();
@@ -28,7 +29,8 @@ function Integrations() {
             Integrations are third-party services that you can connect to your
             sandbox by adding a webhook.
           </p>
-          <table className="table mb-20">
+          {/*
+            <table className="table mb-20">
             <thead>
               <tr>
                 <th className="normal-case text-[14px]">Name</th>
@@ -36,8 +38,9 @@ function Integrations() {
               </tr>
             </thead>
             <tbody></tbody>
-          </table>
+          </table>*/}
         </div>
+        <NewWebhook />
       </>
     </Main>
   );

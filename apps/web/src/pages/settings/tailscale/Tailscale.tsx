@@ -27,7 +27,7 @@ function Tailscale() {
           </p>
           <div className="input input-bordered w-xl input-lg text-[15px] font-semibold bg-transparent">
             <input
-              type="password"
+              type="text"
               className={`grow`}
               placeholder="Enter your Tailscale Token"
               autoComplete="off"

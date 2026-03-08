@@ -23,6 +23,29 @@
         }
       }
     },
+    "fileView": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the file."
+        },
+        "path": {
+          "type": "string",
+          "description": "The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "The timestamp when the file was created.",
+          "format": "datetime"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "The timestamp when the file was last updated.",
+          "format": "datetime"
+        }
+      }
+    },
     "files": {
       "type": "array",
       "items": {

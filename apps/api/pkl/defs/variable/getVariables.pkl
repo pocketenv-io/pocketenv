@@ -8,6 +8,10 @@ defs = new Mapping<String, Query> {
     parameters {
       type = "params"
       properties {
+        ["sandboxId"] = new StringType {
+          type = "string"
+          description = "The ID of the sandbox for which to retrieve variables."
+        }
         ["limit"] = new IntegerType {
           type = "integer"
           description = "The maximum number of variables to return."

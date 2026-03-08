@@ -1,4 +1,4 @@
-import type { HandlerAuth } from "@atproto/xrpc-server";
+import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import type { Context } from "context";
 import type { Server } from "lexicon";
 import { Effect, pipe } from "effect";
@@ -19,10 +19,6 @@ export default function (server: Server, ctx: Context) {
       Effect.flatMap(presentation),
       Effect.retry({ times: 3 }),
       Effect.timeout("10 seconds"),
-      Effect.catchAll((err) => {
-        consola.error("Error retrieving sandboxes:", err);
-        return Effect.succeed({ sandboxes: [] });
-      }),
     );
   server.io.pocketenv.actor.getActorSandboxes({
     auth: ctx.authVerifier,
@@ -74,10 +70,13 @@ const retrieve = ({
           .execute()
           .then((result) => result[0]?.count ?? 0),
       ]),
-    catch: (error) =>
-      new Error(
+    catch: (error) => {
+      consola.error("Error retrieving sandboxes:", error);
+      return new XRPCError(
+        500,
         `Failed to retrieve sandboxes: ${error instanceof Error ? error.message : String(error)}`,
-      ),
+      );
+    },
   });
 };
 

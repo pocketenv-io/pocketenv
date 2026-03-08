@@ -1,14 +1,12 @@
 import { type InferInsertModel, type InferSelectModel, sql } from "drizzle-orm";
-import { pgTable, text, uniqueIndex } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import sandboxes from "./sandboxes";
 import secrets from "./secrets";
 
 const sandboxSecrets = pgTable(
   "sandbox_secrets",
   {
-    id: text("id")
-      .primaryKey()
-      .default(sql`xata_id()`),
+    id: text("id").primaryKey().default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id),
@@ -16,6 +14,8 @@ const sandboxSecrets = pgTable(
       .notNull()
       .references(() => secrets.id),
     name: text("name"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (t) => [
     uniqueIndex("unique_sandbox_secret").on(t.sandboxId, t.secretId),

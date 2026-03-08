@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import AddEnvironmentVariableModal from "./AddEnvironmentVariableModal";
+import AddVariableModal from "./AddVariableModal";
 import AddFileModal from "./AddFileModal";
 import AddVolumeModal from "./AddVolumeModal";
 import DeleteSandboxModal from "./DeleteSandboxModal";
@@ -139,7 +139,7 @@ function ContextMenu({ sandboxId, uri }: ContextMenuProps) {
           </li>
         </ul>
       </div>
-      <AddEnvironmentVariableModal
+      <AddVariableModal
         isOpen={isAddEnvironmentVariableModalOpen}
         onClose={() => setIsAddEnvironmentVariableModalOpen(false)}
         sandboxId={sandboxId}

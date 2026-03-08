@@ -17,8 +17,8 @@ const SecretRowSkeleton = ({ index }: { index: number }) => (
     speed={1.5}
     width="100%"
     height={48}
-    backgroundColor="oklch(var(--b2))"
-    foregroundColor="oklch(var(--b3))"
+    backgroundColor="rgba(255,255,255,0.06)"
+    foregroundColor="rgba(255,255,255,0.13)"
     style={{ width: "100%" }}
     uniqueKey={`secret-row-skeleton-${index}`}
   >

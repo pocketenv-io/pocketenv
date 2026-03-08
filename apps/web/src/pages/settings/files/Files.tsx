@@ -1,3 +1,4 @@
+import ContentLoader from "react-content-loader";
 import { useRouterState } from "@tanstack/react-router";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
@@ -9,6 +10,26 @@ import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
 
 const PAGE_SIZE = 12;
+const SKELETON_ROWS = 8;
+
+const FileRowSkeleton = ({ index }: { index: number }) => (
+  <ContentLoader
+    speed={1.5}
+    width="100%"
+    height={48}
+    backgroundColor="oklch(var(--b2))"
+    foregroundColor="oklch(var(--b3))"
+    style={{ width: "100%" }}
+    uniqueKey={`file-row-skeleton-${index}`}
+  >
+    {/* Path column - wide */}
+    <rect x="16" y="16" rx="6" ry="6" width="38%" height="16" />
+    {/* Created At column */}
+    <rect x="50%" y="16" rx="6" ry="6" width="22%" height="16" />
+    {/* Action column */}
+    <rect x="88%" y="12" rx="6" ry="6" width="8%" height="24" />
+  </ContentLoader>
+);
 
 function Files() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +41,11 @@ function Files() {
   const { data } = useSandboxQuery(
     `at:/${pathname.replace("/files", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
-  const { data: files } = useFilesQuery(data?.sandbox?.id, offset, PAGE_SIZE);
+  const { data: files, isLoading } = useFilesQuery(
+    data?.sandbox?.id,
+    offset,
+    PAGE_SIZE,
+  );
 
   const totalPages = files?.total ? Math.ceil(files.total / PAGE_SIZE) : 1;
 
@@ -62,17 +87,25 @@ function Files() {
                 </tr>
               </thead>
               <tbody>
-                {files?.files?.map((file) => (
-                  <tr key={file.id}>
-                    <td className="normal-case text-[14px] font-medium">
-                      {file.path}
-                    </td>
-                    <td className="normal-case text-[14px] font-medium">
-                      {dayjs(file.createdAt).format("M/D/YYYY, h:mm:ss A")}
-                    </td>
-                    <td className="normal-case text-[14px]"></td>
-                  </tr>
-                ))}
+                {isLoading
+                  ? Array.from({ length: SKELETON_ROWS }).map((_, i) => (
+                      <tr key={`skeleton-${i}`}>
+                        <td colSpan={3} className="p-0">
+                          <FileRowSkeleton index={i} />
+                        </td>
+                      </tr>
+                    ))
+                  : files?.files?.map((file) => (
+                      <tr key={file.id}>
+                        <td className="normal-case text-[14px] font-medium">
+                          {file.path}
+                        </td>
+                        <td className="normal-case text-[14px] font-medium">
+                          {dayjs(file.createdAt).format("M/D/YYYY, h:mm:ss A")}
+                        </td>
+                        <td className="normal-case text-[14px]"></td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>

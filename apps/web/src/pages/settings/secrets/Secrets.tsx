@@ -1,3 +1,4 @@
+import ContentLoader from "react-content-loader";
 import { useRouterState } from "@tanstack/react-router";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
@@ -9,6 +10,26 @@ import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
 
 const PAGE_SIZE = 12;
+const SKELETON_ROWS = 8;
+
+const SecretRowSkeleton = ({ index }: { index: number }) => (
+  <ContentLoader
+    speed={1.5}
+    width="100%"
+    height={48}
+    backgroundColor="oklch(var(--b2))"
+    foregroundColor="oklch(var(--b3))"
+    style={{ width: "100%" }}
+    uniqueKey={`secret-row-skeleton-${index}`}
+  >
+    {/* Name column - wide */}
+    <rect x="16" y="16" rx="6" ry="6" width="38%" height="16" />
+    {/* Created At column */}
+    <rect x="50%" y="16" rx="6" ry="6" width="22%" height="16" />
+    {/* Action column */}
+    <rect x="88%" y="12" rx="6" ry="6" width="8%" height="24" />
+  </ContentLoader>
+);
 
 function Secrets() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +41,7 @@ function Secrets() {
   const { data } = useSandboxQuery(
     `at:/${pathname.replace("/secrets", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
-  const { data: secrets } = useSecretsQuery(
+  const { data: secrets, isLoading } = useSecretsQuery(
     data?.sandbox?.id,
     offset,
     PAGE_SIZE,
@@ -66,17 +87,27 @@ function Secrets() {
                 </tr>
               </thead>
               <tbody>
-                {secrets?.secrets?.map((secret) => (
-                  <tr key={secret.id}>
-                    <td className="normal-case text-[14px] font-medium">
-                      {secret.name}
-                    </td>
-                    <td className="normal-case text-[14px] font-medium">
-                      {dayjs(secret.createdAt).format("M/D/YYYY, h:mm:ss A")}
-                    </td>
-                    <td className="normal-case text-[14px]"></td>
-                  </tr>
-                ))}
+                {isLoading
+                  ? Array.from({ length: SKELETON_ROWS }).map((_, i) => (
+                      <tr key={`skeleton-${i}`}>
+                        <td colSpan={3} className="p-0">
+                          <SecretRowSkeleton index={i} />
+                        </td>
+                      </tr>
+                    ))
+                  : secrets?.secrets?.map((secret) => (
+                      <tr key={secret.id}>
+                        <td className="normal-case text-[14px] font-medium">
+                          {secret.name}
+                        </td>
+                        <td className="normal-case text-[14px] font-medium">
+                          {dayjs(secret.createdAt).format(
+                            "M/D/YYYY, h:mm:ss A",
+                          )}
+                        </td>
+                        <td className="normal-case text-[14px]"></td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>

@@ -1,3 +1,4 @@
+import ContentLoader from "react-content-loader";
 import { useRouterState } from "@tanstack/react-router";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
@@ -9,6 +10,28 @@ import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
 
 const PAGE_SIZE = 10;
+const SKELETON_ROWS = 8;
+
+const VariableRowSkeleton = ({ index }: { index: number }) => (
+  <ContentLoader
+    speed={1.5}
+    width="100%"
+    height={48}
+    backgroundColor="oklch(var(--b2))"
+    foregroundColor="oklch(var(--b3))"
+    style={{ width: "100%" }}
+    uniqueKey={`variable-row-skeleton-${index}`}
+  >
+    {/* Name column */}
+    <rect x="16" y="16" rx="6" ry="6" width="20%" height="16" />
+    {/* Value column */}
+    <rect x="28%" y="16" rx="6" ry="6" width="24%" height="16" />
+    {/* Created At column */}
+    <rect x="58%" y="16" rx="6" ry="6" width="22%" height="16" />
+    {/* Action column */}
+    <rect x="88%" y="12" rx="6" ry="6" width="8%" height="24" />
+  </ContentLoader>
+);
 
 function Variables() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,7 +43,7 @@ function Variables() {
   const { data } = useSandboxQuery(
     `at:/${pathname.replace("/variables", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
-  const { data: variables } = useVariablesQuery(
+  const { data: variables, isLoading } = useVariablesQuery(
     data?.sandbox?.id,
     offset,
     PAGE_SIZE,
@@ -68,20 +91,30 @@ function Variables() {
                 </tr>
               </thead>
               <tbody>
-                {variables?.variables?.map((variable) => (
-                  <tr key={variable.id}>
-                    <td className="normal-case text-[14px] font-medium">
-                      {variable.name}
-                    </td>
-                    <td className="normal-case text-[14px] font-medium">
-                      {variable.value}
-                    </td>
-                    <td className="normal-case text-[14px] font-medium">
-                      {dayjs(variable.createdAt).format("M/D/YYYY, h:mm:ss A")}
-                    </td>
-                    <td className="normal-case text-[14px] font-medium"></td>
-                  </tr>
-                ))}
+                {isLoading
+                  ? Array.from({ length: SKELETON_ROWS }).map((_, i) => (
+                      <tr key={`skeleton-${i}`}>
+                        <td colSpan={4} className="p-0">
+                          <VariableRowSkeleton index={i} />
+                        </td>
+                      </tr>
+                    ))
+                  : variables?.variables?.map((variable) => (
+                      <tr key={variable.id}>
+                        <td className="normal-case text-[14px] font-medium">
+                          {variable.name}
+                        </td>
+                        <td className="normal-case text-[14px] font-medium">
+                          {variable.value}
+                        </td>
+                        <td className="normal-case text-[14px] font-medium">
+                          {dayjs(variable.createdAt).format(
+                            "M/D/YYYY, h:mm:ss A",
+                          )}
+                        </td>
+                        <td className="normal-case text-[14px] font-medium"></td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>

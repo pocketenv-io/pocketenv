@@ -16,8 +16,29 @@ function Integrations() {
       root={data?.sandbox?.name}
       rootLink={pathname.replace("/integrations", "")}
     >
-      {/* Your page content goes here */}
-      <></>
+      <>
+        <div className="w-[95%] m-auto">
+          <div className="flex flex-row items-center">
+            <h1 className="mb-1 text-xl flex-1">Integrations</h1>
+            <button className="btn btn-md btn-primary font-semibold">
+              New Webhook
+            </button>
+          </div>
+          <p className="opacity-60 mb-5">
+            Integrations are third-party services that you can connect to your
+            sandbox by adding a webhook.
+          </p>
+          <table className="table mb-20">
+            <thead>
+              <tr>
+                <th className="normal-case text-[14px]">Name</th>
+                <th className="normal-case text-[14px]"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </>
     </Main>
   );
 }

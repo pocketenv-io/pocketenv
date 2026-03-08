@@ -3,7 +3,7 @@ import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
 
-function SshKeys() {
+function Tailscale() {
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const { data } = useSandboxQuery(
@@ -14,18 +14,17 @@ function SshKeys() {
     <Main
       sidebar={<Sidebar />}
       root={data?.sandbox?.name}
-      rootLink={pathname.replace("/ssh-keys", "")}
+      rootLink={pathname.replace("/tailscale", "")}
     >
       <>
         <div className="w-[95%] m-auto">
           <div className="flex flex-row items-center">
-            <h1 className="mb-2 text-xl flex-1">SSH Keys</h1>
-            <button className="btn btn-primary w-25 font-semibold">
-              Generate
-            </button>
+            <h1 className="mb-2 text-xl flex-1">Tailscale</h1>
+            <button className="btn btn-primary font-semibold">Add Token</button>
           </div>
           <p className="opacity-60 mb-5">
-            SSH keys used to securely access Git repositories or remote servers.
+            Connect your Sandbox to your Tailscale network for secure private
+            access to services and devices.
           </p>
         </div>
       </>
@@ -33,4 +32,4 @@ function SshKeys() {
   );
 }
 
-export default SshKeys;
+export default Tailscale;

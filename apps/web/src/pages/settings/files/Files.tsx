@@ -16,8 +16,27 @@ function Files() {
       root={data?.sandbox?.name}
       rootLink={pathname.replace("/files", "")}
     >
-      {/* Your page content goes here */}
-      <></>
+      <>
+        <div className="w-[95%] m-auto">
+          <div className="flex flex-row items-center">
+            <h1 className="mb-2 text-xl flex-1">Files</h1>
+            <button className="btn btn-primary font-semibold">New File</button>
+          </div>
+          <p className="opacity-60 mb-5">
+            Files (encrypted) that are automatically injected into the sandbox
+            filesystem.
+          </p>
+          <table className="table mb-20">
+            <thead>
+              <tr>
+                <th className="normal-case text-[14px]">Path</th>
+                <th className="normal-case text-[14px]"></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </>
     </Main>
   );
 }

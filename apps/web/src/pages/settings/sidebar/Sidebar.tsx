@@ -65,7 +65,7 @@ function Sidebar() {
                 title={isCollapsed ? "General" : undefined}
               >
                 <span
-                  className={`icon-[pepicons-pencil--file] size-6 ${isCollapsed ? "" : "mr-2"}`}
+                  className={`icon-[codicon--settings] size-6 ${isCollapsed ? "" : "mr-2"}`}
                 ></span>
                 {!isCollapsed && "General"}
               </Link>
@@ -161,7 +161,7 @@ function Sidebar() {
                 title={isCollapsed ? "Volumes" : undefined}
               >
                 <span
-                  className={`icon-[icon-park-outline--hard-disk] size-5 ${isCollapsed ? "" : "mr-2"}`}
+                  className={`icon-[icon-park-outline--hard-disk] size-5 ${isCollapsed ? "" : "mr-2 ml-1"}`}
                 ></span>
                 {!isCollapsed && "Volumes"}
               </Link>
@@ -180,6 +180,22 @@ function Sidebar() {
                   className={`icon-[tabler--key] size-6 ${isCollapsed ? "" : "mr-2"}`}
                 ></span>
                 {!isCollapsed && "SSH Keys"}
+              </Link>
+            </li>
+            <li>
+              <Link
+                to={`/${did}/sandbox/${rkey}/tailscale`}
+                className={`${
+                  isActive("/tailscale")
+                    ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
+                    : "rounded-full hover:text-white"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? "Tailscale" : undefined}
+              >
+                <span
+                  className={`icon-[simple-icons--tailscale] size-4 ${isCollapsed ? "" : "mr-3 ml-1"}`}
+                ></span>
+                {!isCollapsed && "Tailscale"}
               </Link>
             </li>
           </ul>

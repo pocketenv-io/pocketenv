@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import SshKeysPage from "../../pages/settings/sshkeys/SshKeys";
+import SshKeysPage from "../../pages/settings/sshkeys";
 
 export const Route = createFileRoute("/$did/sandbox/$rkey/ssh-keys")({
   beforeLoad: () => {

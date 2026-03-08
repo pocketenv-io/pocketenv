@@ -7,6 +7,7 @@ const secrets = pgTable("secrets", {
     .default(sql`secret_id()`),
   name: text("name").notNull(),
   value: text("value").notNull(),
+  redacted: text("redacted"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

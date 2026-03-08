@@ -1,0 +1,38 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.putSshKeys"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    description = "Add or update SSH keys for a sandbox."
+    input {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        required = List("id", "privateKey", "publicKey")
+        properties {
+        ["id"] = new StringType {
+          type = "string"
+          description = "The sandbox ID."
+        }
+        ["privateKey"] = new StringType {
+          type = "string"
+          description = "The private SSH key (encrypted)"
+        }
+        ["publicKey"] = new StringType {
+          type = "string"
+          description = "The public SSH key."
+        }
+      }
+    }
+   }
+    output {
+      encoding = "application/json"
+      schema = new Ref {
+        type = "ref"
+        ref = "io.pocketenv.sandbox.defs#sshKeysView"
+      }
+    }
+  }
+}

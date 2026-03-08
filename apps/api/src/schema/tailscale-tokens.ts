@@ -3,9 +3,7 @@ import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import sandboxes from "./sandboxes";
 
 const tailscaleTokens = pgTable("tailscale_tokens", {
-  id: text("id")
-    .primaryKey()
-    .default(sql`xata_id()`),
+  id: text("id").primaryKey().default(sql`xata_id()`),
   sandboxId: text("sandbox_id").references(() => sandboxes.id),
   tokens: text("tokens").notNull(),
   redacted: text("redacted").notNull(),

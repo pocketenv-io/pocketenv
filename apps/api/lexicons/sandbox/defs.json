@@ -309,6 +309,92 @@
           "#volumePref"
         ]
       }
+    },
+    "sshKeysView": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the SSH key."
+        },
+        "publicKey": {
+          "type": "string",
+          "description": "The public SSH key."
+        },
+        "privateKey": {
+          "type": "string",
+          "description": "The private SSH key (redacted in API responses)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "The timestamp when the SSH key was created.",
+          "format": "datetime"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "The timestamp when the SSH key was last updated.",
+          "format": "datetime"
+        }
+      }
+    },
+    "tailscaleTokenView": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the Tailscale token."
+        },
+        "token": {
+          "type": "string",
+          "description": "The Tailscale auth token (redacted in API responses)"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "The timestamp when the Tailscale token was created.",
+          "format": "datetime"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "The timestamp when the Tailscale token was last updated.",
+          "format": "datetime"
+        }
+      }
+    },
+    "integrationView": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the integration."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the integration, e.g. 'GitHub', 'Slack', 'Trello', etc."
+        },
+        "webhookUrl": {
+          "type": "string",
+          "description": "The webhook URL of the integration.",
+          "format": "uri"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "The timestamp when the integration was created.",
+          "format": "datetime"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "The timestamp when the integration was last updated.",
+          "format": "datetime"
+        }
+      }
+    },
+    "integrationsView": {
+      "type": "array",
+      "items": {
+        "type": "ref",
+        "description": "An integration connected to the sandbox",
+        "ref": "io.pocketenv.sandbox.defs#integrationView"
+      }
     }
   }
 }

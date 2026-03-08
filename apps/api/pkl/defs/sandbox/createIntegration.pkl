@@ -1,0 +1,34 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.createIntegration"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    description = "Create a new integration for the sandbox."
+    input {
+      encoding = "application/json"
+      schema {
+        type = "object"
+        required = List("id", "name")
+        properties {
+          ["id"] = new StringType {
+            type = "string"
+            description = "The sandbox ID."
+          }
+          ["name"] = new StringType {
+            type = "string"
+            description = "The name of the integration."
+          }
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new Ref {
+        type = "ref"
+        ref = "io.pocketenv.sandbox.defs#integrationView"
+      }
+    }
+  }
+}

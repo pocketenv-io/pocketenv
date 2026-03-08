@@ -383,6 +383,40 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSandboxCreateIntegration: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.createIntegration",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Create a new integration for the sandbox.",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["id", "name"],
+            properties: {
+              id: {
+                type: "string",
+                description: "The sandbox ID.",
+              },
+              name: {
+                type: "string",
+                description: "The name of the integration.",
+              },
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#integrationView",
+          },
+        },
+      },
+    },
+  },
   IoPocketenvSandboxCreateSandbox: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.createSandbox",
@@ -807,6 +841,94 @@ export const schemaDict = {
           ],
         },
       },
+      sshKeysView: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "Unique identifier of the SSH key.",
+          },
+          publicKey: {
+            type: "string",
+            description: "The public SSH key.",
+          },
+          privateKey: {
+            type: "string",
+            description: "The private SSH key (redacted in API responses)",
+          },
+          createdAt: {
+            type: "string",
+            description: "The timestamp when the SSH key was created.",
+            format: "datetime",
+          },
+          updatedAt: {
+            type: "string",
+            description: "The timestamp when the SSH key was last updated.",
+            format: "datetime",
+          },
+        },
+      },
+      tailscaleTokenView: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "Unique identifier of the Tailscale token.",
+          },
+          token: {
+            type: "string",
+            description: "The Tailscale auth token (redacted in API responses)",
+          },
+          createdAt: {
+            type: "string",
+            description: "The timestamp when the Tailscale token was created.",
+            format: "datetime",
+          },
+          updatedAt: {
+            type: "string",
+            description:
+              "The timestamp when the Tailscale token was last updated.",
+            format: "datetime",
+          },
+        },
+      },
+      integrationView: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "Unique identifier of the integration.",
+          },
+          name: {
+            type: "string",
+            description:
+              "The name of the integration, e.g. 'GitHub', 'Slack', 'Trello', etc.",
+          },
+          webhookUrl: {
+            type: "string",
+            description: "The webhook URL of the integration.",
+            format: "uri",
+          },
+          createdAt: {
+            type: "string",
+            description: "The timestamp when the integration was created.",
+            format: "datetime",
+          },
+          updatedAt: {
+            type: "string",
+            description: "The timestamp when the integration was last updated.",
+            format: "datetime",
+          },
+        },
+      },
+      integrationsView: {
+        type: "array",
+        items: {
+          type: "ref",
+          description: "An integration connected to the sandbox",
+          ref: "lex:io.pocketenv.sandbox.defs#integrationView",
+        },
+      },
     },
   },
   IoPocketenvSandboxDeleteSandbox: {
@@ -831,6 +953,33 @@ export const schemaDict = {
           schema: {
             type: "ref",
             ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxGetIntegrations: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.getIntegrations",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get the integrations for a sandbox.",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#integrationsView",
           },
         },
       },
@@ -936,6 +1085,60 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSandboxGetSshKeys: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.getSshKeys",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get the SSH keys for a sandbox.",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sshKeysView",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxGetTailscaleToken: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.getTailscaleToken",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get the Tailscale token for a sandbox.",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#tailscaleTokenView",
+          },
+        },
+      },
+    },
+  },
   IoPocketenvSandboxPutPreferences: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.putPreferences",
@@ -954,6 +1157,80 @@ export const schemaDict = {
                 ref: "lex:io.pocketenv.sandbox.defs#preferences",
               },
             },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxPutSshKeys: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.putSshKeys",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Add or update SSH keys for a sandbox.",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["id", "privateKey", "publicKey"],
+            properties: {
+              id: {
+                type: "string",
+                description: "The sandbox ID.",
+              },
+              privateKey: {
+                type: "string",
+                description: "The private SSH key (encrypted)",
+              },
+              publicKey: {
+                type: "string",
+                description: "The public SSH key.",
+              },
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sshKeysView",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxPutTailscaleToken: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.putTailscaleToken",
+    defs: {
+      main: {
+        type: "procedure",
+        description:
+          "Store a Tailscale token for the sandbox. This token will be used to authenticate with the Tailscale API and manage the sandbox's Tailscale node.",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["id", "token"],
+            properties: {
+              id: {
+                type: "string",
+                description: "The sandbox ID.",
+              },
+              token: {
+                type: "string",
+                description:
+                  "The Tailscale token (encrypted) to store for the sandbox.",
+              },
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#tailscaleTokenView",
           },
         },
       },
@@ -1737,13 +2014,19 @@ export const ids = {
   IoPocketenvFileDeleteFile: "io.pocketenv.file.deleteFile",
   IoPocketenvFileGetFiles: "io.pocketenv.file.getFiles",
   IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",
+  IoPocketenvSandboxCreateIntegration: "io.pocketenv.sandbox.createIntegration",
   IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",
   IoPocketenvSandboxDefs: "io.pocketenv.sandbox.defs",
   IoPocketenvSandboxDeleteSandbox: "io.pocketenv.sandbox.deleteSandbox",
+  IoPocketenvSandboxGetIntegrations: "io.pocketenv.sandbox.getIntegrations",
   IoPocketenvSandboxGetPreferences: "io.pocketenv.sandbox.getPreferences",
   IoPocketenvSandboxGetSandbox: "io.pocketenv.sandbox.getSandbox",
   IoPocketenvSandboxGetSandboxes: "io.pocketenv.sandbox.getSandboxes",
+  IoPocketenvSandboxGetSshKeys: "io.pocketenv.sandbox.getSshKeys",
+  IoPocketenvSandboxGetTailscaleToken: "io.pocketenv.sandbox.getTailscaleToken",
   IoPocketenvSandboxPutPreferences: "io.pocketenv.sandbox.putPreferences",
+  IoPocketenvSandboxPutSshKeys: "io.pocketenv.sandbox.putSshKeys",
+  IoPocketenvSandboxPutTailscaleToken: "io.pocketenv.sandbox.putTailscaleToken",
   IoPocketenvSandbox: "io.pocketenv.sandbox",
   IoPocketenvSandboxStartSandbox: "io.pocketenv.sandbox.startSandbox",
   IoPocketenvSandboxStopSandbox: "io.pocketenv.sandbox.stopSandbox",

@@ -3,9 +3,7 @@ import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import sandboxes from "./sandboxes";
 
 const sshKeys = pgTable("ssh_keys", {
-  id: text("id")
-    .primaryKey()
-    .default(sql`xata_id()`),
+  id: text("id").primaryKey().default(sql`xata_id()`),
   sandboxId: text("sandbox_id").references(() => sandboxes.id),
   publicKey: text("public_key").notNull(),
   privateKey: text("private_key").notNull(),

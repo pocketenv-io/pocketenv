@@ -1,0 +1,27 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.getTailscaleToken"
+defs = new Mapping<String, Query> {
+  ["main"] {
+    type = "query"
+    description = "Get the Tailscale token for a sandbox."
+    parameters {
+      type = "params"
+      required = List("id")
+      properties {
+        ["id"] = new StringType {
+          type = "string"
+          description = "The sandbox ID."
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new Ref {
+        type = "ref"
+        ref = "io.pocketenv.sandbox.defs#tailscaleTokenView"
+      }
+    }
+  }
+}

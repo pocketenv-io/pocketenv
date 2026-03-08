@@ -224,3 +224,81 @@ export type Preferences = (
   | VolumePref
   | { $type: string; [k: string]: unknown }
 )[];
+
+export interface SshKeysView {
+  /** Unique identifier of the SSH key. */
+  id?: string;
+  /** The public SSH key. */
+  publicKey?: string;
+  /** The private SSH key (redacted in API responses) */
+  privateKey?: string;
+  /** The timestamp when the SSH key was created. */
+  createdAt?: string;
+  /** The timestamp when the SSH key was last updated. */
+  updatedAt?: string;
+  [k: string]: unknown;
+}
+
+export function isSshKeysView(v: unknown): v is SshKeysView {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#sshKeysView"
+  );
+}
+
+export function validateSshKeysView(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#sshKeysView", v);
+}
+
+export interface TailscaleTokenView {
+  /** Unique identifier of the Tailscale token. */
+  id?: string;
+  /** The Tailscale auth token (redacted in API responses) */
+  token?: string;
+  /** The timestamp when the Tailscale token was created. */
+  createdAt?: string;
+  /** The timestamp when the Tailscale token was last updated. */
+  updatedAt?: string;
+  [k: string]: unknown;
+}
+
+export function isTailscaleTokenView(v: unknown): v is TailscaleTokenView {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#tailscaleTokenView"
+  );
+}
+
+export function validateTailscaleTokenView(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#tailscaleTokenView", v);
+}
+
+export interface IntegrationView {
+  /** Unique identifier of the integration. */
+  id?: string;
+  /** The name of the integration, e.g. 'GitHub', 'Slack', 'Trello', etc. */
+  name?: string;
+  /** The webhook URL of the integration. */
+  webhookUrl?: string;
+  /** The timestamp when the integration was created. */
+  createdAt?: string;
+  /** The timestamp when the integration was last updated. */
+  updatedAt?: string;
+  [k: string]: unknown;
+}
+
+export function isIntegrationView(v: unknown): v is IntegrationView {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#integrationView"
+  );
+}
+
+export function validateIntegrationView(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#integrationView", v);
+}
+
+export type IntegrationsView = IntegrationView[];

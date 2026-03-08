@@ -16,12 +16,18 @@ import type * as IoPocketenvFileAddFile from "./types/io/pocketenv/file/addFile"
 import type * as IoPocketenvFileDeleteFile from "./types/io/pocketenv/file/deleteFile";
 import type * as IoPocketenvFileGetFiles from "./types/io/pocketenv/file/getFiles";
 import type * as IoPocketenvSandboxClaimSandbox from "./types/io/pocketenv/sandbox/claimSandbox";
+import type * as IoPocketenvSandboxCreateIntegration from "./types/io/pocketenv/sandbox/createIntegration";
 import type * as IoPocketenvSandboxCreateSandbox from "./types/io/pocketenv/sandbox/createSandbox";
 import type * as IoPocketenvSandboxDeleteSandbox from "./types/io/pocketenv/sandbox/deleteSandbox";
+import type * as IoPocketenvSandboxGetIntegrations from "./types/io/pocketenv/sandbox/getIntegrations";
 import type * as IoPocketenvSandboxGetPreferences from "./types/io/pocketenv/sandbox/getPreferences";
 import type * as IoPocketenvSandboxGetSandbox from "./types/io/pocketenv/sandbox/getSandbox";
 import type * as IoPocketenvSandboxGetSandboxes from "./types/io/pocketenv/sandbox/getSandboxes";
+import type * as IoPocketenvSandboxGetSshKeys from "./types/io/pocketenv/sandbox/getSshKeys";
+import type * as IoPocketenvSandboxGetTailscaleToken from "./types/io/pocketenv/sandbox/getTailscaleToken";
 import type * as IoPocketenvSandboxPutPreferences from "./types/io/pocketenv/sandbox/putPreferences";
+import type * as IoPocketenvSandboxPutSshKeys from "./types/io/pocketenv/sandbox/putSshKeys";
+import type * as IoPocketenvSandboxPutTailscaleToken from "./types/io/pocketenv/sandbox/putTailscaleToken";
 import type * as IoPocketenvSandboxStartSandbox from "./types/io/pocketenv/sandbox/startSandbox";
 import type * as IoPocketenvSandboxStopSandbox from "./types/io/pocketenv/sandbox/stopSandbox";
 import type * as IoPocketenvSandboxUpdateSandboxSettings from "./types/io/pocketenv/sandbox/updateSandboxSettings";
@@ -183,6 +189,17 @@ export class IoPocketenvSandboxNS {
     return this._server.xrpc.method(nsid, cfg);
   }
 
+  createIntegration<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxCreateIntegration.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxCreateIntegration.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.createIntegration"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
   createSandbox<AV extends AuthVerifier>(
     cfg: ConfigOf<
       AV,
@@ -202,6 +219,17 @@ export class IoPocketenvSandboxNS {
     >,
   ) {
     const nsid = "io.pocketenv.sandbox.deleteSandbox"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  getIntegrations<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxGetIntegrations.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxGetIntegrations.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.getIntegrations"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 
@@ -238,6 +266,28 @@ export class IoPocketenvSandboxNS {
     return this._server.xrpc.method(nsid, cfg);
   }
 
+  getSshKeys<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxGetSshKeys.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxGetSshKeys.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.getSshKeys"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  getTailscaleToken<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxGetTailscaleToken.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxGetTailscaleToken.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.getTailscaleToken"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
   putPreferences<AV extends AuthVerifier>(
     cfg: ConfigOf<
       AV,
@@ -246,6 +296,28 @@ export class IoPocketenvSandboxNS {
     >,
   ) {
     const nsid = "io.pocketenv.sandbox.putPreferences"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  putSshKeys<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxPutSshKeys.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxPutSshKeys.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.putSshKeys"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  putTailscaleToken<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxPutTailscaleToken.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxPutTailscaleToken.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.putTailscaleToken"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 

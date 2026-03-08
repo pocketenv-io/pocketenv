@@ -1,0 +1,34 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.putTailscaleToken"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    description = "Store a Tailscale token for the sandbox. This token will be used to authenticate with the Tailscale API and manage the sandbox's Tailscale node."
+    input {
+      encoding = "application/json"
+      schema  = new ObjectType {
+        type = "object"
+        required = List("id", "token")
+        properties {
+          ["id"] = new StringType {
+            type = "string"
+            description = "The sandbox ID."
+          }
+          ["token"] = new StringType {
+            type = "string"
+            description = "The Tailscale token (encrypted) to store for the sandbox."
+          }
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new Ref {
+        type = "ref"
+        ref = "io.pocketenv.sandbox.defs#tailscaleTokenView"
+      }
+    }
+  }
+}

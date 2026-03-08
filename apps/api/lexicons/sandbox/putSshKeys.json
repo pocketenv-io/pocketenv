@@ -1,0 +1,42 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.putSshKeys",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Add or update SSH keys for a sandbox.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "id",
+            "privateKey",
+            "publicKey"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The sandbox ID."
+            },
+            "privateKey": {
+              "type": "string",
+              "description": "The private SSH key (encrypted)"
+            },
+            "publicKey": {
+              "type": "string",
+              "description": "The public SSH key."
+            }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "io.pocketenv.sandbox.defs#sshKeysView"
+        }
+      }
+    }
+  }
+}

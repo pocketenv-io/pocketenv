@@ -1,0 +1,37 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.putTailscaleToken",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Store a Tailscale token for the sandbox. This token will be used to authenticate with the Tailscale API and manage the sandbox's Tailscale node.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "id",
+            "token"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The sandbox ID."
+            },
+            "token": {
+              "type": "string",
+              "description": "The Tailscale token (encrypted) to store for the sandbox."
+            }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "io.pocketenv.sandbox.defs#tailscaleTokenView"
+        }
+      }
+    }
+  }
+}

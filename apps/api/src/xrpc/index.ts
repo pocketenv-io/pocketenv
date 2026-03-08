@@ -23,6 +23,12 @@ import putPreferences from "./io/pocketenv/sandbox/putPreferences";
 import getPreferences from "./io/pocketenv/sandbox/getPreferences";
 import addVariable from "./io/pocketenv/variable/addVariable";
 import getVariables from "./io/pocketenv/variable/getVariables";
+import createIntegration from "./io/pocketenv/sandbox/createIntegration";
+import getIntegrations from "./io/pocketenv/sandbox/getIntegrations";
+import getSshKeys from "./io/pocketenv/sandbox/getSshKeys";
+import getTailscaleToken from "./io/pocketenv/sandbox/getTailscaleToken";
+import putSshKeys from "./io/pocketenv/sandbox/putSshKeys";
+import putTailscaleToken from "./io/pocketenv/sandbox/putTailscaleToken";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
@@ -49,6 +55,12 @@ export default function (server: Server, ctx: Context) {
   addVolume(server, ctx);
   deleteVolume(server, ctx);
   getVolumes(server, ctx);
+  createIntegration(server, ctx);
+  getIntegrations(server, ctx);
+  getSshKeys(server, ctx);
+  getTailscaleToken(server, ctx);
+  putSshKeys(server, ctx);
+  putTailscaleToken(server, ctx);
 
   return server;
 }

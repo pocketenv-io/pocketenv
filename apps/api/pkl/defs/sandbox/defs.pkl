@@ -316,4 +316,91 @@ defs = new Mapping<String, ObjectType | Array> {
       )
     }
   }
+  ["sshKeysView"] = new ObjectType {
+    type = "object"
+    properties {
+      ["id"] = new StringType {
+        type = "string"
+        description = "Unique identifier of the SSH key."
+      }
+      ["publicKey"] = new StringType {
+        type = "string"
+        description = "The public SSH key."
+      }
+      ["privateKey"] = new StringType {
+        type = "string"
+        description = "The private SSH key (redacted in API responses)"
+      }
+      ["createdAt"] = new StringType {
+        type = "string"
+        description = "The timestamp when the SSH key was created."
+        format = "datetime"
+      }
+      ["updatedAt"] = new StringType {
+        type = "string"
+        description = "The timestamp when the SSH key was last updated."
+        format = "datetime"
+      }
+    }
+  }
+  ["tailscaleTokenView"] = new ObjectType {
+    type = "object"
+    properties {
+      ["id"] = new StringType {
+        type = "string"
+        description = "Unique identifier of the Tailscale token."
+      }
+      ["token"] = new StringType {
+        type = "string"
+        description = "The Tailscale auth token (redacted in API responses)"
+      }
+      ["createdAt"] = new StringType {
+        type = "string"
+        description = "The timestamp when the Tailscale token was created."
+        format = "datetime"
+      }
+      ["updatedAt"] = new StringType {
+        type = "string"
+        description = "The timestamp when the Tailscale token was last updated."
+        format = "datetime"
+      }
+    }
+  }
+  ["integrationView"] = new ObjectType {
+    type = "object"
+    properties {
+      ["id"] = new StringType {
+        type = "string"
+        description = "Unique identifier of the integration."
+      }
+      ["name"] = new StringType {
+        type = "string"
+        description = "The name of the integration, e.g. 'GitHub', 'Slack', 'Trello', etc."
+      }
+      ["webhookUrl"] = new StringType {
+        type = "string"
+        description = "The webhook URL of the integration."
+        format = "uri"
+      }
+      ["createdAt"] = new StringType {
+        type = "string"
+        description = "The timestamp when the integration was created."
+        format = "datetime"
+      }
+      ["updatedAt"] = new StringType {
+        type = "string"
+        description = "The timestamp when the integration was last updated."
+        format = "datetime"
+      }
+    }
+  }
+  ["integrationsView"] = new Array {
+    type = "array"
+    items = new Ref {
+      type = "ref"
+      ref = "io.pocketenv.sandbox.defs#integrationView"
+      description = "An integration connected to the sandbox"
+    }
+  }
 }
+

@@ -81,7 +81,7 @@ function Volumes() {
           </p>
           <div className="w-full overflow-x-auto">
             <table className="table mb-20">
-              {!!volumes?.volumes && (
+              {!!volumes?.volumes?.length && (
                 <thead>
                   <tr>
                     <th className="normal-case text-[14px]">Name</th>

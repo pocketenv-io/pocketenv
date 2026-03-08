@@ -79,7 +79,7 @@ function Secrets() {
           </p>
           <div className="w-full overflow-x-auto">
             <table className="table mb-20">
-              {!!secrets?.secrets && (
+              {!!secrets?.secrets?.length && (
                 <thead>
                   <tr>
                     <th className="normal-case text-[14px]">Name</th>

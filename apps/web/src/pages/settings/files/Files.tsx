@@ -79,7 +79,7 @@ function Files() {
           </p>
           <div className="w-full overflow-x-auto">
             <table className="table mb-20">
-              {!!files?.files && (
+              {!!files?.files?.length && (
                 <thead>
                   <tr>
                     <th className="normal-case text-[14px]">Path</th>

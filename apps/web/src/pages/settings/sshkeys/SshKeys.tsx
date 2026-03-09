@@ -27,6 +27,33 @@ function SshKeys() {
           <p className="opacity-60 mb-5">
             SSH keys used to securely access Git repositories or remote servers.
           </p>
+          <div className="form-control">
+            <div className="mt-8">
+              <label className="label">
+                <span className="label-text font-bold mb-1 text-[14px]">
+                  Private Key
+                </span>
+              </label>
+              <textarea
+                className={`textarea max-w-full h-[150px] text-[14px] font-semibold`}
+                aria-label="Textarea"
+              ></textarea>
+            </div>
+            <div className="mt-8">
+              <label className="label">
+                <span className="label-text font-bold mb-1 text-[14px]">
+                  Public Key
+                </span>
+              </label>
+              <textarea
+                className={`textarea max-w-full h-[150px] text-[14px] font-semibold`}
+                aria-label="Textarea"
+              ></textarea>
+            </div>
+            <div className="mt-4">
+              <button className="btn btn-primary w-25">Save</button>
+            </div>
+          </div>
         </div>
       </>
     </Main>

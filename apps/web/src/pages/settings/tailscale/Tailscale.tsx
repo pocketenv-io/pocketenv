@@ -37,7 +37,7 @@ function Tailscale() {
             />
           </div>
           <div>
-            <button className="btn btn-primary font-semibold mt-8">Save</button>
+            <button className="btn btn-primary font-semibold mt-4">Save</button>
           </div>
         </div>
       </>

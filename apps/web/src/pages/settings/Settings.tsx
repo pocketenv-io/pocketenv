@@ -56,7 +56,7 @@ function Settings() {
               aria-label="Textarea"
             ></textarea>
           </div>
-          <div className="mt-8">
+          <div className="mt-4">
             <button className="btn btn-primary w-25">Save</button>
           </div>
         </div>

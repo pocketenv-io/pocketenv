@@ -65,7 +65,7 @@ function Variables() {
     >
       <>
         <div
-          className="w-[95%] m-auto relative"
+          className="w-[95%] m-auto"
           style={{ height: "calc(100vh - 80px)" }}
         >
           <div className="flex flex-row items-center">
@@ -114,14 +114,23 @@ function Variables() {
                             "M/D/YYYY, h:mm:ss A",
                           )}
                         </td>
-                        <td className="normal-case text-[14px] font-medium"></td>
+                        <td className="normal-case text-[14px] text-right">
+                          <div className="join">
+                            <button className="btn btn-outline join-item">
+                              Edit
+                            </button>
+                            <button className="btn btn-outline join-item">
+                              Delete
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
               </tbody>
             </table>
           </div>
-          <div className="absolute bottom-3.75 w-full">
-            <div className="flex justify-center align-center">
+          <div className="fixed bottom-3.75 left-0 right-0">
+            <div className="flex justify-center items-center">
               <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}

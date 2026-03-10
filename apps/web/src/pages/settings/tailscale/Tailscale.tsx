@@ -34,6 +34,7 @@ function Tailscale() {
               data-1p-ignore
               data-lpignore="true"
               data-form-type="other"
+              style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
             />
           </div>
           <div>

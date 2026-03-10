@@ -134,6 +134,7 @@ function AddEnvironmentVariableModal({
                       data-1p-ignore
                       data-lpignore="true"
                       data-form-type="other"
+                      style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
                       {...register("name")}
                     />
                   </div>
@@ -152,6 +153,7 @@ function AddEnvironmentVariableModal({
                       className={`textarea max-w-full h-[250px] text-[14px] font-semibold ${errors.value ? "is-invalid" : ""}`}
                       aria-label="Textarea"
                       placeholder="Variable Value"
+                      style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
                       {...register("value")}
                     ></textarea>
                     {errors.value && (

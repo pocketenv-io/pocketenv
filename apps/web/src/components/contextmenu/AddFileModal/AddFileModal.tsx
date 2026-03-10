@@ -140,6 +140,7 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
                     data-1p-ignore
                     data-lpignore="true"
                     data-form-type="other"
+                    style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
                     {...register("path")}
                   />
                 </div>
@@ -158,6 +159,7 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
                     className={`textarea max-w-full h-[250px] text-[14px] font-semibold ${errors.content ? "is-invalid" : ""}`}
                     aria-label="Textarea"
                     placeholder="File Content"
+                    style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
                     {...register("content")}
                   ></textarea>
                   {errors.content && (

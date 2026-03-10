@@ -132,6 +132,7 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                       data-1p-ignore
                       data-lpignore="true"
                       data-form-type="other"
+                      style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
                       {...register("name")}
                     />
                   </div>
@@ -157,6 +158,7 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                         data-1p-ignore
                         data-lpignore="true"
                         data-form-type="other"
+                        style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
                         {...register("path")}
                       />
                     </div>

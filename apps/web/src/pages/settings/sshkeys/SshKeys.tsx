@@ -1,13 +1,62 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouterState } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
 import { useSshKeys } from "../../../hooks/useSshKeys";
-import { useState } from "react";
+
+const sshKeysSchema = z
+  .object({
+    privateKey: z
+      .string()
+      .trim()
+      .refine(
+        (val) =>
+          val === "" ||
+          (val.startsWith("-----BEGIN OPENSSH PRIVATE KEY-----") &&
+            val.includes("-----END OPENSSH PRIVATE KEY-----")),
+        {
+          message:
+            "Private key must start with -----BEGIN OPENSSH PRIVATE KEY----- and end with -----END OPENSSH PRIVATE KEY-----",
+        },
+      ),
+    publicKey: z
+      .string()
+      .trim()
+      .refine(
+        (val) =>
+          val === "" ||
+          val.startsWith("ssh-rsa") ||
+          val.startsWith("ssh-ed25519"),
+        {
+          message: "Public key must start with ssh-rsa or ssh-ed25519",
+        },
+      ),
+  })
+  .superRefine((data, ctx) => {
+    const hasPrivate = data.privateKey !== "";
+    const hasPublic = data.publicKey !== "";
+    if (hasPrivate && !hasPublic) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["publicKey"],
+        message: "Public key is required when a private key is provided",
+      });
+    }
+    if (hasPublic && !hasPrivate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["privateKey"],
+        message: "Private key is required when a public key is provided",
+      });
+    }
+  });
+
+type SshKeysFormValues = z.infer<typeof sshKeysSchema>;
 
 function SshKeys() {
-  const [privateKey, setPrivateKey] = useState("");
-  const [publicKey, setPublicKey] = useState("");
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const { generateEd25519SSHKeyPair } = useSshKeys();
@@ -15,10 +64,23 @@ function SshKeys() {
     `at:/${pathname.replace("/ssh-keys", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<SshKeysFormValues>({
+    resolver: zodResolver(sshKeysSchema),
+  });
+
+  const onSubmit = (values: SshKeysFormValues) => {
+    console.log(values);
+  };
+
   const onGenerate = async () => {
     const keypair = await generateEd25519SSHKeyPair("");
-    setPrivateKey(keypair.privateKey);
-    setPublicKey(keypair.publicKey);
+    setValue("privateKey", keypair.privateKey, { shouldValidate: true });
+    setValue("publicKey", keypair.publicKey, { shouldValidate: true });
   };
   return (
     <Main
@@ -40,7 +102,7 @@ function SshKeys() {
           <p className="opacity-60 mb-5">
             SSH keys used to securely access Git repositories or remote servers.
           </p>
-          <div className="form-control">
+          <form className="form-control" onSubmit={handleSubmit(onSubmit)}>
             <div className="mt-8">
               <label className="label">
                 <span className="label-text font-bold mb-1 text-[14px]">
@@ -48,12 +110,16 @@ function SshKeys() {
                 </span>
               </label>
               <textarea
-                className={`textarea max-w-full h-[150px] text-[14px] font-semibold`}
+                className={`textarea max-w-full h-[150px] text-[14px] font-semibold ${errors.privateKey ? "textarea-error" : ""}`}
                 aria-label="Textarea"
-                value={privateKey}
-                onChange={(e) => setPrivateKey(e.target.value)}
                 style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
+                {...register("privateKey")}
               ></textarea>
+              {errors.privateKey && (
+                <p className="text-error text-sm mt-2">
+                  {errors.privateKey.message}
+                </p>
+              )}
             </div>
             <div className="mt-8">
               <label className="label">
@@ -62,17 +128,23 @@ function SshKeys() {
                 </span>
               </label>
               <textarea
-                className={`textarea max-w-full h-[150px] text-[14px] font-semibold`}
+                className={`textarea max-w-full h-[150px] text-[14px] font-semibold ${errors.publicKey ? "textarea-error" : ""}`}
                 aria-label="Textarea"
-                value={publicKey}
-                onChange={(e) => setPublicKey(e.target.value)}
                 style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
+                {...register("publicKey")}
               ></textarea>
+              {errors.publicKey && (
+                <p className="text-error text-sm mt-2">
+                  {errors.publicKey.message}
+                </p>
+              )}
             </div>
             <div className="mt-4">
-              <button className="btn btn-primary w-25">Save</button>
+              <button type="submit" className="btn btn-primary w-25">
+                Save
+              </button>
             </div>
-          </div>
+          </form>
         </div>
       </>
     </Main>

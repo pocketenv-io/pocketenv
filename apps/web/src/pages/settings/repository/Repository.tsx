@@ -1,7 +1,23 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouterState } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
+
+const gitUrlSchema = z.object({
+  repositoryUrl: z
+    .string()
+    .trim()
+    .min(1, "Repository URL is required")
+    .regex(
+      /^(https?:\/\/.+\/.+\/.+|git@.+:.+\/.+)$/,
+      "Must be a valid Git URL (e.g. https://tangled.org/user/repo or git@tangled.org:user/repo)",
+    ),
+});
+
+type GitUrlFormValues = z.infer<typeof gitUrlSchema>;
 
 function Repository() {
   const routerState = useRouterState();
@@ -10,6 +26,18 @@ function Repository() {
     `at:/${pathname.replace("/repository", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
   const index = Math.floor(Math.random() * 7);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<GitUrlFormValues>({
+    resolver: zodResolver(gitUrlSchema),
+  });
+
+  const onSubmit = (values: GitUrlFormValues) => {
+    console.log(values);
+  };
 
   return (
     <Main
@@ -23,30 +51,45 @@ function Repository() {
           <p className="opacity-60 mt-1">
             Bring your project's Git repository into your Sandbox.
           </p>
-          <div className="input input-bordered w-xl input-lg text-[15px] font-semibold bg-transparent mt-5">
-            <input
-              type="text"
-              className={`grow`}
-              placeholder={`e.g. ${
-                [
-                  "https://tangled.org/tranquil.farm/tranquil-pds",
-                  "https://tangled.org/rocksky.app/rocksky",
-                  "https://tangled.org/pocketenv.io/pocketenv",
-                  "https://tangled.org/zat.dev/zat",
-                  "https://tangled.org/pds.ls/pdsls",
-                  "https://tangled.org/teal.fm/piper",
-                  "https://tangled.org/tangled.org/core",
-                ][index]
-              }`}
-              autoComplete="off"
-              data-1p-ignore
-              data-lpignore="true"
-              data-form-type="other"
-            />
-          </div>
-          <div className="mt-4">
-            <button className="btn btn-primary w-25 font-semibold">Save</button>
-          </div>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div
+              className={`input input-bordered w-xl input-lg text-[15px] font-semibold bg-transparent mt-5 ${errors.repositoryUrl ? "input-error" : ""}`}
+            >
+              <input
+                type="text"
+                className="grow"
+                placeholder={`e.g. ${
+                  [
+                    "https://tangled.org/tranquil.farm/tranquil-pds",
+                    "https://tangled.org/rocksky.app/rocksky",
+                    "https://tangled.org/pocketenv.io/pocketenv",
+                    "https://tangled.org/zat.dev/zat",
+                    "https://tangled.org/pds.ls/pdsls",
+                    "https://tangled.org/teal.fm/piper",
+                    "https://tangled.org/tangled.org/core",
+                  ][index]
+                }`}
+                autoComplete="off"
+                data-1p-ignore
+                data-lpignore="true"
+                data-form-type="other"
+                {...register("repositoryUrl")}
+              />
+            </div>
+            {errors.repositoryUrl && (
+              <p className="text-error text-sm mt-2">
+                {errors.repositoryUrl.message}
+              </p>
+            )}
+            <div className="mt-4">
+              <button
+                type="submit"
+                className="btn btn-primary w-25 font-semibold"
+              >
+                Save
+              </button>
+            </div>
+          </form>
         </div>
       </>
     </Main>

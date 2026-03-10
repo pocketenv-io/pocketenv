@@ -83,9 +83,8 @@ export const useSshKeys = () => {
     );
 
     const blockSize = 8;
-    const padLen =
-      blockSize -
-      (privateSectionWithoutPadding.length % blockSize || blockSize);
+    const remainder = privateSectionWithoutPadding.length % blockSize;
+    const padLen = remainder === 0 ? blockSize : blockSize - remainder;
 
     const padding = new Uint8Array(padLen);
     for (let i = 0; i < padLen; i++) {

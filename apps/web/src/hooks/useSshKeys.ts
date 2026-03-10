@@ -45,7 +45,7 @@ export const useSshKeys = () => {
 
   function wrapPem(label: string, bytes: Uint8Array): string {
     const base64 = sodium.to_base64(bytes, sodium.base64_variants.ORIGINAL);
-    const lines = base64.match(/.{1,70}/g)?.join("\n") ?? base64;
+    const lines = base64.match(/.{1,64}/g)?.join("\n") ?? base64;
     return `-----BEGIN ${label}-----\n${lines}\n-----END ${label}-----`;
   }
 

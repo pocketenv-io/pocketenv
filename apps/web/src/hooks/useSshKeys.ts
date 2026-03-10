@@ -20,12 +20,10 @@ export function useSshKeys() {
     const total = arrays.reduce((sum, arr) => sum + arr.length, 0);
     const out = new Uint8Array(total);
     let offset = 0;
-
     for (const arr of arrays) {
       out.set(arr, offset);
       offset += arr.length;
     }
-
     return out;
   }
 
@@ -37,37 +35,35 @@ export function useSshKeys() {
     return new TextEncoder().encode(value);
   }
 
-  function randomU32(): number {
-    const buf = new Uint32Array(1);
-    crypto.getRandomValues(buf);
-    return buf[0]!;
-  }
-
   function wrapPem(label: string, bytes: Uint8Array): string {
-    const base64 = btoa(String.fromCharCode(...bytes));
+    const base64 = sodium.to_base64(bytes, sodium.base64_variants.ORIGINAL);
     const lines = base64.match(/.{1,70}/g)?.join("\n") ?? base64;
-    return `-----BEGIN ${label}-----\n${lines}\n-----END ${label}-----`;
+    return `-----BEGIN ${label}-----\n${lines}\n-----END ${label}-----\n`;
   }
 
   function buildEd25519PublicKeyBlob(publicKey: Uint8Array): Uint8Array {
     return concatBytes(sshString(text("ssh-ed25519")), sshString(publicKey));
   }
 
-  function buildOpenSSHEd25519PrivateKey(
+  function publicLineFromPublicKey(
     publicKey: Uint8Array,
-    secretKey64: Uint8Array, // must be seed(32) || publicKey(32)
     comment: string,
   ): string {
-    if (publicKey.length !== 32) {
-      throw new Error("Invalid Ed25519 public key length");
-    }
+    const blob = buildEd25519PublicKeyBlob(publicKey);
+    return `ssh-ed25519 ${sodium.to_base64(blob, sodium.base64_variants.ORIGINAL)} ${comment}`;
+  }
 
-    if (secretKey64.length !== 64) {
-      throw new Error("Invalid Ed25519 secret key length");
-    }
+  function buildOpenSSHEd25519PrivateKey(
+    publicKey: Uint8Array,
+    seed: Uint8Array,
+    comment: string,
+  ): string {
+    if (publicKey.length !== 32) throw new Error("Invalid public key length");
+    if (seed.length !== 32) throw new Error("Invalid seed length");
 
+    const privateKey64 = concatBytes(seed, publicKey);
     const publicBlob = buildEd25519PublicKeyBlob(publicKey);
-    const checkint = randomU32();
+    const checkint = crypto.getRandomValues(new Uint32Array(1))[0]!;
     const commentBytes = text(comment);
 
     const privateSectionWithoutPadding = concatBytes(
@@ -75,7 +71,7 @@ export function useSshKeys() {
       u32(checkint),
       sshString(text("ssh-ed25519")),
       sshString(publicKey),
-      sshString(secretKey64),
+      sshString(privateKey64),
       sshString(commentBytes),
     );
 
@@ -84,20 +80,18 @@ export function useSshKeys() {
     const padLen = remainder === 0 ? 0 : blockSize - remainder;
 
     const padding = new Uint8Array(padLen);
-    for (let i = 0; i < padLen; i++) {
-      padding[i] = i + 1;
-    }
+    for (let i = 0; i < padLen; i++) padding[i] = i + 1;
 
     const privateSection = concatBytes(privateSectionWithoutPadding, padding);
 
     const opensshKey = concatBytes(
       text("openssh-key-v1\0"),
-      sshString(text("none")), // ciphername
-      sshString(text("none")), // kdfname
-      sshString(new Uint8Array()), // kdfoptions
-      u32(1), // number of keys
-      sshString(publicBlob), // public key
-      sshString(privateSection), // private section
+      sshString(text("none")),
+      sshString(text("none")),
+      sshString(new Uint8Array()),
+      u32(1),
+      sshString(publicBlob),
+      sshString(privateSection),
     );
 
     return wrapPem("OPENSSH PRIVATE KEY", opensshKey);
@@ -112,18 +106,12 @@ export function useSshKeys() {
     crypto.getRandomValues(seed);
 
     const kp = sodium.crypto_sign_seed_keypair(seed);
-
     const publicKey = new Uint8Array(kp.publicKey);
 
-    const secretKey64 = concatBytes(seed, publicKey);
-
-    const publicBlob = buildEd25519PublicKeyBlob(publicKey);
-
-    const publicKeyOpenSSH = `ssh-ed25519 ${sodium.to_base64(publicBlob, sodium.base64_variants.ORIGINAL)} ${comment}`;
-
+    const publicKeyOpenSSH = publicLineFromPublicKey(publicKey, comment);
     const privateKeyOpenSSH = buildOpenSSHEd25519PrivateKey(
       publicKey,
-      secretKey64,
+      seed,
       comment,
     );
 

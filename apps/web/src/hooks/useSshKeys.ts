@@ -1,92 +1,141 @@
-import { useEffect, useState } from "react";
+import sodium from "libsodium-wrappers";
+
+export type SSHKeyPair = {
+  publicKey: string;
+  privateKey: string;
+  seedBase64: string;
+};
 
 export const useSshKeys = () => {
-  const [keyPair, setKeyPair] = useState<{
-    opensshPublicKey: string;
-    privateKeyPem: string;
-    rawPublicKeyBase64: string;
-  }>({ opensshPublicKey: "", privateKeyPem: "", rawPublicKeyBase64: "" });
-
-  const bytesToBase64 = (bytes: Uint8Array) => {
-    let binary = "";
-    const chunkSize = 0x8000;
-    for (let i = 0; i < bytes.length; i += chunkSize) {
-      binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
-    }
-    return btoa(binary);
-  };
-
-  const stringToBytes = (str: string) => {
-    return new TextEncoder().encode(str);
-  };
-
-  const concatBytes = (...arrays: Uint8Array[]) => {
-    const total = arrays.reduce((sum, arr) => sum + arr.length, 0);
-    const out = new Uint8Array(total);
-    let offset = 0;
-    for (const arr of arrays) {
-      out.set(arr, offset);
-      offset += arr.length;
-    }
-    return out;
-  };
-
-  const uint32be = (n: number) => {
+  function u32(n: number): Uint8Array {
     return new Uint8Array([
       (n >>> 24) & 0xff,
       (n >>> 16) & 0xff,
       (n >>> 8) & 0xff,
       n & 0xff,
     ]);
-  };
+  }
 
-  const sshString = (bytes: Uint8Array) => {
-    return concatBytes(uint32be(bytes.length), bytes);
-  };
+  function concatBytes(...arrays: Uint8Array[]): Uint8Array {
+    const total = arrays.reduce((sum, arr) => sum + arr.length, 0);
+    const out = new Uint8Array(total);
+    let offset = 0;
 
-  const pemEncode = (label: string, arrayBuffer: ArrayBuffer) => {
-    const base64 = bytesToBase64(new Uint8Array(arrayBuffer));
-    const lines = base64?.match(/.{1,64}/g)?.join("\n");
+    for (const arr of arrays) {
+      out.set(arr, offset);
+      offset += arr.length;
+    }
+
+    return out;
+  }
+
+  function sshString(bytes: Uint8Array): Uint8Array {
+    return concatBytes(u32(bytes.length), bytes);
+  }
+
+  function text(value: string): Uint8Array {
+    return new TextEncoder().encode(value);
+  }
+
+  function randomU32(): number {
+    const buf = new Uint32Array(1);
+    crypto.getRandomValues(buf);
+    return buf[0]!;
+  }
+
+  function wrapPem(label: string, bytes: Uint8Array): string {
+    const base64 = sodium.to_base64(bytes, sodium.base64_variants.ORIGINAL);
+    const lines = base64.match(/.{1,70}/g)?.join("\n") ?? base64;
     return `-----BEGIN ${label}-----\n${lines}\n-----END ${label}-----`;
-  };
+  }
 
-  const generateEd25519KeyPair = async () => {
-    const keyPair = await crypto.subtle.generateKey({ name: "Ed25519" }, true, [
-      "sign",
-      "verify",
-    ]);
+  function buildEd25519PublicKeyBlob(publicKey: Uint8Array): Uint8Array {
+    return concatBytes(sshString(text("ssh-ed25519")), sshString(publicKey));
+  }
 
-    // Export raw public key: 32 bytes
-    const rawPublic = new Uint8Array(
-      await crypto.subtle.exportKey("raw", keyPair.publicKey),
+  function buildOpenSSHEd25519PrivateKey(
+    publicKey: Uint8Array,
+    secretKey: Uint8Array,
+    comment: string,
+  ): string {
+    // libsodium Ed25519 secretKey is 64 bytes:
+    // first 32 = seed, last 32 = public key
+    if (publicKey.length !== 32) {
+      throw new Error("Invalid Ed25519 public key length");
+    }
+
+    if (secretKey.length !== 64) {
+      throw new Error("Invalid Ed25519 secret key length");
+    }
+
+    const publicBlob = buildEd25519PublicKeyBlob(publicKey);
+
+    const checkint = randomU32();
+    const commentBytes = text(comment);
+
+    const privateSectionWithoutPadding = concatBytes(
+      u32(checkint),
+      u32(checkint),
+      sshString(text("ssh-ed25519")),
+      sshString(publicKey),
+      sshString(secretKey), // 64 bytes: seed + public key
+      sshString(commentBytes),
     );
 
-    // string "ssh-ed25519" + string rawPublicKey
-    const algo = stringToBytes("ssh-ed25519");
-    const publicPayload = concatBytes(sshString(algo), sshString(rawPublic));
+    const blockSize = 8;
+    const padLen =
+      blockSize -
+      (privateSectionWithoutPadding.length % blockSize || blockSize);
 
-    const opensshPublicKey = `ssh-ed25519 ${bytesToBase64(publicPayload)}`;
+    const padding = new Uint8Array(padLen);
+    for (let i = 0; i < padLen; i++) {
+      padding[i] = i + 1;
+    }
 
-    // Export private key as PKCS#8 PEM
-    const pkcs8 = await crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
-    const privateKeyPem = pemEncode("PRIVATE KEY", pkcs8);
+    const privateSection = concatBytes(privateSectionWithoutPadding, padding);
+
+    const opensshKey = concatBytes(
+      text("openssh-key-v1\0"),
+      sshString(text("none")), // ciphername
+      sshString(text("none")), // kdfname
+      sshString(new Uint8Array()), // kdfoptions
+      u32(1), // number of keys
+      sshString(publicBlob), // public key
+      sshString(privateSection), // private section
+    );
+
+    return wrapPem("OPENSSH PRIVATE KEY", opensshKey);
+  }
+
+  async function generateEd25519SSHKeyPair(
+    comment = "user@browser",
+  ): Promise<SSHKeyPair> {
+    await sodium.ready;
+
+    const kp = sodium.crypto_sign_keypair();
+
+    const publicKey = new Uint8Array(kp.publicKey);
+    const secretKey = new Uint8Array(kp.privateKey);
+    const seed = secretKey.slice(0, 32);
+
+    const publicBlob = buildEd25519PublicKeyBlob(publicKey);
+
+    const publicKeyOpenSSH = `ssh-ed25519 ${sodium.to_base64(publicBlob, sodium.base64_variants.ORIGINAL)} ${comment}`;
+
+    const privateKeyOpenSSH = buildOpenSSHEd25519PrivateKey(
+      publicKey,
+      secretKey,
+      comment,
+    );
 
     return {
-      opensshPublicKey,
-      privateKeyPem,
-      rawPublicKeyBase64: bytesToBase64(rawPublic),
+      publicKey: publicKeyOpenSSH,
+      privateKey: privateKeyOpenSSH,
+      seedBase64: sodium.to_base64(seed, sodium.base64_variants.ORIGINAL),
     };
-  };
-
-  useEffect(() => {
-    generateEd25519KeyPair().then((keys) => setKeyPair(keys));
-  });
+  }
 
   return {
-    bytesToBase64,
-    stringToBytes,
-    concatBytes,
-    generateEd25519KeyPair,
-    keyPair,
+    generateEd25519SSHKeyPair,
   };
 };

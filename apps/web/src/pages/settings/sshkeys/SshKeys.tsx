@@ -10,15 +10,15 @@ function SshKeys() {
   const [publicKey, setPublicKey] = useState("");
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
-  const { generateEd25519KeyPair } = useSshKeys();
+  const { generateEd25519SSHKeyPair } = useSshKeys();
   const { data } = useSandboxQuery(
     `at:/${pathname.replace("/ssh-keys", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
 
   const onGenerate = async () => {
-    const keypair = await generateEd25519KeyPair();
-    setPrivateKey(keypair.privateKeyPem);
-    setPublicKey(keypair.opensshPublicKey);
+    const keypair = await generateEd25519SSHKeyPair();
+    setPrivateKey(keypair.privateKey);
+    setPublicKey(keypair.publicKey);
   };
   return (
     <Main

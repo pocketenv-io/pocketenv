@@ -52,6 +52,7 @@ function SshKeys() {
                 aria-label="Textarea"
                 value={privateKey}
                 onChange={(e) => setPrivateKey(e.target.value)}
+                style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
               ></textarea>
             </div>
             <div className="mt-8">
@@ -65,6 +66,7 @@ function SshKeys() {
                 aria-label="Textarea"
                 value={publicKey}
                 onChange={(e) => setPublicKey(e.target.value)}
+                style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
               ></textarea>
             </div>
             <div className="mt-4">

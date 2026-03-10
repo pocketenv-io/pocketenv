@@ -16,7 +16,7 @@ function SshKeys() {
   );
 
   const onGenerate = async () => {
-    const keypair = await generateEd25519SSHKeyPair();
+    const keypair = await generateEd25519SSHKeyPair("");
     setPrivateKey(keypair.privateKey);
     setPublicKey(keypair.publicKey);
   };

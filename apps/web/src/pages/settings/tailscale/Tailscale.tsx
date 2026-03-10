@@ -29,7 +29,7 @@ function Tailscale() {
             <input
               type="text"
               className={`grow`}
-              placeholder="Enter your Tailscale Token"
+              placeholder="Enter your Tailscale Auth Key"
               autoComplete="off"
               data-1p-ignore
               data-lpignore="true"

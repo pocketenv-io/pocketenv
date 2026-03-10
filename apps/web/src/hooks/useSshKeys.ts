@@ -108,7 +108,7 @@ export const useSshKeys = () => {
   }
 
   async function generateEd25519SSHKeyPair(
-    comment = "user@browser",
+    comment?: string,
   ): Promise<SSHKeyPair> {
     await sodium.ready;
 

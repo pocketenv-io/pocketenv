@@ -1,7 +1,7 @@
 amends "../../schema/lexicon.pkl"
 
 lexicon = 1
-id = "io.pocketenv.sandbox.getTailscaleToken"
+id = "io.pocketenv.sandbox.getTailscaleAuthKey"
 defs = new Mapping<String, Query> {
   ["main"] {
     type = "query"
@@ -20,7 +20,7 @@ defs = new Mapping<String, Query> {
       encoding = "application/json"
       schema = new Ref {
         type = "ref"
-        ref = "io.pocketenv.sandbox.defs#tailscaleTokenView"
+        ref = "io.pocketenv.sandbox.defs#tailscaleAuthKeyView"
       }
     }
   }

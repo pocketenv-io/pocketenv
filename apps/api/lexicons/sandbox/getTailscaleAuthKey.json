@@ -1,0 +1,29 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.getTailscaleAuthKey",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get the Tailscale token for a sandbox.",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The sandbox ID."
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "io.pocketenv.sandbox.defs#tailscaleAuthKeyView"
+        }
+      }
+    }
+  }
+}

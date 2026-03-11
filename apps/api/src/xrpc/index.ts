@@ -26,9 +26,9 @@ import getVariables from "./io/pocketenv/variable/getVariables";
 import createIntegration from "./io/pocketenv/sandbox/createIntegration";
 import getIntegrations from "./io/pocketenv/sandbox/getIntegrations";
 import getSshKeys from "./io/pocketenv/sandbox/getSshKeys";
-import getTailscaleToken from "./io/pocketenv/sandbox/getTailscaleToken";
+import getTailscaleAuthKey from "./io/pocketenv/sandbox/getTailscaleAuthKey";
 import putSshKeys from "./io/pocketenv/sandbox/putSshKeys";
-import putTailscaleToken from "./io/pocketenv/sandbox/putTailscaleToken";
+import putTailscaleAuthKey from "./io/pocketenv/sandbox/putTailscaleAuthKey";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
@@ -58,9 +58,9 @@ export default function (server: Server, ctx: Context) {
   createIntegration(server, ctx);
   getIntegrations(server, ctx);
   getSshKeys(server, ctx);
-  getTailscaleToken(server, ctx);
+  getTailscaleAuthKey(server, ctx);
   putSshKeys(server, ctx);
-  putTailscaleToken(server, ctx);
+  putTailscaleAuthKey(server, ctx);
 
   return server;
 }

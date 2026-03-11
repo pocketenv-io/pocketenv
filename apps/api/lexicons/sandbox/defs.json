@@ -337,25 +337,29 @@
         }
       }
     },
-    "tailscaleTokenView": {
+    "tailscaleAuthKeyView": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "description": "Unique identifier of the Tailscale token."
+          "description": "Unique identifier of the Tailscale Auth Key."
         },
-        "token": {
+        "authKey": {
           "type": "string",
-          "description": "The Tailscale auth token (redacted in API responses)"
+          "description": "The Tailscale auth key (redacted in API responses)"
+        },
+        "redacted": {
+          "type": "string",
+          "description": "The redacted Auth Key."
         },
         "createdAt": {
           "type": "string",
-          "description": "The timestamp when the Tailscale token was created.",
+          "description": "The timestamp when the Tailscale Auth Key was created.",
           "format": "datetime"
         },
         "updatedAt": {
           "type": "string",
-          "description": "The timestamp when the Tailscale token was last updated.",
+          "description": "The timestamp when the Tailscale Auth Key was last updated.",
           "format": "datetime"
         }
       }

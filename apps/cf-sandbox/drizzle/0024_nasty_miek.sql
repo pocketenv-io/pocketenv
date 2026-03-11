@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "unique_sandbox_ssh_key" ON "ssh_keys" USING btree ("public_key","sandbox_id");

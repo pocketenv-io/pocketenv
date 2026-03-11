@@ -5,8 +5,16 @@ import { z } from "zod";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
-import { useSshKeys } from "../../../hooks/useSshKeys";
+import {
+  useSaveSshKeyMutation,
+  useSshKeys,
+  useSshKeysQuery,
+} from "../../../hooks/useSshKeys";
 import { useNotyf } from "../../../hooks/useNotyf";
+import { useSodium } from "../../../hooks/useSodium";
+import { PUBLIC_KEY } from "../../../consts";
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const sshKeysSchema = z
   .object({
@@ -58,13 +66,18 @@ const sshKeysSchema = z
 type SshKeysFormValues = z.infer<typeof sshKeysSchema>;
 
 function SshKeys() {
+  const sodium = useSodium();
   const notyf = useNotyf();
+  const queryClient = useQueryClient();
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const { generateEd25519SSHKeyPair } = useSshKeys();
   const { data } = useSandboxQuery(
     `at:/${pathname.replace("/ssh-keys", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
+
+  const { mutateAsync: saveSshKeys } = useSaveSshKeyMutation();
+  const { data: sshKeys } = useSshKeysQuery(data?.sandbox?.id || "");
 
   const {
     register,
@@ -75,9 +88,52 @@ function SshKeys() {
     resolver: zodResolver(sshKeysSchema),
   });
 
-  const onSubmit = (values: SshKeysFormValues) => {
-    console.log(values);
+  useEffect(() => {
+    if (sshKeys?.data) {
+      setValue("privateKey", sshKeys.data.privateKey);
+      setValue("publicKey", sshKeys.data.publicKey);
+    }
+  }, [sshKeys, setValue]);
+
+  const onSubmit = async (values: SshKeysFormValues) => {
+    if (!values.privateKey.includes("****")) {
+      const sealed = sodium.cryptoBoxSeal(
+        sodium.fromString(values.privateKey),
+        sodium.fromHex(PUBLIC_KEY),
+      );
+
+      await saveSshKeys({
+        sandboxId: data!.sandbox!.id,
+        privateKey: sodium.toBase64(
+          sealed,
+          sodium.base64Variants.URLSAFE_NO_PADDING,
+        ),
+        publicKey: values.publicKey,
+        redacted: (() => {
+          const header = "-----BEGIN OPENSSH PRIVATE KEY-----";
+          const footer = "-----END OPENSSH PRIVATE KEY-----";
+          const headerIndex = values.privateKey.indexOf(header);
+          const footerIndex = values.privateKey.indexOf(footer);
+          if (headerIndex === -1 || footerIndex === -1)
+            return values.privateKey;
+          const body = values.privateKey
+            .slice(headerIndex + header.length, footerIndex)
+            .trim();
+          const maskedBody =
+            body.length > 15
+              ? body.slice(0, 10) +
+                "*".repeat(body.length - 15) +
+                body.slice(-5)
+              : body;
+          return `${header}\n${maskedBody}\n${footer}`;
+        })(),
+      });
+    }
+
     notyf.open("primary", "SSH keys saved successfully!");
+    await queryClient.invalidateQueries({
+      queryKey: ["sshKeys", data?.sandbox?.id],
+    });
   };
 
   const onGenerate = async () => {

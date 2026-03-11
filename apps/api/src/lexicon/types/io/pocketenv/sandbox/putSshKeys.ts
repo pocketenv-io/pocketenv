@@ -18,6 +18,8 @@ export interface InputSchema {
   privateKey: string;
   /** The public SSH key. */
   publicKey: string;
+  /** The redacted SSH key. */
+  redacted?: string;
   [k: string]: unknown;
 }
 

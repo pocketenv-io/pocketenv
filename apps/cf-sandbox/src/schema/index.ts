@@ -9,6 +9,8 @@ import sandboxVariables from "./sandbox-variables";
 import sandboxVolumes from "./sandbox-volumes";
 import files from "./files";
 import sandboxFiles from "./sandbox-files";
+import tailscaleAuthKeys from "./tailscale-auth-keys";
+import sshKeys from "./ssh-keys";
 
 export {
   sandboxes,
@@ -22,4 +24,6 @@ export {
   sandboxVolumes,
   files,
   sandboxFiles,
+  tailscaleAuthKeys,
+  sshKeys,
 };

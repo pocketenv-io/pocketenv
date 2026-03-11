@@ -9,9 +9,7 @@ import {
 import users from "./users";
 
 const sandboxes = pgTable("sandboxes", {
-  id: text("id")
-    .primaryKey()
-    .default(sql`sandbox_id()`),
+  id: text("id").primaryKey().default(sql`sandbox_id()`),
   base: text("base"),
   name: text("name").unique().notNull(),
   displayName: text("display_name"),

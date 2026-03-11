@@ -251,28 +251,30 @@ export function validateSshKeysView(v: unknown): ValidationResult {
   return lexicons.validate("io.pocketenv.sandbox.defs#sshKeysView", v);
 }
 
-export interface TailscaleTokenView {
-  /** Unique identifier of the Tailscale token. */
+export interface TailscaleAuthKeyView {
+  /** Unique identifier of the Tailscale Auth Key. */
   id?: string;
-  /** The Tailscale auth token (redacted in API responses) */
-  token?: string;
-  /** The timestamp when the Tailscale token was created. */
+  /** The Tailscale auth key (redacted in API responses) */
+  authKey?: string;
+  /** The redacted Auth Key. */
+  redacted?: string;
+  /** The timestamp when the Tailscale Auth Key was created. */
   createdAt?: string;
-  /** The timestamp when the Tailscale token was last updated. */
+  /** The timestamp when the Tailscale Auth Key was last updated. */
   updatedAt?: string;
   [k: string]: unknown;
 }
 
-export function isTailscaleTokenView(v: unknown): v is TailscaleTokenView {
+export function isTailscaleAuthKeyView(v: unknown): v is TailscaleAuthKeyView {
   return (
     isObj(v) &&
     hasProp(v, "$type") &&
-    v.$type === "io.pocketenv.sandbox.defs#tailscaleTokenView"
+    v.$type === "io.pocketenv.sandbox.defs#tailscaleAuthKeyView"
   );
 }
 
-export function validateTailscaleTokenView(v: unknown): ValidationResult {
-  return lexicons.validate("io.pocketenv.sandbox.defs#tailscaleTokenView", v);
+export function validateTailscaleAuthKeyView(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#tailscaleAuthKeyView", v);
 }
 
 export interface IntegrationView {

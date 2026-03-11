@@ -9,6 +9,8 @@ import sandboxVariables from "./sandbox-variables.ts";
 import sandboxVolumes from "./sandbox-volumes.ts";
 import files from "./files.ts";
 import sandboxFiles from "./sandbox-files.ts";
+import sshKeys from "./ssh-keys.ts";
+import tailscaleAuthKeys from "./tailscale-auth-keys.ts";
 
 export {
   sandboxes,
@@ -22,4 +24,6 @@ export {
   sandboxVolumes,
   files,
   sandboxFiles,
+  sshKeys,
+  tailscaleAuthKeys,
 };

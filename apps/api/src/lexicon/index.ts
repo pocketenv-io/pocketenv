@@ -24,9 +24,11 @@ import type * as IoPocketenvSandboxGetPreferences from "./types/io/pocketenv/san
 import type * as IoPocketenvSandboxGetSandbox from "./types/io/pocketenv/sandbox/getSandbox";
 import type * as IoPocketenvSandboxGetSandboxes from "./types/io/pocketenv/sandbox/getSandboxes";
 import type * as IoPocketenvSandboxGetSshKeys from "./types/io/pocketenv/sandbox/getSshKeys";
+import type * as IoPocketenvSandboxGetTailscaleAuthKey from "./types/io/pocketenv/sandbox/getTailscaleAuthKey";
 import type * as IoPocketenvSandboxGetTailscaleToken from "./types/io/pocketenv/sandbox/getTailscaleToken";
 import type * as IoPocketenvSandboxPutPreferences from "./types/io/pocketenv/sandbox/putPreferences";
 import type * as IoPocketenvSandboxPutSshKeys from "./types/io/pocketenv/sandbox/putSshKeys";
+import type * as IoPocketenvSandboxPutTailscaleAuthKey from "./types/io/pocketenv/sandbox/putTailscaleAuthKey";
 import type * as IoPocketenvSandboxPutTailscaleToken from "./types/io/pocketenv/sandbox/putTailscaleToken";
 import type * as IoPocketenvSandboxStartSandbox from "./types/io/pocketenv/sandbox/startSandbox";
 import type * as IoPocketenvSandboxStopSandbox from "./types/io/pocketenv/sandbox/stopSandbox";
@@ -277,6 +279,17 @@ export class IoPocketenvSandboxNS {
     return this._server.xrpc.method(nsid, cfg);
   }
 
+  getTailscaleAuthKey<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxGetTailscaleAuthKey.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxGetTailscaleAuthKey.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.getTailscaleAuthKey"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
   getTailscaleToken<AV extends AuthVerifier>(
     cfg: ConfigOf<
       AV,
@@ -307,6 +320,17 @@ export class IoPocketenvSandboxNS {
     >,
   ) {
     const nsid = "io.pocketenv.sandbox.putSshKeys"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  putTailscaleAuthKey<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxPutTailscaleAuthKey.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxPutTailscaleAuthKey.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.putTailscaleAuthKey"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 

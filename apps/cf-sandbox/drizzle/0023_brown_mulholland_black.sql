@@ -1,0 +1,1 @@
+ALTER TABLE "ssh_keys" ALTER COLUMN "redacted" DROP NOT NULL;

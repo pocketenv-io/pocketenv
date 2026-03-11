@@ -6,21 +6,22 @@ import { ValidationResult, BlobRef } from "@atproto/lexicon";
 import { lexicons } from "../../../../lexicons";
 import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
-import { type HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
-import type * as IoPocketenvSecretDefs from "./defs";
+import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
+import type * as IoPocketenvSandboxDefs from "./defs";
 
-export type QueryParams = {};
-
-export interface InputSchema {
-  secret: IoPocketenvSecretDefs.Secret;
-  /** The redacted secret value. */
-  redacted?: string;
-  [k: string]: unknown;
+export interface QueryParams {
+  /** The sandbox ID. */
+  id: string;
 }
 
-export interface HandlerInput {
+export type InputSchema = undefined;
+export type OutputSchema = IoPocketenvSandboxDefs.TailscaleAuthKeyView;
+export type HandlerInput = undefined;
+
+export interface HandlerSuccess {
   encoding: "application/json";
-  body: InputSchema;
+  body: OutputSchema;
+  headers?: { [key: string]: string };
 }
 
 export interface HandlerError {
@@ -28,7 +29,7 @@ export interface HandlerError {
   message?: string;
 }
 
-export type HandlerOutput = HandlerError | void;
+export type HandlerOutput = HandlerError | HandlerSuccess | HandlerPipeThrough;
 export type HandlerReqCtx<HA extends HandlerAuth = never> = {
   auth: HA;
   params: QueryParams;

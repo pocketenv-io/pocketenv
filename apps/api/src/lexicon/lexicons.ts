@@ -868,26 +868,31 @@ export const schemaDict = {
           },
         },
       },
-      tailscaleTokenView: {
+      tailscaleAuthKeyView: {
         type: "object",
         properties: {
           id: {
             type: "string",
-            description: "Unique identifier of the Tailscale token.",
+            description: "Unique identifier of the Tailscale Auth Key.",
           },
-          token: {
+          authKey: {
             type: "string",
-            description: "The Tailscale auth token (redacted in API responses)",
+            description: "The Tailscale auth key (redacted in API responses)",
+          },
+          redacted: {
+            type: "string",
+            description: "The redacted Auth Key.",
           },
           createdAt: {
             type: "string",
-            description: "The timestamp when the Tailscale token was created.",
+            description:
+              "The timestamp when the Tailscale Auth Key was created.",
             format: "datetime",
           },
           updatedAt: {
             type: "string",
             description:
-              "The timestamp when the Tailscale token was last updated.",
+              "The timestamp when the Tailscale Auth Key was last updated.",
             format: "datetime",
           },
         },
@@ -1112,6 +1117,33 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSandboxGetTailscaleAuthKey: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.getTailscaleAuthKey",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get the Tailscale token for a sandbox.",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#tailscaleAuthKeyView",
+          },
+        },
+      },
+    },
+  },
   IoPocketenvSandboxGetTailscaleToken: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.getTailscaleToken",
@@ -1187,6 +1219,10 @@ export const schemaDict = {
                 type: "string",
                 description: "The public SSH key.",
               },
+              redacted: {
+                type: "string",
+                description: "The redacted SSH key.",
+              },
             },
           },
         },
@@ -1195,6 +1231,46 @@ export const schemaDict = {
           schema: {
             type: "ref",
             ref: "lex:io.pocketenv.sandbox.defs#sshKeysView",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxPutTailscaleAuthKey: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.putTailscaleAuthKey",
+    defs: {
+      main: {
+        type: "procedure",
+        description:
+          "Store a Tailscale Auth Key for the sandbox. This Auth Key will be used to authenticate with the Tailscale API and manage the sandbox's Tailscale node.",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["id", "authKey"],
+            properties: {
+              id: {
+                type: "string",
+                description: "The sandbox ID.",
+              },
+              authKey: {
+                type: "string",
+                description:
+                  "The Tailscale Auth Key (encrypted) to store for the sandbox.",
+              },
+              redacted: {
+                type: "string",
+                description: "The redacted SSH key.",
+              },
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#tailscaleAuthKeyView",
           },
         },
       },
@@ -1515,6 +1591,10 @@ export const schemaDict = {
               secret: {
                 type: "ref",
                 ref: "lex:io.pocketenv.secret.defs#secret",
+              },
+              redacted: {
+                type: "string",
+                description: "The redacted secret value.",
               },
             },
           },
@@ -2023,9 +2103,13 @@ export const ids = {
   IoPocketenvSandboxGetSandbox: "io.pocketenv.sandbox.getSandbox",
   IoPocketenvSandboxGetSandboxes: "io.pocketenv.sandbox.getSandboxes",
   IoPocketenvSandboxGetSshKeys: "io.pocketenv.sandbox.getSshKeys",
+  IoPocketenvSandboxGetTailscaleAuthKey:
+    "io.pocketenv.sandbox.getTailscaleAuthKey",
   IoPocketenvSandboxGetTailscaleToken: "io.pocketenv.sandbox.getTailscaleToken",
   IoPocketenvSandboxPutPreferences: "io.pocketenv.sandbox.putPreferences",
   IoPocketenvSandboxPutSshKeys: "io.pocketenv.sandbox.putSshKeys",
+  IoPocketenvSandboxPutTailscaleAuthKey:
+    "io.pocketenv.sandbox.putTailscaleAuthKey",
   IoPocketenvSandboxPutTailscaleToken: "io.pocketenv.sandbox.putTailscaleToken",
   IoPocketenvSandbox: "io.pocketenv.sandbox",
   IoPocketenvSandboxStartSandbox: "io.pocketenv.sandbox.startSandbox",

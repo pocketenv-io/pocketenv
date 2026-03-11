@@ -1,31 +1,26 @@
 {
   "lexicon": 1,
-  "id": "io.pocketenv.sandbox.putSshKeys",
+  "id": "io.pocketenv.sandbox.putTailscaleAuthKey",
   "defs": {
     "main": {
       "type": "procedure",
-      "description": "Add or update SSH keys for a sandbox.",
+      "description": "Store a Tailscale Auth Key for the sandbox. This Auth Key will be used to authenticate with the Tailscale API and manage the sandbox's Tailscale node.",
       "input": {
         "encoding": "application/json",
         "schema": {
           "type": "object",
           "required": [
             "id",
-            "privateKey",
-            "publicKey"
+            "authKey"
           ],
           "properties": {
             "id": {
               "type": "string",
               "description": "The sandbox ID."
             },
-            "privateKey": {
+            "authKey": {
               "type": "string",
-              "description": "The private SSH key (encrypted)"
-            },
-            "publicKey": {
-              "type": "string",
-              "description": "The public SSH key."
+              "description": "The Tailscale Auth Key (encrypted) to store for the sandbox."
             },
             "redacted": {
               "type": "string",
@@ -38,7 +33,7 @@
         "encoding": "application/json",
         "schema": {
           "type": "ref",
-          "ref": "io.pocketenv.sandbox.defs#sshKeysView"
+          "ref": "io.pocketenv.sandbox.defs#tailscaleAuthKeyView"
         }
       }
     }

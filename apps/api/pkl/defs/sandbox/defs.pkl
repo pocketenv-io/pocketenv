@@ -203,8 +203,7 @@ defs = new Mapping<String, ObjectType | Array> {
       }
       ["repo"] = new StringType {
         type = "string"
-        description =
-          "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo."
+        description = "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo."
         format = "uri"
       }
       ["vcpus"] = new IntegerType {
@@ -239,7 +238,8 @@ defs = new Mapping<String, ObjectType | Array> {
       }
       ["value"] = new StringType {
         type = "string"
-        description = "The value of the secret. This will be encrypted at rest and redacted in any API responses."
+        description =
+          "The value of the secret. This will be encrypted at rest and redacted in any API responses."
       }
     }
   }
@@ -253,7 +253,8 @@ defs = new Mapping<String, ObjectType | Array> {
       }
       ["value"] = new StringType {
         type = "string"
-        description = "The value of the variable. This will be visible in API responses and should not contain sensitive information."
+        description =
+          "The value of the variable. This will be visible in API responses and should not contain sensitive information."
       }
     }
     description = "A variable to add to the sandbox"
@@ -296,10 +297,10 @@ defs = new Mapping<String, ObjectType | Array> {
         description =
           "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc."
       }
-       ["readOnly"] = new BooleanType {
+      ["readOnly"] = new BooleanType {
         type = "boolean"
         description = "Whether the volume should be mounted as read-only"
-       }
+      }
     }
     description = "A volume to add to the sandbox"
   }
@@ -307,13 +308,14 @@ defs = new Mapping<String, ObjectType | Array> {
     type = "array"
     items = new Union {
       type = "union"
-      refs = List(
-        "#sandboxDetailsPref", 
-        "#secretPref", 
-        "#variablePref", 
-        "#filePref", 
-        "#volumePref"
-      )
+      refs =
+        List(
+          "#sandboxDetailsPref",
+          "#secretPref",
+          "#variablePref",
+          "#filePref",
+          "#volumePref",
+        )
     }
   }
   ["sshKeysView"] = new ObjectType {
@@ -343,25 +345,29 @@ defs = new Mapping<String, ObjectType | Array> {
       }
     }
   }
-  ["tailscaleTokenView"] = new ObjectType {
+  ["tailscaleAuthKeyView"] = new ObjectType {
     type = "object"
     properties {
       ["id"] = new StringType {
         type = "string"
-        description = "Unique identifier of the Tailscale token."
+        description = "Unique identifier of the Tailscale Auth Key."
       }
-      ["token"] = new StringType {
+      ["authKey"] = new StringType {
         type = "string"
-        description = "The Tailscale auth token (redacted in API responses)"
+        description = "The Tailscale auth key (redacted in API responses)"
+      }
+      ["redacted"] = new StringType {
+        type = "string"
+        description = "The redacted Auth Key."
       }
       ["createdAt"] = new StringType {
         type = "string"
-        description = "The timestamp when the Tailscale token was created."
+        description = "The timestamp when the Tailscale Auth Key was created."
         format = "datetime"
       }
       ["updatedAt"] = new StringType {
         type = "string"
-        description = "The timestamp when the Tailscale token was last updated."
+        description = "The timestamp when the Tailscale Auth Key was last updated."
         format = "datetime"
       }
     }
@@ -403,4 +409,3 @@ defs = new Mapping<String, ObjectType | Array> {
     }
   }
 }
-

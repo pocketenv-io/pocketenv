@@ -17,6 +17,7 @@ export default function (server: Server, ctx: Context) {
         .values({
           name: input.body.secret.name,
           value: input.body.secret.value,
+          redacted: input.body.redacted,
         })
         .returning()
         .execute();

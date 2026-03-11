@@ -5,6 +5,10 @@ import type { HandlerInput } from "lexicon/types/io/pocketenv/sandbox/putPrefere
 
 export default function (server: Server, ctx: Context) {
   const putPreferences = async (input: HandlerInput, auth: HandlerAuth) => {
+    if (!auth.credentials) {
+      throw new XRPCError(401, "Unauthorized");
+    }
+
     return {};
   };
   server.io.pocketenv.sandbox.putPreferences({

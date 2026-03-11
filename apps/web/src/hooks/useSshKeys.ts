@@ -1,4 +1,6 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import sodium from "libsodium-wrappers";
+import { saveSshKeys, getSshKeys } from "../api/sshkey";
 
 export type SSHKeyPair = {
   publicKey: string;
@@ -124,3 +126,26 @@ export function useSshKeys() {
 
   return { generateEd25519SSHKeyPair };
 }
+
+export const useSaveSshKeyMutation = () =>
+  useMutation({
+    mutationFn: (variables: {
+      sandboxId: string;
+      publicKey: string;
+      privateKey: string;
+      redacted: string;
+    }) =>
+      saveSshKeys(
+        variables.sandboxId,
+        variables.privateKey,
+        variables.publicKey,
+        variables.redacted,
+      ),
+  });
+
+export const useSshKeysQuery = (sandboxId: string) =>
+  useQuery({
+    queryKey: ["sshKeys", sandboxId],
+    queryFn: () => getSshKeys(sandboxId),
+    enabled: !!sandboxId,
+  });

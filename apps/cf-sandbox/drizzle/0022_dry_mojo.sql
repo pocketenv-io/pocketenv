@@ -1,0 +1,1 @@
+ALTER TABLE "ssh_keys" ALTER COLUMN "sandbox_id" SET NOT NULL;

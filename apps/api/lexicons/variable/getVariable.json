@@ -1,0 +1,33 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.variable.getVariable",
+  "defs": {
+    "main": {
+      "type": "query",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the variable for which to retrieve variables."
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "variable": {
+              "type": "ref",
+              "ref": "io.pocketenv.variable.defs#variableView"
+            }
+          }
+        }
+      }
+    }
+  }
+}

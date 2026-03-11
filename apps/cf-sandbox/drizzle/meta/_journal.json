@@ -183,6 +183,20 @@
       "when": 1773219945973,
       "tag": "0025_worthless_old_lace",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1773258025287,
+      "tag": "0026_known_blue_blade",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1773258112498,
+      "tag": "0027_cooing_rattler",
+      "breakpoints": true
     }
   ]
 }

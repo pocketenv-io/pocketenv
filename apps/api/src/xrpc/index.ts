@@ -29,6 +29,11 @@ import getSshKeys from "./io/pocketenv/sandbox/getSshKeys";
 import getTailscaleAuthKey from "./io/pocketenv/sandbox/getTailscaleAuthKey";
 import putSshKeys from "./io/pocketenv/sandbox/putSshKeys";
 import putTailscaleAuthKey from "./io/pocketenv/sandbox/putTailscaleAuthKey";
+import getFile from "./io/pocketenv/file/getFile";
+import getSecret from "./io/pocketenv/secret/getSecret";
+import getVariable from "./io/pocketenv/variable/getVariable";
+import getVolume from "./io/pocketenv/volume/getVolume";
+import deleteVariable from "./io/pocketenv/variable/deleteVariable";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
@@ -61,6 +66,14 @@ export default function (server: Server, ctx: Context) {
   getTailscaleAuthKey(server, ctx);
   putSshKeys(server, ctx);
   putTailscaleAuthKey(server, ctx);
+  getFile(server, ctx);
+  getSecret(server, ctx);
+  getVariable(server, ctx);
+  getVolume(server, ctx);
+  deleteFile(server, ctx);
+  deleteSecret(server, ctx);
+  deleteVolume(server, ctx);
+  deleteVariable(server, ctx);
 
   return server;
 }

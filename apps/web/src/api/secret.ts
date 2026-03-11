@@ -19,7 +19,10 @@ export const addSecret = (sandboxId: string, name: string, value: string) =>
   );
 
 export const deleteSecret = (id: string) =>
-  client.post(`/xrpc/io.pocketenv.secret.deleteSecret?id=${id}`, undefined, {
+  client.post(`/xrpc/io.pocketenv.secret.deleteSecret`, undefined, {
+    params: {
+      id,
+    },
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -38,3 +41,13 @@ export const getSecrets = (
       },
     },
   );
+
+export const getSecret = (id: string) =>
+  client.get<{ secret: Secret }>(`/xrpc/io.pocketenv.secret.getSecret`, {
+    params: {
+      id,
+    },
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });

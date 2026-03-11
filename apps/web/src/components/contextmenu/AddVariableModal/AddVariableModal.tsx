@@ -3,7 +3,10 @@ import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAddVariableMutation } from "../../../hooks/useVariable";
+import {
+  useAddVariableMutation,
+  useVariableQuery,
+} from "../../../hooks/useVariable";
 import { useNotyf } from "../../../hooks/useNotyf";
 
 const UPPER_SNAKE_CASE_REGEX = /^[A-Z][A-Z0-9_]*$/;
@@ -37,6 +40,8 @@ function AddEnvironmentVariableModal({
   const [isLoading, setIsLoading] = useState(false);
   const notyf = useNotyf();
   const { mutateAsync: addVariable } = useAddVariableMutation();
+  const { data } = useVariableQuery(variableId!);
+
   const {
     register,
     handleSubmit,
@@ -54,6 +59,13 @@ function AddEnvironmentVariableModal({
       .replace(/[^A-Z0-9_]/g, "");
     setValue("name", transformed, { shouldValidate: true });
   };
+
+  useEffect(() => {
+    if (data) {
+      setValue("name", data.variable.name);
+      setValue("value", data.variable.value);
+    }
+  }, [data, setValue]);
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {

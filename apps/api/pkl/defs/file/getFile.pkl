@@ -1,0 +1,30 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.file.getFile"
+defs = new Mapping<String, Query> {
+  ["main"] {
+    type = "query"
+    parameters {
+      type = "params"
+      required = List("id")
+      properties {
+        ["id"] = new StringType {
+          type = "string"
+          description = "The ID of the file to retrieve."
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        properties {
+          ["file"] = new Ref {
+            ref = "io.pocketenv.file.defs#fileView"
+          }
+        }
+      }
+    }
+  }
+}

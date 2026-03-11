@@ -7,6 +7,7 @@ export type ConfirmDeleteModalProps = {
   onConfirm: () => Promise<void>;
   subject: string;
   title?: string;
+  subjectId?: string;
 };
 
 function ConfirmDeleteModal({
@@ -15,6 +16,7 @@ function ConfirmDeleteModal({
   onConfirm,
   subject,
   title,
+  subjectId,
 }: ConfirmDeleteModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -87,7 +89,10 @@ function ConfirmDeleteModal({
               <p className="font-semibold text-center">
                 Are you sure you want to delete this {subject}?
               </p>
-              <p className="text-center ">This action cannot be undone.</p>
+              <p className="text-center">This action cannot be undone.</p>
+              {subjectId && (
+                <p className="font-semibold text-center">'{subjectId}'</p>
+              )}
             </div>
             <div className="modal-footer">
               <button

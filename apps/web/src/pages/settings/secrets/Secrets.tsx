@@ -5,10 +5,14 @@ import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
 import AddSecretModal from "../../../components/contextmenu/AddSecretModal";
 import { useState } from "react";
-import { useSecretsQuery } from "../../../hooks/useSecret";
+import {
+  useDeleteSecretMutation,
+  useSecretsQuery,
+} from "../../../hooks/useSecret";
 import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
 import ConfirmDelete from "../../../components/confirmdelete/ConfirmDelete";
+import { set } from "react-hook-form";
 
 const PAGE_SIZE = 12;
 const SKELETON_ROWS = 8;
@@ -34,6 +38,9 @@ const SecretRowSkeleton = ({ index }: { index: number }) => (
 
 function Secrets() {
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [selectedSecret, setSelectedSecret] = useState<string | undefined>(
+    undefined,
+  );
   const [selectedSecretId, setSelectedSecretId] = useState<string | undefined>(
     undefined,
   );
@@ -43,6 +50,7 @@ function Secrets() {
 
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
+  const { mutateAsync: deleteSecret } = useDeleteSecretMutation();
   const { data } = useSandboxQuery(
     `at:/${pathname.replace("/secrets", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
@@ -58,7 +66,12 @@ function Secrets() {
     setCurrentPage(page);
   };
 
-  const handleConfirmDelete = async () => {};
+  const handleConfirmDelete = async () => {
+    await deleteSecret(selectedSecretId!);
+    setSelectedSecret(undefined);
+    setSelectedSecretId(undefined);
+    setConfirmDeleteOpen(false);
+  };
 
   return (
     <Main
@@ -127,7 +140,11 @@ function Secrets() {
                             </button>
                             <button
                               className="btn btn-outline join-item"
-                              onClick={() => setConfirmDeleteOpen(true)}
+                              onClick={() => {
+                                setSelectedSecret(secret.name);
+                                setSelectedSecretId(secret.id);
+                                setConfirmDeleteOpen(true);
+                              }}
                             >
                               Delete
                             </button>
@@ -163,6 +180,7 @@ function Secrets() {
           onConfirm={handleConfirmDelete}
           subject={"secret"}
           title={"secret?"}
+          subjectId={selectedSecret}
         />
       </>
     </Main>

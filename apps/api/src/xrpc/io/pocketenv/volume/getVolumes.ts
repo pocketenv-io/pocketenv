@@ -28,8 +28,8 @@ export default function (server: Server, ctx: Context) {
       Effect.retry({ times: 3 }),
       Effect.timeout("10 seconds"),
       Effect.catchAll((err) => {
-        consola.error("Error retrieving files:", err);
-        return Effect.succeed({ sandboxes: [] });
+        consola.error("Error retrieving volumes:", err);
+        return Effect.succeed({ volumes: [] });
       }),
     );
   };
@@ -123,24 +123,24 @@ const retrieve = ({
           .then((result) => result[0]?.count ?? 0),
       ]),
     catch: (error) => {
-      consola.error("Error retrieving files:", error);
+      consola.error("Error retrieving volumes:", error);
       throw new XRPCError(
         500,
-        `Failed to retrieve files: ${error instanceof Error ? error.message : String(error)}`,
+        `Failed to retrieve volumes: ${error instanceof Error ? error.message : String(error)}`,
       );
     },
   });
 };
 
-const presentation = ([volumes, metadata, total]: [
+const presentation = ([volumes, , total]: [
   SelectSandboxVolume[],
   (SelectVolume | null)[],
   number,
 ]): Effect.Effect<OutputSchema, never> => {
   return Effect.sync(() => ({
-    volumes: volumes.map((volume, index) => ({
+    volumes: volumes.map((volume) => ({
       id: volume.id,
-      name: metadata[index]?.slug,
+      name: volume.name!,
       path: volume.path,
       createdAt: volume.createdAt.toISOString(),
       updatedAt: volume.updatedAt.toISOString(),

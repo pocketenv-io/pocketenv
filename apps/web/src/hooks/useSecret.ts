@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addSecret, deleteSecret, getSecrets } from "../api/secret";
+import { addSecret, deleteSecret, getSecret, getSecrets } from "../api/secret";
 
 export const useAddSecretMutation = () => {
   const queryClient = useQueryClient();
@@ -40,4 +40,12 @@ export const useSecretsQuery = (
     queryKey: ["secrets", sandboxId, offset, limit],
     queryFn: () => getSecrets(sandboxId, offset, limit),
     select: (response) => response.data,
+  });
+
+export const useSecretQuery = (id: string) =>
+  useQuery({
+    queryKey: ["secret", id],
+    queryFn: () => getSecret(id),
+    select: (response) => response.data,
+    enabled: !!id,
   });

@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAddVolumeMutation } from "../../../hooks/useVolume";
+import { useAddVolumeMutation, useVolumeQuery } from "../../../hooks/useVolume";
 import { useNotyf } from "../../../hooks/useNotyf";
 
 const schema = z.object({
@@ -29,14 +29,23 @@ function AddVolumeModal({
   const notyf = useNotyf();
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: addVolume } = useAddVolumeMutation();
+  const { data } = useVolumeQuery(volumeId!);
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
+
+  useEffect(() => {
+    if (data) {
+      setValue("name", data.volume.name);
+      setValue("path", data.volume.path);
+    }
+  }, [data, setValue]);
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {

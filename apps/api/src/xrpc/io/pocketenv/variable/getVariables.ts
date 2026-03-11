@@ -27,7 +27,7 @@ export default function (server: Server, ctx: Context) {
       Effect.timeout("10 seconds"),
       Effect.catchAll((err) => {
         consola.error("Error retrieving variables:", err);
-        return Effect.succeed({ sandboxes: [] });
+        return Effect.succeed({ variables: [] });
       }),
     );
   };

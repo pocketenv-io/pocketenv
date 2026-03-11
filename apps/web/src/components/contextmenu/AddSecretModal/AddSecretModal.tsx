@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAddSecretMutation } from "../../../hooks/useSecret";
+import { useAddSecretMutation, useSecretQuery } from "../../../hooks/useSecret";
 import { useSodium } from "../../../hooks/useSodium";
 import { PUBLIC_KEY } from "../../../consts";
 import { useNotyf } from "../../../hooks/useNotyf";
@@ -40,6 +40,7 @@ function AddSecretModal({
   const notyf = useNotyf();
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: addSecret } = useAddSecretMutation();
+  const { data } = useSecretQuery(secretId!);
   const {
     register,
     handleSubmit,
@@ -57,6 +58,12 @@ function AddSecretModal({
       .replace(/[^A-Z0-9_]/g, "");
     setValue("name", transformed, { shouldValidate: true });
   };
+
+  useEffect(() => {
+    if (data) {
+      setValue("name", data.secret?.name);
+    }
+  }, [data, setValue]);
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {

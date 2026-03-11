@@ -5,10 +5,14 @@ import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
 import AddVariableModal from "../../../components/contextmenu/AddVariableModal";
 import { useState } from "react";
-import { useVariablesQuery } from "../../../hooks/useVariable";
+import {
+  useDeleteVariableMutation,
+  useVariablesQuery,
+} from "../../../hooks/useVariable";
 import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
 import ConfirmDelete from "../../../components/confirmdelete";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PAGE_SIZE = 10;
 const SKELETON_ROWS = 8;
@@ -35,7 +39,12 @@ const VariableRowSkeleton = ({ index }: { index: number }) => (
 );
 
 function Variables() {
+  const queryClient = useQueryClient();
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const { mutateAsync: deleteVariable } = useDeleteVariableMutation();
+  const [selectedVariable, setSelectedVariable] = useState<string | undefined>(
+    undefined,
+  );
   const [selectedVariableId, setSelectedVariableId] = useState<
     string | undefined
   >(undefined);
@@ -62,7 +71,15 @@ function Variables() {
     setCurrentPage(page);
   };
 
-  const handleConfirmDelete = async () => {};
+  const handleConfirmDelete = async () => {
+    await deleteVariable(selectedVariableId!);
+    queryClient.invalidateQueries({
+      queryKey: ["variables"],
+    });
+    setConfirmDeleteOpen(false);
+    setSelectedVariableId(undefined);
+    setSelectedVariable(undefined);
+  };
 
   return (
     <Main
@@ -134,7 +151,11 @@ function Variables() {
                             </button>
                             <button
                               className="btn btn-outline join-item"
-                              onClick={() => setConfirmDeleteOpen(true)}
+                              onClick={() => {
+                                setSelectedVariableId(variable.id);
+                                setSelectedVariable(variable.name);
+                                setConfirmDeleteOpen(true);
+                              }}
                             >
                               Delete
                             </button>
@@ -170,6 +191,7 @@ function Variables() {
           onConfirm={handleConfirmDelete}
           subject={"variable"}
           title={"variable?"}
+          subjectId={selectedVariable}
         />
       </>
     </Main>

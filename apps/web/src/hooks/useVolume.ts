@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addVolume, deleteVolume, getVolumes } from "../api/volume";
+import { addVolume, deleteVolume, getVolume, getVolumes } from "../api/volume";
 
 export const useAddVolumeMutation = () => {
   const queryClient = useQueryClient();
@@ -38,4 +38,12 @@ export const useVolumesQuery = (
     queryKey: ["volumes", sandboxId, offset, limit],
     queryFn: async () => getVolumes(sandboxId, offset, limit),
     select: (response) => response.data,
+  });
+
+export const useVolumeQuery = (id: string) =>
+  useQuery({
+    queryKey: ["volume", id],
+    queryFn: () => getVolume(id),
+    select: (response) => response.data,
+    enabled: !!id,
   });

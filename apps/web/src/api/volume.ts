@@ -19,7 +19,10 @@ export const addVolume = (sandboxId: string, name: string, path: string) =>
   );
 
 export const deleteVolume = (id: string) =>
-  client.post(`/xrpc/io.pocketenv.volume.deleteVolume?id=${id}`, undefined, {
+  client.post(`/xrpc/io.pocketenv.volume.deleteVolume`, undefined, {
+    params: {
+      id,
+    },
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -31,10 +34,25 @@ export const getVolumes = (
   limit?: number,
 ) =>
   client.get<{ volumes: Volume[]; total: number }>(
-    `/xrpc/io.pocketenv.volume.getVolumes${sandboxId ? `?sandboxId=${sandboxId}` : ""}&offset=${offset ?? 0}&limit=${limit ?? 30}`,
+    `/xrpc/io.pocketenv.volume.getVolumes`,
     {
+      params: {
+        sandboxId,
+        offset: offset ?? 0,
+        limit: limit ?? 30,
+      },
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     },
   );
+
+export const getVolume = (id: string) =>
+  client.get<{ volume: Volume }>(`/xrpc/io.pocketenv.volume.getVolume`, {
+    params: {
+      id,
+    },
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });

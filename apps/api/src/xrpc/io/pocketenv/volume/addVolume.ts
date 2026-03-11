@@ -62,6 +62,7 @@ export default function (server: Server, ctx: Context) {
           volumeId: volume.id,
           sandboxId: input.body.volume.sandboxId,
           path: input.body.volume.path,
+          name: input.body.volume.name,
         })
         .execute();
     });

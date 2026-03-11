@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAddFileMutation } from "../../../hooks/useFile";
+import { useAddFileMutation, useFileQuery } from "../../../hooks/useFile";
 import { useSodium } from "../../../hooks/useSodium";
 import { PUBLIC_KEY } from "../../../consts";
 import { useNotyf } from "../../../hooks/useNotyf";
@@ -32,6 +32,7 @@ function AddFileModal({
   const notyf = useNotyf();
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: addFile } = useAddFileMutation();
+  const { data } = useFileQuery(fileId!);
   const {
     register,
     handleSubmit,
@@ -40,6 +41,12 @@ function AddFileModal({
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
+
+  useEffect(() => {
+    if (data) {
+      reset({ path: data.file.path });
+    }
+  }, [data, reset]);
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {

@@ -5,10 +5,11 @@ import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
 import AddFileModal from "../../../components/contextmenu/AddFileModal";
 import { useState } from "react";
-import { useFilesQuery } from "../../../hooks/useFile";
+import { useDeleteFileMutation, useFilesQuery } from "../../../hooks/useFile";
 import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
 import ConfirmDelete from "../../../components/confirmdelete";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PAGE_SIZE = 12;
 const SKELETON_ROWS = 8;
@@ -33,7 +34,12 @@ const FileRowSkeleton = ({ index }: { index: number }) => (
 );
 
 function Files() {
+  const queryClient = useQueryClient();
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<string | undefined>(
+    undefined,
+  );
+  const { mutateAsync: deleteFile } = useDeleteFileMutation();
   const [selectedFileId, setSelectedFileId] = useState<string | undefined>(
     undefined,
   );
@@ -58,7 +64,10 @@ function Files() {
     setCurrentPage(page);
   };
 
-  const handleConfirmDelete = async () => {};
+  const handleConfirmDelete = async () => {
+    await deleteFile(selectedFileId!);
+    queryClient.invalidateQueries({ queryKey: ["files"] });
+  };
 
   return (
     <Main
@@ -122,7 +131,11 @@ function Files() {
                             </button>
                             <button
                               className="btn btn-outline join-item"
-                              onClick={() => setConfirmDeleteOpen(true)}
+                              onClick={() => {
+                                setSelectedFileId(file.id);
+                                setSelectedFile(file.path);
+                                setConfirmDeleteOpen(true);
+                              }}
                             >
                               Delete
                             </button>
@@ -158,6 +171,7 @@ function Files() {
           onConfirm={handleConfirmDelete}
           subject={"file"}
           title={"file?"}
+          subjectId={selectedFile}
         />
       </>
     </Main>

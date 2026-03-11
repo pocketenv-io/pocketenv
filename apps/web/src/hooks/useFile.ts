@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addFile, deleteFile, getFiles } from "../api/file";
+import { addFile, deleteFile, getFile, getFiles } from "../api/file";
 
 export const useAddFileMutation = () => {
   const queryClient = useQueryClient();
@@ -40,4 +40,12 @@ export const useFilesQuery = (
     queryKey: ["files", sandboxId, offset, limit],
     queryFn: () => getFiles(sandboxId, offset, limit),
     select: (response) => response.data,
+  });
+
+export const useFileQuery = (id: string) =>
+  useQuery({
+    queryKey: ["file", id],
+    queryFn: () => getFile(id),
+    select: (response) => response.data,
+    enabled: !!id,
   });

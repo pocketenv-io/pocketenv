@@ -1,46 +1,46 @@
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
-import { type LexiconDoc, Lexicons } from '@atproto/lexicon'
+import { type LexiconDoc, Lexicons } from "@atproto/lexicon";
 
 export const schemaDict = {
   IoPocketenvActorDefs: {
     lexicon: 1,
-    id: 'io.pocketenv.actor.defs',
+    id: "io.pocketenv.actor.defs",
     defs: {
       profileViewDetailed: {
-        type: 'object',
+        type: "object",
         properties: {
           id: {
-            type: 'string',
-            description: 'The unique identifier of the actor.',
+            type: "string",
+            description: "The unique identifier of the actor.",
           },
           did: {
-            type: 'string',
-            description: 'The DID of the actor.',
+            type: "string",
+            description: "The DID of the actor.",
           },
           handle: {
-            type: 'string',
-            description: 'The handle of the actor.',
+            type: "string",
+            description: "The handle of the actor.",
           },
           displayName: {
-            type: 'string',
-            description: 'The display name of the actor.',
+            type: "string",
+            description: "The display name of the actor.",
           },
           avatar: {
-            type: 'string',
+            type: "string",
             description: "The URL of the actor's avatar image.",
-            format: 'uri',
+            format: "uri",
           },
           createdAt: {
-            type: 'string',
-            description: 'The date and time when the actor was created.',
-            format: 'datetime',
+            type: "string",
+            description: "The date and time when the actor was created.",
+            format: "datetime",
           },
           updatedAt: {
-            type: 'string',
-            description: 'The date and time when the actor was last updated.',
-            format: 'datetime',
+            type: "string",
+            description: "The date and time when the actor was last updated.",
+            format: "datetime",
           },
         },
       },
@@ -48,48 +48,48 @@ export const schemaDict = {
   },
   IoPocketenvActorGetActorSandboxes: {
     lexicon: 1,
-    id: 'io.pocketenv.actor.getActorSandboxes',
+    id: "io.pocketenv.actor.getActorSandboxes",
     defs: {
       main: {
-        type: 'query',
-        description: 'Get all sandboxes for a given actor',
+        type: "query",
+        description: "Get all sandboxes for a given actor",
         parameters: {
-          type: 'params',
-          required: ['did'],
+          type: "params",
+          required: ["did"],
           properties: {
             did: {
-              type: 'string',
-              description: 'The DID or handle of the actor',
-              format: 'at-identifier',
+              type: "string",
+              description: "The DID or handle of the actor",
+              format: "at-identifier",
             },
             limit: {
-              type: 'integer',
-              description: 'The maximum number of sandboxes to return.',
+              type: "integer",
+              description: "The maximum number of sandboxes to return.",
               minimum: 1,
             },
             offset: {
-              type: 'integer',
+              type: "integer",
               description:
-                'The number of sandboxes to skip before starting to collect the result set.',
+                "The number of sandboxes to skip before starting to collect the result set.",
               minimum: 0,
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
+            type: "object",
             properties: {
               sandboxes: {
-                type: 'array',
+                type: "array",
                 items: {
-                  type: 'ref',
-                  ref: 'lex:io.pocketenv.sandbox.defs#sandboxViewDetailed',
+                  type: "ref",
+                  ref: "lex:io.pocketenv.sandbox.defs#sandboxViewDetailed",
                 },
               },
               total: {
-                type: 'integer',
-                description: 'The total number of sandboxes available.',
+                type: "integer",
+                description: "The total number of sandboxes available.",
                 minimum: 0,
               },
             },
@@ -100,26 +100,26 @@ export const schemaDict = {
   },
   IoPocketenvActorGetProfile: {
     lexicon: 1,
-    id: 'io.pocketenv.actor.getProfile',
+    id: "io.pocketenv.actor.getProfile",
     defs: {
       main: {
-        type: 'query',
-        description: 'Get the profile of an actor',
+        type: "query",
+        description: "Get the profile of an actor",
         parameters: {
-          type: 'params',
+          type: "params",
           properties: {
             did: {
-              type: 'string',
-              description: 'The DID or handle of the actor',
-              format: 'at-identifier',
+              type: "string",
+              description: "The DID or handle of the actor",
+              format: "at-identifier",
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.actor.defs#profileViewDetailed',
+            type: "ref",
+            ref: "lex:io.pocketenv.actor.defs#profileViewDetailed",
           },
         },
       },
@@ -127,24 +127,24 @@ export const schemaDict = {
   },
   IoPocketenvActorGetTerminalToken: {
     lexicon: 1,
-    id: 'io.pocketenv.actor.getTerminalToken',
+    id: "io.pocketenv.actor.getTerminalToken",
     defs: {
       main: {
-        type: 'query',
-        description: 'Get a terminal token',
+        type: "query",
+        description: "Get a terminal token",
         parameters: {
-          type: 'params',
+          type: "params",
           properties: {},
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
+            type: "object",
             properties: {
               token: {
-                type: 'string',
+                type: "string",
                 description:
-                  'An access token that can be used to authenticate with the terminal service. This token is typically short-lived and should be used immediately to establish a connection with the terminal.',
+                  "An access token that can be used to authenticate with the terminal service. This token is typically short-lived and should be used immediately to establish a connection with the terminal.",
               },
             },
           },
@@ -154,53 +154,53 @@ export const schemaDict = {
   },
   AppBskyActorProfile: {
     lexicon: 1,
-    id: 'app.bsky.actor.profile',
+    id: "app.bsky.actor.profile",
     defs: {
       main: {
-        type: 'record',
-        description: 'A declaration of a Bluesky account profile.',
-        key: 'literal:self',
+        type: "record",
+        description: "A declaration of a Bluesky account profile.",
+        key: "literal:self",
         record: {
-          type: 'object',
+          type: "object",
           properties: {
             displayName: {
-              type: 'string',
+              type: "string",
               maxGraphemes: 64,
               maxLength: 640,
             },
             description: {
-              type: 'string',
-              description: 'Free-form profile description text.',
+              type: "string",
+              description: "Free-form profile description text.",
               maxGraphemes: 256,
               maxLength: 2560,
             },
             avatar: {
-              type: 'blob',
+              type: "blob",
               description:
                 "Small image to be displayed next to posts from account. AKA, 'profile picture'",
-              accept: ['image/png', 'image/jpeg'],
+              accept: ["image/png", "image/jpeg"],
               maxSize: 1000000,
             },
             banner: {
-              type: 'blob',
+              type: "blob",
               description:
-                'Larger horizontal image to display behind profile view.',
-              accept: ['image/png', 'image/jpeg'],
+                "Larger horizontal image to display behind profile view.",
+              accept: ["image/png", "image/jpeg"],
               maxSize: 10000000,
             },
             labels: {
-              type: 'union',
+              type: "union",
               description:
-                'Self-label values, specific to the Bluesky application, on the overall account.',
-              refs: ['lex:com.atproto.label.defs#selfLabels'],
+                "Self-label values, specific to the Bluesky application, on the overall account.",
+              refs: ["lex:com.atproto.label.defs#selfLabels"],
             },
             joinedViaStarterPack: {
-              type: 'ref',
-              ref: 'lex:com.atproto.repo.strongRef',
+              type: "ref",
+              ref: "lex:com.atproto.repo.strongRef",
             },
             createdAt: {
-              type: 'string',
-              format: 'datetime',
+              type: "string",
+              format: "datetime",
             },
           },
         },
@@ -209,19 +209,19 @@ export const schemaDict = {
   },
   IoPocketenvFileAddFile: {
     lexicon: 1,
-    id: 'io.pocketenv.file.addFile',
+    id: "io.pocketenv.file.addFile",
     defs: {
       main: {
-        type: 'procedure',
+        type: "procedure",
         input: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
-            required: ['file'],
+            type: "object",
+            required: ["file"],
             properties: {
               file: {
-                type: 'ref',
-                ref: 'lex:io.pocketenv.file.defs#file',
+                type: "ref",
+                ref: "lex:io.pocketenv.file.defs#file",
               },
             },
           },
@@ -231,76 +231,107 @@ export const schemaDict = {
   },
   IoPocketenvFileDefs: {
     lexicon: 1,
-    id: 'io.pocketenv.file.defs',
+    id: "io.pocketenv.file.defs",
     defs: {
       file: {
-        type: 'object',
-        required: ['path', 'content'],
+        type: "object",
+        required: ["path", "content"],
         properties: {
           sandboxId: {
-            type: 'string',
+            type: "string",
             description:
-              'The ID of the sandbox to which the file belongs. This is used to associate the file with a specific sandbox environment.',
+              "The ID of the sandbox to which the file belongs. This is used to associate the file with a specific sandbox environment.",
           },
           path: {
-            type: 'string',
+            type: "string",
             description:
               "The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc.",
           },
           content: {
-            type: 'string',
+            type: "string",
             description:
               "The content of the file. This will be written to the specified path within the sandbox. The content should be base64 encoded if it's binary data.",
           },
         },
       },
       fileView: {
-        type: 'object',
+        type: "object",
         properties: {
           id: {
-            type: 'string',
-            description: 'Unique identifier of the file.',
+            type: "string",
+            description: "Unique identifier of the file.",
           },
           path: {
-            type: 'string',
+            type: "string",
             description:
               "The file path within the sandbox, e.g. '/app/config.json', '/home/user/.ssh/id_rsa', etc.",
           },
           createdAt: {
-            type: 'string',
-            description: 'The timestamp when the file was created.',
-            format: 'datetime',
+            type: "string",
+            description: "The timestamp when the file was created.",
+            format: "datetime",
           },
           updatedAt: {
-            type: 'string',
-            description: 'The timestamp when the file was last updated.',
-            format: 'datetime',
+            type: "string",
+            description: "The timestamp when the file was last updated.",
+            format: "datetime",
           },
         },
       },
       files: {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'ref',
-          description: 'A file to add to the sandbox',
-          ref: 'lex:io.pocketenv.file.defs#file',
+          type: "ref",
+          description: "A file to add to the sandbox",
+          ref: "lex:io.pocketenv.file.defs#file",
         },
       },
     },
   },
   IoPocketenvFileDeleteFile: {
     lexicon: 1,
-    id: 'io.pocketenv.file.deleteFile',
+    id: "io.pocketenv.file.deleteFile",
     defs: {
       main: {
-        type: 'procedure',
+        type: "procedure",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The ID of the file to delete',
+              type: "string",
+              description: "The ID of the file to delete",
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvFileGetFile: {
+    lexicon: 1,
+    id: "io.pocketenv.file.getFile",
+    defs: {
+      main: {
+        type: "query",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The ID of the file to retrieve.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              file: {
+                type: "ref",
+                ref: "lex:io.pocketenv.file.defs#fileView",
+              },
             },
           },
         },
@@ -309,45 +340,45 @@ export const schemaDict = {
   },
   IoPocketenvFileGetFiles: {
     lexicon: 1,
-    id: 'io.pocketenv.file.getFiles',
+    id: "io.pocketenv.file.getFiles",
     defs: {
       main: {
-        type: 'query',
+        type: "query",
         parameters: {
-          type: 'params',
+          type: "params",
           properties: {
             sandboxId: {
-              type: 'string',
-              description: 'The ID of the sandbox for which to retrieve files.',
+              type: "string",
+              description: "The ID of the sandbox for which to retrieve files.",
             },
             limit: {
-              type: 'integer',
-              description: 'The maximum number of files to return.',
+              type: "integer",
+              description: "The maximum number of files to return.",
               minimum: 1,
             },
             offset: {
-              type: 'integer',
+              type: "integer",
               description:
-                'The number of files to skip before starting to collect the result set.',
+                "The number of files to skip before starting to collect the result set.",
               minimum: 0,
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
+            type: "object",
             properties: {
               files: {
-                type: 'array',
+                type: "array",
                 items: {
-                  type: 'ref',
-                  ref: 'lex:io.pocketenv.file.defs#fileView',
+                  type: "ref",
+                  ref: "lex:io.pocketenv.file.defs#fileView",
                 },
               },
               total: {
-                type: 'integer',
-                description: 'The total number of files available.',
+                type: "integer",
+                description: "The total number of files available.",
                 minimum: 0,
               },
             },
@@ -358,26 +389,26 @@ export const schemaDict = {
   },
   IoPocketenvSandboxClaimSandbox: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.claimSandbox',
+    id: "io.pocketenv.sandbox.claimSandbox",
     defs: {
       main: {
-        type: 'procedure',
-        description: 'Claim a sandbox by id',
+        type: "procedure",
+        description: "Claim a sandbox by id",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The sandbox ID.',
+              type: "string",
+              description: "The sandbox ID.",
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#sandboxViewBasic',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
           },
         },
       },
@@ -385,33 +416,33 @@ export const schemaDict = {
   },
   IoPocketenvSandboxCreateIntegration: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.createIntegration',
+    id: "io.pocketenv.sandbox.createIntegration",
     defs: {
       main: {
-        type: 'procedure',
-        description: 'Create a new integration for the sandbox.',
+        type: "procedure",
+        description: "Create a new integration for the sandbox.",
         input: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
-            required: ['id', 'name'],
+            type: "object",
+            required: ["id", "name"],
             properties: {
               id: {
-                type: 'string',
-                description: 'The sandbox ID.',
+                type: "string",
+                description: "The sandbox ID.",
               },
               name: {
-                type: 'string',
-                description: 'The name of the integration.',
+                type: "string",
+                description: "The name of the integration.",
               },
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#integrationView',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#integrationView",
           },
         },
       },
@@ -419,94 +450,94 @@ export const schemaDict = {
   },
   IoPocketenvSandboxCreateSandbox: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.createSandbox',
+    id: "io.pocketenv.sandbox.createSandbox",
     defs: {
       main: {
-        type: 'procedure',
-        description: 'Create a sandbox',
+        type: "procedure",
+        description: "Create a sandbox",
         input: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
-            required: ['base'],
+            type: "object",
+            required: ["base"],
             properties: {
               base: {
-                type: 'string',
+                type: "string",
                 description:
-                  'The base sandbox URI to clone from, e.g. a template or an existing sandbox.',
+                  "The base sandbox URI to clone from, e.g. a template or an existing sandbox.",
               },
               name: {
-                type: 'string',
-                description: 'The name of the sandbox',
+                type: "string",
+                description: "The name of the sandbox",
                 minLength: 1,
               },
               description: {
-                type: 'string',
-                description: 'A description for the sandbox',
+                type: "string",
+                description: "A description for the sandbox",
               },
               provider: {
-                type: 'string',
+                type: "string",
                 description:
                   "The provider to create the sandbox on, e.g. 'daytona', 'vercel', 'cloudflare', etc.",
-                enum: ['daytona', 'vercel', 'cloudflare', 'deno'],
+                enum: ["daytona", "vercel", "cloudflare", "deno"],
               },
               topics: {
-                type: 'array',
+                type: "array",
                 description:
-                  'A list of topics/tags to associate with the sandbox',
+                  "A list of topics/tags to associate with the sandbox",
                 items: {
-                  type: 'string',
+                  type: "string",
                   maxLength: 50,
                 },
               },
               repo: {
-                type: 'string',
+                type: "string",
                 description:
-                  'A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.',
-                format: 'uri',
+                  "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+                format: "uri",
               },
               vcpus: {
-                type: 'integer',
+                type: "integer",
                 description:
-                  'The number of virtual CPUs to allocate for the sandbox',
+                  "The number of virtual CPUs to allocate for the sandbox",
                 minimum: 1,
               },
               memory: {
-                type: 'integer',
+                type: "integer",
                 description:
-                  'The amount of memory (in GB) to allocate for the sandbox',
+                  "The amount of memory (in GB) to allocate for the sandbox",
                 minimum: 1,
               },
               disk: {
-                type: 'integer',
+                type: "integer",
                 description:
-                  'The amount of disk space (in GB) to allocate for the sandbox',
+                  "The amount of disk space (in GB) to allocate for the sandbox",
                 minimum: 3,
               },
               readme: {
-                type: 'string',
-                description: 'A URI to a README for the sandbox.',
-                format: 'uri',
+                type: "string",
+                description: "A URI to a README for the sandbox.",
+                format: "uri",
               },
               secrets: {
-                type: 'ref',
-                description: 'A list of secrets to add to the sandbox',
-                ref: 'lex:io.pocketenv.sandbox.defs#secrets',
+                type: "ref",
+                description: "A list of secrets to add to the sandbox",
+                ref: "lex:io.pocketenv.sandbox.defs#secrets",
               },
               envs: {
-                type: 'ref',
+                type: "ref",
                 description:
-                  'A list of environment variables to add to the sandbox',
-                ref: 'lex:io.pocketenv.sandbox.defs#envs',
+                  "A list of environment variables to add to the sandbox",
+                ref: "lex:io.pocketenv.sandbox.defs#envs",
               },
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#sandboxViewBasic',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
           },
         },
       },
@@ -514,451 +545,451 @@ export const schemaDict = {
   },
   IoPocketenvSandboxDefs: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.defs',
+    id: "io.pocketenv.sandbox.defs",
     defs: {
       sandboxViewBasic: {
-        type: 'object',
+        type: "object",
         properties: {
           name: {
-            type: 'string',
-            description: 'Name of the sandbox',
+            type: "string",
+            description: "Name of the sandbox",
             maxLength: 50,
           },
           provider: {
-            type: 'string',
+            type: "string",
             description:
               "The provider of the sandbox, e.g. 'daytona', 'vercel', 'cloudflare', etc.",
             maxLength: 50,
           },
           description: {
-            type: 'string',
+            type: "string",
             maxGraphemes: 300,
             maxLength: 3000,
           },
           website: {
-            type: 'string',
-            description: 'Any URI related to the sandbox',
-            format: 'uri',
+            type: "string",
+            description: "Any URI related to the sandbox",
+            format: "uri",
           },
           logo: {
-            type: 'string',
-            description: 'URI to an image logo for the sandbox',
-            format: 'uri',
+            type: "string",
+            description: "URI to an image logo for the sandbox",
+            format: "uri",
           },
           topics: {
-            type: 'array',
+            type: "array",
             items: {
-              type: 'string',
+              type: "string",
               minLength: 1,
               maxLength: 50,
             },
             maxLength: 50,
           },
           repo: {
-            type: 'string',
+            type: "string",
             description:
-              'A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.',
-            format: 'uri',
+              "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+            format: "uri",
           },
           readme: {
-            type: 'string',
-            description: 'A URI to a README for the sandbox.',
-            format: 'uri',
+            type: "string",
+            description: "A URI to a README for the sandbox.",
+            format: "uri",
           },
           vcpus: {
-            type: 'integer',
-            description: 'Number of virtual CPUs allocated to the sandbox',
+            type: "integer",
+            description: "Number of virtual CPUs allocated to the sandbox",
           },
           memory: {
-            type: 'integer',
-            description: 'Amount of memory in GB allocated to the sandbox',
+            type: "integer",
+            description: "Amount of memory in GB allocated to the sandbox",
           },
           disk: {
-            type: 'integer',
-            description: 'Amount of disk space in GB allocated to the sandbox',
+            type: "integer",
+            description: "Amount of disk space in GB allocated to the sandbox",
           },
           ports: {
-            type: 'array',
+            type: "array",
             items: {
-              type: 'integer',
+              type: "integer",
               maximum: 65535,
               minimum: 1,
             },
             maxLength: 100,
           },
           installs: {
-            type: 'integer',
+            type: "integer",
             description:
-              'Number of times the sandbox has been installed by users.',
+              "Number of times the sandbox has been installed by users.",
           },
           createdAt: {
-            type: 'string',
-            format: 'datetime',
+            type: "string",
+            format: "datetime",
           },
         },
       },
       sandboxViewDetailed: {
-        type: 'object',
+        type: "object",
         properties: {
           name: {
-            type: 'string',
-            description: 'Name of the sandbox',
+            type: "string",
+            description: "Name of the sandbox",
             maxLength: 50,
           },
           provider: {
-            type: 'string',
+            type: "string",
             description:
               "The provider of the sandbox, e.g. 'daytona', 'vercel', 'cloudflare', etc.",
             maxLength: 50,
           },
           description: {
-            type: 'string',
+            type: "string",
             maxGraphemes: 300,
             maxLength: 3000,
           },
           status: {
-            type: 'string',
+            type: "string",
             description:
               "The current status of the sandbox, e.g. 'RUNNING', 'STOPPED', etc.",
           },
           startedAt: {
-            type: 'string',
-            format: 'datetime',
+            type: "string",
+            format: "datetime",
           },
           timeout: {
-            type: 'integer',
-            description: 'The sandbox timeout in seconds',
+            type: "integer",
+            description: "The sandbox timeout in seconds",
           },
           baseSandbox: {
-            type: 'string',
+            type: "string",
             description:
-              'The base sandbox that this sandbox was created from, if any. This can be used to determine the template or configuration used to create the sandbox.',
+              "The base sandbox that this sandbox was created from, if any. This can be used to determine the template or configuration used to create the sandbox.",
           },
           website: {
-            type: 'string',
-            description: 'Any URI related to the sandbox',
-            format: 'uri',
+            type: "string",
+            description: "Any URI related to the sandbox",
+            format: "uri",
           },
           logo: {
-            type: 'string',
-            description: 'URI to an image logo for the sandbox',
-            format: 'uri',
+            type: "string",
+            description: "URI to an image logo for the sandbox",
+            format: "uri",
           },
           topics: {
-            type: 'array',
+            type: "array",
             items: {
-              type: 'string',
+              type: "string",
               minLength: 1,
               maxLength: 50,
             },
             maxLength: 50,
           },
           repo: {
-            type: 'string',
+            type: "string",
             description:
-              'A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.',
-            format: 'uri',
+              "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+            format: "uri",
           },
           readme: {
-            type: 'string',
-            description: 'A URI to a README for the sandbox.',
-            format: 'uri',
+            type: "string",
+            description: "A URI to a README for the sandbox.",
+            format: "uri",
           },
           vcpus: {
-            type: 'integer',
-            description: 'Number of virtual CPUs allocated to the sandbox',
+            type: "integer",
+            description: "Number of virtual CPUs allocated to the sandbox",
           },
           memory: {
-            type: 'integer',
-            description: 'Amount of memory in GB allocated to the sandbox',
+            type: "integer",
+            description: "Amount of memory in GB allocated to the sandbox",
           },
           disk: {
-            type: 'integer',
-            description: 'Amount of disk space in GB allocated to the sandbox',
+            type: "integer",
+            description: "Amount of disk space in GB allocated to the sandbox",
           },
           ports: {
-            type: 'array',
+            type: "array",
             items: {
-              type: 'integer',
+              type: "integer",
               maximum: 65535,
               minimum: 1,
             },
             maxLength: 100,
           },
           installs: {
-            type: 'integer',
+            type: "integer",
             description:
-              'Number of times the sandbox has been installed by users.',
+              "Number of times the sandbox has been installed by users.",
           },
           createdAt: {
-            type: 'string',
-            format: 'datetime',
+            type: "string",
+            format: "datetime",
           },
           owner: {
-            type: 'ref',
-            description: 'The user who created the sandbox',
-            ref: 'lex:io.pocketenv.user.defs#userViewBasic',
+            type: "ref",
+            description: "The user who created the sandbox",
+            ref: "lex:io.pocketenv.user.defs#userViewBasic",
           },
         },
       },
       sandboxDetailsPref: {
-        type: 'object',
-        nullable: ['repo', 'description', 'topics'],
+        type: "object",
+        nullable: ["repo", "description", "topics"],
         properties: {
           name: {
-            type: 'string',
-            description: 'The name of the sandbox',
+            type: "string",
+            description: "The name of the sandbox",
             minLength: 1,
           },
           description: {
-            type: 'string',
-            description: 'A description for the sandbox',
+            type: "string",
+            description: "A description for the sandbox",
           },
           topics: {
-            type: 'array',
-            description: 'A list of topics/tags to associate with the sandbox',
+            type: "array",
+            description: "A list of topics/tags to associate with the sandbox",
             items: {
-              type: 'string',
+              type: "string",
               maxLength: 50,
             },
           },
           repo: {
-            type: 'string',
+            type: "string",
             description:
-              'A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.',
-            format: 'uri',
+              "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+            format: "uri",
           },
           vcpus: {
-            type: 'integer',
+            type: "integer",
             description:
-              'The number of virtual CPUs to allocate for the sandbox',
+              "The number of virtual CPUs to allocate for the sandbox",
             minimum: 1,
           },
           memory: {
-            type: 'integer',
+            type: "integer",
             description:
-              'The amount of memory (in GB) to allocate for the sandbox',
+              "The amount of memory (in GB) to allocate for the sandbox",
             minimum: 1,
           },
           disk: {
-            type: 'integer',
+            type: "integer",
             description:
-              'The amount of disk space (in GB) to allocate for the sandbox',
+              "The amount of disk space (in GB) to allocate for the sandbox",
             minimum: 3,
           },
           readme: {
-            type: 'string',
-            description: 'A URI to a README for the sandbox.',
-            format: 'uri',
+            type: "string",
+            description: "A URI to a README for the sandbox.",
+            format: "uri",
           },
         },
       },
       secretPref: {
-        type: 'object',
+        type: "object",
         properties: {
           name: {
-            type: 'string',
-            description: 'The name of the secret',
+            type: "string",
+            description: "The name of the secret",
             minLength: 1,
           },
           value: {
-            type: 'string',
+            type: "string",
             description:
-              'The value of the secret. This will be encrypted at rest and redacted in any API responses.',
+              "The value of the secret. This will be encrypted at rest and redacted in any API responses.",
           },
         },
       },
       variablePref: {
-        type: 'object',
-        description: 'A variable to add to the sandbox',
+        type: "object",
+        description: "A variable to add to the sandbox",
         properties: {
           name: {
-            type: 'string',
-            description: 'The name of the variable',
+            type: "string",
+            description: "The name of the variable",
             minLength: 1,
           },
           value: {
-            type: 'string',
+            type: "string",
             description:
-              'The value of the variable. This will be visible in API responses and should not contain sensitive information.',
+              "The value of the variable. This will be visible in API responses and should not contain sensitive information.",
           },
         },
       },
       filePref: {
-        type: 'object',
-        description: 'A file to add to the sandbox',
+        type: "object",
+        description: "A file to add to the sandbox",
         properties: {
           name: {
-            type: 'string',
-            description: 'The name of the file',
+            type: "string",
+            description: "The name of the file",
             minLength: 1,
           },
           content: {
-            type: 'string',
-            description: 'The content of the file.',
+            type: "string",
+            description: "The content of the file.",
           },
           encrypt: {
-            type: 'boolean',
+            type: "boolean",
             description:
-              'Whether the file content should be encrypted at rest and redacted in API responses. This is useful for files that may contain sensitive information.',
+              "Whether the file content should be encrypted at rest and redacted in API responses. This is useful for files that may contain sensitive information.",
           },
           path: {
-            type: 'string',
+            type: "string",
             description:
               "The path within the sandbox where the file will be created, e.g. '/app/config.json'. If not provided, the file will be created in the root directory of the sandbox.",
           },
         },
       },
       volumePref: {
-        type: 'object',
-        description: 'A volume to add to the sandbox',
+        type: "object",
+        description: "A volume to add to the sandbox",
         properties: {
           name: {
-            type: 'string',
-            description: 'The name of the volume',
+            type: "string",
+            description: "The name of the volume",
             minLength: 1,
           },
           path: {
-            type: 'string',
+            type: "string",
             description:
               "The mount path within the sandbox where the volume will be attached, e.g. '/data', '/logs', etc.",
           },
           readOnly: {
-            type: 'boolean',
-            description: 'Whether the volume should be mounted as read-only',
+            type: "boolean",
+            description: "Whether the volume should be mounted as read-only",
           },
         },
       },
       preferences: {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'union',
+          type: "union",
           refs: [
-            'lex:io.pocketenv.sandbox.defs#sandboxDetailsPref',
-            'lex:io.pocketenv.sandbox.defs#secretPref',
-            'lex:io.pocketenv.sandbox.defs#variablePref',
-            'lex:io.pocketenv.sandbox.defs#filePref',
-            'lex:io.pocketenv.sandbox.defs#volumePref',
+            "lex:io.pocketenv.sandbox.defs#sandboxDetailsPref",
+            "lex:io.pocketenv.sandbox.defs#secretPref",
+            "lex:io.pocketenv.sandbox.defs#variablePref",
+            "lex:io.pocketenv.sandbox.defs#filePref",
+            "lex:io.pocketenv.sandbox.defs#volumePref",
           ],
         },
       },
       sshKeysView: {
-        type: 'object',
+        type: "object",
         properties: {
           id: {
-            type: 'string',
-            description: 'Unique identifier of the SSH key.',
+            type: "string",
+            description: "Unique identifier of the SSH key.",
           },
           publicKey: {
-            type: 'string',
-            description: 'The public SSH key.',
+            type: "string",
+            description: "The public SSH key.",
           },
           privateKey: {
-            type: 'string',
-            description: 'The private SSH key (redacted in API responses)',
+            type: "string",
+            description: "The private SSH key (redacted in API responses)",
           },
           createdAt: {
-            type: 'string',
-            description: 'The timestamp when the SSH key was created.',
-            format: 'datetime',
+            type: "string",
+            description: "The timestamp when the SSH key was created.",
+            format: "datetime",
           },
           updatedAt: {
-            type: 'string',
-            description: 'The timestamp when the SSH key was last updated.',
-            format: 'datetime',
+            type: "string",
+            description: "The timestamp when the SSH key was last updated.",
+            format: "datetime",
           },
         },
       },
       tailscaleAuthKeyView: {
-        type: 'object',
+        type: "object",
         properties: {
           id: {
-            type: 'string',
-            description: 'Unique identifier of the Tailscale Auth Key.',
+            type: "string",
+            description: "Unique identifier of the Tailscale Auth Key.",
           },
           authKey: {
-            type: 'string',
-            description: 'The Tailscale auth key (redacted in API responses)',
+            type: "string",
+            description: "The Tailscale auth key (redacted in API responses)",
           },
           redacted: {
-            type: 'string',
-            description: 'The redacted Auth Key.',
+            type: "string",
+            description: "The redacted Auth Key.",
           },
           createdAt: {
-            type: 'string',
+            type: "string",
             description:
-              'The timestamp when the Tailscale Auth Key was created.',
-            format: 'datetime',
+              "The timestamp when the Tailscale Auth Key was created.",
+            format: "datetime",
           },
           updatedAt: {
-            type: 'string',
+            type: "string",
             description:
-              'The timestamp when the Tailscale Auth Key was last updated.',
-            format: 'datetime',
+              "The timestamp when the Tailscale Auth Key was last updated.",
+            format: "datetime",
           },
         },
       },
       integrationView: {
-        type: 'object',
+        type: "object",
         properties: {
           id: {
-            type: 'string',
-            description: 'Unique identifier of the integration.',
+            type: "string",
+            description: "Unique identifier of the integration.",
           },
           name: {
-            type: 'string',
+            type: "string",
             description:
               "The name of the integration, e.g. 'GitHub', 'Slack', 'Trello', etc.",
           },
           webhookUrl: {
-            type: 'string',
-            description: 'The webhook URL of the integration.',
-            format: 'uri',
+            type: "string",
+            description: "The webhook URL of the integration.",
+            format: "uri",
           },
           createdAt: {
-            type: 'string',
-            description: 'The timestamp when the integration was created.',
-            format: 'datetime',
+            type: "string",
+            description: "The timestamp when the integration was created.",
+            format: "datetime",
           },
           updatedAt: {
-            type: 'string',
-            description: 'The timestamp when the integration was last updated.',
-            format: 'datetime',
+            type: "string",
+            description: "The timestamp when the integration was last updated.",
+            format: "datetime",
           },
         },
       },
       integrationsView: {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'ref',
-          description: 'An integration connected to the sandbox',
-          ref: 'lex:io.pocketenv.sandbox.defs#integrationView',
+          type: "ref",
+          description: "An integration connected to the sandbox",
+          ref: "lex:io.pocketenv.sandbox.defs#integrationView",
         },
       },
     },
   },
   IoPocketenvSandboxDeleteSandbox: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.deleteSandbox',
+    id: "io.pocketenv.sandbox.deleteSandbox",
     defs: {
       main: {
-        type: 'procedure',
-        description: 'Delete a sandbox by uri',
+        type: "procedure",
+        description: "Delete a sandbox by uri",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The sandbox ID.',
+              type: "string",
+              description: "The sandbox ID.",
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#sandboxViewBasic',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
           },
         },
       },
@@ -966,26 +997,26 @@ export const schemaDict = {
   },
   IoPocketenvSandboxGetIntegrations: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.getIntegrations',
+    id: "io.pocketenv.sandbox.getIntegrations",
     defs: {
       main: {
-        type: 'query',
-        description: 'Get the integrations for a sandbox.',
+        type: "query",
+        description: "Get the integrations for a sandbox.",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The sandbox ID.',
+              type: "string",
+              description: "The sandbox ID.",
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#integrationsView',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#integrationsView",
           },
         },
       },
@@ -993,26 +1024,26 @@ export const schemaDict = {
   },
   IoPocketenvSandboxGetPreferences: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.getPreferences',
+    id: "io.pocketenv.sandbox.getPreferences",
     defs: {
       main: {
-        type: 'query',
-        description: 'Get sandbox preferences',
+        type: "query",
+        description: "Get sandbox preferences",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The sandbox ID or URI to retrieve',
+              type: "string",
+              description: "The sandbox ID or URI to retrieve",
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#preferences',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#preferences",
           },
         },
       },
@@ -1020,26 +1051,26 @@ export const schemaDict = {
   },
   IoPocketenvSandboxGetSandbox: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.getSandbox',
+    id: "io.pocketenv.sandbox.getSandbox",
     defs: {
       main: {
-        type: 'query',
-        description: 'Get a sandbox by ID or URI',
+        type: "query",
+        description: "Get a sandbox by ID or URI",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The sandbox ID or URI to retrieve',
+              type: "string",
+              description: "The sandbox ID or URI to retrieve",
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#sandboxViewBasic',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
           },
         },
       },
@@ -1047,42 +1078,42 @@ export const schemaDict = {
   },
   IoPocketenvSandboxGetSandboxes: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.getSandboxes',
+    id: "io.pocketenv.sandbox.getSandboxes",
     defs: {
       main: {
-        type: 'query',
-        description: 'Get all sandboxes',
+        type: "query",
+        description: "Get all sandboxes",
         parameters: {
-          type: 'params',
+          type: "params",
           properties: {
             limit: {
-              type: 'integer',
-              description: 'The maximum number of sandboxes to return.',
+              type: "integer",
+              description: "The maximum number of sandboxes to return.",
               minimum: 1,
             },
             offset: {
-              type: 'integer',
+              type: "integer",
               description:
-                'The number of sandboxes to skip before starting to collect the result set.',
+                "The number of sandboxes to skip before starting to collect the result set.",
               minimum: 0,
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
+            type: "object",
             properties: {
               sandboxes: {
-                type: 'array',
+                type: "array",
                 items: {
-                  type: 'ref',
-                  ref: 'lex:io.pocketenv.sandbox.defs#sandboxViewBasic',
+                  type: "ref",
+                  ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
                 },
               },
               total: {
-                type: 'integer',
-                description: 'The total number of sandboxes available.',
+                type: "integer",
+                description: "The total number of sandboxes available.",
                 minimum: 0,
               },
             },
@@ -1093,26 +1124,26 @@ export const schemaDict = {
   },
   IoPocketenvSandboxGetSshKeys: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.getSshKeys',
+    id: "io.pocketenv.sandbox.getSshKeys",
     defs: {
       main: {
-        type: 'query',
-        description: 'Get the SSH keys for a sandbox.',
+        type: "query",
+        description: "Get the SSH keys for a sandbox.",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The sandbox ID.',
+              type: "string",
+              description: "The sandbox ID.",
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#sshKeysView',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sshKeysView",
           },
         },
       },
@@ -1120,26 +1151,26 @@ export const schemaDict = {
   },
   IoPocketenvSandboxGetTailscaleAuthKey: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.getTailscaleAuthKey',
+    id: "io.pocketenv.sandbox.getTailscaleAuthKey",
     defs: {
       main: {
-        type: 'query',
-        description: 'Get the Tailscale token for a sandbox.',
+        type: "query",
+        description: "Get the Tailscale token for a sandbox.",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The sandbox ID.',
+              type: "string",
+              description: "The sandbox ID.",
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#tailscaleAuthKeyView',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#tailscaleAuthKeyView",
           },
         },
       },
@@ -1147,26 +1178,26 @@ export const schemaDict = {
   },
   IoPocketenvSandboxGetTailscaleToken: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.getTailscaleToken',
+    id: "io.pocketenv.sandbox.getTailscaleToken",
     defs: {
       main: {
-        type: 'query',
-        description: 'Get the Tailscale token for a sandbox.',
+        type: "query",
+        description: "Get the Tailscale token for a sandbox.",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The sandbox ID.',
+              type: "string",
+              description: "The sandbox ID.",
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#tailscaleTokenView',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#tailscaleTokenView",
           },
         },
       },
@@ -1174,24 +1205,24 @@ export const schemaDict = {
   },
   IoPocketenvSandboxPutPreferences: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.putPreferences',
+    id: "io.pocketenv.sandbox.putPreferences",
     defs: {
       main: {
-        type: 'procedure',
-        description: 'Update sandbox preferences.',
+        type: "procedure",
+        description: "Update sandbox preferences.",
         input: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
-            required: ['sandboxId', 'preferences'],
+            type: "object",
+            required: ["sandboxId", "preferences"],
             properties: {
               sandboxId: {
-                type: 'string',
-                description: 'The sandbox ID or URI',
+                type: "string",
+                description: "The sandbox ID or URI",
               },
               preferences: {
-                type: 'ref',
-                ref: 'lex:io.pocketenv.sandbox.defs#preferences',
+                type: "ref",
+                ref: "lex:io.pocketenv.sandbox.defs#preferences",
               },
             },
           },
@@ -1201,41 +1232,41 @@ export const schemaDict = {
   },
   IoPocketenvSandboxPutSshKeys: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.putSshKeys',
+    id: "io.pocketenv.sandbox.putSshKeys",
     defs: {
       main: {
-        type: 'procedure',
-        description: 'Add or update SSH keys for a sandbox.',
+        type: "procedure",
+        description: "Add or update SSH keys for a sandbox.",
         input: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
-            required: ['id', 'privateKey', 'publicKey'],
+            type: "object",
+            required: ["id", "privateKey", "publicKey"],
             properties: {
               id: {
-                type: 'string',
-                description: 'The sandbox ID.',
+                type: "string",
+                description: "The sandbox ID.",
               },
               privateKey: {
-                type: 'string',
-                description: 'The private SSH key (encrypted)',
+                type: "string",
+                description: "The private SSH key (encrypted)",
               },
               publicKey: {
-                type: 'string',
-                description: 'The public SSH key.',
+                type: "string",
+                description: "The public SSH key.",
               },
               redacted: {
-                type: 'string',
-                description: 'The redacted SSH key.',
+                type: "string",
+                description: "The redacted SSH key.",
               },
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#sshKeysView',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sshKeysView",
           },
         },
       },
@@ -1243,39 +1274,39 @@ export const schemaDict = {
   },
   IoPocketenvSandboxPutTailscaleAuthKey: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.putTailscaleAuthKey',
+    id: "io.pocketenv.sandbox.putTailscaleAuthKey",
     defs: {
       main: {
-        type: 'procedure',
+        type: "procedure",
         description:
           "Store a Tailscale Auth Key for the sandbox. This Auth Key will be used to authenticate with the Tailscale API and manage the sandbox's Tailscale node.",
         input: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
-            required: ['id', 'authKey'],
+            type: "object",
+            required: ["id", "authKey"],
             properties: {
               id: {
-                type: 'string',
-                description: 'The sandbox ID.',
+                type: "string",
+                description: "The sandbox ID.",
               },
               authKey: {
-                type: 'string',
+                type: "string",
                 description:
-                  'The Tailscale Auth Key (encrypted) to store for the sandbox.',
+                  "The Tailscale Auth Key (encrypted) to store for the sandbox.",
               },
               redacted: {
-                type: 'string',
-                description: 'The redacted SSH key.',
+                type: "string",
+                description: "The redacted SSH key.",
               },
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#tailscaleAuthKeyView',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#tailscaleAuthKeyView",
           },
         },
       },
@@ -1283,35 +1314,35 @@ export const schemaDict = {
   },
   IoPocketenvSandboxPutTailscaleToken: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.putTailscaleToken',
+    id: "io.pocketenv.sandbox.putTailscaleToken",
     defs: {
       main: {
-        type: 'procedure',
+        type: "procedure",
         description:
           "Store a Tailscale token for the sandbox. This token will be used to authenticate with the Tailscale API and manage the sandbox's Tailscale node.",
         input: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
-            required: ['id', 'token'],
+            type: "object",
+            required: ["id", "token"],
             properties: {
               id: {
-                type: 'string',
-                description: 'The sandbox ID.',
+                type: "string",
+                description: "The sandbox ID.",
               },
               token: {
-                type: 'string',
+                type: "string",
                 description:
-                  'The Tailscale token (encrypted) to store for the sandbox.',
+                  "The Tailscale token (encrypted) to store for the sandbox.",
               },
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#tailscaleTokenView',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#tailscaleTokenView",
           },
         },
       },
@@ -1319,115 +1350,115 @@ export const schemaDict = {
   },
   IoPocketenvSandbox: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox',
+    id: "io.pocketenv.sandbox",
     defs: {
       main: {
-        type: 'record',
-        key: 'tid',
+        type: "record",
+        key: "tid",
         record: {
-          type: 'object',
-          required: ['name', 'createdAt'],
+          type: "object",
+          required: ["name", "createdAt"],
           properties: {
             name: {
-              type: 'string',
-              description: 'Name of the sandbox',
+              type: "string",
+              description: "Name of the sandbox",
               maxLength: 255,
             },
             base: {
-              type: 'ref',
+              type: "ref",
               description:
-                'A strong reference to the base template for the sandbox environment.',
-              ref: 'lex:com.atproto.repo.strongRef',
+                "A strong reference to the base template for the sandbox environment.",
+              ref: "lex:com.atproto.repo.strongRef",
             },
             provider: {
-              type: 'string',
+              type: "string",
               description:
                 "The provider of the sandbox, e.g. 'daytona', 'vercel', 'cloudflare', etc.",
               maxLength: 50,
             },
             description: {
-              type: 'string',
+              type: "string",
               maxGraphemes: 300,
               maxLength: 3000,
             },
             website: {
-              type: 'string',
-              description: 'Any URI related to the sandbox',
-              format: 'uri',
+              type: "string",
+              description: "Any URI related to the sandbox",
+              format: "uri",
             },
             logo: {
-              type: 'string',
-              description: 'URI to an image logo for the sandbox',
-              format: 'uri',
+              type: "string",
+              description: "URI to an image logo for the sandbox",
+              format: "uri",
             },
             topics: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'string',
+                type: "string",
                 minLength: 1,
                 maxLength: 50,
               },
               maxLength: 50,
             },
             repo: {
-              type: 'string',
+              type: "string",
               description:
-                'A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.',
-              format: 'uri',
+                "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+              format: "uri",
             },
             readme: {
-              type: 'string',
-              description: 'A URI to a README for the sandbox.',
-              format: 'uri',
+              type: "string",
+              description: "A URI to a README for the sandbox.",
+              format: "uri",
             },
             vcpus: {
-              type: 'integer',
-              description: 'Number of virtual CPUs allocated to the sandbox',
+              type: "integer",
+              description: "Number of virtual CPUs allocated to the sandbox",
             },
             memory: {
-              type: 'integer',
-              description: 'Amount of memory in GB allocated to the sandbox',
+              type: "integer",
+              description: "Amount of memory in GB allocated to the sandbox",
             },
             disk: {
-              type: 'integer',
+              type: "integer",
               description:
-                'Amount of disk space in GB allocated to the sandbox',
+                "Amount of disk space in GB allocated to the sandbox",
             },
             volumes: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'string',
+                type: "string",
                 description:
                   "A path to be mounted as a volume in the sandbox, e.g. '/data', '/logs', etc.",
               },
             },
             ports: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'integer',
+                type: "integer",
                 description:
-                  'A port number that is exposed by the sandbox environment.',
+                  "A port number that is exposed by the sandbox environment.",
               },
             },
             secrets: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'string',
+                type: "string",
                 description:
-                  'Name of a secret to be added to the sandbox environment. Secrets are typically encrypted and stored securely, and can be used to store sensitive information such as API keys, database credentials, etc.',
+                  "Name of a secret to be added to the sandbox environment. Secrets are typically encrypted and stored securely, and can be used to store sensitive information such as API keys, database credentials, etc.",
               },
             },
             envs: {
-              type: 'array',
+              type: "array",
               items: {
-                type: 'string',
+                type: "string",
                 description:
-                  'Name of an environment variable to be added to the sandbox environment.',
+                  "Name of an environment variable to be added to the sandbox environment.",
               },
             },
             createdAt: {
-              type: 'string',
-              format: 'datetime',
+              type: "string",
+              format: "datetime",
             },
           },
         },
@@ -1436,26 +1467,26 @@ export const schemaDict = {
   },
   IoPocketenvSandboxStartSandbox: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.startSandbox',
+    id: "io.pocketenv.sandbox.startSandbox",
     defs: {
       main: {
-        type: 'procedure',
-        description: 'Start a sandbox',
+        type: "procedure",
+        description: "Start a sandbox",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The sandbox ID.',
+              type: "string",
+              description: "The sandbox ID.",
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#sandboxViewBasic',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
           },
         },
       },
@@ -1463,26 +1494,26 @@ export const schemaDict = {
   },
   IoPocketenvSandboxStopSandbox: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.stopSandbox',
+    id: "io.pocketenv.sandbox.stopSandbox",
     defs: {
       main: {
-        type: 'procedure',
-        description: 'Stop a sandbox',
+        type: "procedure",
+        description: "Stop a sandbox",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The sandbox ID.',
+              type: "string",
+              description: "The sandbox ID.",
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#sandboxViewBasic',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
           },
         },
       },
@@ -1490,92 +1521,92 @@ export const schemaDict = {
   },
   IoPocketenvSandboxUpdateSandboxSettings: {
     lexicon: 1,
-    id: 'io.pocketenv.sandbox.updateSandboxSettings',
+    id: "io.pocketenv.sandbox.updateSandboxSettings",
     defs: {
       main: {
-        type: 'procedure',
-        description: 'Update sandbox settings',
+        type: "procedure",
+        description: "Update sandbox settings",
         input: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
+            type: "object",
             properties: {
               name: {
-                type: 'string',
-                description: 'The name of the sandbox',
+                type: "string",
+                description: "The name of the sandbox",
                 minLength: 1,
               },
               description: {
-                type: 'string',
-                description: 'A description for the sandbox',
+                type: "string",
+                description: "A description for the sandbox",
               },
               topics: {
-                type: 'array',
+                type: "array",
                 description:
-                  'A list of topics/tags to associate with the sandbox',
+                  "A list of topics/tags to associate with the sandbox",
                 items: {
-                  type: 'string',
+                  type: "string",
                   maxLength: 50,
                 },
               },
               repo: {
-                type: 'string',
+                type: "string",
                 description:
-                  'A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.',
-                format: 'uri',
+                  "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
+                format: "uri",
               },
               vcpus: {
-                type: 'integer',
+                type: "integer",
                 description:
-                  'The number of virtual CPUs to allocate for the sandbox',
+                  "The number of virtual CPUs to allocate for the sandbox",
                 minimum: 1,
               },
               memory: {
-                type: 'integer',
+                type: "integer",
                 description:
-                  'The amount of memory (in GB) to allocate for the sandbox',
+                  "The amount of memory (in GB) to allocate for the sandbox",
                 minimum: 1,
               },
               disk: {
-                type: 'integer',
+                type: "integer",
                 description:
-                  'The amount of disk space (in GB) to allocate for the sandbox',
+                  "The amount of disk space (in GB) to allocate for the sandbox",
                 minimum: 3,
               },
               readme: {
-                type: 'string',
-                description: 'A URI to a README for the sandbox.',
-                format: 'uri',
+                type: "string",
+                description: "A URI to a README for the sandbox.",
+                format: "uri",
               },
               secrets: {
-                type: 'ref',
-                description: 'A list of secrets to add to the sandbox',
-                ref: 'lex:io.pocketenv.secret.defs#secrets',
+                type: "ref",
+                description: "A list of secrets to add to the sandbox",
+                ref: "lex:io.pocketenv.secret.defs#secrets",
               },
               variables: {
-                type: 'ref',
+                type: "ref",
                 description:
-                  'A list of environment variables to add to the sandbox',
-                ref: 'lex:io.pocketenv.variable.defs#variables',
+                  "A list of environment variables to add to the sandbox",
+                ref: "lex:io.pocketenv.variable.defs#variables",
               },
               files: {
-                type: 'ref',
-                description: 'A list of files to add to the sandbox',
-                ref: 'lex:io.pocketenv.file.defs#file',
+                type: "ref",
+                description: "A list of files to add to the sandbox",
+                ref: "lex:io.pocketenv.file.defs#file",
               },
               volumes: {
-                type: 'ref',
-                description: 'A list of volumes to add to the sandbox',
-                ref: 'lex:io.pocketenv.volume.defs#volumes',
+                type: "ref",
+                description: "A list of volumes to add to the sandbox",
+                ref: "lex:io.pocketenv.volume.defs#volumes",
               },
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'ref',
-            ref: 'lex:io.pocketenv.sandbox.defs#profileViewDetailed',
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#profileViewDetailed",
           },
         },
       },
@@ -1583,23 +1614,23 @@ export const schemaDict = {
   },
   IoPocketenvSecretAddSecret: {
     lexicon: 1,
-    id: 'io.pocketenv.secret.addSecret',
+    id: "io.pocketenv.secret.addSecret",
     defs: {
       main: {
-        type: 'procedure',
+        type: "procedure",
         input: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
-            required: ['secret'],
+            type: "object",
+            required: ["secret"],
             properties: {
               secret: {
-                type: 'ref',
-                ref: 'lex:io.pocketenv.secret.defs#secret',
+                type: "ref",
+                ref: "lex:io.pocketenv.secret.defs#secret",
               },
               redacted: {
-                type: 'string',
-                description: 'The redacted secret value.',
+                type: "string",
+                description: "The redacted secret value.",
               },
             },
           },
@@ -1609,66 +1640,98 @@ export const schemaDict = {
   },
   IoPocketenvSecretDefs: {
     lexicon: 1,
-    id: 'io.pocketenv.secret.defs',
+    id: "io.pocketenv.secret.defs",
     defs: {
       secretView: {
-        type: 'object',
+        type: "object",
         properties: {
           id: {
-            type: 'string',
-            description: 'Unique identifier of the secret.',
+            type: "string",
+            description: "Unique identifier of the secret.",
           },
           name: {
-            type: 'string',
+            type: "string",
             description:
               "Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc.",
           },
         },
       },
       secret: {
-        type: 'object',
-        required: ['name', 'value'],
+        type: "object",
+        required: ["name", "value"],
         properties: {
           sandboxId: {
-            type: 'string',
+            type: "string",
             description:
-              'The ID of the sandbox to which the secret belongs. This is used to associate the secret with a specific sandbox environment.',
+              "The ID of the sandbox to which the secret belongs. This is used to associate the secret with a specific sandbox environment.",
           },
           name: {
-            type: 'string',
+            type: "string",
             description:
               "Name of the secret, e.g. 'DATABASE_URL', 'SSH_KEY', etc.",
           },
           value: {
-            type: 'string',
+            type: "string",
             description:
-              'Value of the secret. This will be encrypted at rest and redacted in any API responses.',
+              "Value of the secret. This will be encrypted at rest and redacted in any API responses.",
           },
         },
       },
       secrets: {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'ref',
-          description: 'A secret to add to the sandbox',
-          ref: 'lex:io.pocketenv.secret.defs#secret',
+          type: "ref",
+          description: "A secret to add to the sandbox",
+          ref: "lex:io.pocketenv.secret.defs#secret",
         },
       },
     },
   },
   IoPocketenvSecretDeleteSecret: {
     lexicon: 1,
-    id: 'io.pocketenv.secret.deleteSecret',
+    id: "io.pocketenv.secret.deleteSecret",
     defs: {
       main: {
-        type: 'procedure',
+        type: "procedure",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The ID of the secret to delete',
+              type: "string",
+              description: "The ID of the secret to delete",
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSecretGetSecret: {
+    lexicon: 1,
+    id: "io.pocketenv.secret.getSecret",
+    defs: {
+      main: {
+        type: "query",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description:
+                "The ID of the secret for which to retrieve secrets.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              secret: {
+                type: "ref",
+                ref: "lex:io.pocketenv.secret.defs#secretView",
+              },
             },
           },
         },
@@ -1677,46 +1740,46 @@ export const schemaDict = {
   },
   IoPocketenvSecretGetSecrets: {
     lexicon: 1,
-    id: 'io.pocketenv.secret.getSecrets',
+    id: "io.pocketenv.secret.getSecrets",
     defs: {
       main: {
-        type: 'query',
+        type: "query",
         parameters: {
-          type: 'params',
+          type: "params",
           properties: {
             sandboxId: {
-              type: 'string',
+              type: "string",
               description:
-                'The ID of the sandbox for which to retrieve secrets.',
+                "The ID of the sandbox for which to retrieve secrets.",
             },
             limit: {
-              type: 'integer',
-              description: 'The maximum number of secrets to return.',
+              type: "integer",
+              description: "The maximum number of secrets to return.",
               minimum: 1,
             },
             offset: {
-              type: 'integer',
+              type: "integer",
               description:
-                'The number of secrets to skip before starting to collect the result set.',
+                "The number of secrets to skip before starting to collect the result set.",
               minimum: 0,
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
+            type: "object",
             properties: {
               secrets: {
-                type: 'array',
+                type: "array",
                 items: {
-                  type: 'ref',
-                  ref: 'lex:io.pocketenv.secret.defs#secretView',
+                  type: "ref",
+                  ref: "lex:io.pocketenv.secret.defs#secretView",
                 },
               },
               total: {
-                type: 'integer',
-                description: 'The total number of secrets available.',
+                type: "integer",
+                description: "The total number of secrets available.",
                 minimum: 0,
               },
             },
@@ -1727,19 +1790,19 @@ export const schemaDict = {
   },
   IoPocketenvVariableAddVariable: {
     lexicon: 1,
-    id: 'io.pocketenv.variable.addVariable',
+    id: "io.pocketenv.variable.addVariable",
     defs: {
       main: {
-        type: 'procedure',
+        type: "procedure",
         input: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
-            required: ['variable'],
+            type: "object",
+            required: ["variable"],
             properties: {
               variable: {
-                type: 'ref',
-                ref: 'lex:io.pocketenv.variable.defs#variable',
+                type: "ref",
+                ref: "lex:io.pocketenv.variable.defs#variable",
               },
             },
           },
@@ -1749,71 +1812,103 @@ export const schemaDict = {
   },
   IoPocketenvVariableDefs: {
     lexicon: 1,
-    id: 'io.pocketenv.variable.defs',
+    id: "io.pocketenv.variable.defs",
     defs: {
       variableView: {
-        type: 'object',
+        type: "object",
         properties: {
           id: {
-            type: 'string',
-            description: 'Unique identifier of the environment variable.',
+            type: "string",
+            description: "Unique identifier of the environment variable.",
           },
           name: {
-            type: 'string',
+            type: "string",
             description:
               "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc.",
           },
           value: {
-            type: 'string',
+            type: "string",
             description:
-              'Value of the environment variable. This will be visible in API responses and should not contain sensitive information.',
+              "Value of the environment variable. This will be visible in API responses and should not contain sensitive information.",
           },
         },
       },
       variable: {
-        type: 'object',
-        required: ['name', 'value'],
+        type: "object",
+        required: ["name", "value"],
         properties: {
           sandboxId: {
-            type: 'string',
+            type: "string",
             description:
-              'The ID of the sandbox to which the environment variable belongs. This is used to associate the variable with a specific sandbox environment.',
+              "The ID of the sandbox to which the environment variable belongs. This is used to associate the variable with a specific sandbox environment.",
           },
           name: {
-            type: 'string',
+            type: "string",
             description:
               "Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc.",
           },
           value: {
-            type: 'string',
+            type: "string",
             description:
-              'Value of the environment variable. This will be visible in API responses and should not contain sensitive information.',
+              "Value of the environment variable. This will be visible in API responses and should not contain sensitive information.",
           },
         },
       },
       variables: {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'ref',
-          description: 'An environment variable to add to the sandbox',
-          ref: 'lex:io.pocketenv.variable.defs#envVar',
+          type: "ref",
+          description: "An environment variable to add to the sandbox",
+          ref: "lex:io.pocketenv.variable.defs#envVar",
         },
       },
     },
   },
   IoPocketenvVariableDeleteVariable: {
     lexicon: 1,
-    id: 'io.pocketenv.variable.deleteVariable',
+    id: "io.pocketenv.variable.deleteVariable",
     defs: {
       main: {
-        type: 'procedure',
+        type: "procedure",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The ID of the environment variable to delete',
+              type: "string",
+              description: "The ID of the environment variable to delete",
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvVariableGetVariable: {
+    lexicon: 1,
+    id: "io.pocketenv.variable.getVariable",
+    defs: {
+      main: {
+        type: "query",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description:
+                "The ID of the variable for which to retrieve variables.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              variable: {
+                type: "ref",
+                ref: "lex:io.pocketenv.variable.defs#variableView",
+              },
             },
           },
         },
@@ -1822,46 +1917,46 @@ export const schemaDict = {
   },
   IoPocketenvVariableGetVariables: {
     lexicon: 1,
-    id: 'io.pocketenv.variable.getVariables',
+    id: "io.pocketenv.variable.getVariables",
     defs: {
       main: {
-        type: 'query',
+        type: "query",
         parameters: {
-          type: 'params',
+          type: "params",
           properties: {
             sandboxId: {
-              type: 'string',
+              type: "string",
               description:
-                'The ID of the sandbox for which to retrieve variables.',
+                "The ID of the sandbox for which to retrieve variables.",
             },
             limit: {
-              type: 'integer',
-              description: 'The maximum number of variables to return.',
+              type: "integer",
+              description: "The maximum number of variables to return.",
               minimum: 1,
             },
             offset: {
-              type: 'integer',
+              type: "integer",
               description:
-                'The number of variables to skip before starting to collect the result set.',
+                "The number of variables to skip before starting to collect the result set.",
               minimum: 0,
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
+            type: "object",
             properties: {
               variables: {
-                type: 'array',
+                type: "array",
                 items: {
-                  type: 'ref',
-                  ref: 'lex:io.pocketenv.variable.defs#variableView',
+                  type: "ref",
+                  ref: "lex:io.pocketenv.variable.defs#variableView",
                 },
               },
               total: {
-                type: 'integer',
-                description: 'The total number of variables available.',
+                type: "integer",
+                description: "The total number of variables available.",
                 minimum: 0,
               },
             },
@@ -1872,19 +1967,19 @@ export const schemaDict = {
   },
   IoPocketenvVolumeAddVolume: {
     lexicon: 1,
-    id: 'io.pocketenv.volume.addVolume',
+    id: "io.pocketenv.volume.addVolume",
     defs: {
       main: {
-        type: 'procedure',
+        type: "procedure",
         input: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
-            required: ['volume'],
+            type: "object",
+            required: ["volume"],
             properties: {
               volume: {
-                type: 'ref',
-                ref: 'lex:io.pocketenv.volume.defs#volume',
+                type: "ref",
+                ref: "lex:io.pocketenv.volume.defs#volume",
               },
             },
           },
@@ -1894,71 +1989,71 @@ export const schemaDict = {
   },
   IoPocketenvVolumeDefs: {
     lexicon: 1,
-    id: 'io.pocketenv.volume.defs',
+    id: "io.pocketenv.volume.defs",
     defs: {
       volumeView: {
-        type: 'object',
+        type: "object",
         properties: {
           id: {
-            type: 'string',
-            description: 'Unique identifier of the volume.',
+            type: "string",
+            description: "Unique identifier of the volume.",
           },
           name: {
-            type: 'string',
+            type: "string",
             description: "Name of the volume, e.g. 'data-volume', 'logs', etc.",
           },
           path: {
-            type: 'string',
+            type: "string",
             description:
               "The path within the sandbox where the volume will be mounted, e.g. '/data', '/logs', etc.",
           },
           readOnly: {
-            type: 'boolean',
+            type: "boolean",
             description:
-              'Whether the volume should be mounted as read-only within the sandbox. Defaults to false (read-write).',
+              "Whether the volume should be mounted as read-only within the sandbox. Defaults to false (read-write).",
           },
           createdAt: {
-            type: 'string',
-            description: 'The timestamp when the volume was created.',
-            format: 'datetime',
+            type: "string",
+            description: "The timestamp when the volume was created.",
+            format: "datetime",
           },
           updatedAt: {
-            type: 'string',
-            description: 'The timestamp when the volume was last updated.',
-            format: 'datetime',
+            type: "string",
+            description: "The timestamp when the volume was last updated.",
+            format: "datetime",
           },
         },
       },
       volumes: {
-        type: 'array',
+        type: "array",
         items: {
-          type: 'ref',
-          description: 'A volume to add to the sandbox',
-          ref: 'lex:io.pocketenv.volume.defs#volume',
+          type: "ref",
+          description: "A volume to add to the sandbox",
+          ref: "lex:io.pocketenv.volume.defs#volume",
         },
       },
       volume: {
-        type: 'object',
-        required: ['name'],
+        type: "object",
+        required: ["name"],
         properties: {
           sandboxId: {
-            type: 'string',
+            type: "string",
             description:
-              'The ID of the sandbox to which the volume belongs. This is used to associate the volume with a specific sandbox environment.',
+              "The ID of the sandbox to which the volume belongs. This is used to associate the volume with a specific sandbox environment.",
           },
           name: {
-            type: 'string',
+            type: "string",
             description: "Name of the volume, e.g. 'data-volume', 'logs', etc.",
           },
           path: {
-            type: 'string',
+            type: "string",
             description:
               "The path within the sandbox where the volume will be mounted, e.g. '/data', '/logs', etc.",
           },
           readOnly: {
-            type: 'boolean',
+            type: "boolean",
             description:
-              'Whether the volume should be mounted as read-only within the sandbox. Defaults to false (read-write).',
+              "Whether the volume should be mounted as read-only within the sandbox. Defaults to false (read-write).",
           },
         },
       },
@@ -1966,17 +2061,49 @@ export const schemaDict = {
   },
   IoPocketenvVolumeDeleteVolume: {
     lexicon: 1,
-    id: 'io.pocketenv.volume.deleteVolume',
+    id: "io.pocketenv.volume.deleteVolume",
     defs: {
       main: {
-        type: 'procedure',
+        type: "procedure",
         parameters: {
-          type: 'params',
-          required: ['id'],
+          type: "params",
+          required: ["id"],
           properties: {
             id: {
-              type: 'string',
-              description: 'The ID of the volume to delete.',
+              type: "string",
+              description: "The ID of the volume to delete.",
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvVolumeGetVolume: {
+    lexicon: 1,
+    id: "io.pocketenv.volume.getVolume",
+    defs: {
+      main: {
+        type: "query",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description:
+                "The ID of the volume for which to retrieve volumes.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              volume: {
+                type: "ref",
+                ref: "lex:io.pocketenv.volume.defs#volumeView",
+              },
             },
           },
         },
@@ -1985,46 +2112,46 @@ export const schemaDict = {
   },
   IoPocketenvVolumeGetVolumes: {
     lexicon: 1,
-    id: 'io.pocketenv.volume.getVolumes',
+    id: "io.pocketenv.volume.getVolumes",
     defs: {
       main: {
-        type: 'query',
+        type: "query",
         parameters: {
-          type: 'params',
+          type: "params",
           properties: {
             sandboxId: {
-              type: 'string',
+              type: "string",
               description:
-                'The ID of the sandbox for which to retrieve volumes.',
+                "The ID of the sandbox for which to retrieve volumes.",
             },
             limit: {
-              type: 'integer',
-              description: 'The maximum number of volumes to return.',
+              type: "integer",
+              description: "The maximum number of volumes to return.",
               minimum: 1,
             },
             offset: {
-              type: 'integer',
+              type: "integer",
               description:
-                'The number of volumes to skip before starting to collect the result set.',
+                "The number of volumes to skip before starting to collect the result set.",
               minimum: 0,
             },
           },
         },
         output: {
-          encoding: 'application/json',
+          encoding: "application/json",
           schema: {
-            type: 'object',
+            type: "object",
             properties: {
               volumes: {
-                type: 'array',
+                type: "array",
                 items: {
-                  type: 'ref',
-                  ref: 'lex:io.pocketenv.volume.defs#volumeView',
+                  type: "ref",
+                  ref: "lex:io.pocketenv.volume.defs#volumeView",
                 },
               },
               total: {
-                type: 'integer',
-                description: 'The total number of volumes available.',
+                type: "integer",
+                description: "The total number of volumes available.",
                 minimum: 0,
               },
             },
@@ -2035,28 +2162,28 @@ export const schemaDict = {
   },
   IoPocketenvPublicKey: {
     lexicon: 1,
-    id: 'io.pocketenv.publicKey',
+    id: "io.pocketenv.publicKey",
     defs: {
       main: {
-        type: 'record',
-        key: 'tid',
+        type: "record",
+        key: "tid",
         record: {
-          type: 'object',
-          required: ['name', 'key', 'createdAt'],
+          type: "object",
+          required: ["name", "key", "createdAt"],
           properties: {
             name: {
-              type: 'string',
-              description: 'Name of the public key',
+              type: "string",
+              description: "Name of the public key",
               maxLength: 255,
             },
             key: {
-              type: 'string',
+              type: "string",
               description:
-                'The public key value, e.g. an SSH public key string.',
+                "The public key value, e.g. an SSH public key string.",
             },
             createdAt: {
-              type: 'string',
-              format: 'datetime',
+              type: "string",
+              format: "datetime",
             },
           },
         },
@@ -2065,74 +2192,78 @@ export const schemaDict = {
   },
   ComAtprotoRepoStrongRef: {
     lexicon: 1,
-    id: 'com.atproto.repo.strongRef',
-    description: 'A URI with a content-hash fingerprint.',
+    id: "com.atproto.repo.strongRef",
+    description: "A URI with a content-hash fingerprint.",
     defs: {
       main: {
-        type: 'object',
-        required: ['uri', 'cid'],
+        type: "object",
+        required: ["uri", "cid"],
         properties: {
           uri: {
-            type: 'string',
-            format: 'at-uri',
+            type: "string",
+            format: "at-uri",
           },
           cid: {
-            type: 'string',
-            format: 'cid',
+            type: "string",
+            format: "cid",
           },
         },
       },
     },
   },
-} as const satisfies Record<string, LexiconDoc>
+} as const satisfies Record<string, LexiconDoc>;
 
-export const schemas = Object.values(schemaDict)
-export const lexicons: Lexicons = new Lexicons(schemas)
+export const schemas = Object.values(schemaDict);
+export const lexicons: Lexicons = new Lexicons(schemas);
 export const ids = {
-  IoPocketenvActorDefs: 'io.pocketenv.actor.defs',
-  IoPocketenvActorGetActorSandboxes: 'io.pocketenv.actor.getActorSandboxes',
-  IoPocketenvActorGetProfile: 'io.pocketenv.actor.getProfile',
-  IoPocketenvActorGetTerminalToken: 'io.pocketenv.actor.getTerminalToken',
-  AppBskyActorProfile: 'app.bsky.actor.profile',
-  IoPocketenvFileAddFile: 'io.pocketenv.file.addFile',
-  IoPocketenvFileDefs: 'io.pocketenv.file.defs',
-  IoPocketenvFileDeleteFile: 'io.pocketenv.file.deleteFile',
-  IoPocketenvFileGetFiles: 'io.pocketenv.file.getFiles',
-  IoPocketenvSandboxClaimSandbox: 'io.pocketenv.sandbox.claimSandbox',
-  IoPocketenvSandboxCreateIntegration: 'io.pocketenv.sandbox.createIntegration',
-  IoPocketenvSandboxCreateSandbox: 'io.pocketenv.sandbox.createSandbox',
-  IoPocketenvSandboxDefs: 'io.pocketenv.sandbox.defs',
-  IoPocketenvSandboxDeleteSandbox: 'io.pocketenv.sandbox.deleteSandbox',
-  IoPocketenvSandboxGetIntegrations: 'io.pocketenv.sandbox.getIntegrations',
-  IoPocketenvSandboxGetPreferences: 'io.pocketenv.sandbox.getPreferences',
-  IoPocketenvSandboxGetSandbox: 'io.pocketenv.sandbox.getSandbox',
-  IoPocketenvSandboxGetSandboxes: 'io.pocketenv.sandbox.getSandboxes',
-  IoPocketenvSandboxGetSshKeys: 'io.pocketenv.sandbox.getSshKeys',
+  IoPocketenvActorDefs: "io.pocketenv.actor.defs",
+  IoPocketenvActorGetActorSandboxes: "io.pocketenv.actor.getActorSandboxes",
+  IoPocketenvActorGetProfile: "io.pocketenv.actor.getProfile",
+  IoPocketenvActorGetTerminalToken: "io.pocketenv.actor.getTerminalToken",
+  AppBskyActorProfile: "app.bsky.actor.profile",
+  IoPocketenvFileAddFile: "io.pocketenv.file.addFile",
+  IoPocketenvFileDefs: "io.pocketenv.file.defs",
+  IoPocketenvFileDeleteFile: "io.pocketenv.file.deleteFile",
+  IoPocketenvFileGetFile: "io.pocketenv.file.getFile",
+  IoPocketenvFileGetFiles: "io.pocketenv.file.getFiles",
+  IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",
+  IoPocketenvSandboxCreateIntegration: "io.pocketenv.sandbox.createIntegration",
+  IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",
+  IoPocketenvSandboxDefs: "io.pocketenv.sandbox.defs",
+  IoPocketenvSandboxDeleteSandbox: "io.pocketenv.sandbox.deleteSandbox",
+  IoPocketenvSandboxGetIntegrations: "io.pocketenv.sandbox.getIntegrations",
+  IoPocketenvSandboxGetPreferences: "io.pocketenv.sandbox.getPreferences",
+  IoPocketenvSandboxGetSandbox: "io.pocketenv.sandbox.getSandbox",
+  IoPocketenvSandboxGetSandboxes: "io.pocketenv.sandbox.getSandboxes",
+  IoPocketenvSandboxGetSshKeys: "io.pocketenv.sandbox.getSshKeys",
   IoPocketenvSandboxGetTailscaleAuthKey:
-    'io.pocketenv.sandbox.getTailscaleAuthKey',
-  IoPocketenvSandboxGetTailscaleToken: 'io.pocketenv.sandbox.getTailscaleToken',
-  IoPocketenvSandboxPutPreferences: 'io.pocketenv.sandbox.putPreferences',
-  IoPocketenvSandboxPutSshKeys: 'io.pocketenv.sandbox.putSshKeys',
+    "io.pocketenv.sandbox.getTailscaleAuthKey",
+  IoPocketenvSandboxGetTailscaleToken: "io.pocketenv.sandbox.getTailscaleToken",
+  IoPocketenvSandboxPutPreferences: "io.pocketenv.sandbox.putPreferences",
+  IoPocketenvSandboxPutSshKeys: "io.pocketenv.sandbox.putSshKeys",
   IoPocketenvSandboxPutTailscaleAuthKey:
-    'io.pocketenv.sandbox.putTailscaleAuthKey',
-  IoPocketenvSandboxPutTailscaleToken: 'io.pocketenv.sandbox.putTailscaleToken',
-  IoPocketenvSandbox: 'io.pocketenv.sandbox',
-  IoPocketenvSandboxStartSandbox: 'io.pocketenv.sandbox.startSandbox',
-  IoPocketenvSandboxStopSandbox: 'io.pocketenv.sandbox.stopSandbox',
+    "io.pocketenv.sandbox.putTailscaleAuthKey",
+  IoPocketenvSandboxPutTailscaleToken: "io.pocketenv.sandbox.putTailscaleToken",
+  IoPocketenvSandbox: "io.pocketenv.sandbox",
+  IoPocketenvSandboxStartSandbox: "io.pocketenv.sandbox.startSandbox",
+  IoPocketenvSandboxStopSandbox: "io.pocketenv.sandbox.stopSandbox",
   IoPocketenvSandboxUpdateSandboxSettings:
-    'io.pocketenv.sandbox.updateSandboxSettings',
-  IoPocketenvSecretAddSecret: 'io.pocketenv.secret.addSecret',
-  IoPocketenvSecretDefs: 'io.pocketenv.secret.defs',
-  IoPocketenvSecretDeleteSecret: 'io.pocketenv.secret.deleteSecret',
-  IoPocketenvSecretGetSecrets: 'io.pocketenv.secret.getSecrets',
-  IoPocketenvVariableAddVariable: 'io.pocketenv.variable.addVariable',
-  IoPocketenvVariableDefs: 'io.pocketenv.variable.defs',
-  IoPocketenvVariableDeleteVariable: 'io.pocketenv.variable.deleteVariable',
-  IoPocketenvVariableGetVariables: 'io.pocketenv.variable.getVariables',
-  IoPocketenvVolumeAddVolume: 'io.pocketenv.volume.addVolume',
-  IoPocketenvVolumeDefs: 'io.pocketenv.volume.defs',
-  IoPocketenvVolumeDeleteVolume: 'io.pocketenv.volume.deleteVolume',
-  IoPocketenvVolumeGetVolumes: 'io.pocketenv.volume.getVolumes',
-  IoPocketenvPublicKey: 'io.pocketenv.publicKey',
-  ComAtprotoRepoStrongRef: 'com.atproto.repo.strongRef',
-}
+    "io.pocketenv.sandbox.updateSandboxSettings",
+  IoPocketenvSecretAddSecret: "io.pocketenv.secret.addSecret",
+  IoPocketenvSecretDefs: "io.pocketenv.secret.defs",
+  IoPocketenvSecretDeleteSecret: "io.pocketenv.secret.deleteSecret",
+  IoPocketenvSecretGetSecret: "io.pocketenv.secret.getSecret",
+  IoPocketenvSecretGetSecrets: "io.pocketenv.secret.getSecrets",
+  IoPocketenvVariableAddVariable: "io.pocketenv.variable.addVariable",
+  IoPocketenvVariableDefs: "io.pocketenv.variable.defs",
+  IoPocketenvVariableDeleteVariable: "io.pocketenv.variable.deleteVariable",
+  IoPocketenvVariableGetVariable: "io.pocketenv.variable.getVariable",
+  IoPocketenvVariableGetVariables: "io.pocketenv.variable.getVariables",
+  IoPocketenvVolumeAddVolume: "io.pocketenv.volume.addVolume",
+  IoPocketenvVolumeDefs: "io.pocketenv.volume.defs",
+  IoPocketenvVolumeDeleteVolume: "io.pocketenv.volume.deleteVolume",
+  IoPocketenvVolumeGetVolume: "io.pocketenv.volume.getVolume",
+  IoPocketenvVolumeGetVolumes: "io.pocketenv.volume.getVolumes",
+  IoPocketenvPublicKey: "io.pocketenv.publicKey",
+  ComAtprotoRepoStrongRef: "com.atproto.repo.strongRef",
+};

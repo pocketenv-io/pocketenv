@@ -5,10 +5,14 @@ import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
 import AddVolumeModal from "../../../components/contextmenu/AddVolumeModal";
 import { useState } from "react";
-import { useVolumesQuery } from "../../../hooks/useVolume";
+import {
+  useDeleteVolumeMutation,
+  useVolumesQuery,
+} from "../../../hooks/useVolume";
 import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
 import ConfirmDelete from "../../../components/confirmdelete/ConfirmDelete";
+import { useQueryClient } from "@tanstack/react-query";
 
 const PAGE_SIZE = 12;
 const SKELETON_ROWS = 8;
@@ -35,7 +39,12 @@ const VolumeRowSkeleton = ({ index }: { index: number }) => (
 );
 
 function Volumes() {
+  const queryClient = useQueryClient();
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const { mutateAsync: deleteVolume } = useDeleteVolumeMutation();
+  const [selectedVolume, setSelectedVolume] = useState<string | undefined>(
+    undefined,
+  );
   const [selectedVolumeId, setSelectedVolumeId] = useState<string | undefined>(
     undefined,
   );
@@ -60,7 +69,12 @@ function Volumes() {
     setCurrentPage(page);
   };
 
-  const handleConfirmDelete = async () => {};
+  const handleConfirmDelete = async () => {
+    await deleteVolume(selectedVolumeId!);
+    queryClient.invalidateQueries(["volumes", data?.sandbox?.id]);
+    setSelectedVolumeId(undefined);
+    setSelectedVolume(undefined);
+  };
 
   return (
     <Main
@@ -129,7 +143,11 @@ function Volumes() {
                             </button>
                             <button
                               className="btn btn-outline join-item"
-                              onClick={() => setConfirmDeleteOpen(true)}
+                              onClick={() => {
+                                setSelectedVolumeId(volume.id);
+                                setSelectedVolume(volume.name);
+                                setConfirmDeleteOpen(true);
+                              }}
                             >
                               Delete
                             </button>
@@ -165,6 +183,7 @@ function Volumes() {
           onConfirm={handleConfirmDelete}
           subject={"volume"}
           title={"volume?"}
+          subjectId={selectedVolume}
         />
       </>
     </Main>

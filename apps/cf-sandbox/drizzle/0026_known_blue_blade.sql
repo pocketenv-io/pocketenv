@@ -1,0 +1,1 @@
+ALTER TABLE "files" ALTER COLUMN "id" SET DEFAULT xata_id();

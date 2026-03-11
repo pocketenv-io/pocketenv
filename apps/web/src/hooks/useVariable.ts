@@ -1,5 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addVariable, deleteVariable, getVariables } from "../api/variable";
+import {
+  addVariable,
+  deleteVariable,
+  getVariable,
+  getVariables,
+} from "../api/variable";
 
 export const useAddVariableMutation = () => {
   const queryClient = useQueryClient();
@@ -20,11 +25,11 @@ export const useAddVariableMutation = () => {
   });
 };
 
-export const useDeleteVariableMutation = (id: string) => {
+export const useDeleteVariableMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["deleteVariable"],
-    mutationFn: async () => deleteVariable(id),
+    mutationFn: async (id: string) => deleteVariable(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["variables"] });
     },
@@ -40,4 +45,12 @@ export const useVariablesQuery = (
     queryKey: ["variables", sandboxId, offset, limit],
     queryFn: async () => getVariables(sandboxId, offset, limit),
     select: (response) => response.data,
+  });
+
+export const useVariableQuery = (id: string) =>
+  useQuery({
+    queryKey: ["variable", id],
+    queryFn: () => getVariable(id),
+    select: (response) => response.data,
+    enabled: !!id,
   });

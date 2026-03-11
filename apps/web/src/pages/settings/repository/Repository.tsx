@@ -15,6 +15,7 @@ const gitUrlSchema = z.object({
   repositoryUrl: z
     .string()
     .trim()
+    .nullable()
     .refine(
       (val) =>
         val === "" || /^(https?:\/\/.+\/.+\/.+|git@.+:.+\/.+)$/.test(val),

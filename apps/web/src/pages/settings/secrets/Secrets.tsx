@@ -12,7 +12,6 @@ import {
 import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
 import ConfirmDelete from "../../../components/confirmdelete/ConfirmDelete";
-import { set } from "react-hook-form";
 
 const PAGE_SIZE = 12;
 const SKELETON_ROWS = 8;

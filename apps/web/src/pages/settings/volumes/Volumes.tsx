@@ -71,7 +71,7 @@ function Volumes() {
 
   const handleConfirmDelete = async () => {
     await deleteVolume(selectedVolumeId!);
-    queryClient.invalidateQueries(["volumes", data?.sandbox?.id]);
+    queryClient.invalidateQueries({ queryKey: ["volumes", data?.sandbox?.id] });
     setSelectedVolumeId(undefined);
     setSelectedVolume(undefined);
   };

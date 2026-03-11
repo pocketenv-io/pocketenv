@@ -6,6 +6,7 @@ import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
 import { useSshKeys } from "../../../hooks/useSshKeys";
+import { useNotyf } from "../../../hooks/useNotyf";
 
 const sshKeysSchema = z
   .object({
@@ -57,6 +58,7 @@ const sshKeysSchema = z
 type SshKeysFormValues = z.infer<typeof sshKeysSchema>;
 
 function SshKeys() {
+  const notyf = useNotyf();
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const { generateEd25519SSHKeyPair } = useSshKeys();
@@ -75,6 +77,7 @@ function SshKeys() {
 
   const onSubmit = (values: SshKeysFormValues) => {
     console.log(values);
+    notyf.open("primary", "SSH keys saved successfully!");
   };
 
   const onGenerate = async () => {

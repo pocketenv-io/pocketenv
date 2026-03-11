@@ -5,6 +5,7 @@ import { z } from "zod";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
+import { useNotyf } from "../../../hooks/useNotyf";
 
 const gitUrlSchema = z.object({
   repositoryUrl: z
@@ -20,6 +21,7 @@ const gitUrlSchema = z.object({
 type GitUrlFormValues = z.infer<typeof gitUrlSchema>;
 
 function Repository() {
+  const notyf = useNotyf();
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const { data } = useSandboxQuery(
@@ -37,6 +39,7 @@ function Repository() {
 
   const onSubmit = (values: GitUrlFormValues) => {
     console.log(values);
+    notyf.open("primary", "Repository added successfully!");
   };
 
   return (

@@ -5,6 +5,7 @@ import { z } from "zod";
 import { useSandboxQuery } from "../../hooks/useSandbox";
 import Main from "../../layouts/Main";
 import Sidebar from "./sidebar/Sidebar";
+import { useNotyf } from "../../hooks/useNotyf";
 
 const settingsSchema = z.object({
   name: z.string().trim().min(1, "Name is required"),
@@ -15,6 +16,7 @@ const settingsSchema = z.object({
 type SettingsFormValues = z.infer<typeof settingsSchema>;
 
 function Settings() {
+  const notyf = useNotyf();
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const { data } = useSandboxQuery(
@@ -31,6 +33,7 @@ function Settings() {
 
   const onSubmit = (values: SettingsFormValues) => {
     console.log(values);
+    notyf.open("primary", "Settings saved successfully!");
   };
 
   return (

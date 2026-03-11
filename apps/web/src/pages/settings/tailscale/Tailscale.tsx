@@ -5,6 +5,7 @@ import { z } from "zod";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
+import { useNotyf } from "../../../hooks/useNotyf";
 
 const tailscaleSchema = z.object({
   authKey: z
@@ -19,6 +20,7 @@ const tailscaleSchema = z.object({
 type TailscaleFormValues = z.infer<typeof tailscaleSchema>;
 
 function Tailscale() {
+  const notyf = useNotyf();
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const { data } = useSandboxQuery(
@@ -35,6 +37,7 @@ function Tailscale() {
 
   const onSubmit = (values: TailscaleFormValues) => {
     console.log(values);
+    notyf.open("primary", "Auth Key saved successfully!");
   };
 
   return (

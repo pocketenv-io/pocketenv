@@ -86,7 +86,8 @@ function Sidebar() {
                 {!isCollapsed && "Git Repository"}
               </Link>
             </li>
-            <li>
+            {/*
+              <li>
               <Link
                 to={`/${did}/sandbox/${rkey}/integrations`}
                 className={`${
@@ -102,6 +103,7 @@ function Sidebar() {
                 {!isCollapsed && "Integrations"}
               </Link>
             </li>
+            */}
             <li>
               <Link
                 to={`/${did}/sandbox/${rkey}/variables`}

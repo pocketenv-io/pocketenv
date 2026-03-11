@@ -79,6 +79,7 @@ const presentation = (
       provider: data.sandboxes.provider,
       displayName: data.sandboxes.displayName,
       description: data.sandboxes.description,
+      topics: data.sandboxes.topics,
       baseSandbox: data.sandboxes.base,
       status: data.sandboxes.status,
       repo: data.sandboxes.repo,

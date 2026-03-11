@@ -9,6 +9,7 @@ export type Sandbox = {
   displayName: string;
   uri: string;
   description?: string;
+  topics?: string[];
   logo?: string;
   readme?: string;
   vcpus?: number;

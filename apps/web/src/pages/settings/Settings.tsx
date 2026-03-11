@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouterState } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useSandboxQuery } from "../../hooks/useSandbox";
@@ -17,19 +18,35 @@ type SettingsFormValues = z.infer<typeof settingsSchema>;
 
 function Settings() {
   const notyf = useNotyf();
+
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const { data } = useSandboxQuery(
     `at:/${pathname.replace("/settings", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
 
+  const hasReset = useRef(false);
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
+    shouldFocusError: false,
   });
+
+  useEffect(() => {
+    if (data?.sandbox && !hasReset.current) {
+      hasReset.current = true;
+      reset({
+        name: data.sandbox.name,
+        description: data.sandbox.description || "",
+        topics: data.sandbox.topics?.join(" "),
+      });
+    }
+  }, [data, reset]);
 
   const onSubmit = (values: SettingsFormValues) => {
     console.log(values);
@@ -47,13 +64,14 @@ function Settings() {
           className="form-control w-[95%] m-auto"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <label className="label">
+          <label className="label" htmlFor="name">
             <span className="label-text font-bold mb-1 text-[14px]">Name</span>
           </label>
           <div
             className={`input input-bordered w-md input-lg text-[15px] font-semibold bg-transparent ${errors.name ? "input-error" : ""}`}
           >
             <input
+              id="name"
               type="text"
               className="grow"
               autoComplete="off"
@@ -67,19 +85,20 @@ function Settings() {
             <p className="text-error text-sm mt-2">{errors.name.message}</p>
           )}
           <div className="mt-8">
-            <label className="label">
+            <label className="label" htmlFor="description">
               <span className="label-text font-bold mb-1 text-[14px]">
                 Description
               </span>
             </label>
             <textarea
+              id="description"
               className="textarea max-w-full h-[150px] text-[14px] font-semibold"
               aria-label="Textarea"
               {...register("description")}
             ></textarea>
           </div>
           <div className="mt-8">
-            <label className="label">
+            <label className="label" htmlFor="topics">
               <span className="label-text font-bold mb-1 text-[14px]">
                 Topics
               </span>
@@ -88,6 +107,7 @@ function Settings() {
               List of topics separated by spaces.
             </span>
             <textarea
+              id="topics"
               className="textarea max-w-full h-25 text-[14px] font-semibold mt-2"
               aria-label="Textarea"
               {...register("topics")}

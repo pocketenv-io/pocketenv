@@ -9,7 +9,14 @@ import Sidebar from "./sidebar/Sidebar";
 import { useNotyf } from "../../hooks/useNotyf";
 
 const settingsSchema = z.object({
-  name: z.string().trim().min(1, "Name is required"),
+  name: z
+    .string()
+    .trim()
+    .min(1, "Name is required")
+    .regex(
+      /^[a-zA-Z0-9]+([_-][a-zA-Z0-9]+)*$/,
+      "Name must contain only letters, numbers, hyphens, or underscores (no spaces)",
+    ),
   description: z.string().trim().optional(),
   topics: z.string().trim().optional(),
 });

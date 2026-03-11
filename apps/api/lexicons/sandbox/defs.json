@@ -181,6 +181,11 @@
     },
     "sandboxDetailsPref": {
       "type": "object",
+      "nullable": [
+        "repo",
+        "description",
+        "topics"
+      ],
       "properties": {
         "name": {
           "type": "string",

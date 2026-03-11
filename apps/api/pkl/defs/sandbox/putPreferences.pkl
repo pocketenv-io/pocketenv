@@ -10,8 +10,12 @@ defs = new Mapping<String, Procedure> {
       encoding = "application/json"
       schema = new ObjectType {
         type = "object"
-        required = List("preferences")
+        required = List("sandboxId", "preferences")
         properties {
+          ["sandboxId"] = new StringType {
+            type = "string"
+            description = "The sandbox ID or URI"
+          }
           ["preferences"] = new Ref {
             type = "ref"
             ref = "io.pocketenv.sandbox.defs#preferences"

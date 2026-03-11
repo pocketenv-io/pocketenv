@@ -183,6 +183,7 @@ defs = new Mapping<String, ObjectType | Array> {
   }
   ["sandboxDetailsPref"] = new ObjectType {
     type = "object"
+    nullable = List("repo", "description", "topics")
     properties {
       ["name"] = new StringType {
         type = "string"

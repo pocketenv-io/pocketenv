@@ -10,9 +10,14 @@
         "schema": {
           "type": "object",
           "required": [
+            "sandboxId",
             "preferences"
           ],
           "properties": {
+            "sandboxId": {
+              "type": "string",
+              "description": "The sandbox ID or URI"
+            },
             "preferences": {
               "type": "ref",
               "ref": "io.pocketenv.sandbox.defs#preferences"

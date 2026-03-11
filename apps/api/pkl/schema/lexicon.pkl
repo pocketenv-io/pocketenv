@@ -44,6 +44,7 @@ class Params {
 class ObjectType extends BaseType {
   type: "object"
   required: List<String>?
+  nullable: List<String>?
   properties: Mapping<String, StringType | IntegerType | BooleanType | Blob | Ref | Union | Array>
 }
 

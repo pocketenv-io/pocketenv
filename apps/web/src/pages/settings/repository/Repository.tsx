@@ -6,14 +6,18 @@ import { useSandboxQuery } from "../../../hooks/useSandbox";
 import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
 import { useNotyf } from "../../../hooks/useNotyf";
+import { useUpdatePreferencesMutation } from "../../../hooks/usePreferences";
+import consola from "consola";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useRef } from "react";
 
 const gitUrlSchema = z.object({
   repositoryUrl: z
     .string()
     .trim()
-    .min(1, "Repository URL is required")
-    .regex(
-      /^(https?:\/\/.+\/.+\/.+|git@.+:.+\/.+)$/,
+    .refine(
+      (val) =>
+        val === "" || /^(https?:\/\/.+\/.+\/.+|git@.+:.+\/.+)$/.test(val),
       "Must be a valid Git URL (e.g. https://tangled.org/user/repo or git@tangled.org:user/repo)",
     ),
 });
@@ -22,25 +26,54 @@ type GitUrlFormValues = z.infer<typeof gitUrlSchema>;
 
 function Repository() {
   const notyf = useNotyf();
+  const queryClient = useQueryClient();
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
+  const { mutateAsync: updatePreferences } = useUpdatePreferencesMutation();
   const { data } = useSandboxQuery(
     `at:/${pathname.replace("/repository", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
   const index = Math.floor(Math.random() * 7);
+  const hasReset = useRef(false);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<GitUrlFormValues>({
     resolver: zodResolver(gitUrlSchema),
   });
 
-  const onSubmit = (values: GitUrlFormValues) => {
-    console.log(values);
-    notyf.open("primary", "Repository added successfully!");
+  const onSubmit = async (values: GitUrlFormValues) => {
+    try {
+      await updatePreferences({
+        sandboxId: data!.sandbox!.id,
+        preferences: [
+          {
+            repo: values.repositoryUrl === "" ? null : values.repositoryUrl,
+            $type: "io.pocketenv.sandbox.defs#sandboxDetailsPref",
+          },
+        ],
+      });
+      notyf.open("primary", "Repository added successfully!");
+      queryClient.invalidateQueries({
+        queryKey: ["sandbox", data!.sandbox!.id],
+      });
+    } catch (error) {
+      consola.error(error);
+      notyf.open("error", "Failed to add repository!");
+    }
   };
+
+  useEffect(() => {
+    if (data?.sandbox && !hasReset.current) {
+      hasReset.current = true;
+      reset({
+        repositoryUrl: data.sandbox.repo,
+      });
+    }
+  }, [data, reset]);
 
   return (
     <Main

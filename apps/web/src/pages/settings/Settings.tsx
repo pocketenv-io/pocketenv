@@ -7,6 +7,9 @@ import { useSandboxQuery } from "../../hooks/useSandbox";
 import Main from "../../layouts/Main";
 import Sidebar from "./sidebar/Sidebar";
 import { useNotyf } from "../../hooks/useNotyf";
+import { useUpdatePreferencesMutation } from "../../hooks/usePreferences";
+import consola from "consola";
+import { useQueryClient } from "@tanstack/react-query";
 
 const settingsSchema = z.object({
   name: z
@@ -25,7 +28,8 @@ type SettingsFormValues = z.infer<typeof settingsSchema>;
 
 function Settings() {
   const notyf = useNotyf();
-
+  const { mutateAsync: updatePreferences } = useUpdatePreferencesMutation();
+  const queryClient = useQueryClient();
   const routerState = useRouterState();
   const pathname = routerState.location.pathname;
   const { data } = useSandboxQuery(
@@ -55,9 +59,27 @@ function Settings() {
     }
   }, [data, reset]);
 
-  const onSubmit = (values: SettingsFormValues) => {
-    console.log(values);
-    notyf.open("primary", "Settings saved successfully!");
+  const onSubmit = async (values: SettingsFormValues) => {
+    try {
+      await updatePreferences({
+        sandboxId: data!.sandbox!.id,
+        preferences: [
+          {
+            name: values.name,
+            description: values.description,
+            topics: values.topics?.split(" "),
+            $type: "io.pocketenv.sandbox.defs#sandboxDetailsPref",
+          },
+        ],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["sandbox", data!.sandbox!.id],
+      });
+      notyf.open("primary", "Settings saved successfully!");
+    } catch (error) {
+      consola.error(error);
+      notyf.open("error", "Failed to save settings!");
+    }
   };
 
   return (

@@ -12,6 +12,7 @@ export type Sandbox = {
   topics?: string[];
   logo?: string;
   readme?: string;
+  repo?: string;
   vcpus?: number;
   memory?: number;
   installs: number;

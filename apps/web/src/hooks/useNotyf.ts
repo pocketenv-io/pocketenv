@@ -1,39 +1,32 @@
-import { useRef } from "react";
 import { Notyf } from "notyf";
 
-export function useNotyf() {
-  const notyfRef = useRef<Notyf | null>(null);
-
-  if (!notyfRef.current) {
-    notyfRef.current = new Notyf({
-      duration: 3000,
-      position: {
-        x: "right",
-        y: "bottom",
+const notyf = new Notyf({
+  duration: 3000,
+  position: {
+    x: "right",
+    y: "bottom",
+  },
+  types: [
+    {
+      type: "primary",
+      background: "var(--color-primary)",
+      icon: {
+        className: "icon-[tabler--circle-check] text-white!",
+        tagName: "i",
       },
-      types: [
-        {
-          type: "primary",
-          background: "var(--color-primary)",
-          icon: {
-            className: "icon-[tabler--circle-check] text-white!",
-            tagName: "i",
-          },
-        },
-        {
-          type: "error",
-          background: "var(--color-error)",
-          icon: {
-            className: "icon-[tabler--circle-x] text-white!",
-            tagName: "i",
-          },
-        },
-      ],
-    });
-  }
+    },
+    {
+      type: "error",
+      background: "var(--color-error)",
+      icon: {
+        className: "icon-[tabler--circle-x] text-white!",
+        tagName: "i",
+      },
+    },
+  ],
+});
 
-  const notyf = notyfRef.current;
-
+export function useNotyf() {
   const open = (
     type: string,
     message: string,

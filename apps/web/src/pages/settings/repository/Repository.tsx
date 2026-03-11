@@ -18,7 +18,9 @@ const gitUrlSchema = z.object({
     .nullable()
     .refine(
       (val) =>
-        val === "" || /^(https?:\/\/.+\/.+\/.+|git@.+:.+\/.+)$/.test(val),
+        val === "" ||
+        val === null ||
+        /^(https?:\/\/.+\/.+\/.+|git@.+:.+\/.+)$/.test(val),
       "Must be a valid Git URL (e.g. https://tangled.org/user/repo or git@tangled.org:user/repo)",
     ),
 });

@@ -119,11 +119,19 @@ function SshKeys() {
           const body = values.privateKey
             .slice(headerIndex + header.length, footerIndex)
             .trim();
+          const chars = body.split("");
+          const nonNewlineIndices = chars
+            .map((c, i) => (c !== "\n" ? i : -1))
+            .filter((i) => i !== -1);
           const maskedBody =
-            body.length > 15
-              ? body.slice(0, 10) +
-                "*".repeat(body.length - 15) +
-                body.slice(-5)
+            nonNewlineIndices.length > 15
+              ? (() => {
+                  const middleIndices = nonNewlineIndices.slice(10, -5);
+                  middleIndices.forEach((i) => {
+                    chars[i] = "*";
+                  });
+                  return chars.join("");
+                })()
               : body;
           return `${header}\n${maskedBody}\n${footer}`;
         })(),

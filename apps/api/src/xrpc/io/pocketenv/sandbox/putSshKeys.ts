@@ -1,5 +1,6 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import type { Context } from "context";
+import { eq } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type { InputSchema } from "lexicon/types/io/pocketenv/sandbox/putSshKeys";
 import sshKeys from "schema/ssh-keys";
@@ -10,15 +11,18 @@ export default function (server: Server, ctx: Context) {
       throw new XRPCError(401, "Unauthorized");
     }
 
-    await ctx.db
-      .insert(sshKeys)
-      .values({
-        publicKey: input.publicKey,
-        privateKey: input.privateKey,
-        redacted: input.redacted,
-        sandboxId: input.id,
-      })
-      .execute();
+    await ctx.db.transaction(async (tx) => {
+      await tx.delete(sshKeys).where(eq(sshKeys.sandboxId, input.id)).execute();
+      await tx
+        .insert(sshKeys)
+        .values({
+          publicKey: input.publicKey,
+          privateKey: input.privateKey,
+          redacted: input.redacted,
+          sandboxId: input.id,
+        })
+        .execute();
+    });
 
     return {};
   };

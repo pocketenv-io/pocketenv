@@ -1,5 +1,6 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import type { Context } from "context";
+import { eq } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type { InputSchema } from "lexicon/types/io/pocketenv/sandbox/putTailscaleAuthKey";
 import tailscaleAuthKeys from "schema/tailscale-auth-keys";
@@ -10,14 +11,20 @@ export default function (server: Server, ctx: Context) {
       throw new XRPCError(401, "Unauthorized");
     }
 
-    await ctx.db
-      .insert(tailscaleAuthKeys)
-      .values({
-        sandboxId: input.id,
-        authKey: input.authKey,
-        redacted: input.redacted || "",
-      })
-      .execute();
+    await ctx.db.transaction(async (tx) => {
+      await tx
+        .delete(tailscaleAuthKeys)
+        .where(eq(tailscaleAuthKeys.sandboxId, input.id))
+        .execute();
+      await tx
+        .insert(tailscaleAuthKeys)
+        .values({
+          sandboxId: input.id,
+          authKey: input.authKey,
+          redacted: input.redacted || "",
+        })
+        .execute();
+    });
 
     return {};
   };

@@ -90,7 +90,7 @@ function SshKeys() {
 
   useEffect(() => {
     if (sshKeys?.data) {
-      setValue("privateKey", sshKeys.data.privateKey);
+      setValue("privateKey", sshKeys.data.privateKey.replace(/\\n/g, "\n"));
       setValue("publicKey", sshKeys.data.publicKey);
     }
   }, [sshKeys, setValue]);
@@ -115,10 +115,11 @@ function SshKeys() {
           const headerIndex = values.privateKey.indexOf(header);
           const footerIndex = values.privateKey.indexOf(footer);
           if (headerIndex === -1 || footerIndex === -1)
-            return values.privateKey;
-          const body = values.privateKey
-            .slice(headerIndex + header.length, footerIndex)
-            .trim();
+            return values.privateKey.replace(/\n/g, "\\n");
+          const body = values.privateKey.slice(
+            headerIndex + header.length,
+            footerIndex,
+          );
           const chars = body.split("");
           const nonNewlineIndices = chars
             .map((c, i) => (c !== "\n" ? i : -1))
@@ -133,7 +134,7 @@ function SshKeys() {
                   return chars.join("");
                 })()
               : body;
-          return `${header}\n${maskedBody}\n${footer}`;
+          return `${header}${maskedBody}${footer}`.replace(/\n/g, "\\n");
         })(),
       });
     }

@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useFilesQuery } from "../../../hooks/useFile";
 import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
-import ConfirmDelete from "../../../components/ConfirmDelete";
+import ConfirmDelete from "../../../components/confirmdelete";
 
 const PAGE_SIZE = 12;
 const SKELETON_ROWS = 8;

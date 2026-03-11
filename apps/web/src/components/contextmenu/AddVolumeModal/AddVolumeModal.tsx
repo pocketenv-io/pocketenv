@@ -17,9 +17,15 @@ export type AddVolumeModalProps = {
   isOpen: boolean;
   onClose: () => void;
   sandboxId: string;
+  volumeId?: string;
 };
 
-function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
+function AddVolumeModal({
+  isOpen,
+  onClose,
+  sandboxId,
+  volumeId,
+}: AddVolumeModalProps) {
   const notyf = useNotyf();
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: addVolume } = useAddVolumeMutation();
@@ -102,7 +108,9 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
         >
           <div className="modal-content">
             <div className="modal-header">
-              <div className="flex-1">Add Volume</div>
+              <div className="flex-1">
+                {volumeId ? "Edit Volume" : "Add Volume"}
+              </div>
               <button
                 type="button"
                 className="btn btn-text btn-circle btn-sm absolute end-3 top-3"
@@ -122,12 +130,12 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                     </span>
                   </label>
                   <div
-                    className={`input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent ${errors.name ? "is-invalid" : ""}`}
+                    className={`input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent`}
                   >
                     <input
                       type="text"
                       placeholder="Volume Name"
-                      className={`grow ${errors.name ? "is-invalid" : ""}`}
+                      className={`grow`}
                       autoComplete="off"
                       data-1p-ignore
                       data-lpignore="true"
@@ -148,12 +156,12 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                       </span>
                     </label>
                     <div
-                      className={`input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent ${errors.path ? "is-invalid" : ""}`}
+                      className={`input input-bordered w-full input-lg text-[15px] font-semibold bg-transparent`}
                     >
                       <input
                         type="text"
                         placeholder="Mount Path, e.g /data"
-                        className={`grow ${errors.path ? "is-invalid" : ""}`}
+                        className={`grow`}
                         autoComplete="off"
                         data-1p-ignore
                         data-lpignore="true"
@@ -163,7 +171,7 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                       />
                     </div>
                     {errors.path && (
-                      <span className="helper-text text-[12px] mt-1 block">
+                      <span className="text-error text-[12px] mt-1 block">
                         {errors.path.message}
                       </span>
                     )}
@@ -175,7 +183,7 @@ function AddVolumeModal({ isOpen, onClose, sandboxId }: AddVolumeModalProps) {
                   {isLoading && (
                     <span className="loading loading-spinner loading-xs mr-1.5"></span>
                   )}
-                  Add Volume
+                  {volumeId ? "Save Changes" : "Add Volume"}
                 </button>
               </div>
             </form>

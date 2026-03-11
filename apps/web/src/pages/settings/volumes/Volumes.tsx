@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useVolumesQuery } from "../../../hooks/useVolume";
 import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
+import ConfirmDelete from "../../../components/confirmdelete/ConfirmDelete";
 
 const PAGE_SIZE = 12;
 const SKELETON_ROWS = 8;
@@ -34,6 +35,10 @@ const VolumeRowSkeleton = ({ index }: { index: number }) => (
 );
 
 function Volumes() {
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [selectedVolumeId, setSelectedVolumeId] = useState<string | undefined>(
+    undefined,
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const offset = (currentPage - 1) * PAGE_SIZE;
@@ -54,6 +59,8 @@ function Volumes() {
   const onPageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const handleConfirmDelete = async () => {};
 
   return (
     <Main
@@ -111,10 +118,19 @@ function Volumes() {
                         </td>
                         <td className="normal-case text-[14px] text-right">
                           <div className="join">
-                            <button className="btn btn-outline join-item">
+                            <button
+                              className="btn btn-outline join-item"
+                              onClick={() => {
+                                setSelectedVolumeId(volume.id);
+                                setIsOpen(true);
+                              }}
+                            >
                               Edit
                             </button>
-                            <button className="btn btn-outline join-item">
+                            <button
+                              className="btn btn-outline join-item"
+                              onClick={() => setConfirmDeleteOpen(true)}
+                            >
                               Delete
                             </button>
                           </div>
@@ -136,8 +152,19 @@ function Volumes() {
         </div>
         <AddVolumeModal
           isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
+          onClose={() => {
+            setIsOpen(false);
+            setSelectedVolumeId(undefined);
+          }}
           sandboxId={data?.sandbox?.id ?? ""}
+          volumeId={selectedVolumeId}
+        />
+        <ConfirmDelete
+          isOpen={confirmDeleteOpen}
+          onClose={() => setConfirmDeleteOpen(false)}
+          onConfirm={handleConfirmDelete}
+          subject={"volume"}
+          title={"volume?"}
         />
       </>
     </Main>

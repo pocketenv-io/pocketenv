@@ -8,8 +8,16 @@ import { useSodium } from "../../../hooks/useSodium";
 import { PUBLIC_KEY } from "../../../consts";
 import { useNotyf } from "../../../hooks/useNotyf";
 
+const UPPER_SNAKE_CASE_REGEX = /^[A-Z][A-Z0-9_]*$/;
+
 const schema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .regex(
+      UPPER_SNAKE_CASE_REGEX,
+      "Name must be in UPPER_SNAKE_CASE (e.g. MY_SECRET)",
+    ),
   value: z.string().min(1, "Value is required"),
 });
 
@@ -19,9 +27,15 @@ export type AddSecretModalProps = {
   isOpen: boolean;
   onClose: () => void;
   sandboxId: string;
+  secretId?: string;
 };
 
-function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
+function AddSecretModal({
+  isOpen,
+  onClose,
+  sandboxId,
+  secretId,
+}: AddSecretModalProps) {
   const sodium = useSodium();
   const notyf = useNotyf();
   const [isLoading, setIsLoading] = useState(false);
@@ -30,10 +44,19 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const transformed = e.target.value
+      .toUpperCase()
+      .replace(/\s+/g, "_")
+      .replace(/[^A-Z0-9_]/g, "");
+    setValue("name", transformed, { shouldValidate: true });
+  };
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
@@ -112,7 +135,9 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
         >
           <div className="modal-content">
             <div className="modal-header">
-              <div className="flex-1">Add Secret</div>
+              <div className="flex-1">
+                {secretId ? "Edit Secret" : "Add Secret"}
+              </div>
               <button
                 type="button"
                 className="btn btn-text btn-circle btn-sm absolute end-3 top-3"
@@ -137,17 +162,17 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
                     <input
                       type="text"
                       placeholder="YOUR_SECRET_NAME"
-                      className={`grow ${errors.name ? "is-invalid" : ""}`}
+                      className={`grow`}
                       autoComplete="off"
                       data-1p-ignore
                       data-lpignore="true"
                       data-form-type="other"
                       style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
-                      {...register("name")}
+                      {...register("name", { onChange: handleNameChange })}
                     />
                   </div>
                   {errors.name && (
-                    <span className="helper-text text-[12px] mt-1">
+                    <span className="text-error text-[12px] mt-1">
                       {errors.name.message}
                     </span>
                   )}
@@ -158,14 +183,14 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
                       </span>
                     </label>
                     <textarea
-                      className={`textarea max-w-full h-[250px] text-[14px] font-semibold ${errors.value ? "is-invalid" : ""}`}
+                      className={`textarea max-w-full h-[250px] text-[14px] font-semibold`}
                       aria-label="Textarea"
                       placeholder="Secret Value"
                       style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
                       {...register("value")}
                     ></textarea>
                     {errors.value && (
-                      <span className="helper-text text-[12px] mt-1 block">
+                      <span className="text-error text-[12px] mt-1 block">
                         {errors.value.message}
                       </span>
                     )}
@@ -177,7 +202,7 @@ function AddSecretModal({ isOpen, onClose, sandboxId }: AddSecretModalProps) {
                   {isLoading && (
                     <span className="loading loading-spinner loading-xs mr-1.5"></span>
                   )}
-                  Add Secret
+                  {secretId ? "Save Changes" : "Add Secret"}
                 </button>
               </div>
             </form>

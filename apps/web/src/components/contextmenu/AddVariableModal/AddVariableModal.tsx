@@ -6,8 +6,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddVariableMutation } from "../../../hooks/useVariable";
 import { useNotyf } from "../../../hooks/useNotyf";
 
+const UPPER_SNAKE_CASE_REGEX = /^[A-Z][A-Z0-9_]*$/;
+
 const schema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .regex(
+      UPPER_SNAKE_CASE_REGEX,
+      "Name must be in UPPER_SNAKE_CASE (e.g. MY_VARIABLE)",
+    ),
   value: z.string().min(1, "Value is required"),
 });
 
@@ -17,12 +25,14 @@ export type AddEnvironmentVariableModalProps = {
   isOpen: boolean;
   onClose: () => void;
   sandboxId: string;
+  variableId?: string;
 };
 
 function AddEnvironmentVariableModal({
   isOpen,
   onClose,
   sandboxId,
+  variableId,
 }: AddEnvironmentVariableModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const notyf = useNotyf();
@@ -31,10 +41,19 @@ function AddEnvironmentVariableModal({
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
   });
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const transformed = e.target.value
+      .toUpperCase()
+      .replace(/\s+/g, "_")
+      .replace(/[^A-Z0-9_]/g, "");
+    setValue("name", transformed, { shouldValidate: true });
+  };
 
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
@@ -106,7 +125,9 @@ function AddEnvironmentVariableModal({
         >
           <div className="modal-content">
             <div className="modal-header">
-              <div className="flex-1">Add Variable</div>
+              <div className="flex-1">
+                {variableId ? "Edit Variable" : "Add Variable"}
+              </div>
               <button
                 type="button"
                 className="btn btn-text btn-circle btn-sm absolute end-3 top-3"
@@ -129,17 +150,17 @@ function AddEnvironmentVariableModal({
                     <input
                       type="text"
                       placeholder="YOUR_VARIABLE_NAME"
-                      className={`grow ${errors.name ? "is-invalid" : ""}`}
+                      className={`grow`}
                       autoComplete="off"
                       data-1p-ignore
                       data-lpignore="true"
                       data-form-type="other"
                       style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
-                      {...register("name")}
+                      {...register("name", { onChange: handleNameChange })}
                     />
                   </div>
                   {errors.name && (
-                    <span className="helper-text text-[12px] mt-1">
+                    <span className="text-error text-[12px] mt-1">
                       {errors.name.message}
                     </span>
                   )}
@@ -150,14 +171,14 @@ function AddEnvironmentVariableModal({
                       </span>
                     </label>
                     <textarea
-                      className={`textarea max-w-full h-[250px] text-[14px] font-semibold ${errors.value ? "is-invalid" : ""}`}
+                      className={`textarea max-w-full h-[250px] text-[14px] font-semibold`}
                       aria-label="Textarea"
                       placeholder="Variable Value"
                       style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
                       {...register("value")}
                     ></textarea>
                     {errors.value && (
-                      <span className="helper-text text-[12px] mt-1 block">
+                      <span className="text-error text-[12px] mt-1 block">
                         {errors.value.message}
                       </span>
                     )}
@@ -172,7 +193,7 @@ function AddEnvironmentVariableModal({
                   {isLoading && (
                     <span className="loading loading-spinner loading-xs mr-1.5"></span>
                   )}
-                  Add Variable
+                  {variableId ? "Save Changes" : "Add Variable"}
                 </button>
               </div>
             </form>

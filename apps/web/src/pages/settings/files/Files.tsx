@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useFilesQuery } from "../../../hooks/useFile";
 import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
+import ConfirmDelete from "../../../components/ConfirmDelete";
 
 const PAGE_SIZE = 12;
 const SKELETON_ROWS = 8;
@@ -32,6 +33,10 @@ const FileRowSkeleton = ({ index }: { index: number }) => (
 );
 
 function Files() {
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [selectedFileId, setSelectedFileId] = useState<string | undefined>(
+    undefined,
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const offset = (currentPage - 1) * PAGE_SIZE;
@@ -53,6 +58,8 @@ function Files() {
     setCurrentPage(page);
   };
 
+  const handleConfirmDelete = async () => {};
+
   return (
     <Main
       sidebar={<Sidebar />}
@@ -71,8 +78,8 @@ function Files() {
             </button>
           </div>
           <p className="opacity-60 mb-5">
-            Files (encrypted) that are automatically injected into the sandbox
-            filesystem.
+            Files (will be encrypted) that are automatically injected into the
+            sandbox filesystem.
           </p>
           <div className="w-full overflow-x-auto">
             <table className="table mb-20">
@@ -104,10 +111,19 @@ function Files() {
                         </td>
                         <td className="normal-case text-[14px] text-right">
                           <div className="join">
-                            <button className="btn btn-outline join-item">
+                            <button
+                              className="btn btn-outline join-item"
+                              onClick={() => {
+                                setSelectedFileId(file.id);
+                                setIsOpen(true);
+                              }}
+                            >
                               Edit
                             </button>
-                            <button className="btn btn-outline join-item">
+                            <button
+                              className="btn btn-outline join-item"
+                              onClick={() => setConfirmDeleteOpen(true)}
+                            >
                               Delete
                             </button>
                           </div>
@@ -129,8 +145,19 @@ function Files() {
         </div>
         <AddFileModal
           isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
+          onClose={() => {
+            setIsOpen(false);
+            setSelectedFileId(undefined);
+          }}
           sandboxId={data?.sandbox?.id ?? ""}
+          fileId={selectedFileId}
+        />
+        <ConfirmDelete
+          isOpen={confirmDeleteOpen}
+          onClose={() => setConfirmDeleteOpen(false)}
+          onConfirm={handleConfirmDelete}
+          subject={"file"}
+          title={"file?"}
         />
       </>
     </Main>

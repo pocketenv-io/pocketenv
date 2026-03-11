@@ -19,9 +19,15 @@ export type AddFileModalProps = {
   isOpen: boolean;
   onClose: () => void;
   sandboxId: string;
+  fileId?: string;
 };
 
-function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
+function AddFileModal({
+  isOpen,
+  onClose,
+  sandboxId,
+  fileId,
+}: AddFileModalProps) {
   const sodium = useSodium();
   const notyf = useNotyf();
   const [isLoading, setIsLoading] = useState(false);
@@ -113,7 +119,7 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
         >
           <div className="modal-content">
             <div className="modal-header">
-              <div className="flex-1">Add File</div>
+              <div className="flex-1">{fileId ? "Edit File" : "Add File"}</div>
               <button
                 type="button"
                 className="btn btn-text btn-circle btn-sm absolute end-3 top-3"
@@ -135,7 +141,7 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
                   <input
                     type="text"
                     placeholder="File Mount Path, e.g /root/.openclaw/openclaw.json"
-                    className={`grow ${errors.path ? "is-invalid" : ""}`}
+                    className={`grow`}
                     autoComplete="off"
                     data-1p-ignore
                     data-lpignore="true"
@@ -156,14 +162,14 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
                     </span>
                   </label>
                   <textarea
-                    className={`textarea max-w-full h-[250px] text-[14px] font-semibold ${errors.content ? "is-invalid" : ""}`}
+                    className={`textarea max-w-full h-[250px] text-[14px] font-semibold`}
                     aria-label="Textarea"
                     placeholder="File Content"
                     style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
                     {...register("content")}
                   ></textarea>
                   {errors.content && (
-                    <span className="helper-text text-[12px] mt-1 block">
+                    <span className="text-error text-[12px] mt-1 block">
                       {errors.content.message}
                     </span>
                   )}
@@ -177,7 +183,7 @@ function AddFileModal({ isOpen, onClose, sandboxId }: AddFileModalProps) {
                   {isLoading && (
                     <span className="loading loading-spinner loading-xs mr-1.5"></span>
                   )}
-                  Add File
+                  {fileId ? "Save Changes" : "Add File"}
                 </button>
               </div>
             </form>

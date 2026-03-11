@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useSecretsQuery } from "../../../hooks/useSecret";
 import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
+import ConfirmDelete from "../../../components/confirmdelete/ConfirmDelete";
 
 const PAGE_SIZE = 12;
 const SKELETON_ROWS = 8;
@@ -32,6 +33,10 @@ const SecretRowSkeleton = ({ index }: { index: number }) => (
 );
 
 function Secrets() {
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [selectedSecretId, setSelectedSecretId] = useState<string | undefined>(
+    undefined,
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const offset = (currentPage - 1) * PAGE_SIZE;
@@ -52,6 +57,8 @@ function Secrets() {
   const onPageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const handleConfirmDelete = async () => {};
 
   return (
     <Main
@@ -109,10 +116,19 @@ function Secrets() {
                         </td>
                         <td className="normal-case text-[14px] text-right">
                           <div className="join">
-                            <button className="btn btn-outline join-item">
+                            <button
+                              className="btn btn-outline join-item"
+                              onClick={() => {
+                                setSelectedSecretId(secret.id);
+                                setIsOpen(true);
+                              }}
+                            >
                               Edit
                             </button>
-                            <button className="btn btn-outline join-item">
+                            <button
+                              className="btn btn-outline join-item"
+                              onClick={() => setConfirmDeleteOpen(true)}
+                            >
                               Delete
                             </button>
                           </div>
@@ -134,8 +150,19 @@ function Secrets() {
         </div>
         <AddSecretModal
           isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
+          onClose={() => {
+            setIsOpen(false);
+            setSelectedSecretId(undefined);
+          }}
           sandboxId={data?.sandbox?.id ?? ""}
+          secretId={selectedSecretId}
+        />
+        <ConfirmDelete
+          isOpen={confirmDeleteOpen}
+          onClose={() => setConfirmDeleteOpen(false)}
+          onConfirm={handleConfirmDelete}
+          subject={"secret"}
+          title={"secret?"}
         />
       </>
     </Main>

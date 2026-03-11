@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useVariablesQuery } from "../../../hooks/useVariable";
 import dayjs from "dayjs";
 import Pagination from "../../../components/pagination";
+import ConfirmDelete from "../../../components/confirmdelete";
 
 const PAGE_SIZE = 10;
 const SKELETON_ROWS = 8;
@@ -34,6 +35,10 @@ const VariableRowSkeleton = ({ index }: { index: number }) => (
 );
 
 function Variables() {
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  const [selectedVariableId, setSelectedVariableId] = useState<
+    string | undefined
+  >(undefined);
   const [isOpen, setIsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const offset = (currentPage - 1) * PAGE_SIZE;
@@ -56,6 +61,8 @@ function Variables() {
   const onPageChange = (page: number) => {
     setCurrentPage(page);
   };
+
+  const handleConfirmDelete = async () => {};
 
   return (
     <Main
@@ -116,10 +123,19 @@ function Variables() {
                         </td>
                         <td className="normal-case text-[14px] text-right">
                           <div className="join">
-                            <button className="btn btn-outline join-item">
+                            <button
+                              className="btn btn-outline join-item"
+                              onClick={() => {
+                                setSelectedVariableId(variable.id);
+                                setIsOpen(true);
+                              }}
+                            >
                               Edit
                             </button>
-                            <button className="btn btn-outline join-item">
+                            <button
+                              className="btn btn-outline join-item"
+                              onClick={() => setConfirmDeleteOpen(true)}
+                            >
                               Delete
                             </button>
                           </div>
@@ -141,8 +157,19 @@ function Variables() {
         </div>
         <AddVariableModal
           isOpen={isOpen}
-          onClose={() => setIsOpen(false)}
+          onClose={() => {
+            setIsOpen(false);
+            setSelectedVariableId(undefined);
+          }}
           sandboxId={data?.sandbox?.id ?? ""}
+          variableId={selectedVariableId}
+        />
+        <ConfirmDelete
+          isOpen={confirmDeleteOpen}
+          onClose={() => setConfirmDeleteOpen(false)}
+          onConfirm={handleConfirmDelete}
+          subject={"variable"}
+          title={"variable?"}
         />
       </>
     </Main>

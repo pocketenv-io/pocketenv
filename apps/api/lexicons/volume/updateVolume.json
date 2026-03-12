@@ -1,0 +1,29 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.volume.updateVolume",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "id",
+            "volume"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The ID of the volume to update."
+            },
+            "volume": {
+              "type": "ref",
+              "ref": "io.pocketenv.volume.defs#volume"
+            }
+          }
+        }
+      }
+    }
+  }
+}

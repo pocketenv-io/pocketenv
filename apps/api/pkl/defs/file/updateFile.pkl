@@ -1,0 +1,26 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.file.updateFile"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    input {
+      encoding = "application/json"
+      schema {
+        type = "object"
+        required = List("id", "file")
+        properties {
+          ["id"] = new StringType {
+            type = "string"
+            description = "The ID of the file to delete"
+          }
+          ["file"] = new Ref {
+            type = "ref"
+            ref = "io.pocketenv.file.defs#file"
+          }
+        }
+      }
+    }
+  }
+}

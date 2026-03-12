@@ -1,5 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addFile, deleteFile, getFile, getFiles } from "../api/file";
+import {
+  addFile,
+  deleteFile,
+  getFile,
+  getFiles,
+  updateFile,
+} from "../api/file";
 
 export const useAddFileMutation = () => {
   const queryClient = useQueryClient();
@@ -49,3 +55,22 @@ export const useFileQuery = (id: string) =>
     select: (response) => response.data,
     enabled: !!id,
   });
+
+export const useUpdateFileMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["updateFile"],
+    mutationFn: async ({
+      id,
+      path,
+      content,
+    }: {
+      id: string;
+      path: string;
+      content: string;
+    }) => updateFile(id, path, content),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["files"] });
+    },
+  });
+};

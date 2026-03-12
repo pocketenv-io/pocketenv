@@ -51,3 +51,20 @@ export const getSecret = (id: string) =>
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
+
+export const updateSecret = (id: string, name: string, value: string) =>
+  client.post(
+    "/xrpc/io.pocketenv.secret.updateSecret",
+    {
+      id,
+      secret: {
+        name,
+        value,
+      },
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  );

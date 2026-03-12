@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   useAddVariableMutation,
+  useUpdateVariableMutation,
   useVariableQuery,
 } from "../../../hooks/useVariable";
 import { useNotyf } from "../../../hooks/useNotyf";
@@ -40,6 +41,7 @@ function AddEnvironmentVariableModal({
   const [isLoading, setIsLoading] = useState(false);
   const notyf = useNotyf();
   const { mutateAsync: addVariable } = useAddVariableMutation();
+  const { mutateAsync: updateVariable } = useUpdateVariableMutation();
   const { data } = useVariableQuery(variableId!);
 
   const {
@@ -101,6 +103,18 @@ function AddEnvironmentVariableModal({
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
     try {
+      if (variableId) {
+        await updateVariable({
+          id: variableId,
+          name: data.name,
+          value: data.value,
+        });
+        setIsLoading(false);
+        reset();
+        onClose();
+        notyf.open("primary", "Variable updated successfully!");
+        return;
+      }
       await addVariable({
         sandboxId,
         name: data.name,

@@ -59,3 +59,20 @@ export const getVariable = (id: string) =>
       },
     },
   );
+
+export const updateVariable = (id: string, name: string, value: string) =>
+  client.post(
+    "/xrpc/io.pocketenv.variable.updateVariable",
+    {
+      id,
+      variable: {
+        name,
+        value,
+      },
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  );

@@ -3,7 +3,11 @@ import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAddSecretMutation, useSecretQuery } from "../../../hooks/useSecret";
+import {
+  useAddSecretMutation,
+  useSecretQuery,
+  useUpdateSecretMutation,
+} from "../../../hooks/useSecret";
 import { useSodium } from "../../../hooks/useSodium";
 import { PUBLIC_KEY } from "../../../consts";
 import { useNotyf } from "../../../hooks/useNotyf";
@@ -40,6 +44,7 @@ function AddSecretModal({
   const notyf = useNotyf();
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: addSecret } = useAddSecretMutation();
+  const { mutateAsync: updateSecret } = useUpdateSecretMutation();
   const { data } = useSecretQuery(secretId!);
   const {
     register,
@@ -104,6 +109,21 @@ function AddSecretModal({
       sodium.fromHex(PUBLIC_KEY),
     );
     try {
+      if (secretId) {
+        await updateSecret({
+          id: secretId,
+          name: data.name,
+          value: sodium.toBase64(
+            sealed,
+            sodium.base64Variants.URLSAFE_NO_PADDING,
+          ),
+        });
+        setIsLoading(false);
+        reset();
+        onClose();
+        notyf.open("primary", "Secret updated successfully!");
+        return;
+      }
       await addSecret({
         sandboxId,
         name: data.name,
@@ -112,6 +132,7 @@ function AddSecretModal({
           sodium.base64Variants.URLSAFE_NO_PADDING,
         ),
       });
+
       setIsLoading(false);
       reset();
       onClose();

@@ -3,7 +3,11 @@ import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAddVolumeMutation, useVolumeQuery } from "../../../hooks/useVolume";
+import {
+  useAddVolumeMutation,
+  useUpdateVolumeMutation,
+  useVolumeQuery,
+} from "../../../hooks/useVolume";
 import { useNotyf } from "../../../hooks/useNotyf";
 
 const schema = z.object({
@@ -29,6 +33,7 @@ function AddVolumeModal({
   const notyf = useNotyf();
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: addVolume } = useAddVolumeMutation();
+  const { mutateAsync: updateVolume } = useUpdateVolumeMutation();
   const { data } = useVolumeQuery(volumeId!);
   const {
     register,
@@ -82,6 +87,18 @@ function AddVolumeModal({
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true);
     try {
+      if (volumeId) {
+        await updateVolume({
+          id: volumeId,
+          name: data.name,
+          path: data.path,
+        });
+        setIsLoading(false);
+        reset();
+        onClose();
+        notyf.open("primary", "Volume updated successfully!");
+        return;
+      }
       await addVolume({
         sandboxId,
         name: data.name,

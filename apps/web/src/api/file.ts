@@ -49,3 +49,20 @@ export const getFile = (id: string) =>
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
+
+export const updateFile = (id: string, path: string, content: string) =>
+  client.post(
+    "/xrpc/io.pocketenv.file.updateFile",
+    {
+      id,
+      file: {
+        path,
+        content,
+      },
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  );

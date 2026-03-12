@@ -4,6 +4,7 @@ import {
   deleteVariable,
   getVariable,
   getVariables,
+  updateVariable,
 } from "../api/variable";
 
 export const useAddVariableMutation = () => {
@@ -54,3 +55,22 @@ export const useVariableQuery = (id: string) =>
     select: (response) => response.data,
     enabled: !!id,
   });
+
+export const useUpdateVariableMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["updateVariable"],
+    mutationFn: async ({
+      id,
+      name,
+      value,
+    }: {
+      id: string;
+      name: string;
+      value: string;
+    }) => updateVariable(id, name, value),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["variables"] });
+    },
+  });
+};

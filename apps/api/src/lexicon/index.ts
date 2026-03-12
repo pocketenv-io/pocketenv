@@ -16,6 +16,7 @@ import type * as IoPocketenvFileAddFile from "./types/io/pocketenv/file/addFile"
 import type * as IoPocketenvFileDeleteFile from "./types/io/pocketenv/file/deleteFile";
 import type * as IoPocketenvFileGetFile from "./types/io/pocketenv/file/getFile";
 import type * as IoPocketenvFileGetFiles from "./types/io/pocketenv/file/getFiles";
+import type * as IoPocketenvFileUpdateFile from "./types/io/pocketenv/file/updateFile";
 import type * as IoPocketenvSandboxClaimSandbox from "./types/io/pocketenv/sandbox/claimSandbox";
 import type * as IoPocketenvSandboxCreateIntegration from "./types/io/pocketenv/sandbox/createIntegration";
 import type * as IoPocketenvSandboxCreateSandbox from "./types/io/pocketenv/sandbox/createSandbox";
@@ -38,14 +39,17 @@ import type * as IoPocketenvSecretAddSecret from "./types/io/pocketenv/secret/ad
 import type * as IoPocketenvSecretDeleteSecret from "./types/io/pocketenv/secret/deleteSecret";
 import type * as IoPocketenvSecretGetSecret from "./types/io/pocketenv/secret/getSecret";
 import type * as IoPocketenvSecretGetSecrets from "./types/io/pocketenv/secret/getSecrets";
+import type * as IoPocketenvSecretUpdateSecret from "./types/io/pocketenv/secret/updateSecret";
 import type * as IoPocketenvVariableAddVariable from "./types/io/pocketenv/variable/addVariable";
 import type * as IoPocketenvVariableDeleteVariable from "./types/io/pocketenv/variable/deleteVariable";
 import type * as IoPocketenvVariableGetVariable from "./types/io/pocketenv/variable/getVariable";
 import type * as IoPocketenvVariableGetVariables from "./types/io/pocketenv/variable/getVariables";
+import type * as IoPocketenvVariableUpdateVariable from "./types/io/pocketenv/variable/updateVariable";
 import type * as IoPocketenvVolumeAddVolume from "./types/io/pocketenv/volume/addVolume";
 import type * as IoPocketenvVolumeDeleteVolume from "./types/io/pocketenv/volume/deleteVolume";
 import type * as IoPocketenvVolumeGetVolume from "./types/io/pocketenv/volume/getVolume";
 import type * as IoPocketenvVolumeGetVolumes from "./types/io/pocketenv/volume/getVolumes";
+import type * as IoPocketenvVolumeUpdateVolume from "./types/io/pocketenv/volume/updateVolume";
 
 export function createServer(options?: XrpcOptions): Server {
   return new Server(options);
@@ -184,6 +188,17 @@ export class IoPocketenvFileNS {
     >,
   ) {
     const nsid = "io.pocketenv.file.getFiles"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  updateFile<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvFileUpdateFile.Handler<ExtractAuth<AV>>,
+      IoPocketenvFileUpdateFile.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.file.updateFile"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 }
@@ -444,6 +459,17 @@ export class IoPocketenvSecretNS {
     const nsid = "io.pocketenv.secret.getSecrets"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
+
+  updateSecret<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSecretUpdateSecret.Handler<ExtractAuth<AV>>,
+      IoPocketenvSecretUpdateSecret.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.secret.updateSecret"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
 }
 
 export class IoPocketenvVariableNS {
@@ -496,6 +522,17 @@ export class IoPocketenvVariableNS {
     const nsid = "io.pocketenv.variable.getVariables"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
+
+  updateVariable<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvVariableUpdateVariable.Handler<ExtractAuth<AV>>,
+      IoPocketenvVariableUpdateVariable.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.variable.updateVariable"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
 }
 
 export class IoPocketenvVolumeNS {
@@ -546,6 +583,17 @@ export class IoPocketenvVolumeNS {
     >,
   ) {
     const nsid = "io.pocketenv.volume.getVolumes"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  updateVolume<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvVolumeUpdateVolume.Handler<ExtractAuth<AV>>,
+      IoPocketenvVolumeUpdateVolume.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.volume.updateVolume"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 }

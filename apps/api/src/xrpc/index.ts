@@ -34,6 +34,10 @@ import getSecret from "./io/pocketenv/secret/getSecret";
 import getVariable from "./io/pocketenv/variable/getVariable";
 import getVolume from "./io/pocketenv/volume/getVolume";
 import deleteVariable from "./io/pocketenv/variable/deleteVariable";
+import updateFile from "./io/pocketenv/file/updateFile";
+import updateSecret from "./io/pocketenv/secret/updateSecret";
+import updateVariable from "./io/pocketenv/variable/updateVariable";
+import updateVolume from "./io/pocketenv/volume/updateVolume";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
@@ -74,6 +78,10 @@ export default function (server: Server, ctx: Context) {
   deleteSecret(server, ctx);
   deleteVolume(server, ctx);
   deleteVariable(server, ctx);
+  updateFile(server, ctx);
+  updateSecret(server, ctx);
+  updateVariable(server, ctx);
+  updateVolume(server, ctx);
 
   return server;
 }

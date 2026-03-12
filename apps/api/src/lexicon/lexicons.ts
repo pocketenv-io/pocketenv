@@ -387,6 +387,32 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvFileUpdateFile: {
+    lexicon: 1,
+    id: "io.pocketenv.file.updateFile",
+    defs: {
+      main: {
+        type: "procedure",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["id", "file"],
+            properties: {
+              id: {
+                type: "string",
+                description: "The ID of the file to delete",
+              },
+              file: {
+                type: "ref",
+                ref: "lex:io.pocketenv.file.defs#file",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvSandboxClaimSandbox: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.claimSandbox",
@@ -1788,6 +1814,36 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSecretUpdateSecret: {
+    lexicon: 1,
+    id: "io.pocketenv.secret.updateSecret",
+    defs: {
+      main: {
+        type: "procedure",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["id", "secret"],
+            properties: {
+              id: {
+                type: "string",
+                description: "The ID of the secret to update.",
+              },
+              secret: {
+                type: "ref",
+                ref: "lex:io.pocketenv.secret.defs#secret",
+              },
+              redacted: {
+                type: "string",
+                description: "The redacted secret value.",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvVariableAddVariable: {
     lexicon: 1,
     id: "io.pocketenv.variable.addVariable",
@@ -1958,6 +2014,32 @@ export const schemaDict = {
                 type: "integer",
                 description: "The total number of variables available.",
                 minimum: 0,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvVariableUpdateVariable: {
+    lexicon: 1,
+    id: "io.pocketenv.variable.updateVariable",
+    defs: {
+      main: {
+        type: "procedure",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["id", "variable"],
+            properties: {
+              id: {
+                type: "string",
+                description: "The ID of the variable to update.",
+              },
+              variable: {
+                type: "ref",
+                ref: "lex:io.pocketenv.variable.defs#variable",
               },
             },
           },
@@ -2160,6 +2242,32 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvVolumeUpdateVolume: {
+    lexicon: 1,
+    id: "io.pocketenv.volume.updateVolume",
+    defs: {
+      main: {
+        type: "procedure",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["id", "volume"],
+            properties: {
+              id: {
+                type: "string",
+                description: "The ID of the volume to update.",
+              },
+              volume: {
+                type: "ref",
+                ref: "lex:io.pocketenv.volume.defs#volume",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvPublicKey: {
     lexicon: 1,
     id: "io.pocketenv.publicKey",
@@ -2226,6 +2334,7 @@ export const ids = {
   IoPocketenvFileDeleteFile: "io.pocketenv.file.deleteFile",
   IoPocketenvFileGetFile: "io.pocketenv.file.getFile",
   IoPocketenvFileGetFiles: "io.pocketenv.file.getFiles",
+  IoPocketenvFileUpdateFile: "io.pocketenv.file.updateFile",
   IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",
   IoPocketenvSandboxCreateIntegration: "io.pocketenv.sandbox.createIntegration",
   IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",
@@ -2254,16 +2363,19 @@ export const ids = {
   IoPocketenvSecretDeleteSecret: "io.pocketenv.secret.deleteSecret",
   IoPocketenvSecretGetSecret: "io.pocketenv.secret.getSecret",
   IoPocketenvSecretGetSecrets: "io.pocketenv.secret.getSecrets",
+  IoPocketenvSecretUpdateSecret: "io.pocketenv.secret.updateSecret",
   IoPocketenvVariableAddVariable: "io.pocketenv.variable.addVariable",
   IoPocketenvVariableDefs: "io.pocketenv.variable.defs",
   IoPocketenvVariableDeleteVariable: "io.pocketenv.variable.deleteVariable",
   IoPocketenvVariableGetVariable: "io.pocketenv.variable.getVariable",
   IoPocketenvVariableGetVariables: "io.pocketenv.variable.getVariables",
+  IoPocketenvVariableUpdateVariable: "io.pocketenv.variable.updateVariable",
   IoPocketenvVolumeAddVolume: "io.pocketenv.volume.addVolume",
   IoPocketenvVolumeDefs: "io.pocketenv.volume.defs",
   IoPocketenvVolumeDeleteVolume: "io.pocketenv.volume.deleteVolume",
   IoPocketenvVolumeGetVolume: "io.pocketenv.volume.getVolume",
   IoPocketenvVolumeGetVolumes: "io.pocketenv.volume.getVolumes",
+  IoPocketenvVolumeUpdateVolume: "io.pocketenv.volume.updateVolume",
   IoPocketenvPublicKey: "io.pocketenv.publicKey",
   ComAtprotoRepoStrongRef: "com.atproto.repo.strongRef",
 };

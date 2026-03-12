@@ -3,7 +3,11 @@ import { createPortal } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAddFileMutation, useFileQuery } from "../../../hooks/useFile";
+import {
+  useAddFileMutation,
+  useFileQuery,
+  useUpdateFileMutation,
+} from "../../../hooks/useFile";
 import { useSodium } from "../../../hooks/useSodium";
 import { PUBLIC_KEY } from "../../../consts";
 import { useNotyf } from "../../../hooks/useNotyf";
@@ -33,6 +37,7 @@ function AddFileModal({
   const [isLoading, setIsLoading] = useState(false);
   const { mutateAsync: addFile } = useAddFileMutation();
   const { data } = useFileQuery(fileId!);
+  const { mutateAsync: updateFile } = useUpdateFileMutation();
   const {
     register,
     handleSubmit,
@@ -87,6 +92,21 @@ function AddFileModal({
       sodium.fromHex(PUBLIC_KEY),
     );
     try {
+      if (fileId) {
+        await updateFile({
+          id: fileId,
+          path: data.path,
+          content: sodium.toBase64(
+            sealed,
+            sodium.base64Variants.URLSAFE_NO_PADDING,
+          ),
+        });
+        setIsLoading(false);
+        reset();
+        onClose();
+        notyf.open("primary", "File updated successfully!");
+        return;
+      }
       await addFile({
         sandboxId,
         path: data.path,

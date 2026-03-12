@@ -56,3 +56,20 @@ export const getVolume = (id: string) =>
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
+
+export const updateVolume = (id: string, name: string, path: string) =>
+  client.post(
+    "/xrpc/io.pocketenv.volume.updateVolume",
+    {
+      id,
+      volume: {
+        name,
+        path,
+      },
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  );

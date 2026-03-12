@@ -3,6 +3,7 @@ export enum Providers {
   DENO = "deno",
   VERCEL = "vercel",
   CLOUDFLARE = "cloudflare",
+  SPRITE = "sprite",
 }
 
 export type Resources = {
@@ -31,5 +32,10 @@ export const DefaultResources: Record<Providers, Resources> = {
     vcpus: 2,
     memory: 4,
     disk: 8,
+  },
+  sprite: {
+    vcpus: 2,
+    memory: 4,
+    disk: 100,
   },
 };

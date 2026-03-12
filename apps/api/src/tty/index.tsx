@@ -1,9 +1,38 @@
 import { SpritesClient } from "@fly/sprites";
+import { consola } from "consola";
+import type { Context } from "context";
+import * as context from "context";
+import { eq } from "drizzle-orm";
 import express, { Router } from "express";
 import { env } from "lib/env";
+import sandboxes from "schema/sandboxes";
+import jwt from "jsonwebtoken";
 
 const router = Router();
+router.use((req, res, next) => {
+  req.ctx = context.ctx;
+  next();
+});
 router.use(express.json());
+
+router.use((req, res, next) => {
+  req.sandboxId = req.headers["x-sandbox-id"] as string | undefined;
+  const authHeader = req.headers.authorization;
+  const bearer = authHeader?.split("Bearer ")[1]?.trim();
+  if (bearer && bearer !== "null") {
+    try {
+      const credentials = jwt.verify(bearer, env.JWT_SECRET, {
+        ignoreExpiration: true,
+      }) as { did: string };
+
+      req.did = credentials.did;
+    } catch (err) {
+      consola.error("Invalid JWT token:", err);
+    }
+  }
+
+  next();
+});
 
 type Session = {
   cmd: any;
@@ -12,13 +41,27 @@ type Session = {
 
 const sessions = new Map<string, Session>();
 
-function createTerminalSession(id: string) {
+async function createTerminalSession(ctx: Context, id: string) {
+  const [sandbox] = await ctx.db
+    .select()
+    .from(sandboxes)
+    .where(eq(sandboxes.id, id))
+    .execute();
+
+  if (!sandbox) {
+    consola.error(`Sandbox not found: ${id}`);
+    throw new Error(`Sandbox not found: ${id}`);
+  }
+
   const client = new SpritesClient(env.SPRITE_TOKEN);
-  const sprite = client.sprite(env.SPRITE_NAME);
+  const sprite = client.sprite(sandbox.sandbox_id!);
   const cmd = sprite.spawn("bash", [], {
     tty: true,
     rows: 24,
     cols: 80,
+    env: {
+      TERM: "xterm-256color",
+    },
   });
 
   const session: Session = {
@@ -48,13 +91,13 @@ function createTerminalSession(id: string) {
   return session;
 }
 
-function getSession(id: string) {
-  return sessions.get(id) ?? createTerminalSession(id);
+async function getSession(ctx: Context, id: string) {
+  return sessions.get(id) ?? (await createTerminalSession(ctx, id));
 }
 
-router.get("/:id/stream", (req, res) => {
+router.get("/:id/stream", async (req, res) => {
   const { id } = req.params;
-  const session = getSession(id);
+  const session = await getSession(req.ctx, id);
 
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache, no-transform");
@@ -73,9 +116,9 @@ router.get("/:id/stream", (req, res) => {
   });
 });
 
-router.post("/:id/input", express.text({ type: "*/*" }), (req, res) => {
+router.post("/:id/input", express.text({ type: "*/*" }), async (req, res) => {
   const { id } = req.params;
-  const session = getSession(id);
+  const session = await getSession(req.ctx, id);
 
   const input = typeof req.body === "string" ? req.body : "";
   session.cmd.stdin.write(input);
@@ -83,9 +126,9 @@ router.post("/:id/input", express.text({ type: "*/*" }), (req, res) => {
   res.status(204).end();
 });
 
-router.post("/:id/resize", (req, res) => {
+router.post("/:id/resize", async (req, res) => {
   const { id } = req.params;
-  const session = getSession(id);
+  const session = await getSession(req.ctx, id);
 
   const cols = Number(req.body?.cols);
   const rows = Number(req.body?.rows);

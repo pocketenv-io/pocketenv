@@ -505,7 +505,7 @@ export const schemaDict = {
                 type: "string",
                 description:
                   "The provider to create the sandbox on, e.g. 'daytona', 'vercel', 'cloudflare', etc.",
-                enum: ["daytona", "vercel", "cloudflare", "deno"],
+                enum: ["daytona", "vercel", "cloudflare", "deno", "sprites"],
               },
               topics: {
                 type: "array",

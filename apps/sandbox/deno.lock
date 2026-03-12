@@ -8,6 +8,7 @@
     "jsr:@std/path@^1.1.2": "1.1.4",
     "jsr:@std/path@^1.1.4": "1.1.4",
     "npm:@daytonaio/sdk@0.141": "0.141.0_@aws-sdk+client-s3@3.988.0_@opentelemetry+api@1.9.0_ws@8.19.0",
+    "npm:@fly/sprites@^0.0.1": "0.0.1",
     "npm:@tsndr/cloudflare-worker-jwt@^3.2.1": "3.2.1",
     "npm:@types/ws@^8.18.1": "8.18.1",
     "npm:@vercel/sandbox@^1.5.0": "1.5.0",
@@ -920,6 +921,9 @@
       "integrity": "sha512-alJC0uCZpTFrSL0CCDjcgleBXPnCrEAhTBILpeAp7M/OFgoqtAetfBzX0xM00MUsVVPpVjlPuMbREqnZCXaTnA==",
       "os": ["win32"],
       "cpu": ["x64"]
+    },
+    "@fly/sprites@0.0.1": {
+      "integrity": "sha512-1s+dIVi/pTMP4Aj4Mkg+4LoZ/+a0Kp6l9piPRxvpgEKm11b/eRiZgJwVytwAHeI/vtg2fuwcFExjtXOEfny/TA=="
     },
     "@grpc/grpc-js@1.14.3": {
       "integrity": "sha512-Iq8QQQ/7X3Sac15oB6p0FmUg/klxQvXLeileoqrTRGJYLV+/9tubbr9ipz0GKHjmXVsgFPo/+W+2cA8eNcR+XA==",
@@ -2585,6 +2589,11 @@
       "npm:ramda@0.32",
       "npm:unique-username-generator@^1.5.1",
       "npm:zod@^4.3.6"
-    ]
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:@fly/sprites@^0.0.1"
+      ]
+    }
   }
 }

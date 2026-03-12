@@ -14,7 +14,7 @@ abstract class BaseProvider {
   abstract create(options: SandboxOptions): Promise<BaseSandbox>;
 }
 
-export type Provider = "daytona" | "deno" | "vercel";
+export type Provider = "daytona" | "deno" | "vercel" | "sprites";
 
 export interface SandboxOptions {
   id?: string;
@@ -27,6 +27,7 @@ export interface SandboxOptions {
   snapshotRoot?: string;
   port?: number;
   memory?: Memory;
+  spriteName?: string;
   [key: string]: any;
 }
 
@@ -45,6 +46,10 @@ export async function createSandbox(
       );
     case "vercel":
       return import("./vercel/mod.ts").then((module) =>
+        new module.default().create(options),
+      );
+    case "sprites":
+      return import("./sprites/mod.ts").then((module) =>
         new module.default().create(options),
       );
     default:
@@ -76,6 +81,10 @@ export async function getSandboxById(
     }
     case "vercel":
       return import("./vercel/mod.ts").then((module) =>
+        new module.default().get(id),
+      );
+    case "sprites":
+      return import("./sprites/mod.ts").then((module) =>
         new module.default().get(id),
       );
     default:

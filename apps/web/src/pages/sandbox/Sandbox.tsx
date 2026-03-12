@@ -284,6 +284,7 @@ function New() {
                           onClose={() => {}}
                           worker={data.sandbox.baseSandbox}
                           isCloudflare={data.sandbox.provider === "cloudflare"}
+                          isTty={data.sandbox.provider === "sprites"}
                         />
                       )}
                     </div>

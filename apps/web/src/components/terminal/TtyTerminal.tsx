@@ -169,13 +169,7 @@ function TerminalContent({
     const connect = () => {
       instance.write(`\x1b[35mConnecting to terminal...\x1b[0m\r\n`);
 
-      // EventSource doesn't support custom headers, so auth is handled via
-      // query param if a token is available (the server can be extended to
-      // support this), or simply without auth for now.
-      const token = localStorage.getItem("token");
-      const url = token
-        ? `${API_URL}/tty/${sandboxId}/stream?token=${encodeURIComponent(token)}`
-        : `${API_URL}/tty/${sandboxId}/stream`;
+      const url = `${API_URL}/tty/${sandboxId}/stream`;
 
       const es = new EventSource(url);
       eventSourceRef.current = es;

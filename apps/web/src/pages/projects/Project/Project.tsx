@@ -121,6 +121,7 @@ function Project({ sandbox }: ProjectProps) {
           }}
           sandboxId={sandbox.id}
           isCloudflare={sandbox.provider === "cloudflare"}
+          isTty={sandbox.provider === "sprites"}
           worker={sandbox.baseSandbox}
         />
       </td>

@@ -82,6 +82,11 @@ app.post("/v1/sandboxes", async (c) => {
     { dictionaries: [adjectives, nouns], separator: "-" },
     () => false,
   );
+  let spriteName = await generateUniqueAsync(
+    { dictionaries: [adjectives, nouns], separator: "-" },
+    () => false,
+  );
+  spriteName = `${spriteName}-${suffix}`;
 
   try {
     const params = SandboxConfigSchema.parse(body);
@@ -141,6 +146,7 @@ app.post("/v1/sandboxes", async (c) => {
         sleepAfter: params.sleepAfter,
         organizationId: process.env.DAYTONA_ORGANIZATION_ID,
         snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
+        spriteName,
       });
       const sandboxId = await sandbox.id();
 
@@ -194,7 +200,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
   let sandbox: BaseSandbox | null = null;
 
-  if (!["daytona", "vercel", "deno"].includes(record.provider)) {
+  if (!["daytona", "vercel", "deno", "sprites"].includes(record.provider)) {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
@@ -230,7 +236,7 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
 
   let sandbox: BaseSandbox | null = null;
 
-  if (!["daytona", "vercel", "deno"].includes(record.provider)) {
+  if (!["daytona", "vercel", "deno", "sprites"].includes(record.provider)) {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
@@ -261,7 +267,7 @@ app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
 
   let sandbox: BaseSandbox | null = null;
 
-  if (!["daytona", "vercel", "deno"].includes(record.provider)) {
+  if (!["daytona", "vercel", "deno", "sprites"].includes(record.provider)) {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
@@ -288,7 +294,7 @@ app.delete("/v1/sandboxes/:sandboxId", async (c) => {
 
   let sandbox: BaseSandbox | null = null;
 
-  if (!["daytona", "vercel", "deno"].includes(record.provider)) {
+  if (!["daytona", "vercel", "deno", "sprites"].includes(record.provider)) {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 

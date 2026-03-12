@@ -33,7 +33,8 @@
                 "daytona",
                 "vercel",
                 "cloudflare",
-                "deno"
+                "deno",
+                "sprites"
               ]
             },
             "topics": {

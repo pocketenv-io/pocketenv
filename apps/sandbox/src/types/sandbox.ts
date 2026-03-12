@@ -30,7 +30,10 @@ export const VariableSchema = z.object({
 export const SandboxConfigSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
-  provider: z.enum(["daytona", "vercel", "deno"]).optional().default("deno"),
+  provider: z
+    .enum(["daytona", "vercel", "deno", "sprites"])
+    .optional()
+    .default("deno"),
   base: z.enum(["openclaw"]).optional().default("openclaw"),
   keepAlive: z.boolean().optional().default(false),
   vcpus: z.number().optional().default(2),

@@ -1,1 +1,1 @@
-export type Provider = "daytona" | "deno" | "cloudflare" | "vercel";
+export type Provider = "daytona" | "deno" | "cloudflare" | "vercel" | "sprites";

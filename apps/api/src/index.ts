@@ -8,6 +8,7 @@ import { createServer } from "lexicon";
 import chalk from "chalk";
 import API from "./xrpc";
 import ssh from "./ssh";
+import tty from "./tty";
 
 let server = createServer({
   validateResponse: false,
@@ -50,6 +51,7 @@ app.get("/", (req, res) => {
 app.use(bsky);
 app.use(server.xrpc.router);
 app.use("/ssh", ssh);
+app.use("/tty", tty);
 
 app.listen(process.env.POCKETENV_XPRC_PORT || 8789, () => {
   consola.log(chalk.greenBright(banner));

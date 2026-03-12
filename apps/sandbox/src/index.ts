@@ -393,6 +393,7 @@ export const saveVariables = async (
       insertedVariables.map((variable) => ({
         sandboxId: sandbox.id,
         variableId: variable.id,
+        name: variable.name,
       })),
     )
     .execute();

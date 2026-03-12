@@ -66,7 +66,8 @@ export const useUpdateVolumeMutation = () => {
       name: string;
       path: string;
     }) => updateVolume(id, name, path),
-    onSuccess: () => {
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ["volume", id] });
       queryClient.invalidateQueries({ queryKey: ["volumes"] });
     },
   });

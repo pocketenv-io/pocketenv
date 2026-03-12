@@ -69,8 +69,9 @@ export const useUpdateFileMutation = () => {
       path: string;
       content: string;
     }) => updateFile(id, path, content),
-    onSuccess: () => {
+    onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["files"] });
+      queryClient.invalidateQueries({ queryKey: ["file", id] });
     },
   });
 };

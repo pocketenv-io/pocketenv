@@ -69,7 +69,8 @@ export const useUpdateVariableMutation = () => {
       name: string;
       value: string;
     }) => updateVariable(id, name, value),
-    onSuccess: () => {
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ["variable", id] });
       queryClient.invalidateQueries({ queryKey: ["variables"] });
     },
   });

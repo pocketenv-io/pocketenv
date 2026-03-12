@@ -69,7 +69,8 @@ export const useUpdateSecretMutation = () => {
       name: string;
       value: string;
     }) => updateSecret(id, name, value),
-    onSuccess: () => {
+    onSuccess: (_, { id }) => {
+      queryClient.invalidateQueries({ queryKey: ["secret", id] });
       queryClient.invalidateQueries({ queryKey: ["secrets"] });
     },
   });

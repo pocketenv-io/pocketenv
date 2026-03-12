@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo, useCallback, useState } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import { useXTerm } from "react-xtermjs";
 import { FitAddon } from "@xterm/addon-fit";
 import { API_URL } from "../../consts";
@@ -73,8 +73,18 @@ function TerminalContent({
   sandboxId,
   onClose,
 }: TerminalContentProps) {
+  // Stable refs so the main effect never re-runs because these changed
   const eventSourceRef = useRef<EventSource | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
+  const sandboxIdRef = useRef(sandboxId);
+  const onCloseRef = useRef(onClose);
+
+  // Keep refs in sync with the latest props after every render,
+  // without listing them as effect deps (which would retrigger connect).
+  useEffect(() => {
+    sandboxIdRef.current = sandboxId;
+    onCloseRef.current = onClose;
+  });
 
   const theme = isDarkMode ? darkTheme : lightTheme;
 
@@ -96,44 +106,9 @@ function TerminalContent({
 
   const { ref, instance } = useXTerm({ options });
 
-  // Send raw text input — the /tty/:id/input endpoint expects a plain text body
-  const sendInput = useCallback(
-    async (data: string) => {
-      try {
-        await fetch(`${API_URL}/tty/${sandboxId}/input`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "text/plain",
-            ...authHeaders(),
-          },
-          body: data,
-        });
-      } catch {
-        // Silently ignore input errors (session may have closed)
-      }
-    },
-    [sandboxId],
-  );
-
-  // Send resize — the /tty/:id/resize endpoint expects JSON { cols, rows }
-  const sendResize = useCallback(
-    async (cols: number, rows: number) => {
-      try {
-        await fetch(`${API_URL}/tty/${sandboxId}/resize`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...authHeaders(),
-          },
-          body: JSON.stringify({ cols, rows }),
-        });
-      } catch {
-        // Silently ignore resize errors
-      }
-    },
-    [sandboxId],
-  );
-
+  // The main effect depends only on `instance` — everything else is accessed
+  // through stable refs, so the effect (and therefore connect()) runs exactly
+  // once per xterm instance lifecycle.
   useEffect(() => {
     if (!instance) return;
 
@@ -159,27 +134,59 @@ function TerminalContent({
     };
     window.addEventListener("resize", handleResize);
 
+    // --- Helper functions that read latest values from refs ---
+    const sendInput = async (data: string) => {
+      try {
+        await fetch(`${API_URL}/tty/${sandboxIdRef.current}/input`, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain", ...authHeaders() },
+          body: data,
+        });
+      } catch {
+        // session may have closed
+      }
+    };
+
+    const sendResize = async (cols: number, rows: number) => {
+      try {
+        await fetch(`${API_URL}/tty/${sandboxIdRef.current}/resize`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", ...authHeaders() },
+          body: JSON.stringify({ cols, rows }),
+        });
+      } catch {
+        // ignore
+      }
+    };
+
     const resizeDisposable = instance.onResize(({ cols, rows }) => {
       sendResize(cols, rows);
     });
 
     // --- SSE stream ---
-    // The session is created lazily on the server when the stream is first
-    // opened, so there is no explicit connect step.
     const connect = () => {
+      // Guard: don't open a second connection if one is already live.
+      // This covers React 18 Strict Mode double-invocation and any accidental
+      // re-render that manages to reach this code path.
+      if (
+        eventSourceRef.current &&
+        eventSourceRef.current.readyState !== EventSource.CLOSED
+      ) {
+        return;
+      }
+
       instance.write(`\x1b[35mConnecting to terminal...\x1b[0m\r\n`);
 
-      const url = `${API_URL}/tty/${sandboxId}/stream`;
-
-      const es = new EventSource(url);
+      const es = new EventSource(
+        `${API_URL}/tty/${sandboxIdRef.current}/stream`,
+      );
       eventSourceRef.current = es;
 
       es.addEventListener("open", () => {
         // Clear the "Connecting…" line and focus the terminal
         instance.write("\r\x1b[K");
         instance.focus();
-
-        // Sync the current terminal dimensions with the server immediately
+        // Sync terminal dimensions immediately after connecting
         sendResize(instance.cols, instance.rows);
       });
 
@@ -189,7 +196,6 @@ function TerminalContent({
           const { data } = JSON.parse(event.data) as { data: string };
           instance.write(data);
         } catch {
-          // Fallback: write raw data if JSON parsing fails
           instance.write(event.data);
         }
       });
@@ -206,7 +212,7 @@ function TerminalContent({
         }
         es.close();
         eventSourceRef.current = null;
-        onClose();
+        onCloseRef.current();
       });
 
       es.onerror = () => {
@@ -216,11 +222,13 @@ function TerminalContent({
           );
           eventSourceRef.current = null;
         }
+        // readyState === CONNECTING means the browser is auto-retrying — let it.
       };
     };
 
     connect();
 
+    // Forward keyboard input to the TTY
     const dataDisposable = instance.onData((data) => {
       sendInput(data);
     });
@@ -236,7 +244,7 @@ function TerminalContent({
         eventSourceRef.current = null;
       }
     };
-  }, [instance, sendInput, sendResize, sandboxId, onClose]);
+  }, [instance]);
 
   return (
     <div

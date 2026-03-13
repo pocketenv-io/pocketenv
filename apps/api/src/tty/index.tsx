@@ -87,6 +87,15 @@ async function createTerminalSession(ctx: Context, id: string) {
     sessions.delete(id);
   });
 
+  cmd.on?.("error", (err: Error) => {
+    for (const res of session.clients) {
+      res.write(`event: error\n`);
+      res.write(`data: ${JSON.stringify({ message: err.message })}\n\n`);
+    }
+    session.clients.clear();
+    sessions.delete(id);
+  });
+
   sessions.set(id, session);
   return session;
 }

@@ -250,6 +250,44 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       return c.json({ error: "Sandbox provider not supported" }, 400);
     }
 
+    const params = await Promise.all([
+      c.var.db
+        .select()
+        .from(sandboxVariables)
+        .leftJoin(variables, eq(variables.id, sandboxVariables.variableId))
+        .where(eq(sandboxVariables.sandboxId, c.req.param("sandboxId")))
+        .execute(),
+      c.var.db
+        .select()
+        .from(sandboxSecrets)
+        .leftJoin(secrets, eq(secrets.id, sandboxSecrets.secretId))
+        .where(eq(sandboxSecrets.sandboxId, c.req.param("sandboxId")))
+        .execute(),
+    ]);
+
+    await sandbox.setEnvs({
+      ...params[0]
+        .map(({ variables }) => variables)
+        .filter((v) => v !== null)
+        .reduce(
+          (acc, v) => {
+            acc[v.name] = v.value;
+            return acc;
+          },
+          {} as Record<string, string>,
+        ),
+      ...params[1]
+        .map(({ secrets }) => secrets)
+        .filter((v) => v !== null)
+        .reduce(
+          (acc, v) => {
+            acc[v.name] = v.value;
+            return acc;
+          },
+          {} as Record<string, string>,
+        ),
+    });
+
     await sandbox.start();
     await c.var.db
       .update(sandboxes)
@@ -464,6 +502,7 @@ export const saveVariables = async (
       insertedVariables.map((variable) => ({
         sandboxId: sandbox.id,
         variableId: variable.id,
+        name: variable.name,
       })),
     )
     .execute();

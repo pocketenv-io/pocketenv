@@ -1,11 +1,10 @@
-import { Memory } from "@deno/sandbox";
-
 export abstract class BaseSandbox {
   abstract start(): Promise<void>;
   abstract stop(): Promise<void>;
   abstract delete(): Promise<void>;
   abstract sh(strings: TemplateStringsArray, ...values: any[]): Promise<any>;
   abstract id(): Promise<string | null>;
+  abstract setEnvs(envVars: Record<string, string>): Promise<void>;
 }
 
 abstract class BaseProvider {
@@ -24,7 +23,6 @@ export interface SandboxOptions {
   ports?: number[];
   snapshotRoot?: string;
   port?: number;
-  memory?: Memory;
   [key: string]: any;
 }
 

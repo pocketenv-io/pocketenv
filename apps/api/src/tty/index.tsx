@@ -5,8 +5,9 @@ import * as context from "context";
 import { eq } from "drizzle-orm";
 import express, { Router } from "express";
 import { env } from "lib/env";
-import sandboxes from "schema/sandboxes";
 import jwt from "jsonwebtoken";
+import schema from "schema";
+import decrypt from "lib/decrypt";
 
 const router = Router();
 router.use((req, res, next) => {
@@ -44,14 +45,35 @@ const sessions = new Map<string, Session>();
 async function createTerminalSession(ctx: Context, id: string) {
   const [sandbox] = await ctx.db
     .select()
-    .from(sandboxes)
-    .where(eq(sandboxes.id, id))
+    .from(schema.sandboxes)
+    .where(eq(schema.sandboxes.id, id))
     .execute();
 
   if (!sandbox) {
     consola.error(`Sandbox not found: ${id}`);
     throw new Error(`Sandbox not found: ${id}`);
   }
+
+  const [variables, secrets] = await Promise.all([
+    ctx.db
+      .select()
+      .from(schema.sandboxVariables)
+      .leftJoin(
+        schema.variables,
+        eq(schema.variables.id, schema.sandboxVariables.variableId),
+      )
+      .where(eq(schema.sandboxVariables.sandboxId, id))
+      .execute(),
+    ctx.db
+      .select()
+      .from(schema.sandboxSecrets)
+      .leftJoin(
+        schema.secrets,
+        eq(schema.secrets.id, schema.sandboxSecrets.secretId),
+      )
+      .where(eq(schema.sandboxSecrets.sandboxId, id))
+      .execute(),
+  ]);
 
   const client = new SpritesClient(env.SPRITE_TOKEN);
   const sprite = client.sprite(sandbox.sandbox_id!);
@@ -61,6 +83,26 @@ async function createTerminalSession(ctx: Context, id: string) {
     cols: 80,
     env: {
       TERM: "xterm-256color",
+      ...variables
+        .map(({ variables }) => variables)
+        .filter((v) => v !== null)
+        .reduce(
+          (acc, v) => {
+            acc[v.name] = v.value;
+            return acc;
+          },
+          {} as Record<string, string>,
+        ),
+      ...secrets
+        .map(({ secrets }) => secrets)
+        .filter((s) => s !== null)
+        .reduce(
+          (acc, s) => {
+            acc[s.name] = decrypt(s.value);
+            return acc;
+          },
+          {} as Record<string, string>,
+        ),
     },
   });
 

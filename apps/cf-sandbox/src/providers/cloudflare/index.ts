@@ -52,6 +52,10 @@ export class CloudflareSandbox implements BaseSandbox {
   async id(): Promise<string | null> {
     return null;
   }
+
+  async setEnvs(envVars: Record<string, string>): Promise<void> {
+    await this.sandbox.setEnvVars(envVars);
+  }
 }
 
 class CloudflareProvider implements BaseProvider {

@@ -11,6 +11,19 @@ The official CLI for [Pocketenv](https://pocketenv.io) — create, manage, and c
 >
 > This project is in early development. Expect breaking changes and rapid iteration.
 
+---
+
+## Use Cases
+
+- Run AI agents (Codex, Claude, Gemini, OpenClaw, Copilot ...) safely in isolated environments
+- Spin up ephemeral dev sandboxes for quick prototyping
+- Share reproducible developer environments via AT Protocol
+- Test untrusted or third-party code securely
+- Provide sandbox infrastructure as a service
+
+---
+
+
 ## Installation
 
 ```sh
@@ -298,18 +311,6 @@ The CLI can be configured via the following environment variables:
 ```sh
 POCKETENV_TOKEN=<your-token> pocketenv ls
 ```
-
----
-
-## Use Cases
-
-- Run AI agents (Codex, Claude, Gemini, OpenClaw, Copilot ...) safely in isolated environments
-- Spin up ephemeral dev sandboxes for quick prototyping
-- Share reproducible developer environments via AT Protocol
-- Test untrusted or third-party code securely
-- Provide sandbox infrastructure as a service
-
----
 
 ## Documentation
 

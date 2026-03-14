@@ -175,7 +175,7 @@ app.post("/v1/sandboxes", async (c) => {
         .update(sandboxes)
         .set({
           status: "RUNNING",
-          sandbox_id: sandboxId,
+          sandboxId: sandboxId,
           startedAt: new Date(),
         })
         .where(eq(sandboxes.id, record!.id))
@@ -412,17 +412,17 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
     return c.text("Expected WebSocket connection", 426);
   }
   const token = c.req.query("t");
+
+  const { sandboxes: record, users: user } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
+  if (!record) {
+    return c.text("Sandbox not found", 404);
+  }
+
   if (token) {
     const decoded = await jwt.verify(token, process.env.JWT_SECRET!);
-
-    const { sandboxes: record, users: user } = await getSandboxById(
-      c.var.db,
-      c.req.param("sandboxId"),
-    );
-    if (!record) {
-      return c.text("Sandbox not found", 404);
-    }
-
     if (record.userId && user && user?.did !== decoded?.payload?.sub) {
       return c.text("Unauthorized", 403);
     }
@@ -436,13 +436,23 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
       .select()
       .from(sandboxVariables)
       .leftJoin(variables, eq(variables.id, sandboxVariables.variableId))
-      .where(eq(sandboxVariables.sandboxId, c.req.param("sandboxId")))
+      .where(
+        or(
+          eq(sandboxVariables.sandboxId, record.id),
+          eq(sandboxVariables.sandboxId, record.sandboxId),
+        ),
+      )
       .execute(),
     c.var.db
       .select()
       .from(sandboxSecrets)
       .leftJoin(secrets, eq(secrets.id, sandboxSecrets.secretId))
-      .where(eq(sandboxSecrets.sandboxId, c.req.param("sandboxId")))
+      .where(
+        or(
+          eq(sandboxSecrets.sandboxId, record.id),
+          eq(sandboxSecrets.sandboxId, record.sandboxId),
+        ),
+      )
       .execute(),
   ]);
 
@@ -487,7 +497,13 @@ export const getSandboxById = async (db: Context["db"], sandboxId: string) => {
     .select()
     .from(sandboxes)
     .leftJoin(users, eq(sandboxes.userId, users.id))
-    .where(or(eq(sandboxes.id, sandboxId), eq(sandboxes.sandbox_id, sandboxId)))
+    .where(
+      or(
+        eq(sandboxes.id, sandboxId),
+        eq(sandboxes.sandboxId, sandboxId),
+        eq(sandboxes.name, sandboxId),
+      ),
+    )
     .execute();
 
   return record;

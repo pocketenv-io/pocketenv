@@ -43,8 +43,9 @@ program.configureHelp({
 program.addHelpText(
   "after",
   `
-${chalk.bold("\nLearn more about Pocketenv:")}               https://docs.pocketenv.io
+${chalk.bold("\nLearn more about Pocketenv:")}           ${chalk.magentaBright("https://docs.pocketenv.io")}
 ${chalk.bold("Join our Discord community:")}           ${chalk.blueBright("https://discord.gg/9ada4pFUFS")}
+${chalk.bold("Report bugs:")}                          ${chalk.greenBright("https://github.com/pocketenv-io/pocketenv/issues")}
 `,
 );
 

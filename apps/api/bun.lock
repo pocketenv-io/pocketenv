@@ -21,6 +21,7 @@
         "@types/node": "^25.2.3",
         "@types/prompts": "^2.4.9",
         "@types/ramda": "^0.31.1",
+        "@types/ws": "^8.18.1",
         "axios": "^1.13.5",
         "better-sqlite3": "^12.6.2",
         "chalk": "^5.6.2",
@@ -47,6 +48,7 @@
         "ssh2": "^1.16.0",
         "unique-username-generator": "^1.5.1",
         "unstorage": "^1.17.4",
+        "ws": "^8.19.0",
         "zod": "^4.3.6",
         "zx": "^8.8.5",
       },
@@ -360,6 +362,8 @@
     "@types/serve-static": ["@types/serve-static@2.2.0", "", { "dependencies": { "@types/http-errors": "*", "@types/node": "*" } }, "sha512-8mam4H1NHLtu7nmtalF7eyBH14QyOASmcxHhSfEoRyr0nP/YdoesEtU+uSRvMe96TW/HPTtkoKqQLl53N7UXMQ=="],
 
     "@types/ssh2": ["@types/ssh2@1.15.5", "", { "dependencies": { "@types/node": "^18.11.18" } }, "sha512-N1ASjp/nXH3ovBHddRJpli4ozpk6UdDYIX4RJWFa9L1YKnzdhTlVmiGHm4DZnj/jLbqZpes4aeR30EFGQtvhQQ=="],
+
+    "@types/ws": ["@types/ws@8.18.1", "", { "dependencies": { "@types/node": "*" } }, "sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg=="],
 
     "abort-controller": ["abort-controller@3.0.0", "", { "dependencies": { "event-target-shim": "^5.0.0" } }, "sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg=="],
 

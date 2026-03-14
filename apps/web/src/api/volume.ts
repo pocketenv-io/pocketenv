@@ -57,7 +57,12 @@ export const getVolume = (id: string) =>
     },
   });
 
-export const updateVolume = (id: string, name: string, path: string) =>
+export const updateVolume = (
+  id: string,
+  name: string,
+  path: string,
+  sandboxId: string,
+) =>
   client.post(
     "/xrpc/io.pocketenv.volume.updateVolume",
     {
@@ -65,6 +70,7 @@ export const updateVolume = (id: string, name: string, path: string) =>
       volume: {
         name,
         path,
+        sandboxId,
       },
     },
     {

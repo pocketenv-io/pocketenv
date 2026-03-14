@@ -92,6 +92,7 @@ function AddVolumeModal({
           id: volumeId,
           name: data.name,
           path: data.path,
+          sandboxId,
         });
         setIsLoading(false);
         reset();

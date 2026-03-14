@@ -64,11 +64,13 @@ export const useUpdateVariableMutation = () => {
       id,
       name,
       value,
+      sandboxId,
     }: {
       id: string;
       name: string;
       value: string;
-    }) => updateVariable(id, name, value),
+      sandboxId: string;
+    }) => updateVariable(id, name, value, sandboxId),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["variable", id] });
       queryClient.invalidateQueries({ queryKey: ["variables"] });

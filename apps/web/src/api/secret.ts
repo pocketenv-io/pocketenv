@@ -52,7 +52,12 @@ export const getSecret = (id: string) =>
     },
   });
 
-export const updateSecret = (id: string, name: string, value: string) =>
+export const updateSecret = (
+  id: string,
+  name: string,
+  value: string,
+  sandboxId: string,
+) =>
   client.post(
     "/xrpc/io.pocketenv.secret.updateSecret",
     {
@@ -60,6 +65,7 @@ export const updateSecret = (id: string, name: string, value: string) =>
       secret: {
         name,
         value,
+        sandboxId,
       },
     },
     {

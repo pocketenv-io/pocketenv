@@ -60,7 +60,12 @@ export const getVariable = (id: string) =>
     },
   );
 
-export const updateVariable = (id: string, name: string, value: string) =>
+export const updateVariable = (
+  id: string,
+  name: string,
+  value: string,
+  sandboxId: string,
+) =>
   client.post(
     "/xrpc/io.pocketenv.variable.updateVariable",
     {
@@ -68,6 +73,7 @@ export const updateVariable = (id: string, name: string, value: string) =>
       variable: {
         name,
         value,
+        sandboxId,
       },
     },
     {

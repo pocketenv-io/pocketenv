@@ -61,11 +61,13 @@ export const useUpdateVolumeMutation = () => {
       id,
       name,
       path,
+      sandboxId,
     }: {
       id: string;
       name: string;
       path: string;
-    }) => updateVolume(id, name, path),
+      sandboxId: string;
+    }) => updateVolume(id, name, path, sandboxId),
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: ["volume", id] });
       queryClient.invalidateQueries({ queryKey: ["volumes"] });

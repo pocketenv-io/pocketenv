@@ -108,6 +108,7 @@ function AddEnvironmentVariableModal({
           id: variableId,
           name: data.name,
           value: data.value,
+          sandboxId,
         });
         setIsLoading(false);
         reset();

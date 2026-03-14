@@ -4,12 +4,16 @@ import { eq } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type { HandlerInput } from "lexicon/types/io/pocketenv/volume/addVolume";
 import sandboxVolumes from "schema/sandbox-volumes";
+import sandboxes from "schema/sandboxes";
 import volumes from "schema/volumes";
+import { updateSandbox } from "atproto/sandbox";
 import {
   adjectives,
   generateUniqueAsync,
   nouns,
 } from "unique-username-generator";
+import { consola } from "consola";
+import { createAgent } from "lib/agent";
 
 export default function (server: Server, ctx: Context) {
   const addVolume = async (input: HandlerInput, auth: HandlerAuth) => {
@@ -66,6 +70,39 @@ export default function (server: Server, ctx: Context) {
         })
         .execute();
     });
+
+    if (input.body.volume.sandboxId) {
+      const agent = await createAgent(ctx.oauthClient, auth.credentials.did);
+      if (!agent) {
+        consola.error(
+          "Failed to create AT Protocol agent for DID:",
+          auth.credentials.did,
+        );
+        throw new XRPCError(
+          500,
+          "Failed to create AT Protocol agent",
+          "AgentCreationError",
+        );
+      }
+      ctx.db
+        .select()
+        .from(sandboxVolumes)
+        .leftJoin(sandboxes, eq(sandboxVolumes.sandboxId, sandboxes.id))
+        .where(eq(sandboxVolumes.sandboxId, input.body.volume.sandboxId))
+        .execute()
+        .then((records) => {
+          const uri = records[0]?.sandboxes?.uri;
+          if (uri) {
+            return updateSandbox(agent, {
+              rkey: uri.split("/").pop()!,
+              volumes: records.map((r) => r.sandbox_volumes.path!),
+            });
+          }
+        })
+        .catch((err) => {
+          consola.error("Failed to update sandbox after adding volume:", err);
+        });
+    }
 
     return {};
   };

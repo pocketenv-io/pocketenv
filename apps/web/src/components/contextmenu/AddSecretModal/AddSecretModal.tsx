@@ -117,6 +117,7 @@ function AddSecretModal({
             sealed,
             sodium.base64Variants.URLSAFE_NO_PADDING,
           ),
+          sandboxId,
         });
         setIsLoading(false);
         reset();

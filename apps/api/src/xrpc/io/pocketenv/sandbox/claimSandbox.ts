@@ -28,7 +28,7 @@ export default function (server: Server, ctx: Context) {
         and(
           or(
             eq(schema.sandboxes.id, params.id),
-            eq(schema.sandboxes.sandbox_id, params.id),
+            eq(schema.sandboxes.sandboxId, params.id),
           ),
           isNull(schema.sandboxes.userId),
         ),

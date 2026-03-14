@@ -31,7 +31,7 @@ const sandboxes = pgTable("sandboxes", {
   status: text("status").notNull(),
   keepAlive: boolean("keep_alive").default(false).notNull(),
   sleepAfter: text("sleep_after"),
-  sandbox_id: text("sandbox_id"),
+  sandboxId: text("sandbox_id"),
   installs: integer("installs").default(0).notNull(),
   startedAt: timestamp("started_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),

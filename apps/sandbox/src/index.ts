@@ -154,7 +154,7 @@ app.post("/v1/sandboxes", async (c) => {
         .update(sandboxes)
         .set({
           status: "RUNNING",
-          sandbox_id: sandboxId,
+          sandboxId: sandboxId,
           startedAt: new Date(),
           vcpus: params.vcpus,
           memory: params.memory,
@@ -206,7 +206,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
   sandbox = await getSandboxById(
     record.provider as Provider,
-    record.sandbox_id!,
+    record.sandboxId!,
   );
 
   if (!sandbox) {
@@ -219,8 +219,8 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     .set({
       status: "RUNNING",
       startedAt: new Date(),
-      sandbox_id:
-        record.provider === "deno" ? await sandbox.id() : record.sandbox_id,
+      sandboxId:
+        record.provider === "deno" ? await sandbox.id() : record.sandboxId,
     })
     .where(eq(sandboxes.id, c.req.param("sandboxId")))
     .execute();
@@ -242,7 +242,7 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
 
   sandbox = await getSandboxById(
     record.provider as Provider,
-    record.sandbox_id!,
+    record.sandboxId!,
   );
 
   if (!sandbox) {
@@ -273,7 +273,7 @@ app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
 
   sandbox = await getSandboxById(
     record.provider as Provider,
-    record.sandbox_id!,
+    record.sandboxId!,
   );
 
   if (!sandbox) {
@@ -300,7 +300,7 @@ app.delete("/v1/sandboxes/:sandboxId", async (c) => {
 
   sandbox = await getSandboxById(
     record.provider as Provider,
-    record.sandbox_id!,
+    record.sandboxId!,
   );
 
   if (!sandbox) {
@@ -332,7 +332,7 @@ app.get("/v1/sandboxes/:sandboxId/ssh", async (c) => {
 
   sandbox = await getSandboxById(
     record.provider as Provider,
-    record.sandbox_id!,
+    record.sandboxId!,
   );
 
   if (!sandbox) {
@@ -346,7 +346,7 @@ export const getSandbox = async (db: Context["db"], sandboxId: string) => {
   const [record] = await db
     .select()
     .from(sandboxes)
-    .where(or(eq(sandboxes.id, sandboxId), eq(sandboxes.sandbox_id, sandboxId)))
+    .where(or(eq(sandboxes.id, sandboxId), eq(sandboxes.sandboxId, sandboxId)))
     .execute();
 
   return record;

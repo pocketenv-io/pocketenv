@@ -8,6 +8,10 @@ export const updateSandbox = async (
     envs?: string[];
     volumes?: string[];
     secrets?: string[];
+    name?: string;
+    description?: string | null;
+    topics?: string[];
+    repo?: string | null;
   },
 ) => {
   const res = await agent.com.atproto.repo.getRecord({
@@ -23,6 +27,10 @@ export const updateSandbox = async (
       envs: data.envs ?? record.envs,
       volumes: data.volumes ?? record.volumes,
       secrets: data.secrets ?? record.secrets,
+      name: data.name ?? record.name,
+      description: data.description ?? record.description,
+      topics: data.topics ?? record.topics,
+      repo: data.repo ?? record.repo,
     };
     await agent.com.atproto.repo.putRecord({
       repo: agent.assertDid,

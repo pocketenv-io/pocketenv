@@ -21,8 +21,8 @@ export default function (server: Server, ctx: Context) {
   const createSandbox = async (input: HandlerInput, auth: HandlerAuth) => {
     let res;
     try {
-      const { artifacts } = auth;
-      if (!artifacts) {
+      const { artifacts, credentials } = auth;
+      if (!credentials && !artifacts) {
         throw new XRPCError(
           401,
           "Authentication failed, invalid challenge",

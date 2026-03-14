@@ -6,6 +6,7 @@ import { env } from "../../lib/env";
 import type { Sandbox } from "../../types/sandbox";
 import type { Profile } from "../../types/profile";
 import cloudflare from "./cloudflare";
+import tty from "./tty";
 
 async function ssh(sandboxName: string | undefined) {
   const token = await getAccessToken();
@@ -80,6 +81,7 @@ async function ssh(sandboxName: string | undefined) {
     case "vercel":
       break;
     case "sprites":
+      await tty(sandbox);
       break;
     default:
       consola.error(

@@ -84,6 +84,7 @@ program
 program
   .command("create")
   .aliases(["new"])
+  .option("--provider, -p <provider>", "the provider to use for the sandbox")
   .argument("[name]", "the name of the sandbox to create")
   .description("create a new sandbox")
   .action(createSandbox);

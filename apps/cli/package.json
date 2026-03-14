@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
+    "@types/eventsource": "^1.1.15",
     "@types/express": "^5.0.6",
     "@types/ws": "^8.18.1",
     "pkgroll": "^2.27.0",
@@ -41,6 +42,7 @@
     "dayjs": "^1.11.20",
     "effect": "^3.19.19",
     "envalid": "^8.1.1",
+    "eventsource": "^4.1.0",
     "express": "^5.2.1",
     "node-pty": "^1.1.0",
     "open": "^11.0.0",

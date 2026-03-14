@@ -67,12 +67,14 @@ RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
     echo 'stty sane' >> ~/.bashrc && \
     echo '. "$HOME/.bashrc"' >> ~/.profile
 
+ENV OPENCRUST_VERSION=v0.1.21
+
 RUN case "${TARGETARCH}" in \
     amd64) OPENCRUST_ARCH="x86_64" ;; \
     arm64) OPENCRUST_ARCH="aarch64" ;; \
     *) echo "Unsupported arch: ${TARGETARCH}" && exit 1 ;; \
     esac && \
-    wget -qO opencrust "https://github.com/opencrust-org/opencrust/releases/download/v0.1.19/opencrust-linux-${OPENCRUST_ARCH}" && \
+    wget -qO opencrust "https://github.com/opencrust-org/opencrust/releases/download/${OPENCRUST_VERSION}/opencrust-linux-${OPENCRUST_ARCH}" && \
     mv opencrust /root/.local/bin && \
     chmod +x /root/.local/bin/opencrust
 

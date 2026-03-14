@@ -68,12 +68,14 @@ RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
     echo 'stty sane' >> ~/.bashrc && \
     echo '. "$HOME/.bashrc"' >> ~/.profile
 
+ENV ZEROCLAW_VERSION=v0.1.9a
+
 RUN case "${TARGETARCH}" in \
     amd64) ZEROCLAW_ARCH="x86_64" ;; \
     arm64) ZEROCLAW_ARCH="aarch64" ;; \
     *) echo "Unsupported arch: ${TARGETARCH}" && exit 1 ;; \
     esac && \
-    wget -qO /tmp/zeroclaw.tar.gz "https://github.com/zeroclaw-labs/zeroclaw/releases/download/v0.1.7/zeroclaw-${ZEROCLAW_ARCH}-unknown-linux-gnu.tar.gz" && \
+    wget -qO /tmp/zeroclaw.tar.gz "https://github.com/zeroclaw-labs/zeroclaw/releases/download/${ZEROCLAW_VERSION}/zeroclaw-${ZEROCLAW_ARCH}-unknown-linux-gnu.tar.gz" && \
     tar -xzf /tmp/zeroclaw.tar.gz -C /root/.local/bin && \
     chmod +x /root/.local/bin/zeroclaw
 

@@ -74,12 +74,14 @@ RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
     echo 'stty sane' >> ~/.bashrc && \
     echo '. "$HOME/.bashrc"' >> ~/.profile
 
+ENV PICOCLAW_VERSION=v0.2.2
+
 RUN case "${TARGETARCH}" in \
     amd64) PICOCLAW_ARCH="x86_64" ;; \
     arm64) PICOCLAW_ARCH="arm64" ;; \
     *) echo "Unsupported arch: ${TARGETARCH}" && exit 1 ;; \
     esac && \
-    wget -qO /tmp/picoclaw.tar.gz "https://github.com/sipeed/picoclaw/releases/download/v0.2.0/picoclaw_Linux_${PICOCLAW_ARCH}.tar.gz" && \
+    wget -qO /tmp/picoclaw.tar.gz "https://github.com/sipeed/picoclaw/releases/download/${PICOCLAW_VERSION}/picoclaw_Linux_${PICOCLAW_ARCH}.tar.gz" && \
     tar -xzf /tmp/picoclaw.tar.gz -C /root/.local/bin && \
     chmod +x /root/.local/bin/picoclaw
 

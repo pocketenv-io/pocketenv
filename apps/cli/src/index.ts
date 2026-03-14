@@ -8,6 +8,7 @@ import ssh from "./cmd/ssh";
 import listSandboxes from "./cmd/list";
 import stop from "./cmd/stop";
 import createSandbox from "./cmd/create";
+import logout from "./cmd/logout";
 
 const program = new Command();
 
@@ -84,7 +85,7 @@ program
 program
   .command("logout")
   .description("logout (removes session token)")
-  .action(() => {});
+  .action(logout);
 
 if (process.argv.length <= 2) {
   program.help();

@@ -152,7 +152,7 @@ function TerminalContent({
           !initializedSandboxes[sandboxId]
         ) {
           setInitializedSandboxes((prev) => ({ ...prev, [sandboxId]: true }));
-          setTimeout(() => instance.paste(initialCommand + "\n"), 300);
+          setTimeout(() => instance.paste(initialCommand + "\r\n"), 300);
         }
         if (state === "disconnected") {
           onClose();

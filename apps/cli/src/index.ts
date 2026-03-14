@@ -9,6 +9,9 @@ import listSandboxes from "./cmd/list";
 import stop from "./cmd/stop";
 import createSandbox from "./cmd/create";
 import logout from "./cmd/logout";
+import deleteSandbox from "./cmd/rm";
+import { deleteSecret, listSecrets, putSecret } from "./cmd/secret";
+import { deleteEnv, listEnvs, putEnv } from "./cmd/env";
 
 const program = new Command();
 
@@ -86,6 +89,61 @@ program
   .command("logout")
   .description("logout (removes session token)")
   .action(logout);
+
+program
+  .command("rm")
+  .aliases(["delete", "remove"])
+  .argument("<sandbox>", "the sandbox to delete")
+  .description("delete the given sandbox")
+  .action(deleteSandbox);
+
+const secret = program.command("secret").description("manage secrets");
+
+secret
+  .command("put")
+  .argument("<sandbox>", "the sandbox to put the secret in")
+  .argument("<key>", "the key of the secret")
+  .description("put a secret in the given sandbox")
+  .action(putSecret);
+
+secret
+  .command("list")
+  .aliases(["ls"])
+  .argument("<sandbox>", "the sandbox to list secrets for")
+  .description("list secrets in the given sandbox")
+  .action(listSecrets);
+
+secret
+  .command("delete")
+  .aliases(["rm", "remove"])
+  .argument("<sandbox>", "the sandbox to delete secrets from")
+  .argument("<key>", "the key of the secret to delete")
+  .description("delete a secret from the given sandbox")
+  .action(deleteSecret);
+
+const env = program.command("env").description("manage environment variables");
+
+env
+  .command("put")
+  .argument("<sandbox>", "the sandbox to put the environment variable in")
+  .argument("<key>", "the key of the environment variable")
+  .description("put an environment variable in the given sandbox")
+  .action(putEnv);
+
+env
+  .command("list")
+  .aliases(["ls"])
+  .argument("<sandbox>", "the sandbox to list environment variables for")
+  .description("list environment variables in the given sandbox")
+  .action(listEnvs);
+
+env
+  .command("delete")
+  .aliases(["rm", "remove"])
+  .argument("<sandbox>", "the sandbox to delete environment variables from")
+  .argument("<key>", "the key of the environment variable to delete")
+  .description("delete an environment variable from the given sandbox")
+  .action(deleteEnv);
 
 if (process.argv.length <= 2) {
   program.help();

@@ -277,16 +277,14 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
           },
           {} as Record<string, string>,
         ),
-      ...params[1]
-        .map(({ secrets }) => secrets)
-        .filter((v) => v !== null)
-        .reduce(
-          (acc, v) => {
-            acc[v.name] = decrypt(v.value);
-            return acc;
-          },
-          {} as Record<string, string>,
+      ...Object.fromEntries(
+        await Promise.all(
+          params[1]
+            .map(({ secrets }) => secrets)
+            .filter((v) => v !== null)
+            .map(async (v) => [v.name, await decrypt(v.value)] as const),
         ),
+      ),
     });
 
     await sandbox.start();
@@ -459,16 +457,14 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
         },
         {} as Record<string, string>,
       ),
-    ...params[1]
-      .map(({ secrets }) => secrets)
-      .filter((v) => v !== null)
-      .reduce(
-        (acc, v) => {
-          acc[v.name] = decrypt(v.value);
-          return acc;
-        },
-        {} as Record<string, string>,
+    ...Object.fromEntries(
+      await Promise.all(
+        params[1]
+          .map(({ secrets }) => secrets)
+          .filter((v) => v !== null)
+          .map(async (v) => [v.name, await decrypt(v.value)] as const),
       ),
+    ),
   };
   await sandbox.setEnvVars(envVars);
 

@@ -7,8 +7,11 @@ import extractPdsFromDid from "lib/extractPdsFromDid";
 import AtpAgent from "@atproto/api";
 import { omit } from "ramda";
 import { consola } from "consola";
+import express from "express";
 
 const app = Router();
+
+app.use(express.json());
 
 app.get("/login", async (req, res) => {
   const { handle, prompt } = req.query;

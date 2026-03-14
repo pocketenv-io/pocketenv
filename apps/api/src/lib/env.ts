@@ -1,4 +1,3 @@
-import { PRIVATE_KEY_USAGE } from "@atproto/oauth-client-node";
 import dotenv from "dotenv";
 import { bool, cleanEnv, host, port, str } from "envalid";
 

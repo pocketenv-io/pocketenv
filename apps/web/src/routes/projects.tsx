@@ -4,6 +4,7 @@ import ProjectsPage from "../pages/projects";
 
 const projectsSearchSchema = z.object({
   did: z.string().optional(),
+  cli: z.number().optional(),
 });
 
 export const Route = createFileRoute("/projects")({

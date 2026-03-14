@@ -10,7 +10,7 @@ import { useNavigate, useSearch } from "@tanstack/react-router";
 import { API_URL } from "../../consts";
 
 function Projects() {
-  const { did } = useSearch({ from: "/projects" });
+  const { did, cli } = useSearch({ from: "/projects" });
   const navigate = useNavigate();
   const profile = useAtomValue(profileAtom);
   const PAGE_SIZE = 12;
@@ -41,6 +41,16 @@ function Projects() {
         localStorage.setItem("token", token);
         navigate({ to: "/projects" });
         setTokenReady(true);
+
+        if (cli) {
+          return fetch("http://localhost:6997/token", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ token }),
+          });
+        }
       })
       .catch(() => {
         // Token fetch failed — still unblock rendering so the route guard

@@ -13,7 +13,7 @@ The official CLI for [Pocketenv](https://pocketenv.io) — create, manage, and c
 
 ---
 
-## Use Cases
+## 💡 Use Cases
 
 - Run AI agents (Codex, Claude, Gemini, OpenClaw, Copilot ...) safely in isolated environments
 - Spin up ephemeral dev sandboxes for quick prototyping
@@ -23,8 +23,7 @@ The official CLI for [Pocketenv](https://pocketenv.io) — create, manage, and c
 
 ---
 
-
-## Installation
+## 🚚 Installation
 
 ```sh
 npm install -g @pocketenv/cli
@@ -44,7 +43,7 @@ Verify the installation:
 pocketenv --version
 ```
 
-## Quick Start
+## ⚡ Quick Start
 
 ```sh
 # 1. Log in with your AT Proto account (e.g. Bluesky)
@@ -60,11 +59,11 @@ pocketenv start <sandbox-name>
 pocketenv console <sandbox-name>
 ```
 
-## Authentication
+## 🔐 Authentication
 
 Pocketenv uses [AT Protocol](https://atproto.com) for authentication. You need an AT Proto account (e.g. a [Bluesky](https://bsky.app) account) to use the CLI.
 
-### Login
+### 🔑 Login
 
 ```sh
 pocketenv login <handle>
@@ -78,7 +77,7 @@ Authenticates with your AT Proto handle. A browser window will open for you to a
 pocketenv login alice.bsky.social
 ```
 
-### Whoami
+### 👤 Whoami
 
 ```sh
 pocketenv whoami
@@ -86,7 +85,7 @@ pocketenv whoami
 
 Displays the currently logged-in user.
 
-### Logout
+### 🚪 Logout
 
 ```sh
 pocketenv logout
@@ -96,9 +95,9 @@ Removes your local session token.
 
 ---
 
-## Commands
+## 🛠️ Commands
 
-### Sandbox Management
+### 📦 Sandbox Management
 
 #### `pocketenv create [name]`
 
@@ -128,7 +127,7 @@ pocketenv ls
 Output example:
 
 ```
-NAME                    BASE          STATUS    CREATED AT 
+NAME                    BASE          STATUS    CREATED AT
 true-punter-0nan        openclaw      RUNNING   33 minutes ago
 ruinous-straw-wz8n      nix           STOPPED   2 days ago
 narrative-shift-j80dx   zeroclaw      STOPPED   11 days ago
@@ -169,7 +168,7 @@ pocketenv rm my-sandbox
 
 ---
 
-### Interactive Shell
+### 🖥️ Interactive Shell
 
 #### `pocketenv console [sandbox]`
 
@@ -185,7 +184,7 @@ pocketenv console
 
 ---
 
-### Environment Variables
+### 🌍 Environment Variables
 
 Manage environment variables scoped to a sandbox.
 
@@ -216,7 +215,7 @@ pocketenv env delete my-sandbox DATABASE_URL
 
 ---
 
-### Secrets
+### 🤫 Secrets
 
 Manage encrypted secrets scoped to a sandbox.
 
@@ -246,7 +245,7 @@ pocketenv secret delete my-sandbox API_KEY
 
 ---
 
-### SSH Keys
+### 🗝️ SSH Keys
 
 Manage SSH keys associated with a sandbox.
 
@@ -273,7 +272,7 @@ pocketenv sshkeys get my-sandbox
 
 ---
 
-### Tailscale
+### 🔒 Tailscale
 
 Manage Tailscale integration for your sandboxes.
 
@@ -295,7 +294,7 @@ pocketenv tailscale get my-sandbox
 
 ---
 
-## Environment Variables
+## ⚙️ Configuration
 
 The CLI can be configured via the following environment variables:
 
@@ -312,13 +311,13 @@ The CLI can be configured via the following environment variables:
 POCKETENV_TOKEN=<your-token> pocketenv ls
 ```
 
-## Documentation
+## 📚 Documentation
 
 Full documentation is available at **[docs.pocketenv.io](https://docs.pocketenv.io)**.
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please read the [Contributing Guidelines](https://github.com/pocketenv-io/pocketenv/blob/main/CONTRIBUTING.md) before submitting a pull request.
 
@@ -327,6 +326,6 @@ Contributions are welcome! Please read the [Contributing Guidelines](https://git
 
 ---
 
-## License
+## 📄 License
 
 [Mozilla Public License 2.0](https://github.com/pocketenv-io/pocketenv/blob/main/LICENSE)

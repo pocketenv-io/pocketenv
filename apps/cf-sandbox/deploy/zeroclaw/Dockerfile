@@ -68,7 +68,7 @@ RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
     echo 'stty sane' >> ~/.bashrc && \
     echo '. "$HOME/.bashrc"' >> ~/.profile
 
-ENV ZEROCLAW_VERSION=v0.1.9a
+ENV ZEROCLAW_VERSION=v0.1.7
 
 RUN case "${TARGETARCH}" in \
     amd64) ZEROCLAW_ARCH="x86_64" ;; \

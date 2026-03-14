@@ -4,7 +4,7 @@ ARG TARGETARCH
 
 RUN sudo apt-get update && sudo apt-get install -y wget
 
-ENV ZEROCLAW_VERSION=v0.1.9a
+ENV ZEROCLAW_VERSION=v0.1.7
 
 RUN case "${TARGETARCH}" in \
     amd64) ZEROCLAW_ARCH="x86_64" ;; \

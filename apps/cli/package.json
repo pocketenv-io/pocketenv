@@ -17,6 +17,10 @@
   ],
   "author": "Tsiry Sandratraina <tsiry.sndr@pocketenv.io>",
   "license": "MPL-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pocketenv-io/pocketenv"
+  },
   "scripts": {
     "dev": "tsx ./src/index.ts",
     "build": "pkgroll && chmod +x ./dist/index.js"

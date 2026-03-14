@@ -12,6 +12,8 @@ import logout from "./cmd/logout";
 import deleteSandbox from "./cmd/rm";
 import { deleteSecret, listSecrets, putSecret } from "./cmd/secret";
 import { deleteEnv, listEnvs, putEnv } from "./cmd/env";
+import { getSshKey, putKeys } from "./cmd/sshkeys";
+import { getTailscaleAuthKey, putAuthKey } from "./cmd/tailscale";
 
 const program = new Command();
 
@@ -127,6 +129,7 @@ env
   .command("put")
   .argument("<sandbox>", "the sandbox to put the environment variable in")
   .argument("<key>", "the key of the environment variable")
+  .argument("<value>", "the value of the environment variable")
   .description("put an environment variable in the given sandbox")
   .action(putEnv);
 
@@ -144,6 +147,36 @@ env
   .argument("<key>", "the key of the environment variable to delete")
   .description("delete an environment variable from the given sandbox")
   .action(deleteEnv);
+
+const sshkey = program.command("sshkey").description("manage SSH keys");
+
+sshkey
+  .command("put")
+  .argument("<sandbox>", "the sandbox to put the SSH key in")
+  .option("--private-key", "the path to the SSH private key")
+  .option("--public-key", "the path to the SSH public key")
+  .description("put an SSH key in the given sandbox")
+  .action(putKeys);
+
+sshkey
+  .command("get")
+  .argument("<sandbox>", "the sandbox to get the SSH key from")
+  .description("get an SSH key (public key only) from the given sandbox")
+  .action(getSshKey);
+
+const tailscale = program.command("tailscale").description("manage Tailscale");
+
+tailscale
+  .command("put")
+  .argument("<sandbox>", "the sandbox to put the Tailscale Auth Key in")
+  .description("put a Tailscale key in the given sandbox")
+  .action(putAuthKey);
+
+tailscale
+  .command("get")
+  .argument("<sandbox>", "the sandbox to get the Tailscale key from")
+  .description("get a Tailscale key (redacted) from the given sandbox")
+  .action(getTailscaleAuthKey);
 
 if (process.argv.length <= 2) {
   program.help();

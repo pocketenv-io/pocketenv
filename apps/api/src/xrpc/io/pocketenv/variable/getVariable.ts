@@ -1,6 +1,6 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import type { Context } from "context";
-import { eq, and, count } from "drizzle-orm";
+import { eq, and, count, or } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type {
   QueryParams,
@@ -64,7 +64,10 @@ const retrieve = ({
         .where(
           and(
             eq(users.did, auth.credentials.did),
-            eq(sandboxVariables.variableId, params.id),
+            or(
+              eq(sandboxVariables.variableId, params.id),
+              eq(variables.name, params.id),
+            ),
           ),
         )
         .execute()

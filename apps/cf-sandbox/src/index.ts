@@ -431,9 +431,50 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
 
   const sandbox = getSandbox(c.env.Sandbox, c.req.param("sandboxId"));
   const sessionId = c.req.query("session");
+
+  const params = await Promise.all([
+    c.var.db
+      .select()
+      .from(sandboxVariables)
+      .leftJoin(variables, eq(variables.id, sandboxVariables.variableId))
+      .where(eq(sandboxVariables.sandboxId, c.req.param("sandboxId")))
+      .execute(),
+    c.var.db
+      .select()
+      .from(sandboxSecrets)
+      .leftJoin(secrets, eq(secrets.id, sandboxSecrets.secretId))
+      .where(eq(sandboxSecrets.sandboxId, c.req.param("sandboxId")))
+      .execute(),
+  ]);
+
+  const envVars = {
+    ...params[0]
+      .map(({ variables }) => variables)
+      .filter((v) => v !== null)
+      .reduce(
+        (acc, v) => {
+          acc[v.name] = v.value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
+    ...params[1]
+      .map(({ secrets }) => secrets)
+      .filter((v) => v !== null)
+      .reduce(
+        (acc, v) => {
+          acc[v.name] = v.value;
+          return acc;
+        },
+        {} as Record<string, string>,
+      ),
+  };
+  await sandbox.setEnvVars(envVars);
+
   try {
     if (sessionId) {
       const session = await sandbox.getSession(sessionId);
+      await session.setEnvVars(envVars);
       return session.terminal(c.req.raw);
     }
 

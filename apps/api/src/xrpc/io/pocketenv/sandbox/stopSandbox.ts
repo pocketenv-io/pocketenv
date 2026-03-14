@@ -45,7 +45,7 @@ export default function (server: Server, ctx: Context) {
         ? ctx.cfsandbox(record.base!)
         : ctx.sandbox();
 
-    await sandbox.post(`/v1/sandboxes/${record.sandboxId}/stop`, undefined, {
+    await sandbox.post(`/v1/sandboxes/${record.id}/stop`, undefined, {
       headers: {
         Authorization: `Bearer ${await generateJwt(auth?.credentials?.did || "")}`,
       },

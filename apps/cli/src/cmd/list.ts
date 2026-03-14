@@ -23,7 +23,14 @@ async function listSandboxes() {
   );
 
   const response = await client.get<{ sandboxes: Sandbox[] }>(
-    `/xrpc/io.pocketenv.actor.getActorSandboxes?did=${profile.data.did}&offset=0&limit=100`,
+    "/xrpc/io.pocketenv.actor.getActorSandboxes",
+    {
+      params: {
+        did: profile.data.did,
+        offset: 0,
+        limit: 100,
+      },
+    },
   );
 
   const table = new Table({
@@ -60,7 +67,9 @@ async function listSandboxes() {
     table.push([
       chalk.greenBright(sandbox.name),
       sandbox.baseSandbox,
-      sandbox.status,
+      sandbox.status === "RUNNING"
+        ? chalk.greenBright(sandbox.status)
+        : sandbox.status,
       dayjs(sandbox.createdAt).fromNow(),
     ]);
   }

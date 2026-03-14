@@ -27,9 +27,12 @@ export const createSandbox = ({
 
 export const claimSandbox = ({ id }: { id: string }) =>
   client.post<{ sandbox: Sandbox | undefined }>(
-    `/xrpc/io.pocketenv.sandbox.claimSandbox?id=${id}`,
+    "/xrpc/io.pocketenv.sandbox.claimSandbox",
     undefined,
     {
+      params: {
+        id,
+      },
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -38,7 +41,15 @@ export const claimSandbox = ({ id }: { id: string }) =>
 
 export const getSandbox = (id: string) =>
   client.get<{ sandbox: Sandbox | undefined }>(
-    `/xrpc/io.pocketenv.sandbox.getSandbox?id=${id}`,
+    "/xrpc/io.pocketenv.sandbox.getSandbox",
+    {
+      params: {
+        id,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
   );
 
 export const getSandboxes = (offset?: number, limit?: number) =>
@@ -56,21 +67,30 @@ export const getActorSandboxes = (
   );
 
 export const stopSandbox = (id: string) =>
-  client.post(`/xrpc/io.pocketenv.sandbox.stopSandbox?id=${id}`, undefined, {
+  client.post("/xrpc/io.pocketenv.sandbox.stopSandbox", undefined, {
+    params: {
+      id,
+    },
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
 
 export const deleteSandbox = (id: string) =>
-  client.post(`/xrpc/io.pocketenv.sandbox.deleteSandbox?id=${id}`, undefined, {
+  client.post("/xrpc/io.pocketenv.sandbox.deleteSandbox", undefined, {
+    params: {
+      id,
+    },
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
 
 export const startSandbox = (id: string) =>
-  client.post(`/xrpc/io.pocketenv.sandbox.startSandbox?id=${id}`, undefined, {
+  client.post("/xrpc/io.pocketenv.sandbox.startSandbox", undefined, {
+    params: {
+      id,
+    },
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },

@@ -25,6 +25,7 @@ import { PgTransaction } from "drizzle-orm/pg-core";
 import { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import jwt from "@tsndr/cloudflare-worker-jwt";
 import { consola } from "consola";
+import decrypt from "./lib/decrypt";
 
 type Bindings = {
   Sandbox: DurableObjectNamespace<Sandbox<Env>>;
@@ -281,7 +282,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
         .filter((v) => v !== null)
         .reduce(
           (acc, v) => {
-            acc[v.name] = v.value;
+            acc[v.name] = decrypt(v.value);
             return acc;
           },
           {} as Record<string, string>,
@@ -463,7 +464,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
       .filter((v) => v !== null)
       .reduce(
         (acc, v) => {
-          acc[v.name] = v.value;
+          acc[v.name] = decrypt(v.value);
           return acc;
         },
         {} as Record<string, string>,

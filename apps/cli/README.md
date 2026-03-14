@@ -4,7 +4,7 @@
 [![discord](https://img.shields.io/discord/1270021300240252979?label=discord&logo=discord&color=5865F2)](https://discord.gg/9ada4pFUFS)
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL_2.0-blue.svg)](https://opensource.org/licenses/MPL-2.0)
 
-The official CLI for [Pocketenv](https://pocketenv.io) — create, manage, and connect to isolated sandboxes from your terminal. Powered by AT Protocol for open, portable, and vendor-agnostic sandbox definitions.
+The official CLI for [Pocketenv](https://pocketenv.io) — create, manage, and connect to isolated sandboxes from your terminal. Powered by [AT Protocol](https://atproto.com) for open, portable, and vendor-agnostic sandbox definitions.
 
 > [!NOTE]
 > **Still in development**
@@ -17,7 +17,7 @@ The official CLI for [Pocketenv](https://pocketenv.io) — create, manage, and c
 
 - Run AI agents (Codex, Claude, Gemini, OpenClaw, Copilot ...) safely in isolated environments
 - Spin up ephemeral dev sandboxes for quick prototyping
-- Share reproducible developer environments via AT Protocol
+- Share reproducible developer environments via [AT Protocol](https://atproto.com)
 - Test untrusted or third-party code securely
 - Provide sandbox infrastructure as a service
 

@@ -57,6 +57,7 @@ const retrieve = ({
           or(
             eq(schema.sandboxes.id, params.id),
             eq(schema.sandboxes.uri, params.id),
+            eq(schema.sandboxes.name, params.id),
           ),
         )
         .execute()

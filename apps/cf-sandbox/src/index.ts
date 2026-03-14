@@ -439,7 +439,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
       .where(
         or(
           eq(sandboxVariables.sandboxId, record.id),
-          eq(sandboxVariables.sandboxId, record.sandboxId),
+          eq(sandboxVariables.sandboxId, record.sandboxId!),
         ),
       )
       .execute(),
@@ -450,7 +450,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
       .where(
         or(
           eq(sandboxSecrets.sandboxId, record.id),
-          eq(sandboxSecrets.sandboxId, record.sandboxId),
+          eq(sandboxSecrets.sandboxId, record.sandboxId!),
         ),
       )
       .execute(),

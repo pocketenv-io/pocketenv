@@ -150,9 +150,9 @@ env
   .description("delete an environment variable from the given sandbox")
   .action(deleteEnv);
 
-const sshkey = program.command("sshkey").description("manage SSH keys");
+const sshkeys = program.command("sshkeys").description("manage SSH keys");
 
-sshkey
+sshkeys
   .command("put")
   .argument("<sandbox>", "the sandbox to put the SSH key in")
   .option("--private-key", "the path to the SSH private key")
@@ -160,7 +160,7 @@ sshkey
   .description("put an SSH key in the given sandbox")
   .action(putKeys);
 
-sshkey
+sshkeys
   .command("get")
   .argument("<sandbox>", "the sandbox to get the SSH key from")
   .description("get an SSH key (public key only) from the given sandbox")

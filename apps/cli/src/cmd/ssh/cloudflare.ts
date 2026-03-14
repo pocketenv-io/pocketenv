@@ -5,7 +5,6 @@ import getAccessToken from "../../lib/getAccessToken";
 import { client } from "../../client";
 import { env } from "../../lib/env";
 import type { Sandbox } from "../../types/sandbox";
-import type { Profile } from "../../types/profile";
 
 // ── Protocol (mirrors @cloudflare/sandbox xterm addon) ───────────────────────
 //

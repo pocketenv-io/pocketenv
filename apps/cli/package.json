@@ -4,7 +4,7 @@
   "bin": {
     "pocketenv": "dist/index.js"
   },
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "keywords": [
     "sandbox",
@@ -44,7 +44,7 @@
     "envalid": "^8.1.1",
     "eventsource": "^4.1.0",
     "express": "^5.2.1",
-    "node-pty": "^1.1.0",
+    "libsodium-wrappers": "^0.8.2",
     "open": "^11.0.0",
     "ws": "^8.19.0",
     "zod": "^4.3.6"

@@ -12,7 +12,8 @@
     "bluesky",
     "cli",
     "agent",
-    "openclaw"
+    "openclaw",
+    "microvm"
   ],
   "author": "Tsiry Sandratraina <tsiry.sndr@pocketenv.io>",
   "license": "MPL-2.0",

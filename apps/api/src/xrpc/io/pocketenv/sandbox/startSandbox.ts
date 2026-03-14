@@ -14,7 +14,8 @@ export default function (server: Server, ctx: Context) {
       const [user] = await ctx.db
         .select()
         .from(schema.users)
-        .where(eq(schema.users.did, auth.credentials.did));
+        .where(eq(schema.users.did, auth.credentials.did))
+        .execute();
       userId = user?.id;
     }
 

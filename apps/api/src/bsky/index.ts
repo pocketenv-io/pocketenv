@@ -11,8 +11,6 @@ import express from "express";
 
 const app = Router();
 
-app.use(express.json());
-
 app.get("/login", async (req, res) => {
   const { handle, prompt } = req.query;
 
@@ -32,7 +30,7 @@ app.get("/login", async (req, res) => {
   res.redirect(url.toString());
 });
 
-app.post("/login", async (req, res) => {
+app.post("/login", express.json(), async (req, res) => {
   const { handle, cli, password } = req.body;
   if (typeof handle !== "string" || !isValidHandle(handle)) {
     res.status(400);

@@ -13,13 +13,13 @@ async function createSandbox(
     const sandbox = await client.post<Sandbox>(
       "/xrpc/io.pocketenv.sandbox.createSandbox",
       {
+        name,
+        base: "at://did:plc:aturpi2ls3yvsmhc6wybomun/io.pocketenv.sandbox/openclaw",
+        provider: provider ?? "cloudflare",
+      },
+      {
         headers: {
           Authorization: `Bearer ${token}`,
-        },
-        params: {
-          name,
-          base: "at://did:plc:aturpi2ls3yvsmhc6wybomun/io.pocketenv.sandbox/openclaw",
-          provider: provider ?? "cloudflare",
         },
       },
     );

@@ -39,6 +39,11 @@ RUN case "${TARGETARCH}" in \
 
 COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbox
 
+
+RUN mise install node@25 && \
+    mise use -g node@25 && \
+    npm install -g pm2
+
 ENV PATH="/root/.local/bin:${PATH}"
 
 RUN echo 'stty sane' >> ~/.bashrc && \

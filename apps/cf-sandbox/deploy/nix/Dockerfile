@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM node:25-trixie
 
 ARG TARGETARCH
 
@@ -58,6 +58,12 @@ RUN nix profile add \
     'github:flox/flox/latest' || true
 
 RUN nix profile add nixpkgs#devenv || true
+
+RUN mkdir -p /root/.npm-global && npm config set prefix "/root/.npm-global"
+
+ENV PATH="/root/.npm-global/bin:${PATH}"
+
+RUN npm install -g pm2
 
 ENV PATH="/root/.local/bin:${PATH}"
 

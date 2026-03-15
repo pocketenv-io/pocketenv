@@ -46,6 +46,9 @@ COPY banner.sh /root/.local/bin
 RUN chmod a+x /root/.local/bin/banner.sh && \
     echo banner.sh >> ~/.bashrc
 
+RUN pkgm install node && \
+    npm install -g pm2
+
 WORKDIR /workspace
 
 EXPOSE 8080

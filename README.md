@@ -19,8 +19,7 @@ Run code, test ideas, and prototype safely in isolated environments — without 
 ## 🚚 Installation (CLI)
 
 ```sh
-# Build and install locally
-cd apps/cli && npm install && npm run build && npm install -g .
+npm install -g @pocketenv/cli
 ```
 
 ## 🤔 Why Pocketenv?

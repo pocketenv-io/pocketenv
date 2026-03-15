@@ -7,7 +7,15 @@ import connectToSandbox from "./ssh";
 
 async function createSandbox(
   name: string,
-  { provider, ssh }: { provider: string | undefined; ssh: boolean | undefined },
+  {
+    provider,
+    ssh,
+    base,
+  }: {
+    provider: string | undefined;
+    ssh: boolean | undefined;
+    base: string | undefined;
+  },
 ) {
   const token = await getAccessToken();
 
@@ -22,7 +30,9 @@ async function createSandbox(
       "/xrpc/io.pocketenv.sandbox.createSandbox",
       {
         name,
-        base: "at://did:plc:aturpi2ls3yvsmhc6wybomun/io.pocketenv.sandbox/openclaw",
+        base:
+          base ??
+          "at://did:plc:aturpi2ls3yvsmhc6wybomun/io.pocketenv.sandbox/openclaw",
         provider: provider ?? "cloudflare",
       },
       {

@@ -42,7 +42,12 @@ export async function listEnvs(sandbox: string) {
   );
 
   const table = new Table({
-    head: [chalk.cyan("NAME"), chalk.cyan("VALUE"), chalk.cyan("CREATED AT")],
+    head: [
+      chalk.cyan("ID"),
+      chalk.cyan("NAME"),
+      chalk.cyan("VALUE"),
+      chalk.cyan("CREATED AT"),
+    ],
     chars: {
       top: "",
       "top-mid": "",
@@ -68,6 +73,7 @@ export async function listEnvs(sandbox: string) {
 
   for (const variable of response.data.variables) {
     table.push([
+      chalk.greenBright(variable.id),
       chalk.greenBright(variable.name),
       variable.value,
       dayjs(variable.createdAt).fromNow(),
@@ -106,25 +112,11 @@ export async function putEnv(sandbox: string, key: string, value: string) {
   consola.success("Variable updated successfully");
 }
 
-export async function deleteEnv(sandbox: string, key: string) {
+export async function deleteEnv(id: string) {
   const token = await getAccessToken();
-  const { data } = await client.get<{ sandbox: Sandbox }>(
-    "/xrpc/io.pocketenv.sandbox.getSandbox",
-    {
-      params: {
-        id: sandbox,
-      },
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-      },
-    },
-  );
 
-  await client.post("/xrpc/io.pocketenv.variable.deleteVariable", {
-    params: {
-      sandboxId: data.sandbox.id,
-      name: key,
-    },
+  await client.post("/xrpc/io.pocketenv.variable.deleteVariable", undefined, {
+    params: { id },
     headers: {
       Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
     },

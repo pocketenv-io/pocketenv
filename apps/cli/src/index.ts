@@ -120,9 +120,8 @@ secret
 secret
   .command("delete")
   .aliases(["rm", "remove"])
-  .argument("<sandbox>", "the sandbox to delete secrets from")
-  .argument("<key>", "the key of the secret to delete")
-  .description("delete a secret from the given sandbox")
+  .argument("<secret_id>", "the ID of the secret to delete")
+  .description("delete a secret")
   .action(deleteSecret);
 
 const env = program.command("env").description("manage environment variables");
@@ -145,9 +144,8 @@ env
 env
   .command("delete")
   .aliases(["rm", "remove"])
-  .argument("<sandbox>", "the sandbox to delete environment variables from")
-  .argument("<key>", "the key of the environment variable to delete")
-  .description("delete an environment variable from the given sandbox")
+  .argument("<variable_id>", "the ID of the environment variable to delete")
+  .description("delete an environment variable")
   .action(deleteEnv);
 
 const sshkeys = program.command("sshkeys").description("manage SSH keys");

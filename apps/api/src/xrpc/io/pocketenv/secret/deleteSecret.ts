@@ -1,18 +1,41 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import { updateSandbox } from "atproto/sandbox";
 import type { Context } from "context";
-import { eq, or } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type { QueryParams } from "lexicon/types/io/pocketenv/secret/deleteSecret";
 import sandboxSecrets from "schema/sandbox-secrets";
 import sandboxes from "schema/sandboxes";
 import { consola } from "consola";
 import { createAgent } from "lib/agent";
+import secrets from "schema/secrets";
+import users from "schema/users";
 
 export default function (server: Server, ctx: Context) {
   const deleteSecret = async (params: QueryParams, auth: HandlerAuth) => {
     if (!auth.credentials) {
       throw new XRPCError(401, "Unauthorized");
+    }
+
+    const [existingSecret] = await ctx.db
+      .select()
+      .from(sandboxSecrets)
+      .leftJoin(secrets, eq(sandboxSecrets.secretId, secrets.id))
+      .leftJoin(sandboxes, eq(sandboxSecrets.sandboxId, sandboxes.id))
+      .leftJoin(users, eq(sandboxSecrets.sandboxId, users.id))
+      .where(
+        and(
+          or(
+            eq(sandboxSecrets.id, params.id),
+            eq(sandboxSecrets.secretId, params.id),
+          ),
+          eq(users.did, auth.credentials.did),
+        ),
+      )
+      .execute();
+
+    if (!existingSecret) {
+      throw new XRPCError(404, "Secret not found");
     }
 
     const [secret] = await ctx.db

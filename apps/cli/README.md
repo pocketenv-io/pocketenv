@@ -26,6 +26,13 @@ The official CLI for [Pocketenv](https://pocketenv.io) — create, manage, and c
 ## 🚚 Installation
 
 ```sh
+# Build and install locally
+npm run build && npm install -g .
+```
+
+Or install globally
+
+```sh
 npm install -g @pocketenv/cli
 ```
 

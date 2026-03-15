@@ -1,18 +1,39 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import { updateSandbox } from "atproto/sandbox";
 import type { Context } from "context";
-import { eq, or } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type { QueryParams } from "lexicon/types/io/pocketenv/variable/deleteVariable";
 import sandboxVariables from "schema/sandbox-variables";
 import sandboxes from "schema/sandboxes";
 import { consola } from "consola";
 import { createAgent } from "lib/agent";
+import users from "schema/users";
 
 export default function (server: Server, ctx: Context) {
   const deleteVariable = async (params: QueryParams, auth: HandlerAuth) => {
     if (!auth.credentials) {
       throw new XRPCError(401, "Unauthorized");
+    }
+
+    const [existingVariable] = await ctx.db
+      .select()
+      .from(sandboxVariables)
+      .leftJoin(sandboxes, eq(sandboxVariables.sandboxId, sandboxes.id))
+      .leftJoin(users, eq(sandboxes.userId, users.id))
+      .where(
+        and(
+          or(
+            eq(sandboxVariables.id, params.id),
+            eq(sandboxVariables.variableId, params.id),
+          ),
+          eq(users.did, auth.credentials.did),
+        ),
+      )
+      .execute();
+
+    if (!existingVariable) {
+      throw new XRPCError(404, "Variable not found");
     }
 
     const [variable] = await ctx.db

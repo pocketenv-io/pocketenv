@@ -66,7 +66,7 @@ const retrieve = ({
             eq(users.did, auth.credentials.did),
             or(
               eq(sandboxVariables.variableId, params.id),
-              eq(variables.name, params.id),
+              eq(variables.id, params.id),
             ),
           ),
         )

@@ -41,7 +41,7 @@ export async function listSecrets(sandbox: string) {
   );
 
   const table = new Table({
-    head: [chalk.cyan("NAME"), chalk.cyan("CREATED AT")],
+    head: [chalk.cyan("ID"), chalk.cyan("NAME"), chalk.cyan("CREATED AT")],
     chars: {
       top: "",
       "top-mid": "",
@@ -67,6 +67,7 @@ export async function listSecrets(sandbox: string) {
 
   for (const secret of response.data.secrets) {
     table.push([
+      chalk.greenBright(secret.id),
       chalk.greenBright(secret.name),
       dayjs(secret.createdAt).fromNow(),
     ]);
@@ -110,6 +111,17 @@ export async function putSecret(sandbox: string, key: string) {
   );
 }
 
-export async function deleteSecret(sandbox: string, key: string) {
+export async function deleteSecret(id: string) {
   const token = await getAccessToken();
+
+  await client.post("/xrpc/io.pocketenv.secret.deleteSecret", undefined, {
+    params: {
+      id,
+    },
+    headers: {
+      Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+    },
+  });
+
+  consola.success("Secret deleted successfully");
 }

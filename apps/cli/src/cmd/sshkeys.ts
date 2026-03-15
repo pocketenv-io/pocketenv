@@ -121,7 +121,7 @@ export async function putKeys(
   );
 
   consola.log("\nPrivate Key:\n");
-  consola.log(redacted);
+  consola.log(redacted.replace(/\\n/g, "\n"));
   consola.log("\nPublic Key:\n");
   consola.log(publicKey, "\n");
 

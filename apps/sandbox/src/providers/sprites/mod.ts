@@ -40,6 +40,12 @@ export class SpriteSandbox implements BaseSandbox {
   }
 
   async ssh(): Promise<any> {}
+
+  async mkdir(dir: string): Promise<void> {}
+
+  async writeFile(path: string, content: string): Promise<void> {}
+
+  async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {}
 }
 
 class SpritesProvider implements BaseProvider {

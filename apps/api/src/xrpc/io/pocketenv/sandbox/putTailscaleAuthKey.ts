@@ -16,14 +16,10 @@ export default function (server: Server, ctx: Context) {
     await ctx.db.transaction(async (tx) => {
       const sandbox = await tx
         .select()
-        .from(tailscaleAuthKeys)
-        .leftJoin(sandboxes, eq(tailscaleAuthKeys.sandboxId, sandboxes.id))
+        .from(sandboxes)
         .leftJoin(users, eq(sandboxes.userId, users.id))
         .where(
-          and(
-            eq(tailscaleAuthKeys.sandboxId, input.id),
-            eq(users.did, auth.credentials.did),
-          ),
+          and(eq(sandboxes.id, input.id), eq(users.did, auth.credentials.did)),
         )
         .execute();
 

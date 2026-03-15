@@ -55,6 +55,12 @@ export class DenoSandbox implements BaseSandbox {
     );
     return this.sandbox.exposeSsh();
   }
+
+  async mkdir(dir: string): Promise<void> {}
+
+  async writeFile(path: string, content: string): Promise<void> {}
+
+  async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {}
 }
 
 class DenoProvider implements BaseProvider {

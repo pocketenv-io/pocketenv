@@ -45,6 +45,12 @@ export class DaytonaSandbox implements BaseSandbox {
       hostname: "ssh.app.daytona.io",
     };
   }
+
+  async mkdir(dir: string): Promise<void> {}
+
+  async writeFile(path: string, content: string): Promise<void> {}
+
+  async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {}
 }
 
 class DaytonaProvider implements BaseProvider {

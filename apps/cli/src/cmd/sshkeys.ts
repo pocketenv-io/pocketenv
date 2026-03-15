@@ -152,25 +152,29 @@ export async function putKeys(
     return `${header}${maskedBody}${footer}`.replace(/\n/g, "\\n");
   })();
 
-  await client.post(
-    "/xrpc/io.pocketenv.sandbox.putSshKeys",
-    {
-      id: data.sandbox.id,
-      privateKey: encryptedPrivateKey,
-      publicKey,
-      redacted,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+  try {
+    await client.post(
+      "/xrpc/io.pocketenv.sandbox.putSshKeys",
+      {
+        id: data.sandbox.id,
+        privateKey: encryptedPrivateKey,
+        publicKey,
+        redacted,
       },
-    },
-  );
+      {
+        headers: {
+          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+        },
+      },
+    );
 
-  consola.log("\nPrivate Key:");
-  consola.log(redacted.replace(/\\n/g, "\n"));
-  consola.log("\nPublic Key:");
-  consola.log(publicKey, "\n");
+    consola.log("\nPrivate Key:");
+    consola.log(redacted.replace(/\\n/g, "\n"));
+    consola.log("\nPublic Key:");
+    consola.log(publicKey, "\n");
 
-  consola.success("SSH keys saved successfully!");
+    consola.success("SSH keys saved successfully!");
+  } catch {
+    consola.error("Failed to save SSH keys");
+  }
 }

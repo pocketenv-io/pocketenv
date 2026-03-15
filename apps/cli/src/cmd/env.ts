@@ -115,12 +115,16 @@ export async function putEnv(sandbox: string, key: string, value: string) {
 export async function deleteEnv(id: string) {
   const token = await getAccessToken();
 
-  await client.post("/xrpc/io.pocketenv.variable.deleteVariable", undefined, {
-    params: { id },
-    headers: {
-      Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-    },
-  });
+  try {
+    await client.post("/xrpc/io.pocketenv.variable.deleteVariable", undefined, {
+      params: { id },
+      headers: {
+        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+      },
+    });
 
-  consola.success("Variable deleted successfully");
+    consola.success("Variable deleted successfully");
+  } catch {
+    consola.error("Failed to delete variable");
+  }
 }

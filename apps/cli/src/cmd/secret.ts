@@ -114,14 +114,18 @@ export async function putSecret(sandbox: string, key: string) {
 export async function deleteSecret(id: string) {
   const token = await getAccessToken();
 
-  await client.post("/xrpc/io.pocketenv.secret.deleteSecret", undefined, {
-    params: {
-      id,
-    },
-    headers: {
-      Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-    },
-  });
+  try {
+    await client.post("/xrpc/io.pocketenv.secret.deleteSecret", undefined, {
+      params: {
+        id,
+      },
+      headers: {
+        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+      },
+    });
 
-  consola.success("Secret deleted successfully");
+    consola.success("Secret deleted successfully");
+  } catch {
+    consola.error("Failed to delete secret");
+  }
 }

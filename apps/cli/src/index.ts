@@ -171,13 +171,13 @@ const tailscale = program.command("tailscale").description("manage Tailscale");
 tailscale
   .command("put")
   .argument("<sandbox>", "the sandbox to put the Tailscale Auth Key in")
-  .description("put a Tailscale key in the given sandbox")
+  .description("put a Tailscale Auth Key in the given sandbox")
   .action(putAuthKey);
 
 tailscale
   .command("get")
-  .argument("<sandbox>", "the sandbox to get the Tailscale key from")
-  .description("get a Tailscale key (redacted) from the given sandbox")
+  .argument("<sandbox>", "the sandbox to get the Tailscale Auth Key from")
+  .description("get a Tailscale Auth Key (redacted) from the given sandbox")
   .action(getTailscaleAuthKey);
 
 if (process.argv.length <= 2) {

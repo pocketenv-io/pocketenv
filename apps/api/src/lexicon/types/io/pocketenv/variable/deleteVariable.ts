@@ -13,14 +13,8 @@ export interface QueryParams {
   id: string;
 }
 
-export interface InputSchema {
-  [k: string]: unknown;
-}
-
-export interface HandlerInput {
-  encoding: "application/json";
-  body: InputSchema;
-}
+export type InputSchema = undefined;
+export type HandlerInput = undefined;
 
 export interface HandlerError {
   status: number;

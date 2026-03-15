@@ -15,13 +15,6 @@
             "description": "The ID of the volume to delete."
           }
         }
-      },
-      "input": {
-        "encoding": "application/json",
-        "schema": {
-          "type": "object",
-          "properties": {}
-        }
       }
     }
   }

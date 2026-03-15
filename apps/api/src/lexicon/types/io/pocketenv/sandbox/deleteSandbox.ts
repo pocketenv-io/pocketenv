@@ -14,16 +14,9 @@ export interface QueryParams {
   id: string;
 }
 
-export interface InputSchema {
-  [k: string]: unknown;
-}
-
+export type InputSchema = undefined;
 export type OutputSchema = IoPocketenvSandboxDefs.SandboxViewBasic;
-
-export interface HandlerInput {
-  encoding: "application/json";
-  body: InputSchema;
-}
+export type HandlerInput = undefined;
 
 export interface HandlerSuccess {
   encoding: "application/json";

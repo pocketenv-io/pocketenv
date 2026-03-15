@@ -304,13 +304,6 @@ export const schemaDict = {
             },
           },
         },
-        input: {
-          encoding: "application/json",
-          schema: {
-            type: "object",
-            properties: {},
-          },
-        },
       },
     },
   },
@@ -1016,13 +1009,6 @@ export const schemaDict = {
               type: "string",
               description: "The sandbox ID.",
             },
-          },
-        },
-        input: {
-          encoding: "application/json",
-          schema: {
-            type: "object",
-            properties: {},
           },
         },
         output: {
@@ -1743,13 +1729,6 @@ export const schemaDict = {
             },
           },
         },
-        input: {
-          encoding: "application/json",
-          schema: {
-            type: "object",
-            properties: {},
-          },
-        },
       },
     },
   },
@@ -1955,13 +1934,6 @@ export const schemaDict = {
               type: "string",
               description: "The ID of the environment variable to delete",
             },
-          },
-        },
-        input: {
-          encoding: "application/json",
-          schema: {
-            type: "object",
-            properties: {},
           },
         },
       },
@@ -2183,13 +2155,6 @@ export const schemaDict = {
               type: "string",
               description: "The ID of the volume to delete.",
             },
-          },
-        },
-        input: {
-          encoding: "application/json",
-          schema: {
-            type: "object",
-            properties: {},
           },
         },
       },

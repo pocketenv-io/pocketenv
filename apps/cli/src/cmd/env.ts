@@ -21,6 +21,12 @@ export async function listEnvs(sandbox: string) {
       },
     },
   );
+
+  if (!data.sandbox) {
+    consola.error(`Sandbox not found: ${chalk.greenBright(sandbox)}`);
+    process.exit(1);
+  }
+
   const response = await client.get<{ variables: Variable[] }>(
     "/xrpc/io.pocketenv.variable.getVariables",
     {

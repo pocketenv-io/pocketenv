@@ -88,6 +88,11 @@ export async function putSecret(sandbox: string, key: string) {
     },
   });
 
+  if (!data.sandbox) {
+    consola.error(`Sandbox not found: ${chalk.greenBright(sandbox)}`);
+    process.exit(1);
+  }
+
   await client.post(
     "/xrpc/io.pocketenv.secret.addSecret",
     {

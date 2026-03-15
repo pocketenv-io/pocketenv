@@ -7,9 +7,51 @@ import encrypt from "../lib/sodium";
 import { client } from "../client";
 import type { Sandbox } from "../types/sandbox";
 import { env } from "../lib/env";
+import type { SshKeys } from "../types/sshkeys";
+import chalk from "chalk";
 
 export async function getSshKey(sandbox: string) {
   const token = await getAccessToken();
+
+  const { data } = await client.get<{ sandbox: Sandbox }>(
+    "/xrpc/io.pocketenv.sandbox.getSandbox",
+    {
+      params: {
+        id: sandbox,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  if (!data.sandbox) {
+    consola.error(`Sandbox not found: ${chalk.greenBright(sandbox)}`);
+    process.exit(1);
+  }
+
+  try {
+    const { data: sshKeys } = await client.get<SshKeys>(
+      "/xrpc/io.pocketenv.sandbox.getSshKeys",
+      {
+        params: {
+          id: data.sandbox.id,
+        },
+        headers: {
+          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+        },
+      },
+    );
+
+    consola.log("\nPrivate Key:");
+    consola.log(sshKeys.privateKey.replace(/\\n/g, "\n"));
+    consola.log("\nPublic Key:");
+    consola.log(sshKeys.publicKey, "\n");
+  } catch (error) {
+    consola.info(
+      `No SSH keys found for this sandbox.\n  Create one with ${chalk.greenBright(`pocketenv sshkeys put ${sandbox} --generate`)}.`,
+    );
+  }
 }
 
 export async function putKeys(
@@ -78,6 +120,11 @@ export async function putKeys(
     },
   );
 
+  if (!data.sandbox) {
+    consola.error(`Sandbox not found: ${chalk.greenBright(sandbox)}`);
+    process.exit(1);
+  }
+
   const encryptedPrivateKey = await encrypt(privateKey);
 
   const redacted = (() => {
@@ -120,9 +167,9 @@ export async function putKeys(
     },
   );
 
-  consola.log("\nPrivate Key:\n");
+  consola.log("\nPrivate Key:");
   consola.log(redacted.replace(/\\n/g, "\n"));
-  consola.log("\nPublic Key:\n");
+  consola.log("\nPublic Key:");
   consola.log(publicKey, "\n");
 
   consola.success("SSH keys saved successfully!");

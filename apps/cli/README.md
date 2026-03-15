@@ -214,12 +214,12 @@ pocketenv env list my-sandbox
 pocketenv env ls my-sandbox
 ```
 
-#### `pocketenv env delete <sandbox> <key>`
+#### `pocketenv env delete <variable_id>`
 
 Remove an environment variable. Aliases: `rm`, `remove`
 
 ```sh
-pocketenv env delete my-sandbox DATABASE_URL
+pocketenv env delete var_d6qt6q8d60de420001jf
 ```
 
 ---
@@ -244,12 +244,12 @@ List all secret keys stored in a sandbox. Aliases: `ls`
 pocketenv secret list my-sandbox
 ```
 
-#### `pocketenv secret delete <sandbox> <key>`
+#### `pocketenv secret delete <secret_id>`
 
 Delete a secret from a sandbox. Aliases: `rm`, `remove`
 
 ```sh
-pocketenv secret delete my-sandbox API_KEY
+pocketenv secret delete secret_d6qt6q8d60de420000jg
 ```
 
 ---
@@ -266,6 +266,7 @@ Upload an SSH key pair to a sandbox.
 |-----------------|-----------------------------|
 | `--private-key` | Path to the SSH private key |
 | `--public-key`  | Path to the SSH public key  |
+| `--generate`    | Generate a new key pair     |
 
 ```sh
 pocketenv sshkeys put my-sandbox

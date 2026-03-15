@@ -51,18 +51,31 @@ export class SpriteSandbox implements BaseSandbox {
     if (basePath !== "/" && basePath != ".") {
       await this.mkdir(basePath);
     }
-    await this.sprite.exec(`echo '${content}' > ${absolutePath}`);
+    await this.sprite.execFile("sh", [
+      "-c",
+      `echo '${content}' > ${absolutePath}`,
+    ]);
   }
 
   async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {
     await this.writeFile("/home/sprite/.ssh/id_ed25519", privateKey);
     await this.writeFile("/home/sprite/.ssh/id_ed25519.pub", publicKey);
-    await this.sprite.exec(`chmod 600 $HOME/.ssh/id_ed25519`);
-    await this.sprite.exec(`chmod 644 $HOME/.ssh/id_ed25519.pub`);
-    await this.sprite.exec(
-      `cat $HOME/.ssh/id_ed25519.pub >> $HOME/.ssh/authorized_keys`,
-    );
-    await this.sprite.exec(`chmod 644 $HOME/.ssh/authorized_keys`);
+    await this.sprite.execFile("chmod", [
+      "600",
+      "/home/sprite/.ssh/id_ed25519",
+    ]);
+    await this.sprite.execFile("chmod", [
+      "644",
+      "/home/sprite/.ssh/id_ed25519.pub",
+    ]);
+    await this.sprite.execFile("sh", [
+      "-c",
+      "cat /home/sprite/.ssh/id_ed25519.pub >> /home/sprite/.ssh/authorized_keys",
+    ]);
+    await this.sprite.execFile("chmod", [
+      "644",
+      "/home/sprite/.ssh/authorized_keys",
+    ]);
   }
 }
 

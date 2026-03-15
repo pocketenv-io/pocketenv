@@ -119,7 +119,7 @@ async function createTerminalSession(ctx: Context, id: string) {
   });
 
   const mkdir = async (absolutePath: string): Promise<ExecResult> =>
-    sprite.exec(`mkdir -p ${absolutePath}`);
+    sprite.execFile("mkdir", ["-p", absolutePath]);
 
   const writeFile = async (
     absolutePath: string,
@@ -129,7 +129,11 @@ async function createTerminalSession(ctx: Context, id: string) {
     if (basePath !== "/" && basePath != ".") {
       await mkdir(basePath);
     }
-    await sprite.exec(`echo '${content}' > ${absolutePath}`);
+    const encoded = Buffer.from(content, "utf8").toString("base64");
+    await sprite.execFile("sh", [
+      "-c",
+      `echo '${encoded}' | base64 -d | tee ${absolutePath}`,
+    ]);
   };
 
   const setupSshKeys = async (
@@ -138,12 +142,16 @@ async function createTerminalSession(ctx: Context, id: string) {
   ): Promise<void> => {
     await writeFile("/home/sprite/.ssh/id_ed25519", privateKey);
     await writeFile("/home/sprite/.ssh/id_ed25519.pub", publicKey);
-    await sprite.exec(`chmod 600 $HOME/.ssh/id_ed25519`);
-    await sprite.exec(`chmod 644 $HOME/.ssh/id_ed25519.pub`);
-    await sprite.exec(
-      `cat $HOME/.ssh/id_ed25519.pub >> $HOME/.ssh/authorized_keys`,
-    );
-    await sprite.exec(`chmod 644 $HOME/.ssh/authorized_keys`);
+    await sprite.execFile("chmod", ["600", "/home/sprite/.ssh/id_ed25519"]);
+    await sprite.execFile("chmod", ["644", "/home/sprite/.ssh/id_ed25519.pub"]);
+    await sprite.execFile("sh", [
+      "-c",
+      "cat /home/sprite/.ssh/id_ed25519.pub >> /home/sprite/.ssh/authorized_keys",
+    ]);
+    await sprite.execFile("chmod", [
+      "644",
+      "/home/sprite/.ssh/authorized_keys",
+    ]);
   };
 
   await Promise.all([

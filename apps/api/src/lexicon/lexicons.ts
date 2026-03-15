@@ -304,6 +304,13 @@ export const schemaDict = {
             },
           },
         },
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {},
+          },
+        },
       },
     },
   },

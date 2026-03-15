@@ -15,6 +15,13 @@
             "description": "The ID of the file to delete"
           }
         }
+      },
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {}
+        }
       }
     }
   }

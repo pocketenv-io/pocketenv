@@ -227,7 +227,7 @@ function Navbar({ title, project, withLogo, root, rootLink }: NavbarProps) {
               <li>
                 <a
                   className="dropdown-item"
-                  href="https://docs.pocketenv.io/faqs"
+                  href="https://docs.pocketenv.io/faq-2028704m0"
                   target="_blank"
                 >
                   <span className="icon-[tabler--help-triangle]"></span>
@@ -345,7 +345,7 @@ function Navbar({ title, project, withLogo, root, rootLink }: NavbarProps) {
 
                 <a
                   className="flex items-center gap-2 text-[15px] py-2 px-3 rounded-lg hover:bg-base-200 transition-colors"
-                  href="https://docs.pocketenv.io/faqs"
+                  href="https://docs.pocketenv.io/faq-2028704m0"
                   target="_blank"
                   onClick={() => setMobileMenuOpen(false)}
                 >

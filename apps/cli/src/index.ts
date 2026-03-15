@@ -85,6 +85,7 @@ program
   .command("create")
   .aliases(["new"])
   .option("--provider, -p <provider>", "the provider to use for the sandbox")
+  .option("--ssh, -s", "connect to the Sandbox and automatically open a shell")
   .argument("[name]", "the name of the sandbox to create")
   .description("create a new sandbox")
   .action(createSandbox);

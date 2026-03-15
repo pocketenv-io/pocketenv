@@ -3,10 +3,11 @@ import { client } from "../client";
 import getAccessToken from "../lib/getAccessToken";
 import type { Sandbox } from "../types/sandbox";
 import chalk from "chalk";
+import connectToSandbox from "./ssh";
 
 async function createSandbox(
   name: string,
-  { provider }: { provider: string | undefined },
+  { provider, ssh }: { provider: string | undefined; ssh: boolean | undefined },
 ) {
   const token = await getAccessToken();
 
@@ -30,9 +31,13 @@ async function createSandbox(
         },
       },
     );
-    consola.success(
-      `Sandbox created successfully: ${chalk.greenBright(sandbox.data.name)}`,
-    );
+    if (!ssh) {
+      consola.success(
+        `Sandbox created successfully: ${chalk.greenBright(sandbox.data.name)}`,
+      );
+      return;
+    }
+    await connectToSandbox(sandbox.data.name);
   } catch (error) {
     consola.error(`Failed to create sandbox: ${error}`);
   }

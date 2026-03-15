@@ -2,7 +2,7 @@ FROM docker:dind-rootless
 
 USER root
 
-RUN apk update && apk add --no-cache bash curl
+RUN apk update && apk add --no-cache bash curl openrc
 
 RUN curl -fsSL https://tailscale.com/install.sh | sh
 

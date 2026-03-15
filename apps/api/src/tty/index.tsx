@@ -136,8 +136,8 @@ async function createTerminalSession(ctx: Context, id: string) {
     privateKey: string,
     publicKey: string,
   ): Promise<void> => {
-    await writeFile("/root/.ssh/id_ed25519", privateKey);
-    await writeFile("/root/.ssh/id_ed25519.pub", publicKey);
+    await writeFile("/home/sprite/.ssh/id_ed25519", privateKey);
+    await writeFile("/home/sprite/.ssh/id_ed25519.pub", publicKey);
     await sprite.exec(`chmod 600 $HOME/.ssh/id_ed25519`);
     await sprite.exec(`chmod 644 $HOME/.ssh/id_ed25519.pub`);
     await sprite.exec(

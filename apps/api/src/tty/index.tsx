@@ -144,10 +144,6 @@ async function createTerminalSession(ctx: Context, id: string) {
     await writeFile("/home/sprite/.ssh/id_ed25519.pub", publicKey);
     await sprite.execFile("chmod", ["600", "/home/sprite/.ssh/id_ed25519"]);
     await sprite.execFile("chmod", ["644", "/home/sprite/.ssh/id_ed25519.pub"]);
-    await sprite.execFile("sh", [
-      "-c",
-      "cat /home/sprite/.ssh/id_ed25519.pub >> /home/sprite/.ssh/authorized_keys",
-    ]);
     await sprite.execFile("chmod", [
       "644",
       "/home/sprite/.ssh/authorized_keys",

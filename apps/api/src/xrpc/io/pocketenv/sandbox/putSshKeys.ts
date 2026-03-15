@@ -1,9 +1,11 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import type { Context } from "context";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type { InputSchema } from "lexicon/types/io/pocketenv/sandbox/putSshKeys";
+import sandboxes from "schema/sandboxes";
 import sshKeys from "schema/ssh-keys";
+import users from "schema/users";
 
 export default function (server: Server, ctx: Context) {
   const putSshKeys = async (input: InputSchema, auth: HandlerAuth) => {
@@ -12,6 +14,21 @@ export default function (server: Server, ctx: Context) {
     }
 
     await ctx.db.transaction(async (tx) => {
+      const sandbox = await tx
+        .select()
+        .from(sshKeys)
+        .leftJoin(sandboxes, eq(sshKeys.sandboxId, sandboxes.id))
+        .leftJoin(users, eq(sandboxes.userId, users.id))
+        .where(
+          and(
+            eq(sshKeys.sandboxId, input.id),
+            eq(users.did, auth.credentials.did),
+          ),
+        )
+        .execute();
+      if (sandbox.length === 0) {
+        throw new XRPCError(404, "Sandbox not found");
+      }
       await tx.delete(sshKeys).where(eq(sshKeys.sandboxId, input.id)).execute();
       await tx
         .insert(sshKeys)

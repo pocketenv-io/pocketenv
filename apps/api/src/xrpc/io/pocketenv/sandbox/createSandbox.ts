@@ -10,12 +10,13 @@ import chalk from "chalk";
 import { createAgent } from "lib/agent";
 import { TID } from "@atproto/common";
 import schema from "schema";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import {
   validateMain,
   type Main,
 } from "lexicon/types/com/atproto/repo/strongRef";
 import { Providers } from "consts";
+import sandboxes from "schema/sandboxes";
 
 export default function (server: Server, ctx: Context) {
   const createSandbox = async (input: HandlerInput, auth: HandlerAuth) => {
@@ -28,6 +29,24 @@ export default function (server: Server, ctx: Context) {
           "Authentication failed, invalid challenge",
           "AuthenticationError",
         );
+      }
+
+      if (!input.body.base.startsWith("at://")) {
+        const [sandbox] = await ctx.db
+          .select()
+          .from(sandboxes)
+          .where(
+            or(
+              eq(sandboxes.name, input.body.base),
+              eq(sandboxes.id, input.body.base),
+              eq(sandboxes.sandboxId, input.body.base),
+            ),
+          )
+          .execute();
+        if (!sandbox?.uri) {
+          throw new XRPCError(404, "Sandbox not found", "SandboxNotFoundError");
+        }
+        input.body.base = sandbox.uri;
       }
 
       const provider = input.body.provider || Providers.CLOUDFLARE;

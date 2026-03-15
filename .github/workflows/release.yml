@@ -1,0 +1,57 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+env:
+  RELEASE_VERSION: ${{ github.ref_name }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+          - aarch64-unknown-linux-gnu
+          - x86_64-apple-darwin
+          - aarch64-apple-darwin
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Compile @pocketenv/cli for ${{ matrix.target }}
+        run: |
+          deno compile \
+            --target ${{ matrix.target }} \
+            --allow-all \
+            --output pocketenv \
+            npm:@pocketenv/cli
+
+      - name: Create archive
+        run: |
+          tar -czf pocketenv_${{ env.RELEASE_VERSION }}_${{ matrix.target }}.tar.gz pocketenv
+
+      - name: Generate SHA256 checksum
+        run: |
+          sha256sum pocketenv_${{ env.RELEASE_VERSION }}_${{ matrix.target }}.tar.gz \
+            > pocketenv_${{ env.RELEASE_VERSION }}_${{ matrix.target }}.tar.gz.sha256
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            pocketenv_${{ env.RELEASE_VERSION }}_${{ matrix.target }}.tar.gz
+            pocketenv_${{ env.RELEASE_VERSION }}_${{ matrix.target }}.tar.gz.sha256

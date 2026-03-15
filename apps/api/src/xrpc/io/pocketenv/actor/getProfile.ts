@@ -57,6 +57,9 @@ const resolveHandleToDid = ({
 > => {
   return Effect.tryPromise({
     try: async () => {
+      if (!params.did && !did) {
+        throw new Error("No DID provided");
+      }
       if (!params.did?.startsWith("did:plc:") && !!params.did) {
         return {
           did: await ctx.baseIdResolver.handle.resolve(params.did),

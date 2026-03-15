@@ -158,7 +158,7 @@ export default function (server: Server, ctx: Context) {
 
     return {
       id: res.data.id,
-      name: input.body.name || "Unnamed Sandbox",
+      name: res.data.name,
       provider: input.body.provider || Providers.CLOUDFLARE,
       description: input.body.description,
       topics: input.body.topics,

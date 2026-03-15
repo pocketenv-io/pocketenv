@@ -46,7 +46,7 @@ export default function (server: Server, ctx: Context) {
         : ctx.sandbox();
 
     try {
-      await sandbox.delete(`/v1/sandboxes/${params.id}`, {
+      await sandbox.delete(`/v1/sandboxes/${record.id}`, {
         headers: {
           Authorization: `Bearer ${await generateJwt(auth?.credentials?.did || "")}`,
         },

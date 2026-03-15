@@ -396,7 +396,12 @@ app.delete("/v1/sandboxes/:sandboxId", async (c) => {
 
     await c.var.db
       .delete(sandboxes)
-      .where(eq(sandboxes.id, c.req.param("sandboxId")))
+      .where(
+        or(
+          eq(sandboxes.id, c.req.param("sandboxId")),
+          eq(sandboxes.name, c.req.param("sandboxId")),
+        ),
+      )
       .execute();
 
     return c.json({ success: true }, 200);

@@ -155,8 +155,8 @@ const sshkeys = program.command("sshkeys").description("manage SSH keys");
 sshkeys
   .command("put")
   .argument("<sandbox>", "the sandbox to put the SSH key in")
-  .option("--private-key", "the path to the SSH private key")
-  .option("--public-key", "the path to the SSH public key")
+  .option("--private-key <path>", "the path to the SSH private key")
+  .option("--public-key <path>", "the path to the SSH public key")
   .option("--generate, -g", "generate a new SSH key pair")
   .description("put an SSH key in the given sandbox")
   .action(putKeys);

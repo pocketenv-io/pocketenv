@@ -11,3 +11,5 @@ RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     build-essential
 
 RUN curl -fsSL https://openclaw.ai/install.sh | bash || true
+
+RUN npm install -g pm2

@@ -17,3 +17,5 @@ RUN case "${TARGETARCH}" in \
     sudo chmod +x /home/daytona/.local/bin/zeroclaw
 
 ENV PATH="${PATH}:/home/daytona/.local/bin"
+
+RUN npm install -g pm2

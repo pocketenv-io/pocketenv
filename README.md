@@ -12,6 +12,8 @@ Run code, test ideas, and prototype safely in isolated environments — without 
 >
 > This project is in early development. Expect breaking changes and rapid iteration.
 
+![Made with VHS](https://vhs.charm.sh/vhs-1y1YqClWEmOwPD3MFwp40V.gif)
+ 
 ![](./preview.png)
 
 ## 🚚 Installation (CLI)

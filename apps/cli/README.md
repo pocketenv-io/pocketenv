@@ -4,6 +4,8 @@
 [![discord](https://img.shields.io/discord/1270021300240252979?label=discord&logo=discord&color=5865F2)](https://discord.gg/9ada4pFUFS)
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL_2.0-blue.svg)](https://opensource.org/licenses/MPL-2.0)
 
+ ![Made with VHS](https://vhs.charm.sh/vhs-1y1YqClWEmOwPD3MFwp40V.gif)
+ 
 The official CLI for [Pocketenv](https://pocketenv.io) — create, manage, and connect to isolated sandboxes from your terminal. Powered by [AT Protocol](https://atproto.com) for open, portable, and vendor-agnostic sandbox definitions.
 
 > [!NOTE]

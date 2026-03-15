@@ -29,6 +29,7 @@ import { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import jwt from "@tsndr/cloudflare-worker-jwt";
 import { consola } from "consola";
 import decrypt from "./lib/decrypt";
+import { CloudflareSandbox } from "./providers/cloudflare";
 
 type Bindings = {
   Sandbox: DurableObjectNamespace<Sandbox<Env>>;
@@ -467,6 +468,10 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
   const sandbox = getSandbox(c.env.Sandbox, c.req.param("sandboxId"));
   const sessionId = c.req.query("session");
 
+  const cfsandbox = await createSandbox("cloudflare", {
+    id: c.req.param("sandboxId"),
+  });
+
   const params = await Promise.all([
     c.var.db
       .select()
@@ -489,6 +494,17 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
           eq(sandboxSecrets.sandboxId, record.sandboxId!),
         ),
       )
+      .execute(),
+    c.var.db
+      .select()
+      .from(sandboxFiles)
+      .leftJoin(files, eq(files.id, sandboxFiles.fileId))
+      .where(eq(sandboxFiles.sandboxId, c.req.param("sandboxId")))
+      .execute(),
+    c.var.db
+      .select()
+      .from(sshKeys)
+      .where(eq(sshKeys.sandboxId, c.req.param("sandboxId")))
       .execute(),
   ]);
 
@@ -514,10 +530,47 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
   };
   await sandbox.setEnvVars(envVars);
 
+  await Promise.all([
+    ...params[2]
+      .filter((x) => x.files !== null)
+      .map(async (record) =>
+        cfsandbox.writeFile(
+          record.sandbox_files.path,
+          await decrypt(record.files!.content),
+        ),
+      ),
+    ...params[3].map(async (record) =>
+      cfsandbox.setupSshKeys(
+        await decrypt(record.privateKey),
+        record.publicKey,
+      ),
+    ),
+  ]);
+
   try {
     if (sessionId) {
       const session = await sandbox.getSession(sessionId);
+
+      const cfsession = new CloudflareSandbox(session);
       await session.setEnvVars(envVars);
+
+      await Promise.all([
+        ...params[2]
+          .filter((x) => x.files !== null)
+          .map(async (record) =>
+            cfsession.writeFile(
+              record.sandbox_files.path,
+              await decrypt(record.files!.content),
+            ),
+          ),
+        ...params[3].map(async (record) =>
+          cfsession.setupSshKeys(
+            await decrypt(record.privateKey),
+            record.publicKey,
+          ),
+        ),
+      ]);
+
       return session.terminal(c.req.raw);
     }
 

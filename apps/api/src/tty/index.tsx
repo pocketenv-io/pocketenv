@@ -1,4 +1,4 @@
-import { SpritesClient } from "@fly/sprites";
+import { SpritesClient, type ExecResult } from "@fly/sprites";
 import { consola } from "consola";
 import type { Context } from "context";
 import * as context from "context";
@@ -8,6 +8,7 @@ import { env } from "lib/env";
 import jwt from "jsonwebtoken";
 import schema from "schema";
 import decrypt from "lib/decrypt";
+import path from "node:path";
 
 const router = Router();
 router.use((req, res, next) => {
@@ -54,7 +55,7 @@ async function createTerminalSession(ctx: Context, id: string) {
     throw new Error(`Sandbox not found: ${id}`);
   }
 
-  const [variables, secrets] = await Promise.all([
+  const [variables, secrets, files, sshKeys] = await Promise.all([
     ctx.db
       .select()
       .from(schema.sandboxVariables)
@@ -72,6 +73,17 @@ async function createTerminalSession(ctx: Context, id: string) {
         eq(schema.secrets.id, schema.sandboxSecrets.secretId),
       )
       .where(eq(schema.sandboxSecrets.sandboxId, id))
+      .execute(),
+    ctx.db
+      .select()
+      .from(schema.sandboxFiles)
+      .leftJoin(schema.files, eq(schema.files.id, schema.sandboxFiles.fileId))
+      .where(eq(schema.sandboxFiles.sandboxId, id))
+      .execute(),
+    ctx.db
+      .select()
+      .from(schema.sshKeys)
+      .where(eq(schema.sshKeys.sandboxId, id))
       .execute(),
   ]);
 
@@ -105,6 +117,45 @@ async function createTerminalSession(ctx: Context, id: string) {
         ),
     },
   });
+
+  const mkdir = async (absolutePath: string): Promise<ExecResult> =>
+    sprite.exec(`mkdir -p ${absolutePath}`);
+
+  const writeFile = async (
+    absolutePath: string,
+    content: string,
+  ): Promise<void> => {
+    const basePath = path.dirname(absolutePath);
+    if (basePath !== "/" && basePath != ".") {
+      await mkdir(basePath);
+    }
+    await sprite.exec(`echo '${content}' > ${absolutePath}`);
+  };
+
+  const setupSshKeys = async (
+    privateKey: string,
+    publicKey: string,
+  ): Promise<void> => {
+    await writeFile("/root/.ssh/id_ed25519", privateKey);
+    await writeFile("/root/.ssh/id_ed25519.pub", publicKey);
+    await sprite.exec(`chmod 600 $HOME/.ssh/id_ed25519`);
+    await sprite.exec(`chmod 644 $HOME/.ssh/id_ed25519.pub`);
+    await sprite.exec(
+      `cat $HOME/.ssh/id_ed25519.pub >> $HOME/.ssh/authorized_keys`,
+    );
+    await sprite.exec(`chmod 644 $HOME/.ssh/authorized_keys`);
+  };
+
+  await Promise.all([
+    ...files
+      .filter((x) => x.files !== null)
+      .map(async (record) =>
+        writeFile(record.sandbox_files.path, decrypt(record.files!.content)),
+      ),
+    ...sshKeys.map(async (record) =>
+      setupSshKeys(decrypt(record.privateKey), record.publicKey),
+    ),
+  ]);
 
   const session: Session = {
     cmd,

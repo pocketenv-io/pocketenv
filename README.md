@@ -14,6 +14,13 @@ Run code, test ideas, and prototype safely in isolated environments — without 
 
 ![](./preview.png)
 
+## 🚚 Installation (CLI)
+
+```sh
+# Build and install locally
+cd apps/cli && npm install && npm run build && npm install -g .
+```
+
 ## 🤔 Why Pocketenv?
 
 Modern sandboxes are fragmented and vendor-specific. Each platform has its own API, its own format, and its own ecosystem.

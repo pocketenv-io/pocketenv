@@ -3,10 +3,13 @@ import { Context } from "./context.ts";
 import { logger } from "hono/logger";
 import { consola } from "consola";
 import {
+  files,
   sandboxes,
+  sandboxFiles,
   sandboxSecrets,
   sandboxVariables,
   secrets,
+  sshKeys,
   users,
   variables,
 } from "./schema/mod.ts";
@@ -30,6 +33,7 @@ import { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import chalk from "chalk";
 import process from "node:process";
 import jwt from "@tsndr/cloudflare-worker-jwt";
+import decrypt from "./lib/decrypt.ts";
 
 const app = new Hono<{ Variables: Context }>();
 
@@ -212,6 +216,34 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
   if (!sandbox) {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
+
+  const params = await Promise.all([
+    c.var.db
+      .select()
+      .from(sandboxFiles)
+      .leftJoin(files, eq(files.id, sandboxFiles.fileId))
+      .where(eq(sandboxFiles.sandboxId, c.req.param("sandboxId")))
+      .execute(),
+    c.var.db
+      .select()
+      .from(sshKeys)
+      .where(eq(sshKeys.sandboxId, c.req.param("sandboxId")))
+      .execute(),
+  ]);
+
+  await Promise.all([
+    ...params[0]
+      .filter((x) => x.files !== null)
+      .map(async (record) =>
+        sandbox?.writeFile(
+          record.sandbox_files.path,
+          decrypt(record.files!.content),
+        ),
+      ),
+    ...params[1].map(async (record) =>
+      sandbox?.setupSshKeys(decrypt(record.privateKey), record.publicKey),
+    ),
+  ]);
 
   await sandbox.start();
   await c.var.db

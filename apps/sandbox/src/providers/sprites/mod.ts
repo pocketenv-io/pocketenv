@@ -2,6 +2,7 @@ import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
 import process from "node:process";
 import consola from "consola";
 import { Sprite, SpritesClient } from "@fly/sprites";
+import path from "node:path";
 
 export class SpriteSandbox implements BaseSandbox {
   constructor(private sprite: Sprite) {}
@@ -41,11 +42,28 @@ export class SpriteSandbox implements BaseSandbox {
 
   async ssh(): Promise<any> {}
 
-  async mkdir(dir: string): Promise<void> {}
+  async mkdir(dir: string): Promise<void> {
+    await this.sprite.exec(`mkdir -p ${dir}`);
+  }
 
-  async writeFile(path: string, content: string): Promise<void> {}
+  async writeFile(absolutePath: string, content: string): Promise<void> {
+    const basePath = path.dirname(absolutePath);
+    if (basePath !== "/" && basePath != ".") {
+      await this.mkdir(basePath);
+    }
+    await this.sprite.exec(`echo '${content}' > ${absolutePath}`);
+  }
 
-  async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {}
+  async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {
+    await this.writeFile("/root/.ssh/id_ed25519", privateKey);
+    await this.writeFile("/root/.ssh/id_ed25519.pub", publicKey);
+    await this.sprite.exec(`chmod 600 $HOME/.ssh/id_ed25519`);
+    await this.sprite.exec(`chmod 644 $HOME/.ssh/id_ed25519.pub`);
+    await this.sprite.exec(
+      `cat $HOME/.ssh/id_ed25519.pub >> $HOME/.ssh/authorized_keys`,
+    );
+    await this.sprite.exec(`chmod 644 $HOME/.ssh/authorized_keys`);
+  }
 }
 
 class SpritesProvider implements BaseProvider {

@@ -77,7 +77,7 @@ async function ssh(sandbox: Sandbox) {
   let rows = process.stdout.rows ?? 50;
 
   consola.info(
-    `Connecting to ${chalk.cyanBright(sandbox.name)} via Cloudflare sandbox…`,
+    `Connecting to ${chalk.cyanBright(sandbox.name)} via Cloudflare Sandbox…`,
   );
 
   // Use default binaryType ("nodebuffer") so binary frames arrive as Buffer,

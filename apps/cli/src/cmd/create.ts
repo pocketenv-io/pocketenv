@@ -9,6 +9,13 @@ async function createSandbox(
   { provider }: { provider: string | undefined },
 ) {
   const token = await getAccessToken();
+
+  if (["deno", "vercel", "daytona"].includes(provider || "")) {
+    consola.error(
+      `This Sandbox Runtime is temporarily disabled. ${chalk.greenBright(provider ?? "")}`,
+    );
+    process.exit(1);
+  }
   try {
     const sandbox = await client.post<Sandbox>(
       "/xrpc/io.pocketenv.sandbox.createSandbox",

@@ -1,6 +1,7 @@
 import { getSandbox, Sandbox } from "@cloudflare/sandbox";
 import BaseProvider, { BaseSandbox, SandboxOptions } from "..";
 import { env } from "cloudflare:workers";
+import path from "node:path";
 
 export class CloudflareSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
@@ -55,6 +56,26 @@ export class CloudflareSandbox implements BaseSandbox {
 
   async setEnvs(envVars: Record<string, string>): Promise<void> {
     await this.sandbox.setEnvVars(envVars);
+  }
+
+  async mkdir(dir: string): Promise<void> {
+    await this.sandbox.mkdir(dir, { recursive: true });
+  }
+
+  async writeFile(absolutePath: string, content: string): Promise<void> {
+    const basePath = path.dirname(absolutePath);
+    if (basePath !== "/" && basePath != ".") {
+      await this.sandbox.mkdir(basePath, { recursive: true });
+    }
+    await this.sandbox.writeFile(absolutePath, content, { encoding: "utf-8" });
+  }
+
+  async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {
+    const HOME = "/root";
+    await this.sh`mkdir -p $HOME/.ssh`;
+    await this.writeFile(`${HOME}/.ssh/id_ed25519`, privateKey);
+    await this.writeFile(`${HOME}/.ssh/id_ed25519.pub`, publicKey);
+    await this.sh`chmod 600 $HOME/.ssh/id_ed25519`;
   }
 }
 

@@ -3,10 +3,13 @@ import { cors } from "hono/cors";
 import { Context } from "./context";
 import { getSandbox, Sandbox } from "@cloudflare/sandbox";
 import {
+  files,
   sandboxes,
+  sandboxFiles,
   sandboxSecrets,
   sandboxVariables,
   secrets,
+  sshKeys,
   users,
   variables,
 } from "./schema";
@@ -264,6 +267,17 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
         .leftJoin(secrets, eq(secrets.id, sandboxSecrets.secretId))
         .where(eq(sandboxSecrets.sandboxId, c.req.param("sandboxId")))
         .execute(),
+      c.var.db
+        .select()
+        .from(sandboxFiles)
+        .leftJoin(files, eq(files.id, sandboxFiles.fileId))
+        .where(eq(sandboxFiles.sandboxId, c.req.param("sandboxId")))
+        .execute(),
+      c.var.db
+        .select()
+        .from(sshKeys)
+        .where(eq(sshKeys.sandboxId, c.req.param("sandboxId")))
+        .execute(),
     ]);
 
     await sandbox.setEnvs({
@@ -286,6 +300,23 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
         ),
       ),
     });
+
+    await Promise.all([
+      ...params[2]
+        .filter((x) => x.files !== null)
+        .map(async (record) =>
+          sandbox?.writeFile(
+            record.sandbox_files.path,
+            await decrypt(record.files!.content),
+          ),
+        ),
+      ...params[3].map(async (record) =>
+        sandbox?.setupSshKeys(
+          await decrypt(record.privateKey),
+          record.publicKey,
+        ),
+      ),
+    ]);
 
     await sandbox.start();
     await c.var.db

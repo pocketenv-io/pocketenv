@@ -28,8 +28,8 @@ export default function (server: Server, ctx: Context) {
             eq(schema.sandboxes.id, params.id),
             eq(schema.sandboxes.name, params.id),
           ),
-          user?.did
-            ? eq(schema.sandboxes.userId, user.did)
+          user
+            ? eq(schema.sandboxes.userId, user.id)
             : isNull(schema.sandboxes.userId),
         ),
       )

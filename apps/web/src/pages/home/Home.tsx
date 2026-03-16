@@ -46,9 +46,9 @@ function Home() {
           <div className="flex flex-col min-h-screen bg-base-100">
             <Navbar />
             <div className="flex-1 flex justify-center px-4">
-              <div className="flex flex-col items-center mt-26 text-center w-full max-w-[700px]">
+              <div className="flex flex-col items-center mt-32 text-center w-full max-w-[700px]">
                 <pre
-                  className="text-primary mb-5 w-full"
+                  className="text-primary mb-9 w-full"
                   style={{
                     fontFamily: "monospace",
                     fontSize: "clamp(5px, 2vw, 13px)",

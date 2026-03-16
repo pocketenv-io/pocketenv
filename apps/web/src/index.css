@@ -12,21 +12,21 @@
   font-family: "RockfordSansLight";
   src:
     local("RockfordSansLight"),
-    url(./assets/fonts/RockfordSans-Light.otf) format("opentype");
+    url("./assets/fonts/RockfordSans-Light.otf") format("opentype");
 }
 
 @font-face {
   font-family: "RockfordSansRegular";
   src:
     local("RockfordSans"),
-    url(./assets/fonts/RockfordSans-Regular.otf) format("opentype");
+    url("./assets/fonts/RockfordSans-Regular.otf") format("opentype");
 }
 
 @font-face {
   font-family: "RockfordSansMedium";
   src:
     local("RockfordSans"),
-    url(./assets/fonts/RockfordSans-Medium.otf) format("opentype");
+    url("./assets/fonts/RockfordSans-Medium.otf") format("opentype");
 }
 
 @font-face {
@@ -34,14 +34,14 @@
   font-weight: 900;
   src:
     local("RockfordSans"),
-    url(./assets/fonts/RockfordSans-Bold.otf) format("opentype");
+    url("./assets/fonts/RockfordSans-Bold.otf") format("opentype");
 }
 
 @font-face {
   font-family: "CaskaydiaNerdFontMonoRegular";
   src:
     local("CaskaydiaNerdFontMono"),
-    url("https://cdn.jsdelivr.net/gh/pocketenv-io/pocketenv@main/apps/web/src/assets/fonts/CaskaydiaCoveNerdFontMono-Regular.ttf")
+    url("./assets/fonts/CaskaydiaCoveNerdFontMono-Regular.ttf")
       format("truetype");
   font-display: swap;
 }
@@ -50,7 +50,7 @@
   font-family: "CaskaydiaNerdFontMonoSemiBold";
   src:
     local("CaskaydiaNerdFontMono"),
-    url("https://cdn.jsdelivr.net/gh/pocketenv-io/pocketenv@main/apps/web/src/assets/fonts/CaskaydiaCoveNerdFontMono-SemiBold.ttf")
+    url("./assets/fonts/CaskaydiaCoveNerdFontMono-SemiBold.ttf")
       format("truetype");
   font-display: swap;
 }

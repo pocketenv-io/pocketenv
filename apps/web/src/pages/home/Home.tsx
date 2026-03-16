@@ -51,7 +51,7 @@ function Home() {
                   className="text-purple-200 text-[18px] mb-[40px] font-medium opacity-80 max-w-[590px]"
                   style={{
                     fontFamily:
-                      '"CaskaydiaNerdFontMonoRegular", "Cascadia Code", "JetBrains Mono", "Fira Code"',
+                      '"CaskaydiaNerdFontMonoRegular", "Cascadia Code", "JetBrains Mono", "Fira Code", "monospace", "ui-monospace"',
                   }}
                 >
                   Experiment with AI tools, prompts, and agents in a private

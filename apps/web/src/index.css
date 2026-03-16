@@ -41,15 +41,18 @@
   font-family: "CaskaydiaNerdFontMonoRegular";
   src:
     local("CaskaydiaNerdFontMono"),
-    url(./assets/fonts/CaskaydiaCoveNerdFontMono-Regular.ttf) format("truetype");
+    url("https://cdn.jsdelivr.net/gh/pocketenv-io/pocketenv@main/apps/web/src/assets/fonts/CaskaydiaCoveNerdFontMono-Regular.ttf")
+      format("truetype");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "CaskaydiaNerdFontMonoSemiBold";
   src:
     local("CaskaydiaNerdFontMono"),
-    url(./assets/fonts/CaskaydiaCoveNerdFontMono-SemiBold.ttf)
+    url("https://cdn.jsdelivr.net/gh/pocketenv-io/pocketenv@main/apps/web/src/assets/fonts/CaskaydiaCoveNerdFontMono-SemiBold.ttf")
       format("truetype");
+  font-display: swap;
 }
 
 :root {

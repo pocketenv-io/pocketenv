@@ -60,7 +60,7 @@ function Home() {
                 <pre
                   className="text-primary mb-9 w-full"
                   style={{
-                    fontFamily: "monospace",
+                    fontFamily: "CaskaydiaNerdFontMonoRegular, monospace",
                     fontSize: "clamp(5px, 2vw, 13px)",
                     lineHeight: 1.2,
                     whiteSpace: "pre",

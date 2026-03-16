@@ -103,7 +103,7 @@ function Home() {
                       <span className=" text-purple-300">$</span>
                       <span className="text-purple-200 font-mono text-sm flex-1 text-left truncate select-all text-[14px]">
                         {installCommands[activeTab].prefix}
-                        <span className="text-[#845df8] drop-shadow-[0_0_8px_#6366f1]">
+                        <span className="text-[#5e2af7]">
                           {installCommands[activeTab].highlight}
                         </span>
                         {installCommands[activeTab].suffix ?? ""}

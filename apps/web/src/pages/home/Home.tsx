@@ -1,6 +1,6 @@
 import Navbar from "./Navbar";
 import NewProject from "../../components/newproject";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 
@@ -12,51 +12,26 @@ const installCommands: Record<InstallTab, string> = {
   brew: "brew install pocketenv-io/tap/pocketenv",
 };
 
+const banner = [
+  "██████╗  ██████╗  ██████╗██╗  ██╗███████╗████████╗███████╗███╗   ██╗██╗   ██╗",
+  "██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗  ██║██║   ██║",
+  "██████╔╝██║   ██║██║     █████╔╝ █████╗     ██║   █████╗  ██╔██╗ ██║██║   ██║",
+  "██╔═══╝ ██║   ██║██║     ██╔═██╗ ██╔══╝     ██║   ██╔══╝  ██║╚██╗██║╚██╗ ██╔╝",
+  "██║     ╚██████╔╝╚██████╗██║  ██╗███████╗   ██║   ███████╗██║ ╚████║ ╚████╔╝ ",
+  "╚═╝      ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═══╝  ╚═══╝ ",
+].join("\n");
+
 function Home() {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<InstallTab>("bash");
   const [copied, setCopied] = useState(false);
-  const bannerRef = useRef<HTMLPreElement>(null);
-  const bannerWrapperRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const scaleBanner = () => {
-      const pre = bannerRef.current;
-      const wrapper = bannerWrapperRef.current;
-      if (!pre || !wrapper) return;
-
-      // Reset font size so we can measure the natural line length in characters
-      pre.style.fontSize = "";
-      const availableWidth = wrapper.clientWidth;
-      const naturalWidth = pre.scrollWidth;
-
-      if (naturalWidth > availableWidth) {
-        // Compute a font-size that makes the text fit exactly
-        const currentFontSize = parseFloat(getComputedStyle(pre).fontSize);
-        const newFontSize = (availableWidth / naturalWidth) * currentFontSize;
-        pre.style.fontSize = `${newFontSize}px`;
-      }
-    };
-
-    scaleBanner();
-    window.addEventListener("resize", scaleBanner);
-    return () => window.removeEventListener("resize", scaleBanner);
-  }, []);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(installCommands[activeTab]);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-  const banner = `
-    ██████╗  ██████╗  ██████╗██╗  ██╗███████╗████████╗███████╗███╗   ██╗██╗   ██╗
-    ██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗  ██║██║   ██║
-    ██████╔╝██║   ██║██║     █████╔╝ █████╗     ██║   █████╗  ██╔██╗ ██║██║   ██║
-    ██╔═══╝ ██║   ██║██║     ██╔═██╗ ██╔══╝     ██║   ██╔══╝  ██║╚██╗██║╚██╗ ██╔╝
-    ██║     ╚██████╔╝╚██████╗██║  ██╗███████╗   ██║   ███████╗██║ ╚████║ ╚████╔╝
-    ╚═╝      ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═══╝  ╚═══╝
-    `;
 
   const isAuthenticated = !!localStorage.getItem("token");
 
@@ -72,19 +47,19 @@ function Home() {
             <Navbar />
             <div className="flex-1 flex justify-center px-4">
               <div className="flex flex-col items-center mt-[5%] text-center w-full max-w-[700px]">
-                <div ref={bannerWrapperRef} className="w-full mb-[20px]">
-                  <pre
-                    ref={bannerRef}
-                    className="text-primary text-left mx-auto"
-                    style={{
-                      whiteSpace: "pre",
-                      lineHeight: 1.2,
-                      fontSize: "16px",
-                    }}
-                  >
-                    {banner}
-                  </pre>
-                </div>
+                <pre
+                  className="text-primary mb-[20px] w-full"
+                  style={{
+                    fontFamily: "monospace",
+                    fontSize: "clamp(5px, 2vw, 13px)",
+                    lineHeight: 1.2,
+                    whiteSpace: "pre",
+                    overflowX: "hidden",
+                    textAlign: "center",
+                  }}
+                >
+                  {banner}
+                </pre>
                 <div
                   className="text-purple-200 text-[18px] mb-[40px] font-medium opacity-80 max-w-[590px]"
                   style={{
@@ -114,7 +89,7 @@ function Home() {
                         </button>
                       ))}
                     </div>
-                    <div className="flex items-center gap-3 bg-[#12182dad]  rounded-xl px-5 py-3 mt-0">
+                    <div className="flex items-center gap-3 bg-[#12182dad] rounded-xl px-5 py-3 mt-0">
                       <span className="text-purple-200 font-mono text-sm flex-1 text-left truncate select-all text-[14px]">
                         {installCommands[activeTab]}
                       </span>

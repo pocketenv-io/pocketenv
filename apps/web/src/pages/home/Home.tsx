@@ -24,12 +24,12 @@ function Home() {
     setTimeout(() => setCopied(false), 2000);
   };
   const banner = `
-    ____             __        __
-   / __ \\____  _____/ /_____  / /____  ____ _   __
-  / /_/ / __ \\/ ___/ //_/ _ \\/ __/ _ \\/ __ \\ | / /
- / ____/ /_/ / /__/ ,< /  __/ /_/  __/ / / / |/ /
-/_/    \\____/\\___/_/|_|\\___/\\__/\\___/_/ /_/|___/
-
+    ██████╗  ██████╗  ██████╗██╗  ██╗███████╗████████╗███████╗███╗   ██╗██╗   ██╗
+    ██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗  ██║██║   ██║
+    ██████╔╝██║   ██║██║     █████╔╝ █████╗     ██║   █████╗  ██╔██╗ ██║██║   ██║
+    ██╔═══╝ ██║   ██║██║     ██╔═██╗ ██╔══╝     ██║   ██╔══╝  ██║╚██╗██║╚██╗ ██╔╝
+    ██║     ╚██████╔╝╚██████╗██║  ██╗███████╗   ██║   ███████╗██║ ╚████║ ╚████╔╝
+    ╚═╝      ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═══╝  ╚═══╝
     `;
 
   const isAuthenticated = !!localStorage.getItem("token");
@@ -44,22 +44,17 @@ function Home() {
         <>
           <div className="flex flex-col min-h-screen bg-base-100">
             <Navbar />
-            <div className="flex-1">
-              <div className="max-w-[77%] m-auto mt-[5%] text-center">
-                <div className="flex justify-center">
-                  <pre className="text-left text-primary">{banner}</pre>
-                </div>
-                <h1 className="mb-[10px] text-7xl mb-[20px] font-medium">
-                  A Safe Space to Try Your Ideas
-                </h1>
-                <div className="text-purple-200 text-[18px] mb-[40px] font-medium">
+            <div className="flex-1 flex justify-center px-4">
+              <div className="flex flex-col items-center mt-[5%] text-center w-full max-w-[700px]">
+                <pre className="text-left text-primary mb-[20px]">{banner}</pre>
+                <div className="text-purple-200 text-[18px] mb-[40px] font-medium opacity-80 max-w-[590px]">
                   Experiment with AI tools, prompts, and agents in a private
                   sandbox. No setup, no risk - everything runs in a secure space
                   that disappears when you're done.
                 </div>
 
-                <div className="flex justify-center mb-[40px]">
-                  <div className="w-full max-w-[560px]">
+                <div className="w-full max-w-[560px] mb-[40px]">
+                  <div className="w-full">
                     <div
                       className="tabs tabs-bordered justify-center mb-0"
                       role="tablist"
@@ -94,7 +89,7 @@ function Home() {
                   </div>
                 </div>
 
-                <div className="flex justify-center gap-[20px]">
+                <div className="flex gap-[20px]">
                   <button
                     className="btn bg-pink-500 border-none btn-xl font-bold"
                     onClick={() => setModalOpen(true)}

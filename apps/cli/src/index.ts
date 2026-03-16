@@ -15,42 +15,42 @@ import { deleteEnv, listEnvs, putEnv } from "./cmd/env";
 import { getSshKey, putKeys } from "./cmd/sshkeys";
 import { getTailscaleAuthKey, putAuthKey } from "./cmd/tailscale";
 
-const program = new Command();
+const c = {
+  primary: (s: string) => chalk.rgb(0, 232, 198)(s),
+  secondary: (s: string) => chalk.rgb(0, 198, 232)(s),
+  accent: (s: string) => chalk.rgb(130, 100, 255)(s),
+  highlight: (s: string) => chalk.rgb(100, 232, 130)(s),
+  muted: (s: string) => chalk.rgb(200, 210, 220)(s),
+  link: (s: string) => chalk.rgb(255, 160, 100)(s),
+  sky: (s: string) => chalk.rgb(0, 210, 255)(s),
+};
 
-const pocketenv = `
-  ██████╗  ██████╗  ██████╗██╗  ██╗███████╗████████╗███████╗███╗   ██╗██╗   ██╗
-  ██╔══██╗██╔═══██╗██╔════╝██║ ██╔╝██╔════╝╚══██╔══╝██╔════╝████╗  ██║██║   ██║
-  ██████╔╝██║   ██║██║     █████╔╝ █████╗     ██║   █████╗  ██╔██╗ ██║██║   ██║
-  ██╔═══╝ ██║   ██║██║     ██╔═██╗ ██╔══╝     ██║   ██╔══╝  ██║╚██╗██║╚██╗ ██╔╝
-  ██║     ╚██████╔╝╚██████╗██║  ██╗███████╗   ██║   ███████╗██║ ╚████║ ╚████╔╝
-  ╚═╝      ╚═════╝  ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   ╚══════╝╚═╝  ╚═══╝  ╚═══╝
-`;
+const program = new Command();
 
 program
   .name("pocketenv")
   .description(
-    `
-    ${chalk.rgb(0, 232, 198)(pocketenv)}
- Open, interoperable sandbox platform for agents and humans 📦 ✨
-  `,
+    `${chalk.bold.rgb(0, 232, 198)(`pocketenv v${version}`)} ${c.muted("─")} ${c.muted("Open, interoperable sandbox platform for agents and humans")}`,
   )
   .version(version);
 
 program.configureHelp({
-  styleTitle: (str) => chalk.bold.cyan(str),
-  styleCommandText: (str) => chalk.yellow(str),
-  styleDescriptionText: (str) => chalk.white(str),
-  styleOptionText: (str) => chalk.green(str),
-  styleArgumentText: (str) => chalk.magenta(str),
-  styleSubcommandText: (str) => chalk.blue(str),
+  styleTitle: (str) => chalk.bold.rgb(0, 210, 255)(str),
+  styleCommandText: (str) => c.secondary(str),
+  styleDescriptionText: (str) => c.muted(str),
+  styleOptionText: (str) => c.highlight(str),
+  styleArgumentText: (str) => c.accent(str),
+  styleSubcommandText: (str) => c.secondary(str),
 });
 
 program.addHelpText(
   "after",
   `
-${chalk.bold("\nLearn more about Pocketenv:")}           ${chalk.magentaBright("https://docs.pocketenv.io")}
-${chalk.bold("Join our Discord community:")}           ${chalk.blueBright("https://discord.gg/9ada4pFUFS")}
-${chalk.bold("Report bugs:")}                          ${chalk.greenBright("https://github.com/pocketenv-io/pocketenv/issues")}
+${chalk.bold.rgb(0, 210, 255)("─".repeat(90))}
+  ${chalk.bold.rgb(0, 232, 198)("Learn more:")}     ${c.link("https://docs.pocketenv.io")}
+  ${chalk.bold.rgb(0, 232, 198)("Discord:")}        ${c.link("https://discord.gg/9ada4pFUFS")}
+  ${chalk.bold.rgb(0, 232, 198)("Report bugs:")}    ${c.link("https://github.com/pocketenv-io/pocketenv/issues")}
+${chalk.bold.rgb(0, 210, 255)("─".repeat(90))}
 `,
 );
 

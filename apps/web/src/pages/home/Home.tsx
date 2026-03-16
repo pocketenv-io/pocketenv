@@ -46,7 +46,9 @@ function Home() {
             <Navbar />
             <div className="flex-1 flex justify-center px-4">
               <div className="flex flex-col items-center mt-[5%] text-center w-full max-w-[700px]">
-                <pre className="text-left text-primary mb-[20px]">{banner}</pre>
+                <pre className="text-left text-primary mb-[20px] fira-mono-medium">
+                  {banner}
+                </pre>
                 <div
                   className="text-purple-200 text-[18px] mb-[40px] font-medium opacity-80 max-w-[590px]"
                   style={{

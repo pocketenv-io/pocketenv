@@ -4,9 +4,25 @@ import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 
+type InstallTab = "bash" | "npm" | "brew";
+
+const installCommands: Record<InstallTab, string> = {
+  bash: "curl -fsSL https://cli.pocketenv.io | bash",
+  npm: "npm install -g @pocketenv/cli",
+  brew: "brew install pocketenv-io/tap/pocketenv",
+};
+
 function Home() {
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<InstallTab>("bash");
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(installCommands[activeTab]);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
   const banner = `
     ____             __        __
    / __ \\____  _____/ /_____  / /____  ____ _   __
@@ -36,10 +52,46 @@ function Home() {
                 <h1 className="mb-[10px] text-7xl mb-[20px] font-medium">
                   A Safe Space to Try Your Ideas
                 </h1>
-                <div className="text-purple-200 text-[18px] mb-[80px] font-medium">
+                <div className="text-purple-200 text-[18px] mb-[40px] font-medium">
                   Experiment with AI tools, prompts, and agents in a private
                   sandbox. No setup, no risk - everything runs in a secure space
                   that disappears when you're done.
+                </div>
+
+                <div className="flex justify-center mb-[40px]">
+                  <div className="w-full max-w-[560px]">
+                    <div
+                      className="tabs tabs-bordered justify-center mb-0"
+                      role="tablist"
+                    >
+                      {(["bash", "npm", "brew"] as InstallTab[]).map((tab) => (
+                        <button
+                          key={tab}
+                          role="tab"
+                          className={`tab font-semibold uppercase tracking-wide text-sm ${activeTab === tab ? "tab-active text-primary" : "text-purple-300 opacity-60"}`}
+                          onClick={() => setActiveTab(tab)}
+                        >
+                          {tab}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-3 bg-base-200 border border-base-300 rounded-xl px-5 py-3 mt-0">
+                      <span className="text-purple-200 font-mono text-sm flex-1 text-left truncate select-all text-[14px]">
+                        {installCommands[activeTab]}
+                      </span>
+                      <button
+                        onClick={handleCopy}
+                        className="btn btn-sm btn-circle shrink-0 text-purple-300 hover:text-white bg-transparent border-none"
+                        title="Copy to clipboard"
+                      >
+                        {copied ? (
+                          <span className="icon-[tabler--check] size-5 text-green-400"></span>
+                        ) : (
+                          <span className="icon-[tabler--copy] size-5"></span>
+                        )}
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex justify-center gap-[20px]">

@@ -1,6 +1,6 @@
 import Navbar from "./Navbar";
 import NewProject from "../../components/newproject";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 
@@ -17,6 +17,32 @@ function Home() {
   const [modalOpen, setModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<InstallTab>("bash");
   const [copied, setCopied] = useState(false);
+  const bannerRef = useRef<HTMLPreElement>(null);
+  const bannerWrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const scaleBanner = () => {
+      const pre = bannerRef.current;
+      const wrapper = bannerWrapperRef.current;
+      if (!pre || !wrapper) return;
+
+      // Reset font size so we can measure the natural line length in characters
+      pre.style.fontSize = "";
+      const availableWidth = wrapper.clientWidth;
+      const naturalWidth = pre.scrollWidth;
+
+      if (naturalWidth > availableWidth) {
+        // Compute a font-size that makes the text fit exactly
+        const currentFontSize = parseFloat(getComputedStyle(pre).fontSize);
+        const newFontSize = (availableWidth / naturalWidth) * currentFontSize;
+        pre.style.fontSize = `${newFontSize}px`;
+      }
+    };
+
+    scaleBanner();
+    window.addEventListener("resize", scaleBanner);
+    return () => window.removeEventListener("resize", scaleBanner);
+  }, []);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(installCommands[activeTab]);
@@ -46,9 +72,19 @@ function Home() {
             <Navbar />
             <div className="flex-1 flex justify-center px-4">
               <div className="flex flex-col items-center mt-[5%] text-center w-full max-w-[700px]">
-                <pre className="text-left text-primary mb-[20px]">
-                  {banner}
-                </pre>
+                <div ref={bannerWrapperRef} className="w-full mb-[20px]">
+                  <pre
+                    ref={bannerRef}
+                    className="text-primary text-left mx-auto"
+                    style={{
+                      whiteSpace: "pre",
+                      lineHeight: 1.2,
+                      fontSize: "16px",
+                    }}
+                  >
+                    {banner}
+                  </pre>
+                </div>
                 <div
                   className="text-purple-200 text-[18px] mb-[40px] font-medium opacity-80 max-w-[590px]"
                   style={{

@@ -75,7 +75,7 @@ function Home() {
                         </button>
                       ))}
                     </div>
-                    <div className="flex items-center gap-3 bg-base-200 border border-base-300 rounded-xl px-5 py-3 mt-0">
+                    <div className="flex items-center gap-3 bg-[#12182dad]  rounded-xl px-5 py-3 mt-0">
                       <span className="text-purple-200 font-mono text-sm flex-1 text-left truncate select-all text-[14px]">
                         {installCommands[activeTab]}
                       </span>

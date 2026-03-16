@@ -6,10 +6,17 @@ import dayjs from "dayjs";
 
 type InstallTab = "bash" | "npm" | "brew";
 
-const installCommands: Record<InstallTab, string> = {
-  bash: "curl -fsSL https://cli.pocketenv.io | bash",
-  npm: "npm install -g @pocketenv/cli",
-  brew: "brew install pocketenv-io/tap/pocketenv",
+const installCommands: Record<
+  InstallTab,
+  { prefix: string; highlight: string; suffix?: string }
+> = {
+  bash: {
+    prefix: "curl -fsSL ",
+    highlight: "https://cli.pocketenv.io",
+    suffix: " | bash",
+  },
+  npm: { prefix: "npm install -g ", highlight: "@pocketenv/cli" },
+  brew: { prefix: "brew install ", highlight: "pocketenv-io/tap/pocketenv" },
 };
 
 const banner = [
@@ -28,7 +35,10 @@ function Home() {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(installCommands[activeTab]);
+    const cmd = installCommands[activeTab];
+    navigator.clipboard.writeText(
+      cmd.prefix + cmd.highlight + (cmd.suffix ?? ""),
+    );
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -90,8 +100,13 @@ function Home() {
                       ))}
                     </div>
                     <div className="flex items-center gap-3 bg-[#12182dad] rounded-xl px-5 py-3 mt-0">
+                      <span className=" text-purple-300">$</span>
                       <span className="text-purple-200 font-mono text-sm flex-1 text-left truncate select-all text-[14px]">
-                        {installCommands[activeTab]}
+                        {installCommands[activeTab].prefix}
+                        <span className="text-[#845df8] drop-shadow-[0_0_8px_#6366f1]">
+                          {installCommands[activeTab].highlight}
+                        </span>
+                        {installCommands[activeTab].suffix ?? ""}
                       </span>
                       <button
                         onClick={handleCopy}

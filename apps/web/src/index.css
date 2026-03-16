@@ -41,8 +41,8 @@
   font-family: "CaskaydiaNerdFontMonoRegular";
   src:
     local("CaskaydiaNerdFontMono"),
-    url("./assets/fonts/CaskaydiaCoveNerdFontMono-Regular.ttf")
-      format("truetype");
+    url("./assets/fonts/CaskaydiaCoveNerdFontMono-Regular.woff2")
+      format("woff2");
   font-display: swap;
 }
 
@@ -50,8 +50,8 @@
   font-family: "CaskaydiaNerdFontMonoSemiBold";
   src:
     local("CaskaydiaNerdFontMono"),
-    url("./assets/fonts/CaskaydiaCoveNerdFontMono-SemiBold.ttf")
-      format("truetype");
+    url("./assets/fonts/CaskaydiaCoveNerdFontMono-SemiBold.woff2")
+      format("woff2");
   font-display: swap;
 }
 

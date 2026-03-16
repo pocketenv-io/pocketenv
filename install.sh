@@ -71,14 +71,14 @@ if [ "$OS" = "Linux" ]; then
     if [ "$LOCAL" -eq 1 ]; then
 	mv /tmp/pocketenv $LOCAL_DIR
     else
-	if command -v sudo >/dev/null 2>&1; then
+	 if command -v sudo >/dev/null 2>&1; then
 	    sudo mv /tmp/pocketenv $INSTALL_DIR
-	else
+	 else
 	    mv /tmp/pocketenv $INSTALL_DIR
-	fi
+	 fi
     fi
 else
-    mv /tmp/pocketenv $INSTALL_DIR
+    mv /tmp/pocketenv $INSTALL_DIR || sudo mv /tmp/pocketenv $INSTALL_DIR
 fi
 
 # Clean up temporary files

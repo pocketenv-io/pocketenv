@@ -18,9 +18,24 @@ Run code, test ideas, and prototype safely in isolated environments — without 
 
 ## 🚚 Installation (CLI)
 
+With Bash:
+
+```sh
+curl -fsSL https://cli.pocketenv.io | bash
+```
+
+With NPM:
+
 ```sh
 npm install -g @pocketenv/cli
 ```
+
+With [Homebrew](https://brew.sh) (macOS/Linux):
+
+```sh
+brew install pocketenv-io/tap/pocketenv
+```
+
 
 ## 🤔 Why Pocketenv?
 

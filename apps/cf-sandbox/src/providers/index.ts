@@ -8,6 +8,7 @@ export abstract class BaseSandbox {
   abstract mkdir(dir: string): Promise<void>;
   abstract writeFile(path: string, content: string): Promise<void>;
   abstract setupSshKeys(privateKey: string, publicKey: string): Promise<void>;
+  abstract setupTailscale(autKey: string): Promise<void>;
 }
 
 abstract class BaseProvider {

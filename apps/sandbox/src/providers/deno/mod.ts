@@ -61,6 +61,8 @@ export class DenoSandbox implements BaseSandbox {
   async writeFile(path: string, content: string): Promise<void> {}
 
   async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {}
+
+  async setupTailscale(authKey: string): Promise<void> {}
 }
 
 class DenoProvider implements BaseProvider {

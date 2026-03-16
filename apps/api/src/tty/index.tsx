@@ -150,6 +150,8 @@ async function createTerminalSession(ctx: Context, id: string) {
     ]);
   };
 
+  const setupTailscale = async (authKey: string): Promise<void> => {};
+
   await Promise.all([
     ...files
       .filter((x) => x.files !== null)

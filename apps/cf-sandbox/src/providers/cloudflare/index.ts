@@ -77,6 +77,8 @@ export class CloudflareSandbox implements BaseSandbox {
     await this.writeFile(`${HOME}/.ssh/id_ed25519.pub`, publicKey);
     await this.sh`chmod 600 $HOME/.ssh/id_ed25519`;
   }
+
+  async setupTailscale(autKey: string): Promise<void> {}
 }
 
 class CloudflareProvider implements BaseProvider {

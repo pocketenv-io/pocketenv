@@ -42,6 +42,8 @@ export class VercelSandbox implements BaseSandbox {
   }
 
   async ssh(): Promise<any> {}
+
+  async setupTailscale(authKey: string): Promise<void> {}
 }
 
 class VercelProvider implements BaseProvider {

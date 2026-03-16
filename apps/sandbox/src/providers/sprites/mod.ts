@@ -73,6 +73,8 @@ export class SpriteSandbox implements BaseSandbox {
       "/home/sprite/.ssh/authorized_keys",
     ]);
   }
+
+  async setupTailscale(authKey: string): Promise<void> {}
 }
 
 class SpritesProvider implements BaseProvider {

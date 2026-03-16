@@ -78,7 +78,7 @@ if [ "$OS" = "Linux" ]; then
 	 fi
     fi
 else
-    mv /tmp/pocketenv $INSTALL_DIR > /dev/null || sudo mv /tmp/pocketenv $INSTALL_DIR
+    { mv /tmp/pocketenv $INSTALL_DIR 2>/dev/null; } || sudo mv /tmp/pocketenv $INSTALL_DIR
 fi
 
 # Clean up temporary files

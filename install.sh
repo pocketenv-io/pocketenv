@@ -105,6 +105,6 @@ Installation completed! 🎉
 
 To get started, run:
 
-${MAGENTA}pocketenv init${NO_COLOR}
+${MAGENTA}pocketenv create --ssh${NO_COLOR}
 
 EOF

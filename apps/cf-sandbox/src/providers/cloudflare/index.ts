@@ -76,6 +76,8 @@ export class CloudflareSandbox implements BaseSandbox {
     await this.writeFile(`${HOME}/.ssh/id_ed25519`, privateKey);
     await this.writeFile(`${HOME}/.ssh/id_ed25519.pub`, publicKey);
     await this.sh`chmod 600 $HOME/.ssh/id_ed25519`;
+    await this.sh`ssh-keyscan -t rsa tangled.org >> $HOME/.ssh/known_hosts`;
+    await this.sh`ssh-keyscan -t rsa github.com >> $HOME/.ssh/known_hosts`;
   }
 
   async setupTailscale(authKey: string): Promise<void> {

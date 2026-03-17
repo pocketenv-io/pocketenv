@@ -74,6 +74,8 @@ export class DenoSandbox implements BaseSandbox {
     await this.writeFile("~/.ssh/id_ed25519.pub", publicKey);
     await this.sh`chmod 600 ~/.ssh/id_ed25519`;
     await this.sh`chmod 644 ~/.ssh/id_ed25519.pub`;
+    await this.sh`ssh-keyscan -t rsa tangled.org >> $HOME/.ssh/known_hosts`;
+    await this.sh`ssh-keyscan -t rsa github.com >> $HOME/.ssh/known_hosts`;
   }
 
   async setupTailscale(authKey: string): Promise<void> {

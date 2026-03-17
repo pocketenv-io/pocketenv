@@ -43,7 +43,6 @@ defs = new Mapping<String, ObjectType | Array> {
       ["repo"] = new StringType {
         type = "string"
         description = "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo."
-        format = "uri"
       }
       ["readme"] = new StringType {
         type = "string"
@@ -138,7 +137,6 @@ defs = new Mapping<String, ObjectType | Array> {
       ["repo"] = new StringType {
         type = "string"
         description = "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo."
-        format = "uri"
       }
       ["readme"] = new StringType {
         type = "string"
@@ -205,7 +203,6 @@ defs = new Mapping<String, ObjectType | Array> {
       ["repo"] = new StringType {
         type = "string"
         description = "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo."
-        format = "uri"
       }
       ["vcpus"] = new IntegerType {
         type = "integer"

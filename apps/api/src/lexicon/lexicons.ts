@@ -520,7 +520,6 @@ export const schemaDict = {
                 type: "string",
                 description:
                   "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
-                format: "uri",
               },
               vcpus: {
                 type: "integer",
@@ -615,7 +614,6 @@ export const schemaDict = {
             type: "string",
             description:
               "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
-            format: "uri",
           },
           readme: {
             type: "string",
@@ -714,7 +712,6 @@ export const schemaDict = {
             type: "string",
             description:
               "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
-            format: "uri",
           },
           readme: {
             type: "string",
@@ -783,7 +780,6 @@ export const schemaDict = {
             type: "string",
             description:
               "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
-            format: "uri",
           },
           vcpus: {
             type: "integer",
@@ -1430,7 +1426,6 @@ export const schemaDict = {
               type: "string",
               description:
                 "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
-              format: "uri",
             },
             readme: {
               type: "string",

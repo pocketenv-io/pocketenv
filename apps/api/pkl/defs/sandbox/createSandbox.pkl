@@ -44,7 +44,6 @@ defs = new Mapping<String, Procedure> {
             type = "string"
             description =
               "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo."
-            format = "uri"
           }
           ["vcpus"] = new IntegerType {
             type = "integer"

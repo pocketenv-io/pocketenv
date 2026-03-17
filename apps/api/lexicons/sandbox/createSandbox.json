@@ -47,8 +47,7 @@
             },
             "repo": {
               "type": "string",
-              "description": "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo.",
-              "format": "uri"
+              "description": "A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo."
             },
             "vcpus": {
               "type": "integer",

@@ -67,7 +67,9 @@ export class CloudflareSandbox implements BaseSandbox {
     if (basePath !== "/" && basePath != ".") {
       await this.sandbox.mkdir(basePath, { recursive: true });
     }
-    await this.sandbox.writeFile(absolutePath, content, { encoding: "utf-8" });
+    await this.sandbox.writeFile(absolutePath, content + "\n", {
+      encoding: "utf-8",
+    });
   }
 
   async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {

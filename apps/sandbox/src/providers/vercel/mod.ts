@@ -53,7 +53,7 @@ export class VercelSandbox implements BaseSandbox {
     if (basePath !== "/" && basePath != ".") {
       await this.mkdir(basePath);
     }
-    await this.sh`echo '${content}' > ${absolutePath}`;
+    await this.sh`echo -e '${content}\n' > ${absolutePath}`;
   }
 
   async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {

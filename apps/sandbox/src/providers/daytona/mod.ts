@@ -56,7 +56,7 @@ export class DaytonaSandbox implements BaseSandbox {
     if (basePath !== "/" && basePath != ".") {
       await this.mkdir(basePath);
     }
-    await this.sh`echo -e '${content}\n' > ${absolutePath}`;
+    await this.sh`echo '${content}' > ${absolutePath}`;
   }
 
   async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {

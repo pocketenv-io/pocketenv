@@ -134,10 +134,7 @@ async function createTerminalSession(ctx: Context, id: string) {
     if (basePath !== "/" && basePath != ".") {
       await mkdir(basePath);
     }
-    await sprite.execFile("sh", [
-      "-c",
-      `echo -e '${content}\n' > ${absolutePath}`,
-    ]);
+    await sprite.execFile("sh", ["-c", `echo '${content}' > ${absolutePath}`]);
   };
 
   const setupSshKeys = async (

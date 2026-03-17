@@ -53,7 +53,7 @@ export class SpriteSandbox implements BaseSandbox {
     }
     await this.sprite.execFile("sh", [
       "-c",
-      `echo -e '${content}\n' > ${absolutePath}`,
+      `echo '${content}' > ${absolutePath}`,
     ]);
   }
 

@@ -82,7 +82,7 @@ export class CloudflareSandbox implements BaseSandbox {
     await this.sandbox.exec(
       `bash -c 'type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true]`,
     );
-    await this.sandbox.exec(`bash -c 'pm2 start tailescaled'`);
+    await this.sandbox.exec(`bash -c 'pm2 start tailscaled'`);
     await this.sandbox.exec(`bash -c 'tailscale up --auth-key=${authKey}'`);
   }
 }

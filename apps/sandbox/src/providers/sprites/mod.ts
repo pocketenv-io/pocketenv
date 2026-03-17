@@ -79,7 +79,7 @@ export class SpriteSandbox implements BaseSandbox {
       "-c",
       `type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true`,
     ]);
-    await this.sprite.execFile("bash", ["-c", `pm2 start tailescaled || true`]);
+    await this.sprite.execFile("bash", ["-c", `pm2 start tailscaled || true`]);
     await this.sprite.execFile("bash", [
       "-c",
       `tailscale up --auth-key=${authKey} || true`,

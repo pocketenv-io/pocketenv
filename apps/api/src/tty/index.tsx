@@ -162,7 +162,7 @@ async function createTerminalSession(ctx: Context, id: string) {
         "-c",
         "type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true",
       ]);
-      await sprite.execFile("bash", ["-c", "pm2 start tailescaled"]);
+      await sprite.execFile("bash", ["-c", "pm2 start tailscaled"]);
       await sprite.execFile("bash", [
         "-c",
         `tailscale up --auth-key=${authKey}`,

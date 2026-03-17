@@ -249,7 +249,8 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     ...params[1].map((record) =>
       sandbox?.setupSshKeys(decrypt(record.privateKey), record.publicKey),
     ),
-    params[2].length > 0 && sandbox?.setupTailscale(params[2][0].authKey),
+    params[2].length > 0 &&
+      sandbox?.setupTailscale(decrypt(params[2][0].authKey)),
   ]);
 
   await sandbox.start();

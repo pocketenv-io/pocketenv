@@ -323,7 +323,8 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
           record.publicKey,
         ),
       ),
-      params[4].length > 0 && sandbox?.setupTailscale(params[4][0].authKey),
+      params[4].length > 0 &&
+        sandbox?.setupTailscale(await decrypt(params[4][0].authKey)),
     ]);
 
     await sandbox.start();
@@ -557,7 +558,8 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
         record.publicKey,
       ),
     ),
-    params[4].length > 0 && cfsandbox.setupTailscale(params[4][0].authKey),
+    params[4].length > 0 &&
+      cfsandbox.setupTailscale(await decrypt(params[4][0].authKey)),
   ]);
 
   try {
@@ -582,7 +584,8 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
             record.publicKey,
           ),
         ),
-        params[4].length > 0 && cfsession.setupTailscale(params[4][0].authKey),
+        params[4].length > 0 &&
+          cfsession.setupTailscale(await decrypt(params[4][0].authKey)),
       ]);
 
       return session.terminal(c.req.raw);

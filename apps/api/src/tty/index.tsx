@@ -177,7 +177,7 @@ async function createTerminalSession(ctx: Context, id: string) {
     ...sshKeys.map(async (record) =>
       setupSshKeys(decrypt(record.privateKey), record.publicKey),
     ),
-    tailscale && setupTailscale(tailscale.authKey),
+    tailscale && setupTailscale(decrypt(tailscale.authKey)),
   ]);
 
   const session: Session = {

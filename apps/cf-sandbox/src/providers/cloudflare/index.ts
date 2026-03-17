@@ -80,9 +80,9 @@ export class CloudflareSandbox implements BaseSandbox {
 
   async setupTailscale(authKey: string): Promise<void> {
     await this
-      .sh`type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true`;
-    await this.sh`pm2 start tailescaled || true`;
-    await this.sh`tailscale up --auth-key=${authKey} || true`;
+      .sh`bash -c 'type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true]`;
+    await this.sh`bash -c 'pm2 start tailescaled || true'`;
+    await this.sh`bash -c 'tailscale up --auth-key=${authKey} || true'`;
   }
 }
 

@@ -129,7 +129,16 @@ async function ssh(sandbox: Sandbox): Promise<void> {
     process.stdin.resume();
 
     // stdin → POST /tty/:id/input
+    // In raw mode the OS never raises SIGINT — Ctrl+C arrives as a raw byte
+    // in the data stream and is forwarded to the remote shell as-is.
+    // We use Ctrl+K (\x0b) as a local-only escape hatch to avoid conflicting
+    // with Ctrl+C semantics inside the remote shell.
     process.stdin.on("data", (chunk: Buffer) => {
+      if (chunk.includes(0x0b)) {
+        // Ctrl+K pressed — tear down immediately without waiting for the server.
+        teardown(0);
+        return;
+      }
       sendInput(ttyUrl, sandbox.id, chunk, authToken);
     });
 
@@ -195,11 +204,18 @@ async function ssh(sandbox: Sandbox): Promise<void> {
   es.onerror = (err: ErrorEvent) => {
     // The eventsource package exposes readyState on the EventSource instance.
     if (es && es.readyState === EventSource.CLOSED) {
-      const detail = err.message ? ` (${err.message})` : "";
-      process.stderr.write(
-        `\r\n${chalk.red(`Terminal connection lost${detail}`)}\r\n`,
-      );
-      teardown(1);
+      // If the shell exited cleanly the server will close the SSE stream with
+      // no error message.  Treat a message-less close as a graceful exit (code
+      // 0) rather than a connection error, so the user isn't shown a red
+      // "connection lost" banner after a normal `exit`.
+      if (!err.message) {
+        teardown(0);
+      } else {
+        process.stderr.write(
+          `\r\n${chalk.red(`Terminal connection lost (${err.message})`)}\r\n`,
+        );
+        teardown(1);
+      }
     }
   };
 

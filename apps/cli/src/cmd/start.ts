@@ -3,8 +3,9 @@ import chalk from "chalk";
 import getAccessToken from "../lib/getAccessToken";
 import { client } from "../client";
 import { env } from "../lib/env";
+import connectToSandbox from "./ssh";
 
-async function start(name: string) {
+async function start(name: string, { ssh }: { ssh?: boolean }) {
   const token = await getAccessToken();
 
   try {
@@ -16,6 +17,11 @@ async function start(name: string) {
         Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
       },
     });
+
+    if (ssh) {
+      await connectToSandbox(name);
+      return;
+    }
 
     consola.success(`Sandbox ${chalk.greenBright(name)} started`);
     consola.log(

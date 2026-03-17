@@ -77,6 +77,7 @@ program.command("ls").description("list sandboxes").action(listSandboxes);
 program
   .command("start")
   .argument("<sandbox>", "the sandbox to start")
+  .option("--ssh, -s", "connect to the Sandbox and automatically open a shell")
   .description("start the given sandbox")
   .action(start);
 

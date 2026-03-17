@@ -134,10 +134,9 @@ async function createTerminalSession(ctx: Context, id: string) {
     if (basePath !== "/" && basePath != ".") {
       await mkdir(basePath);
     }
-    const encoded = Buffer.from(content + "\n", "utf8").toString("base64");
     await sprite.execFile("sh", [
       "-c",
-      `echo -e '${encoded}' | base64 -d | tee ${absolutePath}`,
+      `echo -e '${content}\n' > ${absolutePath}`,
     ]);
   };
 

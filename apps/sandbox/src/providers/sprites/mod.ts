@@ -77,6 +77,10 @@ export class SpriteSandbox implements BaseSandbox {
   async setupTailscale(authKey: string): Promise<void> {
     await this.sprite.execFile("bash", [
       "-c",
+      "type pm2 || npm install -g pm2",
+    ]);
+    await this.sprite.execFile("bash", [
+      "-c",
       `type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh `,
     ]);
     await this.sprite.execFile("bash", ["-c", `pm2 start tailscaled`]);

@@ -64,7 +64,7 @@ export class SpriteSandbox implements BaseSandbox {
       "600",
       "/home/sprite/.ssh/id_ed25519",
     ]);
-    await this.sprite.execFile("rm -f /home/sprite/.ssh/known_hosts");
+    await this.sprite.exec("rm -f /home/sprite/.ssh/known_hosts");
     await this.sprite.execFile("chmod", [
       "644",
       "/home/sprite/.ssh/id_ed25519.pub",

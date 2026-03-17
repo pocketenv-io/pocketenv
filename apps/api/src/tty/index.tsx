@@ -149,7 +149,7 @@ async function createTerminalSession(ctx: Context, id: string) {
     await writeFile("/home/sprite/.ssh/id_ed25519.pub", publicKey);
     await sprite.execFile("chmod", ["600", "/home/sprite/.ssh/id_ed25519"]);
     await sprite.execFile("chmod", ["644", "/home/sprite/.ssh/id_ed25519.pub"]);
-    await sprite.execFile("rm -f /home/sprite/.ssh/known_hosts");
+    await sprite.exec("rm -f /home/sprite/.ssh/known_hosts");
     await sprite.execFile("bash", [
       "-c",
       "ssh-keyscan -t rsa tangled.org >> /home/sprite/.ssh/known_hosts",

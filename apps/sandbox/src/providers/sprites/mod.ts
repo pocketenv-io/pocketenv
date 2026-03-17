@@ -68,10 +68,6 @@ export class SpriteSandbox implements BaseSandbox {
       "644",
       "/home/sprite/.ssh/id_ed25519.pub",
     ]);
-    await this.sprite.execFile("chmod", [
-      "644",
-      "/home/sprite/.ssh/authorized_keys",
-    ]);
   }
 
   async setupTailscale(authKey: string): Promise<void> {
@@ -90,6 +86,14 @@ export class SpriteSandbox implements BaseSandbox {
     await this.sprite.execFile("bash", [
       "-c",
       `tailscale up --auth-key=${authKey}`,
+    ]);
+  }
+
+  clone(repoUrl: string): Promise<any> {
+    const dir = repoUrl.split("/").pop()?.replace(".git", "");
+    return this.sprite.execFile("bash", [
+      "-c",
+      `git clone ${repoUrl} || git -C ${dir} pull`,
     ]);
   }
 }

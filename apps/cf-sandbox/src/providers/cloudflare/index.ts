@@ -84,6 +84,10 @@ export class CloudflareSandbox implements BaseSandbox {
     await this.sh`pm2 start tailscaled || true`;
     await this.sh`tailscale up --auth-key=${authKey} || true`;
   }
+
+  clone(repoUrl: string): Promise<any> {
+    return this.sh`git clone ${repoUrl}`;
+  }
 }
 
 class CloudflareProvider implements BaseProvider {

@@ -2,6 +2,7 @@ import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
 import { Sandbox } from "@vercel/sandbox";
 import process from "node:process";
 import consola from "consola";
+import path from "node:path";
 
 export class VercelSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
@@ -43,17 +44,33 @@ export class VercelSandbox implements BaseSandbox {
 
   async ssh(): Promise<any> {}
 
-  async mkdir(dir: string): Promise<void> {}
+  async mkdir(dir: string): Promise<void> {
+    await this.sh`mkdir -p ${dir}`;
+  }
 
-  async writeFile(path: string, content: string): Promise<void> {}
+  async writeFile(absolutePath: string, content: string): Promise<void> {
+    const basePath = path.dirname(absolutePath);
+    if (basePath !== "/" && basePath != ".") {
+      await this.mkdir(basePath);
+    }
+    await this.sh`echo '${content}' > ${absolutePath}`;
+  }
 
-  async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {}
+  async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {
+    await this.writeFile("~/.ssh/id_ed25519", privateKey);
+    await this.writeFile("~/.ssh/id_ed25519.pub", publicKey);
+    await this.sh`chmod 600 ~/.ssh/id_ed25519`;
+    await this.sh`chmod 644 ~/.ssh/id_ed25519.pub`;
+  }
 
   async setupTailscale(authKey: string): Promise<void> {
     await this
       .sh`type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true`;
     await this.sh`pm2 start tailscaled || true`;
     await this.sh`tailscale up --auth-key=${authKey} || true`;
+  }
+  clone(repoUrl: string): Promise<any> {
+    return this.sh`git clone ${repoUrl}`;
   }
 }
 

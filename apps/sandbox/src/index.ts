@@ -253,6 +253,15 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       sandbox?.setupTailscale(decrypt(params[2][0].authKey)),
   ]);
 
+  if (record.repo) {
+    sandbox
+      .clone(record.repo)
+      .then(() =>
+        consola.success(`Git Repository successfully cloned: ${record.repo}`),
+      )
+      .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
+  }
+
   await sandbox.start();
   await c.var.db
     .update(sandboxes)

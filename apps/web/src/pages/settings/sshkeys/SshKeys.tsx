@@ -13,7 +13,7 @@ import {
 import { useNotyf } from "../../../hooks/useNotyf";
 import { useSodium } from "../../../hooks/useSodium";
 import { PUBLIC_KEY } from "../../../consts";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const sshKeysSchema = z
@@ -79,6 +79,8 @@ function SshKeys() {
   const { mutateAsync: saveSshKeys } = useSaveSshKeyMutation();
   const { data: sshKeys } = useSshKeysQuery(data?.sandbox?.id || "");
 
+  const initializedRef = useRef(false);
+
   const {
     register,
     handleSubmit,
@@ -86,10 +88,15 @@ function SshKeys() {
     formState: { errors },
   } = useForm<SshKeysFormValues>({
     resolver: zodResolver(sshKeysSchema),
+    defaultValues: {
+      privateKey: "",
+      publicKey: "",
+    },
   });
 
   useEffect(() => {
-    if (sshKeys?.data) {
+    if (sshKeys?.data && !initializedRef.current) {
+      initializedRef.current = true;
       setValue("privateKey", sshKeys.data.privateKey.replace(/\\n/g, "\n"));
       setValue("publicKey", sshKeys.data.publicKey);
     }

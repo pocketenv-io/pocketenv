@@ -78,7 +78,12 @@ export class CloudflareSandbox implements BaseSandbox {
     await this.sh`chmod 600 $HOME/.ssh/id_ed25519`;
   }
 
-  async setupTailscale(autKey: string): Promise<void> {}
+  async setupTailscale(authKey: string): Promise<void> {
+    await this
+      .sh`type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true`;
+    await this.sh`pm2 start tailescaled || true`;
+    await this.sh`tailscale up --auth-key=${authKey} || true`;
+  }
 }
 
 class CloudflareProvider implements BaseProvider {

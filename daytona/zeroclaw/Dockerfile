@@ -2,6 +2,8 @@ FROM daytonaio/sandbox:0.6.0
 
 ARG TARGETARCH
 
+RUN curl -fsSL https://tailscale.com/install.sh | sh
+
 RUN sudo apt-get update && sudo apt-get install -y wget
 
 ENV ZEROCLAW_VERSION=v0.1.7

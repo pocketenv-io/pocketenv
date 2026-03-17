@@ -10,6 +10,7 @@ import {
   sandboxVariables,
   secrets,
   sshKeys,
+  tailscaleAuthKeys,
   users,
   variables,
 } from "./schema";
@@ -279,6 +280,11 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
         .from(sshKeys)
         .where(eq(sshKeys.sandboxId, c.req.param("sandboxId")))
         .execute(),
+      c.var.db
+        .select()
+        .from(tailscaleAuthKeys)
+        .where(eq(tailscaleAuthKeys.sandboxId, c.req.param("sandboxId")))
+        .execute(),
     ]);
 
     await sandbox.setEnvs({
@@ -317,6 +323,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
           record.publicKey,
         ),
       ),
+      params[4].length > 0 && sandbox?.setupTailscale(params[4][0].authKey),
     ]);
 
     await sandbox.start();
@@ -506,6 +513,11 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
       .from(sshKeys)
       .where(eq(sshKeys.sandboxId, c.req.param("sandboxId")))
       .execute(),
+    c.var.db
+      .select()
+      .from(tailscaleAuthKeys)
+      .where(eq(tailscaleAuthKeys.sandboxId, c.req.param("sandboxId")))
+      .execute(),
   ]);
 
   const envVars = {
@@ -545,6 +557,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
         record.publicKey,
       ),
     ),
+    params[4].length > 0 && cfsandbox.setupTailscale(params[4][0].authKey),
   ]);
 
   try {
@@ -569,6 +582,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
             record.publicKey,
           ),
         ),
+        params[4].length > 0 && cfsession.setupTailscale(params[4][0].authKey),
       ]);
 
       return session.terminal(c.req.raw);

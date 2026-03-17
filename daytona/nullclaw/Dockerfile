@@ -4,6 +4,8 @@ ARG TARGETARCH
 
 RUN sudo apt-get update && sudo apt-get install -y wget
 
+RUN curl -fsSL https://tailscale.com/install.sh | sh
+
 RUN case "${TARGETARCH}" in \
     amd64) NULLCLAW_ARCH="x86_64" ;; \
     arm64) NULLCLAW_ARCH="aarch64" ;; \

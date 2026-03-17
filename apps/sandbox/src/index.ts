@@ -10,6 +10,7 @@ import {
   sandboxVariables,
   secrets,
   sshKeys,
+  tailscaleAuthKeys,
   users,
   variables,
 } from "./schema/mod.ts";
@@ -229,20 +230,26 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       .from(sshKeys)
       .where(eq(sshKeys.sandboxId, c.req.param("sandboxId")))
       .execute(),
+    c.var.db
+      .select()
+      .from(tailscaleAuthKeys)
+      .where(eq(tailscaleAuthKeys.sandboxId, c.req.param("sandboxId")))
+      .execute(),
   ]);
 
   await Promise.all([
     ...params[0]
       .filter((x) => x.files !== null)
-      .map(async (record) =>
+      .map((record) =>
         sandbox?.writeFile(
           record.sandbox_files.path,
           decrypt(record.files!.content),
         ),
       ),
-    ...params[1].map(async (record) =>
+    ...params[1].map((record) =>
       sandbox?.setupSshKeys(decrypt(record.privateKey), record.publicKey),
     ),
+    params[2].length > 0 && sandbox?.setupTailscale(params[2][0].authKey),
   ]);
 
   await sandbox.start();

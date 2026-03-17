@@ -55,7 +55,7 @@ async function createTerminalSession(ctx: Context, id: string) {
     throw new Error(`Sandbox not found: ${id}`);
   }
 
-  const [variables, secrets, files, sshKeys] = await Promise.all([
+  const [variables, secrets, files, sshKeys, [tailscale]] = await Promise.all([
     ctx.db
       .select()
       .from(schema.sandboxVariables)
@@ -84,6 +84,11 @@ async function createTerminalSession(ctx: Context, id: string) {
       .select()
       .from(schema.sshKeys)
       .where(eq(schema.sshKeys.sandboxId, id))
+      .execute(),
+    ctx.db
+      .select()
+      .from(schema.tailscaleAuthKeys)
+      .where(eq(schema.tailscaleAuthKeys.sandboxId, id))
       .execute(),
   ]);
 
@@ -150,7 +155,18 @@ async function createTerminalSession(ctx: Context, id: string) {
     ]);
   };
 
-  const setupTailscale = async (authKey: string): Promise<void> => {};
+  const setupTailscale = async (authKey: string): Promise<void> => {
+    await sprite.execFile("bash", ["-c", "type pm2 || npm install -g pm2"]);
+    await sprite.execFile("bash", [
+      "-c",
+      "type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true",
+    ]);
+    await sprite.execFile("bash", ["-c", "pm2 start tailescaled || true"]);
+    await sprite.execFile("bash", [
+      "-c",
+      `tailscale up --auth-key=${authKey} || true`,
+    ]);
+  };
 
   await Promise.all([
     ...files
@@ -161,6 +177,7 @@ async function createTerminalSession(ctx: Context, id: string) {
     ...sshKeys.map(async (record) =>
       setupSshKeys(decrypt(record.privateKey), record.publicKey),
     ),
+    tailscale && setupTailscale(tailscale.authKey),
   ]);
 
   const session: Session = {

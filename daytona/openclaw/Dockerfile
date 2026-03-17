@@ -10,6 +10,8 @@ RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
     python3 \
     build-essential
 
+RUN curl -fsSL https://tailscale.com/install.sh | sh
+
 RUN curl -fsSL https://openclaw.ai/install.sh | bash || true
 
 RUN npm install -g pm2

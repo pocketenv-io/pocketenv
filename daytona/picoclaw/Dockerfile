@@ -4,6 +4,8 @@ ARG TARGETARCH
 
 RUN sudo apt-get update && sudo apt-get install -y wget
 
+RUN curl -fsSL https://tailscale.com/install.sh | sh
+
 ENV PICOCLAW_VERSION=v0.2.2
 
 RUN case "${TARGETARCH}" in \

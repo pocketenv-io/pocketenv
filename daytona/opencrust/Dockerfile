@@ -4,6 +4,8 @@ ARG TARGETARCH
 
 RUN sudo apt-get update && sudo apt-get install -y wget
 
+RUN curl -fsSL https://tailscale.com/install.sh | sh
+
 ENV OPENCRUST_VERSION=v0.1.21
 
 RUN case "${TARGETARCH}" in \

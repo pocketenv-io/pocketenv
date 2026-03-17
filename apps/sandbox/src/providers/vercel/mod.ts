@@ -43,7 +43,18 @@ export class VercelSandbox implements BaseSandbox {
 
   async ssh(): Promise<any> {}
 
-  async setupTailscale(authKey: string): Promise<void> {}
+  async mkdir(dir: string): Promise<void> {}
+
+  async writeFile(path: string, content: string): Promise<void> {}
+
+  async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {}
+
+  async setupTailscale(authKey: string): Promise<void> {
+    await this
+      .sh`type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true`;
+    await this.sh`pm2 start tailescaled || true`;
+    await this.sh`tailscale up --auth-key=${authKey} || true`;
+  }
 }
 
 class VercelProvider implements BaseProvider {

@@ -62,7 +62,12 @@ export class DenoSandbox implements BaseSandbox {
 
   async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {}
 
-  async setupTailscale(authKey: string): Promise<void> {}
+  async setupTailscale(authKey: string): Promise<void> {
+    await this
+      .sh`type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true`;
+    await this.sh`pm2 start tailescaled || true`;
+    await this.sh`tailscale up --auth-key=${authKey} || true`;
+  }
 }
 
 class DenoProvider implements BaseProvider {

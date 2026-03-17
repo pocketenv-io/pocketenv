@@ -489,15 +489,6 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
     id: c.req.param("sandboxId"),
   });
 
-  if (record.repo) {
-    cfsandbox
-      .clone(record.repo)
-      .then(() =>
-        consola.success(`Git Repository successfully cloned: ${record.repo}`),
-      )
-      .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
-  }
-
   const params = await Promise.all([
     c.var.db
       .select()
@@ -579,6 +570,15 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
     params[4].length > 0 &&
       cfsandbox.setupTailscale(await decrypt(params[4][0].authKey)),
   ]);
+
+  if (record.repo) {
+    cfsandbox
+      .clone(record.repo)
+      .then(() =>
+        consola.success(`Git Repository successfully cloned: ${record.repo}`),
+      )
+      .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
+  }
 
   try {
     if (sessionId) {

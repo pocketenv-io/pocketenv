@@ -156,16 +156,20 @@ async function createTerminalSession(ctx: Context, id: string) {
   };
 
   const setupTailscale = async (authKey: string): Promise<void> => {
-    await sprite.execFile("bash", ["-c", "type pm2 || npm install -g pm2"]);
-    await sprite.execFile("bash", [
-      "-c",
-      "type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true",
-    ]);
-    await sprite.execFile("bash", ["-c", "pm2 start tailescaled || true"]);
-    await sprite.execFile("bash", [
-      "-c",
-      `tailscale up --auth-key=${authKey} || true`,
-    ]);
+    try {
+      await sprite.execFile("bash", ["-c", "type pm2 || npm install -g pm2"]);
+      await sprite.execFile("bash", [
+        "-c",
+        "type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true",
+      ]);
+      await sprite.execFile("bash", ["-c", "pm2 start tailescaled"]);
+      await sprite.execFile("bash", [
+        "-c",
+        `tailscale up --auth-key=${authKey}`,
+      ]);
+    } catch (e) {
+      consola.error("failed to setup tailscale", e);
+    }
   };
 
   await Promise.all([

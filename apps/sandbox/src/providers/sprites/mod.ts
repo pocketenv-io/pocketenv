@@ -77,7 +77,7 @@ export class SpriteSandbox implements BaseSandbox {
   async setupTailscale(authKey: string): Promise<void> {
     await this.sprite.execFile("bash", [
       "-c",
-      "source /home/sprite/.bashrc && type pm2 || npm install -g pm2",
+      "PATH=/.sprite/languages/node/nvm/versions/node/v22.20.0/bin:$PATH type pm2 || npm install -g pm2",
     ]);
     await this.sprite.execFile("bash", [
       "-c",
@@ -85,7 +85,7 @@ export class SpriteSandbox implements BaseSandbox {
     ]);
     await this.sprite.execFile("bash", [
       "-c",
-      `source /home/sprite/.bashrc && pm2 start tailscaled`,
+      `PATH=/.sprite/languages/node/nvm/versions/node/v22.20.0/bin:$PATH pm2 start tailscaled`,
     ]);
     await this.sprite.execFile("bash", [
       "-c",

@@ -237,6 +237,8 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       .execute(),
   ]);
 
+  await sandbox.setupDefaultSshKeys();
+
   await Promise.all([
     ...params[0]
       .filter((x) => x.files !== null)

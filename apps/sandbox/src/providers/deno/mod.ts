@@ -78,6 +78,11 @@ export class DenoSandbox implements BaseSandbox {
     await this.sh`ssh-keyscan -t rsa github.com >> $HOME/.ssh/known_hosts`;
   }
 
+  async setupDefaultSshKeys(): Promise<void> {
+    await this
+      .sh`[ -f ~/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -q -N ""`;
+  }
+
   async setupTailscale(authKey: string): Promise<void> {
     await this
       .sh`type tailscaled || curl -fsSL https://tailscale.com/install.sh | sh || true`;

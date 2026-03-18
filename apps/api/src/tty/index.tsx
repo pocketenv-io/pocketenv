@@ -137,6 +137,13 @@ async function createTerminalSession(ctx: Context, id: string) {
     await sprite.execFile("sh", ["-c", `echo '${content}' > ${absolutePath}`]);
   };
 
+  const setupDefaultSshKeys = async (): Promise<void> => {
+    await sprite.execFile("bash", [
+      "-c",
+      '[ -f /home/sprite/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /home/sprite/.ssh/id_ed25519 -q -N ""',
+    ]);
+  };
+
   const setupSshKeys = async (
     privateKey: string,
     publicKey: string,
@@ -177,6 +184,8 @@ async function createTerminalSession(ctx: Context, id: string) {
       consola.error("failed to setup tailscale", e);
     }
   };
+
+  await setupDefaultSshKeys();
 
   await Promise.all([
     ...files

@@ -13,6 +13,7 @@ export abstract class BaseSandbox {
   abstract setupSshKeys(privateKey: string, publicKey: string): Promise<void>;
   abstract setupTailscale(authKey: string): Promise<void>;
   abstract clone(repoUrl: string): Promise<any>;
+  abstract setupDefaultSshKeys(): Promise<void>;
 }
 
 abstract class BaseProvider {

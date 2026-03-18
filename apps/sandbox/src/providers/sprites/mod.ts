@@ -33,7 +33,7 @@ export class SpriteSandbox implements BaseSandbox {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");
-    return this.sprite.exec(command);
+    return this.sprite.execFile("bash", ["-c", command]);
   }
 
   id(): Promise<string | null> {

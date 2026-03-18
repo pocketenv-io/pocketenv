@@ -308,7 +308,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       ),
     });
 
-    await sandbox.sh`[ -f /root/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -q -N ""`;
+    await sandbox.sh`[ -f /root/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -q -N "" || true`;
 
     await Promise.all([
       ...params[2]
@@ -554,7 +554,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
   };
   await sandbox.setEnvVars(envVars);
 
-  await cfsandbox.sh`[ -f /root/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -q -N ""`;
+  await cfsandbox.sh`[ -f /root/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -q -N "" || true`;
 
   await Promise.all([
     ...params[2]
@@ -591,7 +591,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
       const cfsession = new CloudflareSandbox(session);
       await session.setEnvVars(envVars);
 
-      await cfsession.sh`[ -f /root/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -q -N ""`;
+      await cfsession.sh`[ -f /root/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -q -N "" || true`;
 
       await Promise.all([
         ...params[2]

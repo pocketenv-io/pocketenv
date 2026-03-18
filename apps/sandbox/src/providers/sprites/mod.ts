@@ -81,7 +81,7 @@ export class SpriteSandbox implements BaseSandbox {
 
   async setupDefaultSshKeys(): Promise<void> {
     await this
-      .sh`[ -f /home/sprite/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /home/sprite/.ssh/id_ed25519 -q -N ""`;
+      .sh`[ -f /home/sprite/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /home/sprite/.ssh/id_ed25519 -q -N "" || true`;
   }
 
   async setupTailscale(authKey: string): Promise<void> {

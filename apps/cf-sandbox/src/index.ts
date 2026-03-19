@@ -402,7 +402,11 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
       .where(eq(sandboxVolumes.sandboxId, c.req.param("sandboxId")))
       .execute();
 
-    await Promise.all(volumes.map((volume) => sandbox?.unmount(volume.path)));
+    try {
+      await Promise.all(volumes.map((volume) => sandbox?.unmount(volume.path)));
+    } catch (e) {
+      console.error(e);
+    }
 
     await sandbox.stop();
     await c.var.db

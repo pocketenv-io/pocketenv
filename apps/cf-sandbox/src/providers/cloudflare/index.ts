@@ -93,7 +93,7 @@ export class CloudflareSandbox implements BaseSandbox {
     return this.sh`git clone ${repoUrl}`;
   }
 
-  mount(path: string, prefix?: string): Promise<void> {
+  async mount(path: string, prefix?: string): Promise<void> {
     try {
       return this.sandbox.mountBucket(env.VOLUME_BUCKET, path, {
         endpoint: `https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com`,
@@ -105,7 +105,6 @@ export class CloudflareSandbox implements BaseSandbox {
       });
     } catch (e) {
       console.log(e);
-      return Promise.resolve();
     }
   }
 

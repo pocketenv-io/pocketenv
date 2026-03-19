@@ -95,6 +95,7 @@ export class CloudflareSandbox implements BaseSandbox {
 
   async mount(path: string, prefix?: string): Promise<void> {
     try {
+      await this.mkdir(path);
       return this.sandbox.mountBucket(env.VOLUME_BUCKET, path, {
         endpoint: `https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com`,
         prefix,

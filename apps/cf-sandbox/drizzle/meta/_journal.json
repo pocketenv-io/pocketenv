@@ -197,6 +197,13 @@
       "when": 1773258112498,
       "tag": "0027_cooing_rattler",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1773901834037,
+      "tag": "0028_quiet_korvac",
+      "breakpoints": true
     }
   ]
 }

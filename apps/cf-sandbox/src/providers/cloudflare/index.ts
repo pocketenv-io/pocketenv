@@ -92,6 +92,20 @@ export class CloudflareSandbox implements BaseSandbox {
   clone(repoUrl: string): Promise<any> {
     return this.sh`git clone ${repoUrl}`;
   }
+
+  mount(path: string): Promise<void> {
+    return this.sandbox.mountBucket(env.VOLUME_BUCKET, path, {
+      endpoint: `https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      credentials: {
+        accessKeyId: env.R2_ACCESS_KEY_ID,
+        secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+      },
+    });
+  }
+
+  unmount(path: string): Promise<void> {
+    return this.sandbox.unmountBucket(path);
+  }
 }
 
 class CloudflareProvider implements BaseProvider {

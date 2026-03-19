@@ -544,6 +544,13 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
       .from(tailscaleAuthKeys)
       .where(eq(tailscaleAuthKeys.sandboxId, c.req.param("sandboxId")))
       .execute(),
+    c.var.db
+      .select()
+      .from(sandboxVolumes)
+      .leftJoin(sandboxes, eq(sandboxVolumes.sandboxId, sandboxes.id))
+      .leftJoin(users, eq(sandboxes.userId, users.id))
+      .where(eq(sandboxVolumes.sandboxId, c.req.param("sandboxId")))
+      .execute(),
   ]);
 
   const envVars = {
@@ -587,6 +594,12 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
     ),
     params[4].length > 0 &&
       cfsandbox.setupTailscale(await decrypt(params[4][0].authKey)),
+    ...params[5].map((volume) =>
+      cfsandbox?.mount(
+        volume.sandbox_volumes.path,
+        `/${volume.users?.did || ""}${volume.users?.did ? "/" : ""}${volume.sandbox_volumes.id}/`,
+      ),
+    ),
   ]);
 
   if (record.repo) {
@@ -624,6 +637,12 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
         ),
         params[4].length > 0 &&
           cfsession.setupTailscale(await decrypt(params[4][0].authKey)),
+        ...params[5].map((volume) =>
+          cfsession.mount(
+            volume.sandbox_volumes.path,
+            `/${volume.users?.did || ""}${volume.users?.did ? "/" : ""}${volume.sandbox_volumes.id}/`,
+          ),
+        ),
       ]);
 
       if (record.repo) {

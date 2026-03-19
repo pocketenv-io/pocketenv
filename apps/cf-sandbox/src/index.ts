@@ -390,6 +390,13 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
     if (!sandbox) {
       return c.json({ error: "Sandbox provider not supported" }, 400);
     }
+    const volumes = await c.var.db
+      .select()
+      .from(sandboxVolumes)
+      .where(eq(sandboxVolumes.sandboxId, c.req.param("sandboxId")))
+      .execute();
+
+    await Promise.all(volumes.map((volume) => sandbox?.unmount(volume.path)));
 
     await sandbox.stop();
     await c.var.db

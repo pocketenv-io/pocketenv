@@ -16,7 +16,7 @@ RUN curl -fsSL https://tailscale.com/install.sh | sh
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
     echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \
-    echo 'eval "$(atuin init bash)"' >> ~/.bashrc
+    echo 'eval "$(atuin init bash)"' >> ~/.bashrc || true
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 

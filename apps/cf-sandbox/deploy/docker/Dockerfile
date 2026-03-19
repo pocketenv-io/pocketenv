@@ -6,7 +6,7 @@ RUN apk update && apk add --no-cache bash curl s3fs-fuse
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
     echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \
-    echo 'eval "$(atuin init bash)"' >> ~/.bashrc
+    echo 'eval "$(atuin init bash)"' >> ~/.bashrc || true
 
 # Use the musl build so it runs on Alpine-based docker:dind-rootless
 COPY --from=docker.io/cloudflare/sandbox:0.7.8-musl /container-server/sandbox /sandbox

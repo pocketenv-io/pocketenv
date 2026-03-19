@@ -41,7 +41,7 @@ RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akin
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
     echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \
-    echo 'eval "$(atuin init bash)"' >> ~/.bashrc
+    echo 'eval "$(atuin init bash)"' >> ~/.bashrc || true
 
 RUN case "${TARGETARCH}" in \
     amd64) EZA_ARCH="x86_64-unknown-linux-musl" ;; \

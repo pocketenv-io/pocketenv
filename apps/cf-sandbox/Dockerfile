@@ -19,7 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gawk \
     sed \
     procps \
-    wget
+    wget \
+    s3fs
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 

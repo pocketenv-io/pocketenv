@@ -6,7 +6,7 @@ COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbo
 
 RUN apt-get update -y
 
-RUN apt-get install -y curl git unzip tmux build-essential gawk sed procps  wget locales-all
+RUN apt-get install -y curl git unzip tmux build-essential gawk sed procps  wget locales-all s3fs
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8

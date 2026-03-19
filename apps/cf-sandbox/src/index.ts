@@ -337,7 +337,8 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
         sandbox?.setupTailscale(await decrypt(params[4][0].authKey)),
       ...params[5].map((volume) =>
         sandbox?.mount(
-          `/${volume.users?.did || ""}${volume.users?.did ? "/" : ""}${volume.sandbox_volumes.id}`,
+          volume.sandbox_volumes.path,
+          `/${volume.users?.did || ""}${volume.users?.did ? "/" : ""}${volume.sandbox_volumes.id}/`,
         ),
       ),
     ]);

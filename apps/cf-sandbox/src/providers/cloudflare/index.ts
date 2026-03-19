@@ -93,9 +93,10 @@ export class CloudflareSandbox implements BaseSandbox {
     return this.sh`git clone ${repoUrl}`;
   }
 
-  mount(path: string): Promise<void> {
+  mount(path: string, prefix?: string): Promise<void> {
     return this.sandbox.mountBucket(env.VOLUME_BUCKET, path, {
       endpoint: `https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      prefix,
       credentials: {
         accessKeyId: env.R2_ACCESS_KEY_ID,
         secretAccessKey: env.R2_SECRET_ACCESS_KEY,

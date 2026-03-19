@@ -4,7 +4,14 @@ import { env } from "cloudflare:workers";
 import path from "node:path";
 
 export class CloudflareSandbox implements BaseSandbox {
-  constructor(private sandbox: Sandbox) {}
+  private normalizedId: string | null;
+
+  constructor(
+    private sandbox: Sandbox,
+    normalizedId?: string,
+  ) {
+    this.normalizedId = normalizedId ?? null;
+  }
 
   private async retryWithBackoff<T>(
     fn: () => Promise<T>,
@@ -51,7 +58,7 @@ export class CloudflareSandbox implements BaseSandbox {
   }
 
   async id(): Promise<string | null> {
-    return null;
+    return this.normalizedId;
   }
 
   async setEnvs(envVars: Record<string, string>): Promise<void> {
@@ -120,12 +127,15 @@ class CloudflareProvider implements BaseProvider {
       throw new Error("Sandbox ID is required for Cloudflare provider");
     }
 
+    const normalize = options.normalizeId ?? false;
+    const normalizedId = normalize ? options.id.toLowerCase() : options.id;
+
     const sandbox = getSandbox(env.Sandbox, options.id, {
       keepAlive: options.keepAlive,
       sleepAfter: options.sleepAfter,
-      normalizeId: true,
+      normalizeId: normalize,
     });
-    return new CloudflareSandbox(sandbox);
+    return new CloudflareSandbox(sandbox, normalizedId);
   }
 }
 

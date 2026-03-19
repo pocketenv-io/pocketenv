@@ -30,6 +30,7 @@ export interface SandboxOptions {
   ports?: number[];
   snapshotRoot?: string;
   port?: number;
+  normalizeId?: boolean;
   [key: string]: any;
 }
 

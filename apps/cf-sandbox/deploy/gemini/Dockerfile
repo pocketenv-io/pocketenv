@@ -42,7 +42,7 @@ RUN curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/hea
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
     echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \
-    echo 'eval "$(atuin init bash)"' >> ~/.bashrc | true
+    echo 'eval "$(atuin init bash)"' >> ~/.bashrc || true
 
 RUN case "${TARGETARCH}" in \
     amd64) EZA_ARCH="x86_64-unknown-linux-musl" ;; \

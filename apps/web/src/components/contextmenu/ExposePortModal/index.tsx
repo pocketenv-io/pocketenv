@@ -1,3 +1,3 @@
-import ExposePortModal from "./ExposePortMosal";
+import ExposePortModal from "./ExposePortModal";
 
 export default ExposePortModal;

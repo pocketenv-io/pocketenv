@@ -28,10 +28,17 @@ function ExposePortModal({ isOpen, onClose, sandboxId }: ExposePortModalProps) {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(schema),
   });
+
+  const handlePortChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const numeric = e.target.value.replace(/\D/g, "");
+    e.target.value = numeric;
+    setValue("port", numeric as unknown as number, { shouldValidate: true });
+  };
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -125,6 +132,7 @@ function ExposePortModal({ isOpen, onClose, sandboxId }: ExposePortModalProps) {
                       data-form-type="other"
                       style={{ fontFamily: "CaskaydiaNerdFontMonoRegular" }}
                       {...register("port")}
+                      onChange={handlePortChange}
                     />
                   </div>
                   {errors.port && (

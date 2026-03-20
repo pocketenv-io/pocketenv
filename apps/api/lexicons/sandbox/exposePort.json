@@ -29,7 +29,7 @@
               "type": "integer",
               "description": "The port number to expose.",
               "maximum": 65535,
-              "minimum": 1
+              "minimum": 1024
             },
             "description": {
               "type": "string",

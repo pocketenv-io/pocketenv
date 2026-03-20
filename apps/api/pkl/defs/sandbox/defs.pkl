@@ -65,7 +65,7 @@ defs = new Mapping<String, ObjectType | Array> {
         type = "array"
         items = new IntegerType {
           type = "integer"
-          minimum = 1
+          minimum = 1024
           maximum = 65535
         }
         maxLength = 100
@@ -159,7 +159,7 @@ defs = new Mapping<String, ObjectType | Array> {
         type = "array"
         items = new IntegerType {
           type = "integer"
-          minimum = 1
+          minimum = 1024
           maximum = 65535
         }
         maxLength = 100

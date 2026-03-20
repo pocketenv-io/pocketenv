@@ -9,8 +9,8 @@ const schema = z.object({
   port: z.coerce
     .number({ error: "Port is required" })
     .int()
-    .min(1, "Port must be between 1 and 65535")
-    .max(65535, "Port must be between 1 and 65535"),
+    .min(1024, "Port must be between 1024 and 65535")
+    .max(65535, "Port must be between 1024 and 65535"),
   description: z.string(),
 });
 

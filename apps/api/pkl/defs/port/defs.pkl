@@ -10,7 +10,7 @@ defs = new Mapping<String, ObjectType> {
       ["port"] = new IntegerType {
         type = "integer"
         description = "The port number."
-        minimum = 1
+        minimum = 1024
         maximum = 65535
       }
       ["description"] = new StringType {

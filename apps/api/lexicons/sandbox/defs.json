@@ -65,7 +65,7 @@
           "items": {
             "type": "integer",
             "maximum": 65535,
-            "minimum": 1
+            "minimum": 1024
           },
           "maxLength": 100
         },
@@ -158,7 +158,7 @@
           "items": {
             "type": "integer",
             "maximum": 65535,
-            "minimum": 1
+            "minimum": 1024
           },
           "maxLength": 100
         },

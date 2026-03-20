@@ -12,7 +12,7 @@ export abstract class BaseSandbox {
   abstract clone(repoUrl: string): Promise<void>;
   abstract mount(path: string, prefix?: string): Promise<void>;
   abstract unmount(path: string): Promise<void>;
-  abstract expose(port: number, hostname: string): Promise<string>;
+  abstract expose(port: number, hostname: string): Promise<string | null>;
   abstract unexpose(port: number): Promise<void>;
 }
 

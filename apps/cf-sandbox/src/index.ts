@@ -6,6 +6,7 @@ import {
   files,
   sandboxes,
   sandboxFiles,
+  sandboxPorts,
   sandboxSecrets,
   sandboxVariables,
   sandboxVolumes,
@@ -292,6 +293,13 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
         .leftJoin(users, eq(sandboxes.userId, users.id))
         .where(eq(sandboxVolumes.sandboxId, c.req.param("sandboxId")))
         .execute(),
+      c.var.db
+        .select()
+        .from(sandboxPorts)
+        .leftJoin(sandboxes, eq(sandboxPorts.sandboxId, sandboxes.id))
+        .leftJoin(users, eq(sandboxes.userId, users.id))
+        .where(eq(sandboxPorts.sandboxId, c.req.param("sandboxId")))
+        .execute(),
     ]);
 
     await sandbox.setEnvs({
@@ -317,6 +325,8 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
     await sandbox.sh`[ -f /root/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -q -N "" || true`;
 
+    const { hostname } = new URL(c.req.url);
+
     await Promise.all([
       ...params[2]
         .filter((x) => x.files !== null)
@@ -339,6 +349,9 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
           volume.sandbox_volumes.path,
           `/${volume.users?.did || ""}${volume.users?.did ? "/" : ""}${volume.sandbox_volumes.id}/`,
         ),
+      ),
+      ...params[6].map((port) =>
+        sandbox?.expose(port.sandbox_ports.exposedPort, hostname),
       ),
     ]);
 
@@ -512,10 +525,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
     }
   }
 
-  const sandbox = getSandbox(
-    c.env.Sandbox,
-    record.name,
-  );
+  const sandbox = getSandbox(c.env.Sandbox, record.name);
   const sessionId = c.req.query("session");
 
   const cfsandbox = await createSandbox("cloudflare", {

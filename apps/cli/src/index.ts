@@ -14,16 +14,13 @@ import { deleteSecret, listSecrets, putSecret } from "./cmd/secret";
 import { deleteEnv, listEnvs, putEnv } from "./cmd/env";
 import { getSshKey, putKeys } from "./cmd/sshkeys";
 import { getTailscaleAuthKey, putAuthKey } from "./cmd/tailscale";
-
-const c = {
-  primary: (s: string) => chalk.rgb(0, 232, 198)(s),
-  secondary: (s: string) => chalk.rgb(0, 198, 232)(s),
-  accent: (s: string) => chalk.rgb(130, 100, 255)(s),
-  highlight: (s: string) => chalk.rgb(100, 232, 130)(s),
-  muted: (s: string) => chalk.rgb(200, 210, 220)(s),
-  link: (s: string) => chalk.rgb(255, 160, 100)(s),
-  sky: (s: string) => chalk.rgb(0, 210, 255)(s),
-};
+import { exposePort } from "./cmd/expose";
+import { unexposePort } from "./cmd/unexpose";
+import { createVolume, deleteVolume, listVolumes } from "./cmd/volume";
+import { deleteFile, listFiles, putFile } from "./cmd/file";
+import consola from "consola";
+import { listPorts } from "./cmd/ports";
+import { c } from "./theme";
 
 const program = new Command();
 
@@ -111,6 +108,91 @@ program
   .argument("<sandbox>", "the sandbox to delete")
   .description("delete the given sandbox")
   .action(deleteSandbox);
+
+program
+  .command("expose")
+  .argument("<sandbox>", "the sandbox to expose a port for")
+  .argument("<port>", "the port to expose", (val) => {
+    const port = parseInt(val, 10);
+    if (isNaN(port)) {
+      consola.error(`port must be a number, got: ${val}`);
+      process.exit(1);
+    }
+    return port;
+  })
+  .description("expose a port from the given sandbox to the internet")
+  .action(exposePort);
+
+program
+  .command("unexpose")
+  .argument("<sandbox>", "the sandbox to unexpose a port for")
+  .argument("<port>", "the port to unexpose", (val) => {
+    const port = parseInt(val, 10);
+    if (isNaN(port)) {
+      consola.error(`port must be a number, got: ${val}`);
+      process.exit(1);
+    }
+    return port;
+  })
+  .description("unexpose a port from the given sandbox")
+  .action(unexposePort);
+
+const volume = program.command("volume").description("manage volumes");
+
+volume
+  .command("put")
+  .argument("<sandbox>", "the sandbox to put the volume in")
+  .argument("<name>", "the name of the volume")
+  .argument("<path>", "the path to mount the volume at")
+  .description("put a volume in the given sandbox")
+  .action(createVolume);
+
+volume
+  .command("list")
+  .aliases(["ls"])
+  .argument("<sandbox>", "the sandbox to list volumes for")
+  .description("list volumes in the given sandbox")
+  .action(listVolumes);
+
+volume
+  .command("delete")
+  .aliases(["rm", "remove"])
+  .argument("<id>", "the ID of the volume to delete")
+  .description("delete a volume")
+  .action(deleteVolume);
+
+const file = program.command("file").description("manage files");
+
+file
+  .command("put")
+  .argument("<sandbox>", "the sandbox to put the file in")
+  .argument("<path>", "the remote path to upload the file to")
+  .option(
+    "--local-path, -f <localPath>",
+    "the local path of the file to upload",
+  )
+  .description("upload a file to the given sandbox")
+  .action(putFile);
+
+file
+  .command("list")
+  .aliases(["ls"])
+  .argument("<sandbox>", "the sandbox to list files for")
+  .description("list files in the given sandbox")
+  .action(listFiles);
+
+file
+  .command("delete")
+  .aliases(["rm", "remove"])
+  .argument("<id>", "the ID of the file to delete")
+  .description("delete a file")
+  .action(deleteFile);
+
+program
+  .command("ports")
+  .argument("<sandbox>", "the sandbox to list exposed ports for")
+  .description("list exposed ports for a sandbox")
+  .action(listPorts);
 
 const secret = program.command("secret").description("manage secrets");
 

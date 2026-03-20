@@ -1,5 +1,4 @@
 import { client } from "../client";
-import chalk from "chalk";
 import consola from "consola";
 import { env } from "../lib/env";
 import getAccessToken from "../lib/getAccessToken";
@@ -8,6 +7,7 @@ import Table from "cli-table3";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import type { Profile } from "../types/profile";
+import { c } from "../theme";
 dayjs.extend(relativeTime);
 
 async function listSandboxes() {
@@ -35,10 +35,10 @@ async function listSandboxes() {
 
   const table = new Table({
     head: [
-      chalk.cyan("NAME"),
-      chalk.cyan("BASE"),
-      chalk.cyan("STATUS"),
-      chalk.cyan("CREATED AT"),
+      c.primary("NAME"),
+      c.primary("BASE"),
+      c.primary("STATUS"),
+      c.primary("CREATED AT"),
     ],
     chars: {
       top: "",
@@ -65,10 +65,10 @@ async function listSandboxes() {
 
   for (const sandbox of response.data.sandboxes) {
     table.push([
-      chalk.greenBright(sandbox.name),
+      c.secondary(sandbox.name),
       sandbox.baseSandbox,
       sandbox.status === "RUNNING"
-        ? chalk.greenBright(sandbox.status)
+        ? c.highlight(sandbox.status)
         : sandbox.status,
       dayjs(sandbox.createdAt).fromNow(),
     ]);

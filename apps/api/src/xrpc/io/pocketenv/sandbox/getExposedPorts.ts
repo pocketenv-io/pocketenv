@@ -1,6 +1,6 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import type { Context } from "context";
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type {
   QueryParams,
@@ -27,7 +27,10 @@ export default function (server: Server, ctx: Context) {
       .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
       .where(
         and(
-          eq(sandboxPorts.sandboxId, params.id),
+          or(
+            eq(sandboxPorts.sandboxId, params.id),
+            eq(schema.sandboxes.name, params.id),
+          ),
           eq(schema.users.did, auth.credentials.did),
         ),
       )

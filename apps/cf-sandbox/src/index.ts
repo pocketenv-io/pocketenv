@@ -782,7 +782,7 @@ app.delete("/v1/sandboxes/:sandboxId/ports", async (c) => {
     }
 
     await sandbox.unexpose(port);
-    c.json({});
+    return c.json({});
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
     consola.error(

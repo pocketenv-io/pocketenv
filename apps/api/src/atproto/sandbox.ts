@@ -12,6 +12,7 @@ export const updateSandbox = async (
     description?: string | null;
     topics?: string[];
     repo?: string | null;
+    ports?: number[];
   },
 ) => {
   const res = await agent.com.atproto.repo.getRecord({
@@ -31,6 +32,7 @@ export const updateSandbox = async (
       description: data.description ?? record.description,
       topics: data.topics ?? record.topics,
       repo: data.repo ?? record.repo,
+      ports: data.ports ?? record.ports,
     };
     await agent.com.atproto.repo.putRecord({
       repo: agent.assertDid,

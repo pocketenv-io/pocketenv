@@ -1,4 +1,6 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
+import { updateSandbox } from "atproto/sandbox";
+import { consola } from "consola";
 import { Providers } from "consts";
 import type { Context } from "context";
 import { and, eq } from "drizzle-orm";
@@ -7,6 +9,7 @@ import type {
   QueryParams,
   InputSchema,
 } from "lexicon/types/io/pocketenv/sandbox/exposePort";
+import { createAgent } from "lib/agent";
 import generateJwt from "lib/generateJwt";
 import schema from "schema";
 
@@ -18,6 +21,19 @@ export default function (server: Server, ctx: Context) {
   ) => {
     if (!auth.credentials) {
       throw new XRPCError(401, "Unauthorized");
+    }
+
+    const agent = await createAgent(ctx.oauthClient, auth.credentials.did);
+    if (!agent) {
+      consola.error(
+        "Failed to create AT Protocol agent for DID:",
+        auth.credentials.did,
+      );
+      throw new XRPCError(
+        500,
+        "Failed to create AT Protocol agent",
+        "AgentCreationError",
+      );
     }
 
     await ctx.db.transaction(async (tx) => {
@@ -45,6 +61,23 @@ export default function (server: Server, ctx: Context) {
           description: input.description,
         })
         .execute();
+
+      const records = await tx
+        .select()
+        .from(schema.sandboxPorts)
+        .where(eq(schema.sandboxPorts.sandboxId, record.sandboxes.id))
+        .execute();
+
+      const ports = records.map((r) => r.exposedPort);
+
+      if (record.sandboxes.uri) {
+        updateSandbox(agent, {
+          rkey: record.sandboxes.uri.split("/").pop()!,
+          ports,
+        }).catch((err) => {
+          consola.error("Failed to update sandbox with new ports:", err);
+        });
+      }
 
       const sandbox =
         record.sandboxes.provider === Providers.CLOUDFLARE

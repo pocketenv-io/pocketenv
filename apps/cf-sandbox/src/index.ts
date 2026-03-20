@@ -250,7 +250,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
   try {
     sandbox = await createSandbox("cloudflare", {
-      id: record.sandboxId ?? c.req.param("sandboxId"),
+      id: (record.sandboxId ?? c.req.param("sandboxId")).toLowerCase(),
       memory: "4GiB",
     });
 
@@ -360,7 +360,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       .set({
         status: "RUNNING",
         startedAt: new Date(),
-        sandboxId: normalizedId ?? record.sandboxId,
+        sandboxId: (normalizedId ?? record.sandboxId)?.toLowerCase(),
       })
       .where(eq(sandboxes.id, c.req.param("sandboxId")))
       .execute();
@@ -390,7 +390,7 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
     let sandbox: BaseSandbox | null = null;
 
     sandbox = await createSandbox("cloudflare", {
-      id: record.sandboxId ?? c.req.param("sandboxId"),
+      id: (record.sandboxId ?? c.req.param("sandboxId")).toLowerCase(),
     });
 
     if (!sandbox) {
@@ -440,7 +440,7 @@ app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
     let sandbox: BaseSandbox | null = null;
 
     sandbox = await createSandbox("cloudflare", {
-      id: record.sandboxId ?? c.req.param("sandboxId"),
+      id: (record.sandboxId ?? c.req.param("sandboxId")).toLowerCase(),
     });
 
     const { command } = await c.req.json();
@@ -471,7 +471,7 @@ app.delete("/v1/sandboxes/:sandboxId", async (c) => {
     let sandbox: BaseSandbox | null = null;
 
     sandbox = await createSandbox("cloudflare", {
-      id: record.sandboxId ?? c.req.param("sandboxId"),
+      id: (record.sandboxId ?? c.req.param("sandboxId")).toLowerCase(),
     });
 
     await sandbox.delete();
@@ -517,12 +517,12 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
 
   const sandbox = getSandbox(
     c.env.Sandbox,
-    record.sandboxId ?? c.req.param("sandboxId"),
+    (record.sandboxId ?? c.req.param("sandboxId")).toLowerCase(),
   );
   const sessionId = c.req.query("session");
 
   const cfsandbox = await createSandbox("cloudflare", {
-    id: record.sandboxId ?? c.req.param("sandboxId"),
+    id: (record.sandboxId ?? c.req.param("sandboxId")).toLowerCase(),
   });
 
   const params = await Promise.all([
@@ -703,8 +703,9 @@ app.post("/v1/sandboxes/:sandboxId/ports", async (c) => {
   try {
     let sandbox: BaseSandbox | null = null;
 
+    const sandboxId = (record.sandboxId ?? c.req.param("sandboxId")).toLowerCase();
     sandbox = await createSandbox("cloudflare", {
-      id: record.sandboxId ?? c.req.param("sandboxId"),
+      id: sandboxId,
     });
 
     const { port } = await c.req.json<{ port: number }>();
@@ -744,8 +745,9 @@ app.delete("/v1/sandboxes/:sandboxId/ports", async (c) => {
   try {
     let sandbox: BaseSandbox | null = null;
 
+    const sandboxId = (record.sandboxId ?? c.req.param("sandboxId")).toLowerCase();
     sandbox = await createSandbox("cloudflare", {
-      id: record.sandboxId ?? c.req.param("sandboxId"),
+      id: sandboxId,
     });
 
     const port = parseInt(c.req.query("port") || "0", 10);
@@ -755,6 +757,7 @@ app.delete("/v1/sandboxes/:sandboxId/ports", async (c) => {
     }
 
     await sandbox.unexpose(port);
+    c.json({});
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
     consola.error(

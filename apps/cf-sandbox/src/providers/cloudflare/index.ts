@@ -122,7 +122,10 @@ export class CloudflareSandbox implements BaseSandbox {
 
   async expose(port: number, hostname: string): Promise<string | null> {
     try {
-      const { url } = await this.sandbox.exposePort(port, { hostname });
+      const { url } = await this.sandbox.exposePort(port, {
+        hostname,
+        token: env.PREVIEW_TOKEN,
+      });
       return url;
     } catch (e) {
       console.log("Failed to expose port", e);

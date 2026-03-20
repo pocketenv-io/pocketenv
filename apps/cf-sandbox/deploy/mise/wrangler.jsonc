@@ -34,6 +34,7 @@
   "vars": {
     "SANDBOX_TRANSPORT": "websocket",
     "VOLUME_BUCKET": "pocketenv-volumes",
+    "PREVIEW_TOKEN": "mise",
   },
   /**
    * Note: Use secrets to store sensitive data.

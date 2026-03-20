@@ -6,7 +6,9 @@ import files from "./files";
 const sandboxFiles = pgTable(
   "sandbox_files",
   {
-    id: text("id").primaryKey().default(sql`xata_id()`),
+    id: text("id")
+      .primaryKey()
+      .default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id),
@@ -17,10 +19,7 @@ const sandboxFiles = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
-  (t) => [
-    uniqueIndex("unique_sandbox_file").on(t.sandboxId, t.fileId),
-    uniqueIndex("unique_sandbox_file_path").on(t.sandboxId, t.path),
-  ],
+  (t) => [uniqueIndex("unique_sandbox_file_path").on(t.sandboxId, t.path)],
 );
 
 export type SelectSandboxFile = InferSelectModel<typeof sandboxFiles>;

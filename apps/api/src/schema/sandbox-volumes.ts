@@ -6,7 +6,9 @@ import volumes from "./volumes";
 const sandboxVolumes = pgTable(
   "sandbox_volumes",
   {
-    id: text("id").primaryKey().default(sql`xata_id()`),
+    id: text("id")
+      .primaryKey()
+      .default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id),
@@ -18,10 +20,7 @@ const sandboxVolumes = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
-  (t) => [
-    uniqueIndex("unique_sandbox_volume").on(t.sandboxId, t.volumeId),
-    uniqueIndex("unique_sandbox_volume_path").on(t.sandboxId, t.path),
-  ],
+  (t) => [uniqueIndex("unique_sandbox_volume_path").on(t.sandboxId, t.path)],
 );
 
 export type SelectSandboxVolume = InferSelectModel<typeof sandboxVolumes>;

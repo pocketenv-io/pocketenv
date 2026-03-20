@@ -19,10 +19,7 @@ const sandboxFiles = pgTable(
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
-  (t) => [
-    uniqueIndex("unique_sandbox_file").on(t.sandboxId, t.fileId),
-    uniqueIndex("unique_sandbox_file_path").on(t.sandboxId, t.path),
-  ],
+  (t) => [uniqueIndex("unique_sandbox_file_path").on(t.sandboxId, t.path)],
 );
 
 export type SelectSandboxFile = InferSelectModel<typeof sandboxFiles>;

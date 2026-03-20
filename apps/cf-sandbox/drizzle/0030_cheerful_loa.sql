@@ -1,0 +1,1 @@
+DROP INDEX "unique_sandbox_volume";

@@ -20,7 +20,6 @@ const sandboxVariables = pgTable(
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (t) => [
-    uniqueIndex("unique_sandbox_variables").on(t.sandboxId, t.variableId),
     uniqueIndex("unique_sandbox_variables_by_name").on(t.sandboxId, t.name),
   ],
 );

@@ -363,6 +363,12 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
     await sandbox.start();
 
+    await c.var.db
+      .update(sandboxes)
+      .set({ status: "RUNNING" })
+      .where(eq(sandboxes.id, c.req.param("sandboxId")))
+      .execute();
+
     const previewUrls = await Promise.all(
       params[6].map((port) =>
         sandbox?.expose(port.sandbox_ports.exposedPort, hostname),

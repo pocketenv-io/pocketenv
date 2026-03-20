@@ -1,6 +1,6 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import type { Context } from "context";
-import { eq, and, count } from "drizzle-orm";
+import { eq, and, count, or } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type {
   QueryParams,
@@ -66,7 +66,10 @@ const retrieve = ({
             params.sandboxId
               ? and(
                   eq(users.did, auth.credentials.did),
-                  eq(sandboxFiles.sandboxId, params.sandboxId),
+                  or(
+                    eq(sandboxFiles.sandboxId, params.sandboxId),
+                    eq(sandboxes.name, params.sandboxId),
+                  ),
                 )
               : eq(users.did, auth.credentials.did),
           )
@@ -90,7 +93,10 @@ const retrieve = ({
             params.sandboxId
               ? and(
                   eq(users.did, auth.credentials.did),
-                  eq(sandboxFiles.sandboxId, params.sandboxId),
+                  or(
+                    eq(sandboxFiles.sandboxId, params.sandboxId),
+                    eq(sandboxes.name, params.sandboxId),
+                  ),
                 )
               : eq(users.did, auth.credentials.did),
           )

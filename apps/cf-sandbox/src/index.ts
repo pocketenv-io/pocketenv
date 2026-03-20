@@ -350,9 +350,6 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
           `/${volume.users?.did || ""}${volume.users?.did ? "/" : ""}${volume.sandbox_volumes.id}/`,
         ),
       ),
-      ...params[6].map((port) =>
-        sandbox?.expose(port.sandbox_ports.exposedPort, hostname),
-      ),
     ]);
 
     if (record.repo) {
@@ -365,15 +362,32 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     }
 
     await sandbox.start();
-    await c.var.db
-      .update(sandboxes)
-      .set({
-        status: "RUNNING",
-        startedAt: new Date(),
-        sandboxId: record.name,
-      })
-      .where(eq(sandboxes.id, c.req.param("sandboxId")))
-      .execute();
+
+    const previewUrls = await Promise.all(
+      params[6].map((port) =>
+        sandbox?.expose(port.sandbox_ports.exposedPort, hostname),
+      ),
+    );
+
+    await Promise.all(
+      previewUrls.map((url, i) => {
+        if (url) {
+          return c.var.db
+            .update(sandboxPorts)
+            .set({ previewUrl: url })
+            .where(
+              and(
+                eq(sandboxPorts.sandboxId, record.id),
+                eq(
+                  sandboxPorts.exposedPort,
+                  params[6][i].sandbox_ports.exposedPort,
+                ),
+              ),
+            )
+            .execute();
+        }
+      }),
+    );
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
     consola.error("Failed to start sandbox:", errorMessage);

@@ -1,0 +1,26 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.port.defs",
+  "defs": {
+    "portView": {
+      "type": "object",
+      "description": "A view of a port exposed by a sandbox.",
+      "properties": {
+        "port": {
+          "type": "integer",
+          "description": "The port number.",
+          "maximum": 65535,
+          "minimum": 1
+        },
+        "description": {
+          "type": "string",
+          "description": "A description of the port."
+        },
+        "previewUrl": {
+          "type": "string",
+          "description": "A URL for previewing the service running on the port"
+        }
+      }
+    }
+  }
+}

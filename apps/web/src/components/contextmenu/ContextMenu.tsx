@@ -5,6 +5,7 @@ import AddVolumeModal from "./AddVolumeModal";
 import DeleteSandboxModal from "./DeleteSandboxModal";
 import AddSecretModal from "./AddSecretModal";
 import { Link } from "@tanstack/react-router";
+import ExposePortModal from "./ExposePortModal";
 
 type ContextMenuProps = {
   sandboxId: string;
@@ -23,6 +24,7 @@ function ContextMenu({ sandboxId, uri }: ContextMenuProps) {
   const [isAddFileModalOpen, setIsAddFileModalOpen] = useState(false);
   const [isAddSecretModalOpen, setIsAddSecretModalOpen] = useState(false);
   const [isAddVolumeModalOpen, setIsAddVolumeModalOpen] = useState(false);
+  const [isExposePortModalOpen, setIsExposePortModalOpen] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -67,6 +69,12 @@ function ContextMenu({ sandboxId, uri }: ContextMenuProps) {
     e.stopPropagation();
     setOpen(false);
     setIsAddVolumeModalOpen(true);
+  };
+
+  const onExposePort = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpen(false);
+    setIsExposePortModalOpen(true);
   };
 
   const onDelete = (e: React.MouseEvent) => {
@@ -125,6 +133,14 @@ function ContextMenu({ sandboxId, uri }: ContextMenuProps) {
             </div>
           </li>
           <li>
+            <div
+              className="dropdown-item cursor-pointer"
+              onClick={onExposePort}
+            >
+              Expose Port
+            </div>
+          </li>
+          <li>
             <Link
               to={`/${uri?.split("at://")[1]?.replace("io.pocketenv.", "")}/settings`}
               className="dropdown-item cursor-pointer"
@@ -157,6 +173,11 @@ function ContextMenu({ sandboxId, uri }: ContextMenuProps) {
       <AddSecretModal
         isOpen={isAddSecretModalOpen}
         onClose={() => setIsAddSecretModalOpen(false)}
+        sandboxId={sandboxId}
+      />
+      <ExposePortModal
+        isOpen={isExposePortModalOpen}
+        onClose={() => setIsExposePortModalOpen(false)}
         sandboxId={sandboxId}
       />
       <DeleteSandboxModal

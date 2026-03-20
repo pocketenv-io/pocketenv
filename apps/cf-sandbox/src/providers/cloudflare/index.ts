@@ -119,6 +119,15 @@ export class CloudflareSandbox implements BaseSandbox {
   unmount(path: string): Promise<void> {
     return this.sandbox.unmountBucket(path);
   }
+
+  async expose(port: number, hostname: string): Promise<string> {
+    const { url } = await this.sandbox.exposePort(port, { hostname });
+    return url;
+  }
+
+  async unexpose(port: number): Promise<void> {
+    await this.sandbox.unexposePort(port);
+  }
 }
 
 class CloudflareProvider implements BaseProvider {

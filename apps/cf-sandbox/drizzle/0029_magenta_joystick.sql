@@ -1,0 +1,1 @@
+ALTER TABLE "sandbox_ports" ADD COLUMN "description" text;

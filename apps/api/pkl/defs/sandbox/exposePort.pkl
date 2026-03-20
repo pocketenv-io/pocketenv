@@ -1,0 +1,39 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.exposePort"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    description = "Expose a port for a sandbox."
+    parameters {
+      type = "params"
+      required = List("id")
+      properties {
+        ["id"] = new StringType {
+          type = "string"
+          description = "The sandbox ID."
+        }
+      }
+    }
+    input {
+      encoding = "application/json"
+      schema {
+        type = "object"
+        required = List("port")
+        properties {
+          ["port"] = new IntegerType {
+            type = "integer"
+            description = "The port number to expose."
+            minimum = 1
+            maximum = 65535
+          }
+          ["description"] = new StringType {
+            type = "string"
+            description = "A description of the port."
+          }
+        }
+      }
+    }
+  }
+}

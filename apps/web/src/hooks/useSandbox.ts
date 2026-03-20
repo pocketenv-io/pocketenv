@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   claimSandbox,
   createSandbox,
@@ -8,6 +8,9 @@ import {
   getSandboxes,
   startSandbox,
   stopSandbox,
+  getExposedPorts,
+  exposePort,
+  unexposePort,
 } from "../api/sandbox";
 import type { Provider } from "../types/providers";
 
@@ -73,3 +76,42 @@ export const useStartSandboxMutation = () =>
     mutationKey: ["startSandbox"],
     mutationFn: async (id: string) => startSandbox(id),
   });
+
+export const useExposedPortsQuery = (id: string) =>
+  useQuery({
+    queryKey: ["exposedPorts", id],
+    queryFn: () => getExposedPorts(id),
+    select: (response) => response.data,
+    enabled: !!id,
+  });
+
+export const useExposePortMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["exposePort"],
+    mutationFn: async (params: {
+      id: string;
+      port: number;
+      description?: string;
+    }) =>
+      exposePort(params.id, {
+        port: params.port,
+        description: params.description,
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["exposedPorts"] });
+    },
+  });
+};
+
+export const useUnexposePortMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["unexposePort"],
+    mutationFn: async (params: { id: string; port: number }) =>
+      unexposePort(params.id, params.port),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["exposedPorts"] });
+    },
+  });
+};

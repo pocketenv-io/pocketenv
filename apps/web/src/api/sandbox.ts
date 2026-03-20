@@ -1,4 +1,5 @@
 import { client } from ".";
+import type { Port } from "../types/port";
 import type { Provider } from "../types/providers";
 import type { Sandbox } from "../types/sandbox";
 
@@ -109,6 +110,53 @@ export const putPreferences = () =>
 
 export const getPreferences = () =>
   client.get(`/xrpc/io.pocketenv.sandbox.getPreferences`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+export const exposePort = (
+  id: string,
+  {
+    port,
+    description,
+  }: {
+    port: number;
+    description?: string;
+  },
+) =>
+  client.post(
+    `/xrpc/io.pocketenv.sandbox.exposePort`,
+    { port, description },
+    {
+      params: {
+        id,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  );
+
+export const unexposePort = (id: string, port: number) =>
+  client.post(
+    `/xrpc/io.pocketenv.sandbox.unexposePort`,
+    { port },
+    {
+      params: {
+        id,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  );
+
+export const getExposedPorts = (id: string) =>
+  client.get<{ ports: Port[] }>(`/xrpc/io.pocketenv.sandbox.getExposedPorts`, {
+    params: {
+      id,
+    },
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },

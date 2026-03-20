@@ -686,6 +686,86 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
   }
 });
 
+app.post("/v1/sandboxes/:sandboxId/ports", async (c) => {
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
+
+  if (!record) {
+    return c.json({ error: "Sandbox not found" }, 404);
+  }
+
+  if (record.provider !== "cloudflare") {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  try {
+    let sandbox: BaseSandbox | null = null;
+
+    sandbox = await createSandbox("cloudflare", {
+      id: record.sandboxId ?? c.req.param("sandboxId"),
+    });
+
+    const { port } = await c.req.json<{ port: number }>();
+
+    if (!port || port <= 0 || port > 65535) {
+      return c.json({ error: "Invalid port number" }, 400);
+    }
+
+    const { hostname } = new URL(c.req.url);
+    const previewUrl = await sandbox.expose(port, hostname);
+    return c.json({ previewUrl });
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    consola.error(
+      c.req.param("sandboxId"),
+      "Failed to expose port:",
+      errorMessage,
+    );
+    return c.json({ error: `Failed to expose port: ${errorMessage}` }, 500);
+  }
+});
+
+app.delete("/v1/sandboxes/:sandboxId/ports", async (c) => {
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
+
+  if (!record) {
+    return c.json({ error: "Sandbox not found" }, 404);
+  }
+
+  if (record.provider !== "cloudflare") {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  try {
+    let sandbox: BaseSandbox | null = null;
+
+    sandbox = await createSandbox("cloudflare", {
+      id: record.sandboxId ?? c.req.param("sandboxId"),
+    });
+
+    const port = parseInt(c.req.query("port") || "0", 10);
+
+    if (!port || port <= 0 || port > 65535) {
+      return c.json({ error: "Invalid port number" }, 400);
+    }
+
+    await sandbox.unexpose(port);
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    consola.error(
+      c.req.param("sandboxId"),
+      "Failed to unexpose port:",
+      errorMessage,
+    );
+    return c.json({ error: `Failed to unexpose port: ${errorMessage}` }, 500);
+  }
+});
+
 export const getSandboxById = async (db: Context["db"], sandboxId: string) => {
   const [record] = await db
     .select()

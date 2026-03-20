@@ -21,6 +21,8 @@ import type * as IoPocketenvSandboxClaimSandbox from "./types/io/pocketenv/sandb
 import type * as IoPocketenvSandboxCreateIntegration from "./types/io/pocketenv/sandbox/createIntegration";
 import type * as IoPocketenvSandboxCreateSandbox from "./types/io/pocketenv/sandbox/createSandbox";
 import type * as IoPocketenvSandboxDeleteSandbox from "./types/io/pocketenv/sandbox/deleteSandbox";
+import type * as IoPocketenvSandboxExposePort from "./types/io/pocketenv/sandbox/exposePort";
+import type * as IoPocketenvSandboxGetExposedPorts from "./types/io/pocketenv/sandbox/getExposedPorts";
 import type * as IoPocketenvSandboxGetIntegrations from "./types/io/pocketenv/sandbox/getIntegrations";
 import type * as IoPocketenvSandboxGetPreferences from "./types/io/pocketenv/sandbox/getPreferences";
 import type * as IoPocketenvSandboxGetSandbox from "./types/io/pocketenv/sandbox/getSandbox";
@@ -34,6 +36,7 @@ import type * as IoPocketenvSandboxPutTailscaleAuthKey from "./types/io/pocketen
 import type * as IoPocketenvSandboxPutTailscaleToken from "./types/io/pocketenv/sandbox/putTailscaleToken";
 import type * as IoPocketenvSandboxStartSandbox from "./types/io/pocketenv/sandbox/startSandbox";
 import type * as IoPocketenvSandboxStopSandbox from "./types/io/pocketenv/sandbox/stopSandbox";
+import type * as IoPocketenvSandboxUnexposePort from "./types/io/pocketenv/sandbox/unexposePort";
 import type * as IoPocketenvSandboxUpdateSandboxSettings from "./types/io/pocketenv/sandbox/updateSandboxSettings";
 import type * as IoPocketenvSecretAddSecret from "./types/io/pocketenv/secret/addSecret";
 import type * as IoPocketenvSecretDeleteSecret from "./types/io/pocketenv/secret/deleteSecret";
@@ -254,6 +257,28 @@ export class IoPocketenvSandboxNS {
     return this._server.xrpc.method(nsid, cfg);
   }
 
+  exposePort<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxExposePort.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxExposePort.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.exposePort"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  getExposedPorts<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxGetExposedPorts.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxGetExposedPorts.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.getExposedPorts"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
   getIntegrations<AV extends AuthVerifier>(
     cfg: ConfigOf<
       AV,
@@ -394,6 +419,17 @@ export class IoPocketenvSandboxNS {
     >,
   ) {
     const nsid = "io.pocketenv.sandbox.stopSandbox"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  unexposePort<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxUnexposePort.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxUnexposePort.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.unexposePort"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 

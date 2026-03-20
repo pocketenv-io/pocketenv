@@ -1,0 +1,26 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.port.defs"
+defs = new Mapping<String, ObjectType> {
+  ["portView"] {
+    type = "object"
+    description = "A view of a port exposed by a sandbox."
+    properties {
+      ["port"] = new IntegerType {
+        type = "integer"
+        description = "The port number."
+        minimum = 1
+        maximum = 65535
+      }
+      ["description"] = new StringType {
+        type = "string"
+        description = "A description of the port."
+      }
+      ["previewUrl"] = new StringType {
+        type = "string"
+        description = "A URL for previewing the service running on the port"
+      }
+    }
+  }
+}

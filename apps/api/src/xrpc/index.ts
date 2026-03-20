@@ -38,6 +38,9 @@ import updateFile from "./io/pocketenv/file/updateFile";
 import updateSecret from "./io/pocketenv/secret/updateSecret";
 import updateVariable from "./io/pocketenv/variable/updateVariable";
 import updateVolume from "./io/pocketenv/volume/updateVolume";
+import exposePort from "./io/pocketenv/sandbox/exposePort";
+import getExposedPorts from "./io/pocketenv/sandbox/getExposedPorts";
+import unexposePort from "./io/pocketenv/sandbox/unexposePort";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
@@ -82,6 +85,9 @@ export default function (server: Server, ctx: Context) {
   updateSecret(server, ctx);
   updateVariable(server, ctx);
   updateVolume(server, ctx);
+  exposePort(server, ctx);
+  getExposedPorts(server, ctx);
+  unexposePort(server, ctx);
 
   return server;
 }

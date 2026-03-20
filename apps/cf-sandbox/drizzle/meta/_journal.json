@@ -204,6 +204,13 @@
       "when": 1773901834037,
       "tag": "0028_quiet_korvac",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1773977053348,
+      "tag": "0029_magenta_joystick",
+      "breakpoints": true
     }
   ]
 }

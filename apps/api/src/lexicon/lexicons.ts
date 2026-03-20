@@ -413,6 +413,32 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvPortDefs: {
+    lexicon: 1,
+    id: "io.pocketenv.port.defs",
+    defs: {
+      portView: {
+        type: "object",
+        description: "A view of a port exposed by a sandbox.",
+        properties: {
+          port: {
+            type: "integer",
+            description: "The port number.",
+            maximum: 65535,
+            minimum: 1,
+          },
+          description: {
+            type: "string",
+            description: "A description of the port.",
+          },
+          previewUrl: {
+            type: "string",
+            description: "A URL for previewing the service running on the port",
+          },
+        },
+      },
+    },
+  },
   IoPocketenvSandboxClaimSandbox: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.claimSandbox",
@@ -1017,6 +1043,80 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSandboxExposePort: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.exposePort",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Expose a port for a sandbox.",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["port"],
+            properties: {
+              port: {
+                type: "integer",
+                description: "The port number to expose.",
+                maximum: 65535,
+                minimum: 1,
+              },
+              description: {
+                type: "string",
+                description: "A description of the port.",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxGetExposedPorts: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.getExposedPorts",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get the list of exposed ports for a sandbox.",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              ports: {
+                type: "array",
+                items: {
+                  type: "ref",
+                  ref: "lex:io.pocketenv.port.defs#portView",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvSandboxGetIntegrations: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.getIntegrations",
@@ -1535,6 +1635,41 @@ export const schemaDict = {
           schema: {
             type: "ref",
             ref: "lex:io.pocketenv.sandbox.defs#sandboxViewBasic",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxUnexposePort: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.unexposePort",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Unexpose a port for a sandbox.",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["port"],
+            properties: {
+              port: {
+                type: "integer",
+                description: "The port number to unexpose.",
+                maximum: 65535,
+                minimum: 1,
+              },
+            },
           },
         },
       },
@@ -2330,11 +2465,14 @@ export const ids = {
   IoPocketenvFileGetFile: "io.pocketenv.file.getFile",
   IoPocketenvFileGetFiles: "io.pocketenv.file.getFiles",
   IoPocketenvFileUpdateFile: "io.pocketenv.file.updateFile",
+  IoPocketenvPortDefs: "io.pocketenv.port.defs",
   IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",
   IoPocketenvSandboxCreateIntegration: "io.pocketenv.sandbox.createIntegration",
   IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",
   IoPocketenvSandboxDefs: "io.pocketenv.sandbox.defs",
   IoPocketenvSandboxDeleteSandbox: "io.pocketenv.sandbox.deleteSandbox",
+  IoPocketenvSandboxExposePort: "io.pocketenv.sandbox.exposePort",
+  IoPocketenvSandboxGetExposedPorts: "io.pocketenv.sandbox.getExposedPorts",
   IoPocketenvSandboxGetIntegrations: "io.pocketenv.sandbox.getIntegrations",
   IoPocketenvSandboxGetPreferences: "io.pocketenv.sandbox.getPreferences",
   IoPocketenvSandboxGetSandbox: "io.pocketenv.sandbox.getSandbox",
@@ -2351,6 +2489,7 @@ export const ids = {
   IoPocketenvSandbox: "io.pocketenv.sandbox",
   IoPocketenvSandboxStartSandbox: "io.pocketenv.sandbox.startSandbox",
   IoPocketenvSandboxStopSandbox: "io.pocketenv.sandbox.stopSandbox",
+  IoPocketenvSandboxUnexposePort: "io.pocketenv.sandbox.unexposePort",
   IoPocketenvSandboxUpdateSandboxSettings:
     "io.pocketenv.sandbox.updateSandboxSettings",
   IoPocketenvSecretAddSecret: "io.pocketenv.secret.addSecret",

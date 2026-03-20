@@ -1,0 +1,34 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.getExposedPorts"
+defs = new Mapping<String, Query> {
+  ["main"] {
+    type = "query"
+    description = "Get the list of exposed ports for a sandbox."
+    parameters {
+      type = "params"
+      required = List("id")
+      properties {
+        ["id"] = new StringType {
+          type = "string"
+          description = "The sandbox ID."
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        properties {
+          ["ports"] = new Array {
+            type = "array"
+            items = new Ref {
+              ref = "io.pocketenv.port.defs#portView"
+            }
+          }
+        }
+      }
+    }
+  }
+}

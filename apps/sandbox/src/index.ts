@@ -393,6 +393,16 @@ app.get("/v1/sandboxes/:sandboxId/ssh", async (c) => {
   return c.json(await sandbox.ssh());
 });
 
+app.post("/v1/sandboxes/:sandboxId/ports", async (c) => {
+  // TODO: Implement expose port
+  return c.json({});
+});
+
+app.delete("/v1/sandboxes/:sandboxId/ports", async (c) => {
+  // TODO: Implement unexpose port
+  return c.json({});
+});
+
 export const getSandbox = async (db: Context["db"], sandboxId: string) => {
   const [record] = await db
     .select()

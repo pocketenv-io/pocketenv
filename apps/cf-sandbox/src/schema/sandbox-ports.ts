@@ -19,6 +19,7 @@ const sandboxPorts = pgTable(
       .references(() => sandboxes.id),
     exposedPort: integer("exposed_port").notNull(),
     previewUrl: text("preview_url"),
+    description: text("description"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },

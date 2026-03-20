@@ -1,0 +1,39 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.unexposePort",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Unexpose a port for a sandbox.",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The sandbox ID."
+          }
+        }
+      },
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "port"
+          ],
+          "properties": {
+            "port": {
+              "type": "integer",
+              "description": "The port number to unexpose.",
+              "maximum": 65535,
+              "minimum": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

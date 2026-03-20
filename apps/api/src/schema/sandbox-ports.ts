@@ -11,14 +11,13 @@ import sandboxes from "./sandboxes";
 const sandboxPorts = pgTable(
   "sandbox_ports",
   {
-    id: text("id")
-      .primaryKey()
-      .default(sql`xata_id()`),
+    id: text("id").primaryKey().default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id),
     exposedPort: integer("exposed_port").notNull(),
     previewUrl: text("preview_url"),
+    description: text("description"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },

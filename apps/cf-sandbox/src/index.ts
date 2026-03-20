@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { Context } from "./context";
-import { getSandbox, Sandbox } from "@cloudflare/sandbox";
+import { getSandbox, proxyToSandbox, Sandbox } from "@cloudflare/sandbox";
 import {
   files,
   sandboxes,
@@ -43,6 +43,9 @@ const app = new Hono<{ Variables: Context; Bindings: Bindings }>();
 app.use(cors());
 
 app.use("*", async (c, next) => {
+  const proxyResponse = await proxyToSandbox(c.req.raw, c.env);
+  if (proxyResponse) return proxyResponse;
+
   c.set("db", getConnection());
   const token = c.req.header("Authorization")?.split(" ")[1]?.trim();
   if (token) {

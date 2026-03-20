@@ -6,6 +6,10 @@ import { env } from "../lib/env";
 import type { Volume } from "../types/volume";
 import CliTable3 from "cli-table3";
 import { c } from "../theme";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 export async function listVolumes(sandboxId: string) {
   const token = await getAccessToken();
@@ -23,7 +27,7 @@ export async function listVolumes(sandboxId: string) {
   );
 
   const table = new CliTable3({
-    head: [c.primary("NAME"), c.primary("PATH")],
+    head: [c.primary("NAME"), c.primary("PATH"), c.primary("CREATED AT")],
     chars: {
       top: "",
       "top-mid": "",
@@ -48,7 +52,11 @@ export async function listVolumes(sandboxId: string) {
   });
 
   for (const volume of response.data.volumes) {
-    table.push([c.secondary(volume.name), volume.path]);
+    table.push([
+      c.secondary(volume.name),
+      volume.path,
+      dayjs(volume.createdAt).fromNow(),
+    ]);
   }
 
   consola.log(table.toString());

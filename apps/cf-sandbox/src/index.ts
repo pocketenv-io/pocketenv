@@ -551,9 +551,11 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
   const sandbox = getSandbox(c.env.Sandbox, record.name);
   const sessionId = c.req.query("session");
 
+  /*
   const cfsandbox = await createSandbox("cloudflare", {
     id: record.name,
   });
+
 
   const params = await Promise.all([
     c.var.db
@@ -660,11 +662,12 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
       )
       .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
   }
+  */
 
   try {
     if (sessionId) {
       const session = await sandbox.getSession(sessionId);
-
+      /*
       const cfsession = new CloudflareSandbox(session);
       await session.setEnvVars(envVars);
 
@@ -705,6 +708,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
           )
           .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
       }
+*/
 
       return session.terminal(c.req.raw);
     }

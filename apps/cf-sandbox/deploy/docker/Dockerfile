@@ -51,9 +51,16 @@ COPY banner.sh /usr/bin
 RUN chmod a+x /usr/bin/banner.sh && \
     echo 'source /root/.bashrc' >> ~/.profile
 
-RUN curl -fsSL https://nodejs.org/dist/v22.22.1/node-v22.22.1-linux-x64.tar.xz -o node.tar.xz && \
-    tar -xJf node.tar.xz -C /usr/local --strip-components=1 && \
-    rm node.tar.xz
+FROM node:22-alpine AS node
+
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+
+COPY --from=node /usr/local/bin/npm /usr/local/bin/npm
+
+COPY --from=node /usr/local/bin/npx /usr/local/bin/npx
+
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh && \
     code-server --install-extension bastndev.lynx-theme --force && \

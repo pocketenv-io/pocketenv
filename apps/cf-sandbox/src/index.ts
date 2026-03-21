@@ -780,7 +780,7 @@ app.delete("/v1/sandboxes/:sandboxId/ports", async (c) => {
 
     const port = parseInt(c.req.query("port") || "0", 10);
 
-    if (!port || port <= 1025 || port > 65535 || port == 3000) {
+    if (!port || port < 1024 || port > 65535 || port == 3000) {
       return c.json({ error: "Invalid port number" }, 400);
     }
 

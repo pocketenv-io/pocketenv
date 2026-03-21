@@ -28,7 +28,7 @@ RUN apk update && apk add --no-cache \
     krb5-dev
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
-    echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \
+    echo 'export PATH=$PATH:/root/.atuin/bin:/root/.local/bin' >> ~/.bashrc && \
     echo 'eval "$(atuin init bash)"' >> ~/.bashrc || true
 
 # Use the musl build so it runs on Alpine-based docker:dind-rootless
@@ -61,7 +61,9 @@ RUN printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npm-cli.js 
     printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npx-cli.js "$@"\n' > /usr/local/bin/npx && \
     chmod +x /usr/local/bin/npm /usr/local/bin/npx
 
-RUN curl -fsSL https://code-server.dev/install.sh | sh && \
+ENV PATH="/root/.local/bin:${PATH}"
+
+RUN curl -fsSL https://code-server.dev/install.sh | sh -s -- --method=standalone && \
     code-server --install-extension bastndev.lynx-theme --force && \
     curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip && \
     mkdir -p /usr/share/fonts && \

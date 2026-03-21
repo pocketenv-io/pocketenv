@@ -10,7 +10,7 @@
           "type": "integer",
           "description": "The port number.",
           "maximum": 65535,
-          "minimum": 1024
+          "minimum": 1025
         },
         "description": {
           "type": "string",

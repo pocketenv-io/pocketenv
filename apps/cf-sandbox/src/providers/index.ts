@@ -1,3 +1,5 @@
+export const VSCODE_PORT = 1024;
+
 export abstract class BaseSandbox {
   abstract start(): Promise<void>;
   abstract stop(): Promise<void>;
@@ -14,6 +16,8 @@ export abstract class BaseSandbox {
   abstract unmount(path: string): Promise<void>;
   abstract expose(port: number, hostname: string): Promise<string | null>;
   abstract unexpose(port: number): Promise<void>;
+  abstract exposeVscode(hostname: string): Promise<string | null>;
+  abstract unexposeVscode(): Promise<void>;
 }
 
 abstract class BaseProvider {

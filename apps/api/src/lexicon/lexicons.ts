@@ -425,7 +425,7 @@ export const schemaDict = {
             type: "integer",
             description: "The port number.",
             maximum: 65535,
-            minimum: 1024,
+            minimum: 1025,
           },
           description: {
             type: "string",
@@ -663,7 +663,7 @@ export const schemaDict = {
             items: {
               type: "integer",
               maximum: 65535,
-              minimum: 1024,
+              minimum: 1025,
             },
             maxLength: 100,
           },
@@ -761,7 +761,7 @@ export const schemaDict = {
             items: {
               type: "integer",
               maximum: 65535,
-              minimum: 1024,
+              minimum: 1025,
             },
             maxLength: 100,
           },
@@ -1070,7 +1070,7 @@ export const schemaDict = {
                 type: "integer",
                 description: "The port number to expose.",
                 maximum: 65535,
-                minimum: 1024,
+                minimum: 1025,
               },
               description: {
                 type: "string",
@@ -1680,7 +1680,7 @@ export const schemaDict = {
                 type: "integer",
                 description: "The port number to unexpose.",
                 maximum: 65535,
-                minimum: 1024,
+                minimum: 1025,
               },
             },
           },

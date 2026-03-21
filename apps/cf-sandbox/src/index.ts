@@ -739,7 +739,7 @@ app.post("/v1/sandboxes/:sandboxId/ports", async (c) => {
 
     const { port } = await c.req.json<{ port: number }>();
 
-    if (!port || port < 1024 || port > 65535 || port == 3000) {
+    if (!port || port < 1025 || port > 65535 || port == 3000) {
       return c.json({ error: "Invalid port number" }, 400);
     }
 
@@ -780,7 +780,7 @@ app.delete("/v1/sandboxes/:sandboxId/ports", async (c) => {
 
     const port = parseInt(c.req.query("port") || "0", 10);
 
-    if (!port || port <= 1024 || port > 65535 || port == 3000) {
+    if (!port || port <= 1025 || port > 65535 || port == 3000) {
       return c.json({ error: "Invalid port number" }, 400);
     }
 
@@ -794,6 +794,74 @@ app.delete("/v1/sandboxes/:sandboxId/ports", async (c) => {
       errorMessage,
     );
     return c.json({ error: `Failed to unexpose port: ${errorMessage}` }, 500);
+  }
+});
+
+app.post("/v1/sandboxes/:sandboxId/vscode", async (c) => {
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
+
+  if (!record) {
+    return c.json({ error: "Sandbox not found" }, 404);
+  }
+
+  if (record.provider !== "cloudflare") {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  try {
+    let sandbox: BaseSandbox | null = null;
+
+    sandbox = await createSandbox("cloudflare", {
+      id: record.name,
+    });
+
+    const { hostname } = new URL(c.req.url);
+    const previewUrl = await sandbox.exposeVscode(hostname);
+    return c.json({ previewUrl });
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    consola.error(
+      c.req.param("sandboxId"),
+      "Failed to expose vscode:",
+      errorMessage,
+    );
+    return c.json({ error: `Failed to expose vscode: ${errorMessage}` }, 500);
+  }
+});
+
+app.delete("/v1/sandboxes/:sandboxId/vscode", async (c) => {
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
+
+  if (!record) {
+    return c.json({ error: "Sandbox not found" }, 404);
+  }
+
+  if (record.provider !== "cloudflare") {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+  try {
+    let sandbox: BaseSandbox | null = null;
+
+    sandbox = await createSandbox("cloudflare", {
+      id: record.name,
+    });
+
+    await sandbox.unexposeVscode();
+    return c.json({});
+  } catch (err) {
+    const errorMessage = err instanceof Error ? err.message : "Unknown error";
+    consola.error(
+      c.req.param("sandboxId"),
+      "Failed to unexpose vscode:",
+      errorMessage,
+    );
+    return c.json({ error: `Failed to unexpose vscode: ${errorMessage}` }, 500);
   }
 });
 

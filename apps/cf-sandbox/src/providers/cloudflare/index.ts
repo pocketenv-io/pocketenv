@@ -1,5 +1,5 @@
 import { getSandbox, Sandbox } from "@cloudflare/sandbox";
-import BaseProvider, { BaseSandbox, SandboxOptions } from "..";
+import BaseProvider, { BaseSandbox, SandboxOptions, VSCODE_PORT } from "..";
 import { env } from "cloudflare:workers";
 import path from "node:path";
 
@@ -138,6 +138,33 @@ export class CloudflareSandbox implements BaseSandbox {
       await this.sandbox.unexposePort(port);
     } catch (e) {
       console.log("Failed to unexpose port", e);
+    }
+  }
+
+  async exposeVscode(hostname: string): Promise<string | null> {
+    this.sh`type code-server || curl -L https://coder.com/install.sh | sh`;
+    this.sandbox.startProcess(
+      `code-server --bind-addr 0.0.0.0:${VSCODE_PORT} --auth none`,
+    );
+
+    try {
+      const { url } = await this.sandbox.exposePort(VSCODE_PORT, {
+        hostname: hostname.split(".").slice(-2).join("."),
+        token: env.PREVIEW_TOKEN,
+      });
+      return url;
+    } catch (e) {
+      console.log("Failed to expose vscode port", e);
+    }
+
+    return "";
+  }
+
+  async unexposeVscode(): Promise<void> {
+    try {
+      await this.sandbox.unexposePort(VSCODE_PORT);
+    } catch (e) {
+      console.log("Failed to unexpose vscode port", e);
     }
   }
 }

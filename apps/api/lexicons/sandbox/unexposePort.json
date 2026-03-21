@@ -7,9 +7,7 @@
       "description": "Unexpose a port for a sandbox.",
       "parameters": {
         "type": "params",
-        "required": [
-          "id"
-        ],
+        "required": ["id"],
         "properties": {
           "id": {
             "type": "string",
@@ -21,15 +19,13 @@
         "encoding": "application/json",
         "schema": {
           "type": "object",
-          "required": [
-            "port"
-          ],
+          "required": ["port"],
           "properties": {
             "port": {
               "type": "integer",
               "description": "The port number to unexpose.",
               "maximum": 65535,
-              "minimum": 1024
+              "minimum": 1025
             }
           }
         }

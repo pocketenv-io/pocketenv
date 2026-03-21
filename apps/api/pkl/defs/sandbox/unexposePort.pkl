@@ -25,7 +25,7 @@ defs = new Mapping<String, Procedure> {
           ["port"] = new IntegerType {
             type = "integer"
             description = "The port number to unexpose."
-            minimum = 1024
+            minimum = 1025
             maximum = 65535
           }
         }

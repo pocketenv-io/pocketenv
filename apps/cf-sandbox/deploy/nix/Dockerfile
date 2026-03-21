@@ -15,7 +15,7 @@ ENV LANGUAGE en_US.UTF-8
 RUN curl -fsSL https://tailscale.com/install.sh | sh
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
-    echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \
+    echo 'export PATH=$PATH:/root/.atuin/bin:/root/.local/bin' >> ~/.bashrc && \
     echo 'eval "$(atuin init bash)"' >> ~/.bashrc || true
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
@@ -45,7 +45,7 @@ RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/
     --extra-conf "sandbox = false" \
     --init none \
     --no-confirm
-ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
+ENV PATH "${PATH}:/nix/var/nix/profiles/default/bin"
 
 RUN curl -fsSL https://get.jetify.com/devbox | bash -s -- -f
 
@@ -61,7 +61,7 @@ RUN nix profile add nixpkgs#devenv || true
 
 RUN mkdir -p /root/.npm-global && npm config set prefix "/root/.npm-global"
 
-ENV PATH="/root/.npm-global/bin:${PATH}"
+ENV PATH "/root/.npm-global/bin:${PATH}"
 
 RUN npm install -g pm2
 
@@ -72,8 +72,7 @@ RUN echo 'stty sane' >> ~/.bashrc && \
 
 COPY banner.sh /root/.local/bin
 
-RUN chmod a+x /root/.local/bin/banner.sh && \
-    echo banner.sh >> ~/.bashrc
+RUN chmod a+x /root/.local/bin/banner.sh
 
 WORKDIR /workspace
 

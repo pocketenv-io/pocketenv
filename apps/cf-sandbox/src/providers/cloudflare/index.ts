@@ -2,7 +2,6 @@ import { getSandbox, Sandbox } from "@cloudflare/sandbox";
 import BaseProvider, { BaseSandbox, SandboxOptions, VSCODE_PORT } from "..";
 import { env } from "cloudflare:workers";
 import path from "node:path";
-import crypto from "node:crypto";
 
 export class CloudflareSandbox implements BaseSandbox {
   private normalizedId: string | null;
@@ -41,11 +40,13 @@ export class CloudflareSandbox implements BaseSandbox {
   }
 
   async stop(): Promise<void> {
+    await this.sandbox.setKeepAlive(false);
     await this.sandbox.stop();
     await this.sandbox.destroy();
   }
 
   async delete(): Promise<void> {
+    await this.sandbox.setKeepAlive(false);
     await this.sandbox.stop();
     await this.sandbox.destroy();
   }
@@ -145,8 +146,40 @@ export class CloudflareSandbox implements BaseSandbox {
   async exposeVscode(hostname: string): Promise<string | null> {
     await this
       .sh`type code-server || curl -fsSL https://code-server.dev/install.sh | sh`;
+    await this
+      .sh`code-server --install-extension catppuccin.catppuccin-vsc --force`;
+    await this
+      .sh`code-server --install-extension catppuccin.catppuccin-vsc-icons --force`;
+    await this
+      .sh`curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip && unzip -o /tmp/CascadiaCode.zip -d /usr/local/share/fonts/CascadiaCode && fc-cache -fv || true`;
+    await this.writeFile(
+      "/root/.local/share/code-server/User/settings.json",
+      JSON.stringify(
+        {
+          "workbench.colorTheme": "Catppuccin Mocha",
+          "workbench.iconTheme": "catppuccin-mocha",
+          "editor.fontFamily": "'CaskaydiaCove Nerd Font', monospace",
+          "editor.fontSize": 14,
+          "terminal.integrated.fontFamily":
+            "'CaskaydiaCove Nerd Font Mono', monospace",
+        },
+        null,
+        2,
+      ),
+    );
     await this.sandbox.startProcess(
       `curl http://localhost:${VSCODE_PORT} || code-server --bind-addr 0.0.0.0:${VSCODE_PORT} --auth none`,
+    );
+
+    await this.retryWithBackoff(
+      async () => {
+        const result = await this.sandbox.exec(
+          `curl -sf http://localhost:${VSCODE_PORT}`,
+        );
+        if (result.exitCode !== 0) throw new Error("code-server not ready yet");
+      },
+      20,
+      500,
     );
 
     try {
@@ -158,6 +191,8 @@ export class CloudflareSandbox implements BaseSandbox {
     } catch (e) {
       console.log("Failed to expose vscode port", e);
     }
+
+    await this.sandbox.setKeepAlive(true);
 
     return null;
   }

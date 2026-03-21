@@ -62,7 +62,7 @@ RUN curl -fsSL https://tailscale.com/install.sh | sh
 
 RUN mkdir -p /root/.npm-global && npm config set prefix "/root/.npm-global"
 
-ENV PATH="/root/.npm-global/bin:${PATH}"
+ENV PATH "/root/.npm-global/bin:${PATH}"
 
 RUN npm install -g pm2
 
@@ -70,7 +70,7 @@ RUN curl -fsSL https://deno.land/install.sh | sh
 
 RUN curl -fsSL https://bun.sh/install | bash
 
-ENV PATH="/root/.deno/bin:/root/.local/bin:${PATH}"
+ENV PATH "/root/.deno/bin:/root/.local/bin:${PATH}"
 
 RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
     echo 'stty sane' >> ~/.bashrc && \
@@ -87,8 +87,7 @@ RUN case "${TARGETARCH}" in \
 
 COPY banner.sh /root/.local/bin
 
-RUN chmod a+x /root/.local/bin/banner.sh && \
-    echo banner.sh >> ~/.bashrc
+RUN chmod a+x /root/.local/bin/banner.sh
 
 WORKDIR /workspace
 

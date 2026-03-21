@@ -63,7 +63,7 @@ RUN curl -fsSL https://tailscale.com/install.sh | sh
 
 RUN mkdir -p /root/.npm-global && npm config set prefix "/root/.npm-global"
 
-ENV PATH="/root/.npm-global/bin:${PATH}"
+ENV PATH "/root/.npm-global/bin:${PATH}"
 
 RUN npm install -g \
     openclaw \
@@ -81,8 +81,7 @@ RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
 
 COPY banner.sh /root/.local/bin
 
-RUN chmod a+x /root/.local/bin/banner.sh && \
-    echo banner.sh >> ~/.bashrc
+RUN chmod a+x /root/.local/bin/banner.sh
 
 WORKDIR /workspace
 

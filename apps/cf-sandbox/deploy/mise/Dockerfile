@@ -44,15 +44,14 @@ RUN mise install node@25 && \
     mise use -g node@25 && \
     npm install -g pm2
 
-ENV PATH="/root/.local/bin:${PATH}"
+ENV PATH "/root/.local/bin:${PATH}"
 
 RUN echo 'stty sane' >> ~/.bashrc && \
     echo '. "$HOME/.bashrc"' >> ~/.profile
 
 COPY banner.sh /root/.local/bin
 
-RUN chmod a+x /root/.local/bin/banner.sh && \
-    echo banner.sh >> ~/.bashrc
+RUN chmod a+x /root/.local/bin/banner.sh
 
 WORKDIR /workspace
 

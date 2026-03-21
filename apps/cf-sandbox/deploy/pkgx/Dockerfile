@@ -44,19 +44,18 @@ RUN case "${TARGETARCH}" in \
     echo 'alias ls="eza -l"' >> ~/.bashrc
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
-    echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \
+    echo 'export PATH=$PATH:/root/.atuin/bin:/root/.local/bin' >> ~/.bashrc && \
     echo 'eval "$(atuin init bash)"' >> ~/.bashrc || true
 
 COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbox
 
-ENV PATH="/root/.local/bin:${PATH}"
+ENV PATH "/root/.local/bin:${PATH}"
 
 RUN echo 'stty sane >> ~/.bashrc' && echo '. "$HOME/.bashrc"' >> ~/.profile
 
 COPY banner.sh /root/.local/bin
 
-RUN chmod a+x /root/.local/bin/banner.sh && \
-    echo banner.sh >> ~/.bashrc
+RUN chmod a+x /root/.local/bin/banner.sh
 
 RUN pkgm install node && \
     npm install -g pm2

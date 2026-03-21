@@ -1095,6 +1095,40 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSandboxExposeVscode: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.exposeVscode",
+    defs: {
+      main: {
+        type: "procedure",
+        description:
+          "Expose an instance of VS Code for a sandbox. This allows users to access a web-based version of VS Code that is connected to their sandbox environment, enabling them to edit code, manage files, and perform other development tasks directly from their browser.",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            nullable: ["previewUrl"],
+            properties: {
+              previewUrl: {
+                type: "string",
+                description: "The preview URL for the exposed port.",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvSandboxGetExposedPorts: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.getExposedPorts",
@@ -2485,6 +2519,7 @@ export const ids = {
   IoPocketenvSandboxDefs: "io.pocketenv.sandbox.defs",
   IoPocketenvSandboxDeleteSandbox: "io.pocketenv.sandbox.deleteSandbox",
   IoPocketenvSandboxExposePort: "io.pocketenv.sandbox.exposePort",
+  IoPocketenvSandboxExposeVscode: "io.pocketenv.sandbox.exposeVscode",
   IoPocketenvSandboxGetExposedPorts: "io.pocketenv.sandbox.getExposedPorts",
   IoPocketenvSandboxGetIntegrations: "io.pocketenv.sandbox.getIntegrations",
   IoPocketenvSandboxGetPreferences: "io.pocketenv.sandbox.getPreferences",

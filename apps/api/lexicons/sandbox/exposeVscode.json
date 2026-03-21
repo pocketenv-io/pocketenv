@@ -1,10 +1,10 @@
 {
   "lexicon": 1,
-  "id": "io.pocketenv.sandbox.exposePort",
+  "id": "io.pocketenv.sandbox.exposeVscode",
   "defs": {
     "main": {
       "type": "procedure",
-      "description": "Expose a port for a sandbox.",
+      "description": "Expose an instance of VS Code for a sandbox. This allows users to access a web-based version of VS Code that is connected to their sandbox environment, enabling them to edit code, manage files, and perform other development tasks directly from their browser.",
       "parameters": {
         "type": "params",
         "required": [
@@ -14,27 +14,6 @@
           "id": {
             "type": "string",
             "description": "The sandbox ID."
-          }
-        }
-      },
-      "input": {
-        "encoding": "application/json",
-        "schema": {
-          "type": "object",
-          "required": [
-            "port"
-          ],
-          "properties": {
-            "port": {
-              "type": "integer",
-              "description": "The port number to expose.",
-              "maximum": 65535,
-              "minimum": 1025
-            },
-            "description": {
-              "type": "string",
-              "description": "A description of the port."
-            }
           }
         }
       },

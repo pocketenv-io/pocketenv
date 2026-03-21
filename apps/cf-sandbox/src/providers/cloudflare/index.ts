@@ -2,6 +2,7 @@ import { getSandbox, Sandbox } from "@cloudflare/sandbox";
 import BaseProvider, { BaseSandbox, SandboxOptions, VSCODE_PORT } from "..";
 import { env } from "cloudflare:workers";
 import path from "node:path";
+import crypto from "node:crypto";
 
 export class CloudflareSandbox implements BaseSandbox {
   private normalizedId: string | null;
@@ -142,15 +143,16 @@ export class CloudflareSandbox implements BaseSandbox {
   }
 
   async exposeVscode(hostname: string): Promise<string | null> {
-    this.sh`type code-server || curl -L https://coder.com/install.sh | sh`;
-    this.sandbox.startProcess(
+    await this
+      .sh`type code-server || curl -L https://coder.com/install.sh | sh`;
+    await this.sandbox.startProcess(
       `code-server --bind-addr 0.0.0.0:${VSCODE_PORT} --auth none`,
     );
 
     try {
       const { url } = await this.sandbox.exposePort(VSCODE_PORT, {
         hostname: hostname.split(".").slice(-2).join("."),
-        token: env.PREVIEW_TOKEN,
+        token: `${crypto.randomBytes(16).toString("hex")}_${env.PREVIEW_TOKEN}`,
       });
       return url;
     } catch (e) {

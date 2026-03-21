@@ -1,3 +1,5 @@
+export const VSCODE_PORT = 1024;
+
 export enum Providers {
   DAYTONA = "daytona",
   DENO = "deno",

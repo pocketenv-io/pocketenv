@@ -21,6 +21,7 @@ import { deleteFile, listFiles, putFile } from "./cmd/file";
 import consola from "consola";
 import { listPorts } from "./cmd/ports";
 import { c } from "./theme";
+import { exposeVscode } from "./cmd/vscode";
 
 const program = new Command();
 
@@ -108,6 +109,14 @@ program
   .argument("<sandbox>", "the sandbox to delete")
   .description("delete the given sandbox")
   .action(deleteSandbox);
+
+program
+  .command("vscode")
+  .argument("<sandbox>", "the sandbox to expose VS Code for")
+  .description(
+    "expose a VS Code Server instance running in the given sandbox to the internet",
+  )
+  .action(exposeVscode);
 
 program
   .command("expose")

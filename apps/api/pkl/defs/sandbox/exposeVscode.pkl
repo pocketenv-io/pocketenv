@@ -1,0 +1,34 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.exposeVscode"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    description =
+      "Expose an instance of VS Code for a sandbox. This allows users to access a web-based version of VS Code that is connected to their sandbox environment, enabling them to edit code, manage files, and perform other development tasks directly from their browser."
+    parameters {
+      type = "params"
+      required = List("id")
+      properties {
+        ["id"] = new StringType {
+          type = "string"
+          description = "The sandbox ID."
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        nullable = List("previewUrl")
+        properties {
+          ["previewUrl"] = new StringType {
+            type = "string"
+            description = "The preview URL for the exposed port."
+          }
+        }
+      }
+    }
+  }
+}

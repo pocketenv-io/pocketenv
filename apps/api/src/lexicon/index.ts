@@ -22,6 +22,7 @@ import type * as IoPocketenvSandboxCreateIntegration from "./types/io/pocketenv/
 import type * as IoPocketenvSandboxCreateSandbox from "./types/io/pocketenv/sandbox/createSandbox";
 import type * as IoPocketenvSandboxDeleteSandbox from "./types/io/pocketenv/sandbox/deleteSandbox";
 import type * as IoPocketenvSandboxExposePort from "./types/io/pocketenv/sandbox/exposePort";
+import type * as IoPocketenvSandboxExposeVscode from "./types/io/pocketenv/sandbox/exposeVscode";
 import type * as IoPocketenvSandboxGetExposedPorts from "./types/io/pocketenv/sandbox/getExposedPorts";
 import type * as IoPocketenvSandboxGetIntegrations from "./types/io/pocketenv/sandbox/getIntegrations";
 import type * as IoPocketenvSandboxGetPreferences from "./types/io/pocketenv/sandbox/getPreferences";
@@ -265,6 +266,17 @@ export class IoPocketenvSandboxNS {
     >,
   ) {
     const nsid = "io.pocketenv.sandbox.exposePort"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  exposeVscode<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxExposeVscode.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxExposeVscode.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.exposeVscode"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 

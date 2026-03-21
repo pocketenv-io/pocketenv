@@ -8,6 +8,7 @@ import type { Server } from "lexicon";
 import type {
   QueryParams,
   InputSchema,
+  OutputSchema,
 } from "lexicon/types/io/pocketenv/sandbox/exposePort";
 import { createAgent } from "lib/agent";
 import generateJwt from "lib/generateJwt";
@@ -36,7 +37,7 @@ export default function (server: Server, ctx: Context) {
       );
     }
 
-    await ctx.db.transaction(async (tx) => {
+    return ctx.db.transaction(async (tx) => {
       const [record] = await tx
         .select()
         .from(schema.sandboxes)
@@ -112,12 +113,18 @@ export default function (server: Server, ctx: Context) {
           )
           .execute();
       }
+
+      return data.previewUrl;
     });
   };
   server.io.pocketenv.sandbox.exposePort({
     auth: ctx.authVerifier,
     handler: async ({ params, input, auth }) => {
-      await exposePort(params, input.body, auth);
+      const previewUrl = await exposePort(params, input.body, auth);
+      return {
+        encoding: "application/json",
+        body: { previewUrl } satisfies OutputSchema,
+      };
     },
   });
 }

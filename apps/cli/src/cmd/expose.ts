@@ -11,7 +11,7 @@ export async function exposePort(
 ) {
   const token = await getAccessToken();
   try {
-    await client.post(
+    const response = await client.post<{ previewUrl?: string }>(
       `/xrpc/io.pocketenv.sandbox.exposePort`,
       { port, description },
       {
@@ -27,6 +27,10 @@ export async function exposePort(
     consola.success(
       `Port ${c.primary(port)} exposed for sandbox ${c.primary(sandbox)}`,
     );
+
+    if (response.data.previewUrl) {
+      consola.log(`Preview URL: ${c.secondary(response.data.previewUrl)}`);
+    }
   } catch (error) {
     consola.error("Failed to expose port:", error);
     process.exit(1);

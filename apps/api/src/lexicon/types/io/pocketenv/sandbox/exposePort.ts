@@ -6,7 +6,7 @@ import { ValidationResult, BlobRef } from "@atproto/lexicon";
 import { lexicons } from "../../../../lexicons";
 import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
-import { type HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
+import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
 
 export interface QueryParams {
   /** The sandbox ID. */
@@ -21,9 +21,21 @@ export interface InputSchema {
   [k: string]: unknown;
 }
 
+export interface OutputSchema {
+  /** The preview URL for the exposed port. */
+  previewUrl?: string | null;
+  [k: string]: unknown;
+}
+
 export interface HandlerInput {
   encoding: "application/json";
   body: InputSchema;
+}
+
+export interface HandlerSuccess {
+  encoding: "application/json";
+  body: OutputSchema;
+  headers?: { [key: string]: string };
 }
 
 export interface HandlerError {
@@ -31,7 +43,7 @@ export interface HandlerError {
   message?: string;
 }
 
-export type HandlerOutput = HandlerError | void;
+export type HandlerOutput = HandlerError | HandlerSuccess | HandlerPipeThrough;
 export type HandlerReqCtx<HA extends HandlerAuth = never> = {
   auth: HA;
   params: QueryParams;

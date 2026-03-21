@@ -35,5 +35,18 @@ defs = new Mapping<String, Procedure> {
         }
       }
     }
+    output {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        nullable = List("previewUrl")
+        properties {
+          ["previewUrl"] = new StringType {
+            type = "string"
+            description = "The preview URL for the exposed port."
+          }
+        }
+      }
+    }
   }
 }

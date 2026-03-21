@@ -1079,6 +1079,19 @@ export const schemaDict = {
             },
           },
         },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            nullable: ["previewUrl"],
+            properties: {
+              previewUrl: {
+                type: "string",
+                description: "The preview URL for the exposed port.",
+              },
+            },
+          },
+        },
       },
     },
   },

@@ -144,7 +144,7 @@ export class CloudflareSandbox implements BaseSandbox {
 
   async exposeVscode(hostname: string): Promise<string | null> {
     await this
-      .sh`type code-server || curl -L https://coder.com/install.sh | sh`;
+      .sh`type code-server || curl -fsSL https://code-server.dev/install.sh | sh`;
     await this.sandbox.startProcess(
       `curl localhost:${VSCODE_PORT} || code-server --bind-addr 0.0.0.0:${VSCODE_PORT} --auth none`,
     );

@@ -1,11 +1,31 @@
-import chalk from "chalk";
 import consola from "consola";
 import getAccessToken from "../lib/getAccessToken";
+import { client } from "../client";
+import { env } from "../lib/env";
+import { c } from "../theme";
 
 export async function unexposePort(sandbox: string, port: number) {
   const token = await getAccessToken();
 
-  consola.success(
-    `Port ${chalk.rgb(0, 232, 198)(port)} unexposed for sandbox ${chalk.rgb(0, 232, 198)(sandbox)}`,
-  );
+  try {
+    await client.post(
+      `/xrpc/io.pocketenv.sandbox.unexposePort`,
+      { port },
+      {
+        params: {
+          id: sandbox,
+        },
+        headers: {
+          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+        },
+      },
+    );
+
+    consola.success(
+      `Port ${c.primary(port)} unexposed for sandbox ${c.primary(sandbox)}`,
+    );
+  } catch (error) {
+    consola.error(`Failed to unexpose port: ${error}`);
+    process.exit(1);
+  }
 }

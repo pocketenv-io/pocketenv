@@ -3,7 +3,7 @@ import { updateSandbox } from "atproto/sandbox";
 import { consola } from "consola";
 import { Providers } from "consts";
 import type { Context } from "context";
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type {
   QueryParams,
@@ -43,7 +43,11 @@ export default function (server: Server, ctx: Context) {
         .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
         .where(
           and(
-            eq(schema.sandboxes.id, params.id),
+            or(
+              eq(schema.sandboxes.id, params.id),
+              eq(schema.sandboxes.uri, params.id),
+              eq(schema.sandboxes.name, params.id),
+            ),
             eq(schema.users.did, auth.credentials.did),
           ),
         )

@@ -53,7 +53,22 @@ export default function (server: Server, ctx: Context) {
         throw new XRPCError(404, "Sandbox not found");
       }
 
-      await ctx.db
+      const existingPort = await tx
+        .select()
+        .from(schema.sandboxPorts)
+        .where(
+          and(
+            eq(schema.sandboxPorts.sandboxId, record.sandboxes.id),
+            eq(schema.sandboxPorts.exposedPort, VSCODE_PORT),
+          ),
+        )
+        .execute();
+
+      if (existingPort.length > 0) {
+        return existingPort[0]!.previewUrl || "";
+      }
+
+      await tx
         .insert(schema.sandboxPorts)
         .values({
           sandboxId: record.sandboxes.id,

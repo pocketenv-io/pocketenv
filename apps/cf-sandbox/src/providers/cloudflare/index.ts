@@ -124,6 +124,10 @@ export class CloudflareSandbox implements BaseSandbox {
 
   async expose(port: number, hostname: string): Promise<string | null> {
     try {
+      if (port === VSCODE_PORT) {
+        return await this.exposeVscode(hostname);
+      }
+
       const { url } = await this.sandbox.exposePort(port, {
         hostname: hostname.split(".").slice(-2).join("."),
         token: env.PREVIEW_TOKEN,

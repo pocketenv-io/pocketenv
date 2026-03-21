@@ -8,7 +8,7 @@ const sandboxVolumes = pgTable(
   {
     id: text("id")
       .primaryKey()
-      .default(sql`xata_id()`),
+      .default(sql`volume_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id),

@@ -94,7 +94,7 @@ const retrieve = ({
               ? and(
                   eq(users.did, auth.credentials.did),
                   or(
-                    eq(sandboxFiles.sandboxId, params.sandboxId),
+                    eq(sandboxes.id, params.sandboxId),
                     eq(sandboxes.name, params.sandboxId),
                   ),
                 )

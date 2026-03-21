@@ -146,7 +146,7 @@ export class CloudflareSandbox implements BaseSandbox {
     await this
       .sh`type code-server || curl -fsSL https://code-server.dev/install.sh | sh`;
     await this.sandbox.startProcess(
-      `curl localhost:${VSCODE_PORT} || code-server --bind-addr 0.0.0.0:${VSCODE_PORT} --auth none`,
+      `curl http://localhost:${VSCODE_PORT} || code-server --bind-addr 0.0.0.0:${VSCODE_PORT} --auth none`,
     );
 
     try {

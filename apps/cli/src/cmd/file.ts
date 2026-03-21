@@ -1,4 +1,3 @@
-import chalk from "chalk";
 import consola from "consola";
 import getAccessToken from "../lib/getAccessToken";
 import dayjs from "dayjs";
@@ -32,7 +31,7 @@ export async function putFile(
     try {
       await fs.access(resolvedPath);
     } catch (err) {
-      consola.error(`No such file: ${chalk.redBright(localPath)}`);
+      consola.error(`No such file: ${c.error(localPath)}`);
       process.exit(1);
     }
     content = await fs.readFile(resolvedPath, "utf-8");
@@ -63,7 +62,7 @@ export async function putFile(
     );
 
     consola.success(
-      `File ${chalk.rgb(0, 232, 198)(remotePath)} successfully created in sandbox ${chalk.rgb(0, 232, 198)(sandbox)}`,
+      `File ${c.primary(remotePath)} successfully created in sandbox ${c.primary(sandbox)}`,
     );
   } catch (error) {
     consola.error(`Failed to create file: ${error}`);
@@ -133,9 +132,7 @@ export async function deleteFile(id: string) {
         Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
       },
     });
-    consola.success(
-      `File ${chalk.rgb(0, 232, 198)(id)} successfully deleted from sandbox`,
-    );
+    consola.success(`File ${c.primary(id)} successfully deleted from sandbox`);
   } catch (error) {
     consola.error(`Failed to delete file: ${error}`);
   }

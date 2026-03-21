@@ -2,11 +2,11 @@ import { client } from "../client";
 import getAccessToken from "../lib/getAccessToken";
 import type { Sandbox } from "../types/sandbox";
 import type { Variable } from "../types/variable";
-import chalk from "chalk";
 import dayjs from "dayjs";
 import consola from "consola";
 import Table from "cli-table3";
 import { env } from "../lib/env";
+import { c } from "../theme";
 
 export async function listEnvs(sandbox: string) {
   const token = await getAccessToken();
@@ -23,7 +23,7 @@ export async function listEnvs(sandbox: string) {
   );
 
   if (!data.sandbox) {
-    consola.error(`Sandbox not found: ${chalk.greenBright(sandbox)}`);
+    consola.error(`Sandbox not found: ${c.primary(sandbox)}`);
     process.exit(1);
   }
 
@@ -43,10 +43,10 @@ export async function listEnvs(sandbox: string) {
 
   const table = new Table({
     head: [
-      chalk.cyan("ID"),
-      chalk.cyan("NAME"),
-      chalk.cyan("VALUE"),
-      chalk.cyan("CREATED AT"),
+      c.primary("ID"),
+      c.primary("NAME"),
+      c.primary("VALUE"),
+      c.primary("CREATED AT"),
     ],
     chars: {
       top: "",
@@ -73,8 +73,8 @@ export async function listEnvs(sandbox: string) {
 
   for (const variable of response.data.variables) {
     table.push([
-      chalk.greenBright(variable.id),
-      chalk.greenBright(variable.name),
+      c.secondary(variable.id),
+      c.highlight(variable.name),
       variable.value,
       dayjs(variable.createdAt).fromNow(),
     ]);

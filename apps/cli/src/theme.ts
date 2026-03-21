@@ -8,4 +8,5 @@ export const c = {
   muted: (s: string | number) => chalk.rgb(200, 210, 220)(s),
   link: (s: string | number) => chalk.rgb(255, 160, 100)(s),
   sky: (s: string | number) => chalk.rgb(0, 210, 255)(s),
+  error: (s: string | number) => chalk.rgb(255, 100, 100)(s),
 };

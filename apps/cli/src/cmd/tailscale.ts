@@ -3,10 +3,10 @@ import getAccessToken from "../lib/getAccessToken";
 import { client } from "../client";
 import type { Sandbox } from "../types/sandbox";
 import consola from "consola";
-import chalk from "chalk";
 import type { TailscaleAuthKey } from "../types/tailscale-auth-key";
 import { env } from "../lib/env";
 import encrypt from "../lib/sodium";
+import { c } from "../theme";
 
 export async function putAuthKey(sandbox: string) {
   const token = await getAccessToken();
@@ -33,7 +33,7 @@ export async function putAuthKey(sandbox: string) {
   );
 
   if (!data.sandbox) {
-    consola.error(`Sandbox not found: ${chalk.greenBright(sandbox)}`);
+    consola.error(`Sandbox not found: ${c.primary(sandbox)}`);
     process.exit(1);
   }
 
@@ -60,7 +60,7 @@ export async function putAuthKey(sandbox: string) {
 
   consola.success(redacted);
   consola.success(
-    `Tailscale auth key saved for sandbox: ${chalk.greenBright(sandbox)}`,
+    `Tailscale auth key saved for sandbox: ${c.primary(sandbox)}`,
   );
 }
 
@@ -80,7 +80,7 @@ export async function getTailscaleAuthKey(sandbox: string) {
   );
 
   if (!data.sandbox) {
-    consola.error(`Sandbox not found: ${chalk.greenBright(sandbox)}`);
+    consola.error(`Sandbox not found: ${c.primary(sandbox)}`);
     process.exit(1);
   }
 
@@ -96,10 +96,10 @@ export async function getTailscaleAuthKey(sandbox: string) {
         },
       },
     );
-    consola.info(`Tailscale auth key: ${chalk.greenBright(tailscale.authKey)}`);
+    consola.info(`Tailscale auth key: ${c.primary(tailscale.authKey)}`);
   } catch {
     consola.error(
-      `No Tailscale Auth Key found for sandbox: ${chalk.greenBright(sandbox)}`,
+      `No Tailscale Auth Key found for sandbox: ${c.primary(sandbox)}`,
     );
     process.exit(1);
   }

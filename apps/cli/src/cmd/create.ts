@@ -2,8 +2,8 @@ import consola from "consola";
 import { client } from "../client";
 import getAccessToken from "../lib/getAccessToken";
 import type { Sandbox } from "../types/sandbox";
-import chalk from "chalk";
 import connectToSandbox from "./ssh";
+import { c } from "../theme";
 
 async function createSandbox(
   name: string,
@@ -21,7 +21,7 @@ async function createSandbox(
 
   if (["deno", "vercel", "daytona"].includes(provider || "")) {
     consola.error(
-      `This Sandbox Runtime is temporarily disabled. ${chalk.greenBright(provider ?? "")}`,
+      `This Sandbox Runtime is temporarily disabled. ${c.primary(provider ?? "")}`,
     );
     process.exit(1);
   }
@@ -43,7 +43,7 @@ async function createSandbox(
     );
     if (!ssh) {
       consola.success(
-        `Sandbox created successfully: ${chalk.greenBright(sandbox.data.name)}`,
+        `Sandbox created successfully: ${c.primary(sandbox.data.name)}`,
       );
       return;
     }

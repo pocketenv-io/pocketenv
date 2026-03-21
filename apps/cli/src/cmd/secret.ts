@@ -79,7 +79,15 @@ export async function listSecrets(sandbox: string) {
 
 export async function putSecret(sandbox: string, key: string) {
   const token = await getAccessToken();
-  const value = await password({ message: "Enter secret value" });
+  const isStdinPiped = !process.stdin.isTTY;
+  const value = isStdinPiped
+    ? await new Promise<string>((resolve) => {
+        let data = "";
+        process.stdin.setEncoding("utf8");
+        process.stdin.on("data", (chunk) => (data += chunk));
+        process.stdin.on("end", () => resolve(data.trimEnd()));
+      })
+    : await password({ message: "Enter secret value" });
 
   const { data } = await client.get("/xrpc/io.pocketenv.sandbox.getSandbox", {
     params: {
@@ -95,21 +103,27 @@ export async function putSecret(sandbox: string, key: string) {
     process.exit(1);
   }
 
-  await client.post(
-    "/xrpc/io.pocketenv.secret.addSecret",
-    {
-      secret: {
-        sandboxId: data.sandbox.id,
-        name: key,
-        value: await encrypt(value),
+  try {
+    await client.post(
+      "/xrpc/io.pocketenv.secret.addSecret",
+      {
+        secret: {
+          sandboxId: data.sandbox.id,
+          name: key,
+          value: await encrypt(value),
+        },
       },
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+      {
+        headers: {
+          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+        },
       },
-    },
-  );
+    );
+
+    consola.success("Secret added successfully");
+  } catch (error) {
+    consola.error("Failed to add secret:", error);
+  }
 }
 
 export async function deleteSecret(id: string) {
@@ -126,7 +140,7 @@ export async function deleteSecret(id: string) {
     });
 
     consola.success("Secret deleted successfully");
-  } catch {
-    consola.error("Failed to delete secret");
+  } catch (error) {
+    consola.error("Failed to delete secret:", error);
   }
 }

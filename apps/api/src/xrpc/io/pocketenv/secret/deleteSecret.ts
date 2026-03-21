@@ -22,7 +22,7 @@ export default function (server: Server, ctx: Context) {
       .from(sandboxSecrets)
       .leftJoin(secrets, eq(sandboxSecrets.secretId, secrets.id))
       .leftJoin(sandboxes, eq(sandboxSecrets.sandboxId, sandboxes.id))
-      .leftJoin(users, eq(sandboxSecrets.sandboxId, users.id))
+      .leftJoin(users, eq(sandboxes.userId, users.id))
       .where(
         and(
           or(

@@ -17,4 +17,4 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh && \
     mkdir -p /home/daytona/.local/share/fonts && \
     unzip -o /tmp/CascadiaCode.zip -d /home/daytona/.local/share/fonts/CascadiaCode && \
     fc-cache -fv && \
-    touch /root/.vscode-setup-done
+    touch /home/daytona/.vscode-setup-done

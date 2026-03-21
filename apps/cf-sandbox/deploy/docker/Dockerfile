@@ -9,8 +9,6 @@ RUN apk update && apk add --no-cache \
     unzip \
     git \
     fontconfig \
-    nodejs \
-    npm \
     python3 \
     make \
     g++ \
@@ -52,6 +50,10 @@ COPY banner.sh /usr/bin
 
 RUN chmod a+x /usr/bin/banner.sh && \
     echo 'source /root/.bashrc' >> ~/.profile
+
+RUN curl -fsSL https://nodejs.org/dist/v22.22.1/node-v22.22.1-linux-x64.tar.xz -o node.tar.xz && \
+    tar -xJf node.tar.xz -C /usr/local --strip-components=1 && \
+    rm node.tar.xz
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh && \
     code-server --install-extension bastndev.lynx-theme --force && \

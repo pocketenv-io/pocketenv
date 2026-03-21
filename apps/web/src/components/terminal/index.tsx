@@ -15,7 +15,7 @@ function Terminal(props: TerminalProps) {
   return (
     <>
       {isCloudflare ? (
-        <CloudflareTerminal {...props} initialCommand="banner.sh || true" />
+        <CloudflareTerminal {...props} /*initialCommand="banner.sh || true"*/ />
       ) : isTty ? (
         <TtyTerminal {...props} />
       ) : (

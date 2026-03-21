@@ -50,8 +50,8 @@ export async function putFile(
       "/xrpc/io.pocketenv.file.addFile",
       {
         file: {
-          sandbox,
-          path,
+          sandboxId: sandbox,
+          path: remotePath,
           content: await encrypt(content),
         },
       },

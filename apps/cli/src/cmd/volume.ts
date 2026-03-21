@@ -80,7 +80,7 @@ export async function createVolume(
       "/xrpc/io.pocketenv.volume.addVolume",
       {
         volume: {
-          sandbox,
+          sandboxId: sandbox,
           name,
           path,
         },
@@ -118,6 +118,6 @@ export async function deleteVolume(id: string) {
   }
 
   consola.success(
-    `Volume ${chalk.rgb(0, 232, 198)(id)} successfully deleted from sandbo}`,
+    `Volume ${chalk.rgb(0, 232, 198)(id)} successfully deleted from sandbox`,
   );
 }

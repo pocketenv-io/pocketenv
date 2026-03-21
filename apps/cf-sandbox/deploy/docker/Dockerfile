@@ -55,8 +55,9 @@ COPY --from=docker.io/library/node:22-alpine /usr/local/bin/node /usr/local/bin/
 
 COPY --from=docker.io/library/node:22-alpine /usr/local/lib/node_modules /usr/local/lib/node_modules
 
-RUN ln -sf /usr/local/lib/node_modules/npm/bin/npm /usr/local/bin/npm && \
-    ln -sf /usr/local/lib/node_modules/npm/bin/npx /usr/local/bin/npx
+RUN printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npm "$@"\n' > /usr/local/bin/npm && \
+    printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npx "$@"\n' > /usr/local/bin/npx && \
+    chmod +x /usr/local/bin/npm /usr/local/bin/npx
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh && \
     code-server --install-extension bastndev.lynx-theme --force && \

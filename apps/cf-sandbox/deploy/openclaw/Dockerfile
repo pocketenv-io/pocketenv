@@ -73,7 +73,7 @@ RUN curl -fsSL https://deno.land/install.sh | sh
 
 RUN curl -fsSL https://bun.sh/install | bash
 
-ENV PATH="/root/.deno/bin:/root/.local/bin:${PATH}"
+ENV PATH "/root/.deno/bin:/root/.local/bin:${PATH}"
 
 RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
     echo 'stty sane' >> ~/.bashrc && \
@@ -85,7 +85,7 @@ RUN chmod a+x /root/.local/bin/banner.sh
 
 WORKDIR /workspace
 
-ENV COMMAND_TIMEOUT_MS=300000
+ENV COMMAND_TIMEOUT_MS 300000
 
 # Required during local development to access exposed ports
 EXPOSE 8080

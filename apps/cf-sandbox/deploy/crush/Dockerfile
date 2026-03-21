@@ -80,7 +80,7 @@ RUN echo 'PATH="$HOME/.deno/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
 
 WORKDIR /workspace
 
-ENV COMMAND_TIMEOUT_MS=300000
+ENV COMMAND_TIMEOUT_MS 300000
 
 # Required during local development to access exposed ports
 EXPOSE 8080

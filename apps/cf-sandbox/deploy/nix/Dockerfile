@@ -65,7 +65,7 @@ ENV PATH "/root/.npm-global/bin:${PATH}"
 
 RUN npm install -g pm2
 
-ENV PATH="/root/.local/bin:${PATH}"
+ENV PATH "/root/.local/bin:${PATH}"
 
 RUN echo 'stty sane' >> ~/.bashrc && \
     echo '. "$HOME/.bashrc"' >> ~/.profile
@@ -79,6 +79,6 @@ WORKDIR /workspace
 EXPOSE 8080
 EXPOSE 3000/tcp
 
-ENV COMMAND_TIMEOUT_MS=300000
+ENV COMMAND_TIMEOUT_MS 300000
 
 ENTRYPOINT ["/sandbox"]

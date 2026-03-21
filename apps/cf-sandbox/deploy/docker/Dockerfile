@@ -32,7 +32,7 @@ RUN chmod a+x /usr/bin/banner.sh && \
 
 WORKDIR /workspace
 
-ENV COMMAND_TIMEOUT_MS=300000
+ENV COMMAND_TIMEOUT_MS 300000
 
 EXPOSE 8080
 EXPOSE 3000/tcp

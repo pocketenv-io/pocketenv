@@ -16,7 +16,7 @@
     "@types/pg": "^8.16.0",
     "drizzle-kit": "^0.31.9",
     "typescript": "^5.9.3",
-    "wrangler": "^4.63.0"
+    "wrangler": "^4.76.0"
   },
   "author": "",
   "license": "MIT",

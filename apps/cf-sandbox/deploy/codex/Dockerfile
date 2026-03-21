@@ -85,9 +85,9 @@ RUN chmod a+x /root/.local/bin/banner.sh
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh && \
     code-server --install-extension bastndev.lynx-theme --force && \
-    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip && \
+    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaMono.zip -o /tmp/CascadiaMono.zip && \
     mkdir -p /usr/share/fonts && \
-    unzip -o /tmp/CascadiaCode.zip -d /usr/share/fonts/CascadiaCode && \
+    unzip -o /tmp/CascadiaMono.zip -d /usr/share/fonts/CascadiaMono && \
     fc-cache -fv && \
     touch /root/.vscode-setup-done
 

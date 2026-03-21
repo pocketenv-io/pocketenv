@@ -155,10 +155,10 @@ export class CloudflareSandbox implements BaseSandbox {
           {
             "workbench.colorTheme": "6. KIROㅤㅤ(Lynx Theme)",
             "workbench.iconTheme": "lynx-pro-light",
-            "editor.fontFamily": "'CaskaydiaCove Nerd Font', monospace",
+            "editor.fontFamily": "'CaskaydiaMono Nerd Font', monospace",
             "editor.fontSize": 14,
             "terminal.integrated.fontFamily":
-              "'CaskaydiaCove Nerd Font Mono', monospace",
+              "'CaskaydiaMono Nerd Font', monospace",
           },
           null,
           2,

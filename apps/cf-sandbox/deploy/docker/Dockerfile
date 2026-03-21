@@ -60,9 +60,9 @@ RUN printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npm-cli.js 
     printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npx-cli.js "$@"\n' > /usr/local/bin/npx && \
     chmod +x /usr/local/bin/npm /usr/local/bin/npx
 
-RUN curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip && \
+RUN curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaMono.zip -o /tmp/CascadiaMono.zip && \
     mkdir -p /usr/share/fonts && \
-    unzip -o /tmp/CascadiaCode.zip -d /usr/share/fonts/CascadiaCode && \
+    unzip -o /tmp/CascadiaMono.zip -d /usr/share/fonts/CascadiaMono && \
     fc-cache -fv
 
 USER coder

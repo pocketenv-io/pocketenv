@@ -27,7 +27,12 @@ export async function listVolumes(sandboxId: string) {
   );
 
   const table = new CliTable3({
-    head: [c.primary("NAME"), c.primary("PATH"), c.primary("CREATED AT")],
+    head: [
+      c.primary("ID"),
+      c.primary("NAME"),
+      c.primary("PATH"),
+      c.primary("CREATED AT"),
+    ],
     chars: {
       top: "",
       "top-mid": "",
@@ -53,7 +58,8 @@ export async function listVolumes(sandboxId: string) {
 
   for (const volume of response.data.volumes) {
     table.push([
-      c.secondary(volume.name),
+      c.secondary(volume.id),
+      volume.name,
       volume.path,
       dayjs(volume.createdAt).fromNow(),
     ]);
@@ -69,15 +75,49 @@ export async function createVolume(
 ) {
   const token = await getAccessToken();
 
-  consola.success(
-    `Volume ${chalk.rgb(0, 232, 198)(name)} successfully mounted in sandbox ${chalk.rgb(0, 232, 198)(sandbox)} at path ${chalk.rgb(0, 232, 198)(path)}`,
-  );
+  try {
+    await client.post(
+      "/xrpc/io.pocketenv.volume.addVolume",
+      {
+        volume: {
+          sandbox,
+          name,
+          path,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+        },
+      },
+    );
+
+    consola.success(
+      `Volume ${chalk.rgb(0, 232, 198)(name)} successfully mounted in sandbox ${chalk.rgb(0, 232, 198)(sandbox)} at path ${chalk.rgb(0, 232, 198)(path)}`,
+    );
+  } catch (error) {
+    consola.error("Failed to create volume:", error);
+  }
 }
 
-export async function deleteVolume(sandbox: string, name: string) {
+export async function deleteVolume(id: string) {
   const token = await getAccessToken();
 
+  try {
+    await client.post(`/xrpc/io.pocketenv.volume.deleteVolume`, undefined, {
+      params: {
+        id,
+      },
+      headers: {
+        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+      },
+    });
+  } catch (error) {
+    consola.error(`Failed to delete volume: ${error}`);
+    return;
+  }
+
   consola.success(
-    `Volume ${chalk.rgb(0, 232, 198)(name)} successfully deleted from sandbox ${chalk.rgb(0, 232, 198)(sandbox)}`,
+    `Volume ${chalk.rgb(0, 232, 198)(id)} successfully deleted from sandbo}`,
   );
 }

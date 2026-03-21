@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { env } from "../lib/env";
 import encrypt from "../lib/sodium";
+import { c } from "../theme";
 
 dayjs.extend(relativeTime);
 
@@ -41,7 +42,7 @@ export async function listSecrets(sandbox: string) {
   );
 
   const table = new Table({
-    head: [chalk.cyan("ID"), chalk.cyan("NAME"), chalk.cyan("CREATED AT")],
+    head: [c.primary("ID"), c.primary("NAME"), c.primary("CREATED AT")],
     chars: {
       top: "",
       "top-mid": "",
@@ -67,8 +68,8 @@ export async function listSecrets(sandbox: string) {
 
   for (const secret of response.data.secrets) {
     table.push([
-      chalk.greenBright(secret.id),
-      chalk.greenBright(secret.name),
+      c.secondary(secret.id),
+      c.highlight(secret.name),
       dayjs(secret.createdAt).fromNow(),
     ]);
   }

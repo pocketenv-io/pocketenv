@@ -167,10 +167,7 @@ file
   .command("put")
   .argument("<sandbox>", "the sandbox to put the file in")
   .argument("<path>", "the remote path to upload the file to")
-  .option(
-    "--local-path, -f <localPath>",
-    "the local path of the file to upload",
-  )
+  .argument("[localPath]", "the local path of the file to upload")
   .description("upload a file to the given sandbox")
   .action(putFile);
 

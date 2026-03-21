@@ -6,9 +6,7 @@ import secrets from "./secrets";
 const sandboxSecrets = pgTable(
   "sandbox_secrets",
   {
-    id: text("id")
-      .primaryKey()
-      .default(sql`xata_id()`),
+    id: text("id").primaryKey().default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id),

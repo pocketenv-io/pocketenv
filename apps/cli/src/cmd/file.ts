@@ -8,15 +8,66 @@ import { env } from "../lib/env";
 import CliTable3 from "cli-table3";
 import type { File } from "../types/file";
 import { c } from "../theme";
+import { editor } from "@inquirer/prompts";
+import fs from "fs/promises";
+import path from "path";
+import encrypt from "../lib/sodium";
 
 dayjs.extend(relativeTime);
 
-export async function putFile(sandbox: string, path: string) {
+export async function putFile(
+  sandbox: string,
+  remotePath: string,
+  localPath?: string,
+) {
   const token = await getAccessToken();
 
-  consola.success(
-    `File ${chalk.rgb(0, 232, 198)(path)} successfully created in sandbox ${chalk.rgb(0, 232, 198)(sandbox)}`,
-  );
+  let content: string;
+  if (!process.stdin.isTTY) {
+    const chunks: Buffer[] = [];
+    for await (const chunk of process.stdin) chunks.push(chunk);
+    content = Buffer.concat(chunks).toString().trim();
+  } else if (localPath) {
+    const resolvedPath = path.resolve(localPath);
+    try {
+      await fs.access(resolvedPath);
+    } catch (err) {
+      consola.error(`No such file: ${chalk.redBright(localPath)}`);
+      process.exit(1);
+    }
+    content = await fs.readFile(resolvedPath, "utf-8");
+  } else {
+    content = (
+      await editor({
+        message: "File content (opens in $EDITOR):",
+        waitForUserInput: false,
+      })
+    ).trim();
+  }
+
+  try {
+    await client.post(
+      "/xrpc/io.pocketenv.file.addFile",
+      {
+        file: {
+          sandbox,
+          path,
+          content: await encrypt(content),
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+        },
+      },
+    );
+
+    consola.success(
+      `File ${chalk.rgb(0, 232, 198)(remotePath)} successfully created in sandbox ${chalk.rgb(0, 232, 198)(sandbox)}`,
+    );
+  } catch (error) {
+    consola.error(`Failed to create file: ${error}`);
+  }
 }
 
 export async function listFiles(sandboxId: string) {
@@ -70,10 +121,22 @@ export async function listFiles(sandboxId: string) {
   consola.log(table.toString());
 }
 
-export async function deleteFile(sandbox: string, id: string) {
+export async function deleteFile(id: string) {
   const token = await getAccessToken();
 
-  consola.success(
-    `File ${chalk.rgb(0, 232, 198)(id)} successfully deleted from sandbox ${chalk.rgb(0, 232, 198)(sandbox)}`,
-  );
+  try {
+    await client.post(`/xrpc/io.pocketenv.file.deleteFile`, undefined, {
+      params: {
+        id,
+      },
+      headers: {
+        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+      },
+    });
+    consola.success(
+      `File ${chalk.rgb(0, 232, 198)(id)} successfully deleted from sandbox`,
+    );
+  } catch (error) {
+    consola.error(`Failed to delete file: ${error}`);
+  }
 }

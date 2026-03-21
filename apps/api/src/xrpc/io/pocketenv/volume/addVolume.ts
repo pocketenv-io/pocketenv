@@ -1,6 +1,6 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import type { Context } from "context";
-import { eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type { HandlerInput } from "lexicon/types/io/pocketenv/volume/addVolume";
 import sandboxVolumes from "schema/sandbox-volumes";
@@ -14,6 +14,7 @@ import {
 } from "unique-username-generator";
 import { consola } from "consola";
 import { createAgent } from "lib/agent";
+import users from "schema/users";
 
 export default function (server: Server, ctx: Context) {
   const addVolume = async (input: HandlerInput, auth: HandlerAuth) => {
@@ -60,15 +61,36 @@ export default function (server: Server, ctx: Context) {
         return;
       }
 
-      await tx
-        .insert(sandboxVolumes)
-        .values({
-          volumeId: volume.id,
-          sandboxId: input.body.volume.sandboxId,
-          path: input.body.volume.path,
-          name: input.body.volume.name,
-        })
-        .execute();
+      if (input.body.volume.sandboxId) {
+        const [sandbox] = await tx
+          .select()
+          .from(sandboxes)
+          .leftJoin(users, eq(sandboxes.userId, users.id))
+          .where(
+            and(
+              eq(users.did, auth.credentials.did),
+              or(
+                eq(sandboxes.id, input.body.volume.sandboxId),
+                eq(sandboxes.name, input.body.volume.sandboxId),
+              ),
+            ),
+          )
+          .execute();
+
+        if (!sandbox) {
+          throw new XRPCError(404, "Sandbox not found");
+        }
+
+        await tx
+          .insert(sandboxVolumes)
+          .values({
+            volumeId: volume.id,
+            sandboxId: sandbox.sandboxes.id,
+            path: input.body.volume.path,
+            name: input.body.volume.name,
+          })
+          .execute();
+      }
     });
 
     if (input.body.volume.sandboxId) {

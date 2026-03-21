@@ -120,6 +120,7 @@ program
     }
     return port;
   })
+  .argument("[description]", "an optional description for the exposed port")
   .description("expose a port from the given sandbox to the internet")
   .action(exposePort);
 

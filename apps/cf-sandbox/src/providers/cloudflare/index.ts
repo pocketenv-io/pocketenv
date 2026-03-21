@@ -134,7 +134,11 @@ export class CloudflareSandbox implements BaseSandbox {
   }
 
   async unexpose(port: number): Promise<void> {
-    await this.sandbox.unexposePort(port);
+    try {
+      await this.sandbox.unexposePort(port);
+    } catch (e) {
+      console.log("Failed to unexpose port", e);
+    }
   }
 }
 

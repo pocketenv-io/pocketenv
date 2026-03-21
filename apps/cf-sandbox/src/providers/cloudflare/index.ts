@@ -150,12 +150,6 @@ export class CloudflareSandbox implements BaseSandbox {
   async exposeVscode(hostname: string): Promise<string | null> {
     await this
       .sh`type code-server || curl -fsSL https://code-server.dev/install.sh | sh`;
-    await this
-      .sh`code-server --install-extension catppuccin.catppuccin-vsc --force`;
-    await this
-      .sh`code-server --install-extension catppuccin.catppuccin-vsc-icons --force`;
-    await this
-      .sh`curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip && unzip -o /tmp/CascadiaCode.zip -d /usr/local/share/fonts/CascadiaCode && fc-cache -fv || true`;
     await this.writeFile(
       "/root/.local/share/code-server/User/settings.json",
       JSON.stringify(
@@ -173,6 +167,10 @@ export class CloudflareSandbox implements BaseSandbox {
     );
     await this.sandbox.startProcess(
       `curl http://localhost:${VSCODE_PORT} || code-server --bind-addr 0.0.0.0:${VSCODE_PORT} --auth none`,
+    );
+
+    await this.sandbox.startProcess(
+      `test -f /root/.vscode-setup-done || (code-server --install-extension catppuccin.catppuccin-vsc --force && code-server --install-extension catppuccin.catppuccin-vsc-icons --force && curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip && unzip -o /tmp/CascadiaCode.zip -d /usr/local/share/fonts/CascadiaCode && fc-cache -fv && touch /root/.vscode-setup-done) || true`,
     );
 
     await this.retryWithBackoff(

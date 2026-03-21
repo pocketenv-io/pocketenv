@@ -29,7 +29,7 @@ export async function exposePort(
     );
 
     if (response.data.previewUrl) {
-      consola.log(`Preview URL: ${c.secondary(response.data.previewUrl)}`);
+      consola.success(`Preview URL: ${c.secondary(response.data.previewUrl)}`);
     }
   } catch (error) {
     consola.error("Failed to expose port:", error);

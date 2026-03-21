@@ -23,7 +23,9 @@ RUN apk update && apk add --no-cache \
     openssl \
     ca-certificates \
     tzdata \
-    gcompat
+    gcompat \
+    alpine-sdk \
+    krb5-dev
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
     echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \

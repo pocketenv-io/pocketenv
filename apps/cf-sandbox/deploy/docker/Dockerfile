@@ -51,16 +51,13 @@ COPY banner.sh /usr/bin
 RUN chmod a+x /usr/bin/banner.sh && \
     echo 'source /root/.bashrc' >> ~/.profile
 
-FROM node:22-alpine AS node
+COPY --from=docker.io/library/node:22-alpine /usr/local/bin/node /usr/local/bin/node
 
-COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=docker.io/library/node:22-alpine /usr/local/bin/npm /usr/local/bin/npm
 
-COPY --from=node /usr/local/bin/npm /usr/local/bin/npm
+COPY --from=docker.io/library/node:22-alpine /usr/local/bin/npx /usr/local/bin/npx
 
-COPY --from=node /usr/local/bin/npx /usr/local/bin/npx
-
-COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
-
+COPY --from=docker.io/library/node:22-alpine /usr/local/lib/node_modules /usr/local/lib/node_modules\
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh && \
     code-server --install-extension bastndev.lynx-theme --force && \

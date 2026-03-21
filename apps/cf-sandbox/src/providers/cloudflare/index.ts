@@ -148,40 +148,33 @@ export class CloudflareSandbox implements BaseSandbox {
   }
 
   async exposeVscode(hostname: string): Promise<string | null> {
-    await this
-      .sh`type code-server || curl -fsSL https://code-server.dev/install.sh | sh`;
-    Promise.all([
-      this.writeFile(
-        "/root/.local/share/code-server/User/settings.json",
-        JSON.stringify(
-          {
-            "workbench.colorTheme": "Catppuccin Mocha",
-            "workbench.iconTheme": "catppuccin-mocha",
-            "editor.fontFamily": "'CaskaydiaCove Nerd Font', monospace",
-            "editor.fontSize": 14,
-            "terminal.integrated.fontFamily":
-              "'CaskaydiaCove Nerd Font Mono', monospace",
-          },
-          null,
-          2,
-        ),
-      ),
-      this.sandbox.startProcess(
-        `test -f /root/.vscode-setup-done || (code-server --install-extension catppuccin.catppuccin-vsc --force && code-server --install-extension catppuccin.catppuccin-vsc-icons --force && curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip && unzip -o /tmp/CascadiaCode.zip -d /usr/local/share/fonts/CascadiaCode && fc-cache -fv && touch /root/.vscode-setup-done) || true`,
-      ),
-    ])
-      .then(() => {
-        console.log("VSCode setup complete");
-      })
-      .catch((e) => {
-        console.log("Failed to setup VSCode", e);
-      });
-
-    await this.sandbox.startProcess(
-      `curl http://localhost:${VSCODE_PORT} || code-server --bind-addr 0.0.0.0:${VSCODE_PORT} --auth none`,
-    );
-
     try {
+      await this
+        .sh`type code-server || curl -fsSL https://code-server.dev/install.sh | sh`;
+      await Promise.all([
+        this.writeFile(
+          "/root/.local/share/code-server/User/settings.json",
+          JSON.stringify(
+            {
+              "workbench.colorTheme": "6. KIROㅤㅤ(Lynx Theme)",
+              "workbench.iconTheme": "lynx-pro-light",
+              "editor.fontFamily": "'CaskaydiaCove Nerd Font', monospace",
+              "editor.fontSize": 14,
+              "terminal.integrated.fontFamily":
+                "'CaskaydiaCove Nerd Font Mono', monospace",
+            },
+            null,
+            2,
+          ),
+        ),
+        this
+          .sh`test -f /root/.vscode-setup-done || (code-server --install-extension bastndev.lynx-theme --force && curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip && unzip -o /tmp/CascadiaCode.zip -d /usr/local/share/fonts/CascadiaCode && fc-cache -fv && touch /root/.vscode-setup-done) || true`,
+      ]);
+
+      await this.sandbox.startProcess(
+        `curl http://localhost:${VSCODE_PORT} || code-server --bind-addr 0.0.0.0:${VSCODE_PORT} --auth none`,
+      );
+
       const { url } = await this.sandbox.exposePort(VSCODE_PORT, {
         hostname: hostname.split(".").slice(-2).join("."),
         token: `vsc_${env.PREVIEW_TOKEN}`,

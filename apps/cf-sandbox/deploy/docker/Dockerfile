@@ -57,7 +57,7 @@ COPY --from=docker.io/library/node:22-alpine /usr/local/bin/npm /usr/local/bin/n
 
 COPY --from=docker.io/library/node:22-alpine /usr/local/bin/npx /usr/local/bin/npx
 
-COPY --from=docker.io/library/node:22-alpine /usr/local/lib/node_modules /usr/local/lib/node_modules\
+COPY --from=docker.io/library/node:22-alpine /usr/local/lib/node_modules /usr/local/lib/node_modules
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh && \
     code-server --install-extension bastndev.lynx-theme --force && \

@@ -159,7 +159,7 @@ export class CloudflareSandbox implements BaseSandbox {
       console.log("Failed to expose vscode port", e);
     }
 
-    return "";
+    return null;
   }
 
   async unexposeVscode(): Promise<void> {

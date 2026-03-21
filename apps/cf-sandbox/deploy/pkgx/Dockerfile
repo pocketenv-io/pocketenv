@@ -14,7 +14,8 @@ RUN apt-get update -y && apt-get install -y \
     wget \
     wget \
     locales-all \
-    s3fs
+    s3fs \
+    fontconfig
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8

@@ -20,7 +20,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sed \
     procps \
     wget \
-    locales-all
+    locales-all \
+    s3fs \
+    fontconfig
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8

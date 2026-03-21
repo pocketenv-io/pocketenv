@@ -2,7 +2,7 @@ FROM docker:dind-rootless
 
 USER root
 
-RUN apk update && apk add --no-cache bash curl s3fs-fuse
+RUN apk update && apk add --no-cache bash curl s3fs-fuse unzip git fontconfig
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
     echo 'export PATH=$PATH:/root/.atuin/bin' >> ~/.bashrc && \
@@ -29,6 +29,13 @@ COPY banner.sh /usr/bin
 
 RUN chmod a+x /usr/bin/banner.sh && \
     echo 'source /root/.bashrc' >> ~/.profile
+
+RUN curl -fsSL https://code-server.dev/install.sh | sh && \
+    code-server --install-extension bastndev.lynx-theme --force && \
+    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip && \
+    unzip -o /tmp/CascadiaCode.zip -d /usr/local/share/fonts/CascadiaCode && \
+    fc-cache -fv && \
+    touch /root/.vscode-setup-done
 
 WORKDIR /workspace
 

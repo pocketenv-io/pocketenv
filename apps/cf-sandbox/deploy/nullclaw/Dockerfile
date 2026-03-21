@@ -89,6 +89,13 @@ COPY banner.sh /root/.local/bin
 
 RUN chmod a+x /root/.local/bin/banner.sh
 
+RUN curl -fsSL https://code-server.dev/install.sh | sh && \
+    code-server --install-extension bastndev.lynx-theme --force && \
+    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip && \
+    unzip -o /tmp/CascadiaCode.zip -d /usr/local/share/fonts/CascadiaCode && \
+    fc-cache -fv && \
+    touch /root/.vscode-setup-done
+
 WORKDIR /workspace
 
 ENV COMMAND_TIMEOUT_MS 300000

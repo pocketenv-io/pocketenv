@@ -152,7 +152,7 @@ export class CloudflareSandbox implements BaseSandbox {
     try {
       const { url } = await this.sandbox.exposePort(VSCODE_PORT, {
         hostname: hostname.split(".").slice(-2).join("."),
-        token: `${crypto.randomBytes(16).toString("hex")}_${env.PREVIEW_TOKEN}`,
+        token: `vsc_${env.PREVIEW_TOKEN}`,
       });
       return url;
     } catch (e) {

@@ -1,70 +1,77 @@
-FROM docker:dind-rootless
+FROM codercom/code-server:latest
 
 USER root
 
-RUN apk update && apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     curl \
-    s3fs-fuse \
+    s3fs \
     unzip \
     git \
     fontconfig \
     python3 \
     make \
     g++ \
-    pkgconf \
-    libc6-compat \
-    libstdc++ \
-    libgcc \
-    icu-libs \
-    zlib \
-    libffi \
-    openssl-dev \
+    pkg-config \
+    libstdc++-12-dev \
+    libicu-dev \
+    zlib1g \
+    libffi-dev \
+    libssl-dev \
     openssl \
     ca-certificates \
     tzdata \
-    gcompat \
-    alpine-sdk \
-    krb5-dev
+    build-essential \
+    libkrb5-dev \
+    uidmap \
+    fuse-overlayfs \
+    dbus-user-session \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://get.docker.com | sh && \
+    apt-get install -y --no-install-recommends docker-ce-rootless-extras && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN echo "coder:100000:65536" >> /etc/subuid && \
+    echo "coder:100000:65536" >> /etc/subgid
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
-    echo 'export PATH=$PATH:/root/.atuin/bin:/root/.local/bin' >> ~/.bashrc && \
+    echo 'export PATH=$PATH:/root/.atuin/bin:/root/.local/bin:/root/.npm-global/bin' >> ~/.bashrc && \
     echo 'eval "$(atuin init bash)"' >> ~/.bashrc || true
 
-# Use the musl build so it runs on Alpine-based docker:dind-rootless
-COPY --from=docker.io/cloudflare/sandbox:0.7.8-musl /container-server/sandbox /sandbox
-COPY --from=docker.io/cloudflare/sandbox:0.7.8-musl /usr/lib/libstdc++.so.6 /usr/lib/libstdc++.so.6
-COPY --from=docker.io/cloudflare/sandbox:0.7.8-musl /usr/lib/libgcc_s.so.1 /usr/lib/libgcc_s.so.1
-COPY --from=docker.io/cloudflare/sandbox:0.7.8-musl /bin/bash /bin/bash
-COPY --from=docker.io/cloudflare/sandbox:0.7.8-musl /usr/lib/libreadline.so.8 /usr/lib/libreadline.so.8
-COPY --from=docker.io/cloudflare/sandbox:0.7.8-musl /usr/lib/libreadline.so.8.2 /usr/lib/libreadline.so.8.2
+COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbox
 
-# Create startup script that starts dockerd with
-# iptables disabled, waits for readiness, then keeps running
-RUN printf '#!/bin/sh\n\
-    set -eu\n\
-    dockerd-entrypoint.sh dockerd --iptables=false --ip6tables=false &\n\
-    until docker version >/dev/null 2>&1; do sleep 0.2; done\n\
-    echo "Docker is ready"\n\
-    wait\n' > /home/rootless/boot-docker-for-dind.sh && chmod +x /home/rootless/boot-docker-for-dind.sh
+RUN mkdir -p /home/coder && \
+    printf '#!/bin/sh\n\
+set -eu\n\
+export XDG_RUNTIME_DIR=/run/user/1000\n\
+export DOCKER_HOST=unix:///run/user/1000/docker.sock\n\
+mkdir -p "$XDG_RUNTIME_DIR"\n\
+su -s /bin/sh coder -c "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR dockerd-rootless.sh --iptables=false --ip6tables=false" &\n\
+until DOCKER_HOST="$DOCKER_HOST" docker version >/dev/null 2>&1; do sleep 0.2; done\n\
+echo "Docker is ready"\n\
+wait\n' > /home/coder/boot-docker-for-dind.sh && chmod +x /home/coder/boot-docker-for-dind.sh
 
 COPY banner.sh /usr/bin
 
 RUN chmod a+x /usr/bin/banner.sh && \
     echo 'source /root/.bashrc' >> ~/.profile
 
-COPY --from=docker.io/library/node:22-alpine /usr/local/bin/node /usr/local/bin/node
+COPY --from=docker.io/library/node:22 /usr/local/bin/node /usr/local/bin/node
 
-COPY --from=docker.io/library/node:22-alpine /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --from=docker.io/library/node:22 /usr/local/include /usr/local/include
+
+COPY --from=docker.io/library/node:22 /usr/local/lib/node_modules /usr/local/lib/node_modules
 
 RUN printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npm-cli.js "$@"\n' > /usr/local/bin/npm && \
     printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npx-cli.js "$@"\n' > /usr/local/bin/npx && \
     chmod +x /usr/local/bin/npm /usr/local/bin/npx
 
-ENV PATH="/root/.local/bin:${PATH}"
+RUN mkdir -p /root/.npm-global && npm config set prefix "/root/.npm-global"
 
-RUN curl -fsSL https://code-server.dev/install.sh | sh && \
-    code-server --install-extension bastndev.lynx-theme --force && \
+ENV PATH "/root/.local/bin:/root/.npm-global/bin:${PATH}"
+
+RUN code-server --install-extension bastndev.lynx-theme --force && \
     curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaCode.zip -o /tmp/CascadiaCode.zip && \
     mkdir -p /usr/share/fonts && \
     unzip -o /tmp/CascadiaCode.zip -d /usr/share/fonts/CascadiaCode && \
@@ -80,4 +87,4 @@ EXPOSE 3000/tcp
 
 ENTRYPOINT ["/sandbox"]
 
-CMD ["/home/rootless/boot-docker-for-dind.sh"]
+CMD ["/home/coder/boot-docker-for-dind.sh"]

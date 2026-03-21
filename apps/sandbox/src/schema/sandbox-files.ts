@@ -8,7 +8,7 @@ const sandboxFiles = pgTable(
   {
     id: text("id")
       .primaryKey()
-      .default(sql`xata_id()`),
+      .default(sql`file_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id),

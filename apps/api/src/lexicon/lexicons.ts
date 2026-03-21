@@ -1714,7 +1714,7 @@ export const schemaDict = {
                 type: "integer",
                 description: "The port number to unexpose.",
                 maximum: 65535,
-                minimum: 1025,
+                minimum: 1024,
               },
             },
           },

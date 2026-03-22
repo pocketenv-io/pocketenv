@@ -262,10 +262,14 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     .update(sandboxes)
     .set({ sandboxId })
     .where(
-      or(
-        eq(sandboxes.id, c.req.param("sandboxId")),
-        eq(sandboxes.sandboxId, c.req.param("sandboxId")),
-        eq(sandboxes.name, c.req.param("sandboxId")),
+      and(
+        or(
+          eq(sandboxes.id, c.req.param("sandboxId")),
+          eq(sandboxes.sandboxId, c.req.param("sandboxId")),
+          eq(sandboxes.name, c.req.param("sandboxId")),
+        ),
+        isNull(sandboxes.sandboxId),
+        eq(sandboxes.provider, "cloudflare"),
       ),
     )
     .returning()

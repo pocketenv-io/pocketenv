@@ -27,8 +27,19 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fuse-overlayfs \
     dbus-user-session \
     sudo \
+    tmux \
+    gawk \
+    sed \
+    procps \
+    wget \
+    locales-all \
+    gnupg \
     && rm -rf /var/lib/apt/lists/* \
     && echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
+
+ENV LC_ALL en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US.UTF-8
 
 RUN curl -fsSL https://get.docker.com | sh && \
     apt-get install -y --no-install-recommends docker-ce-rootless-extras && \
@@ -67,6 +78,37 @@ RUN curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/
 
 USER coder
 
+RUN curl https://mise.run | sh && \
+    curl https://pkgx.sh | sh
+
+RUN curl -s https://ohmyposh.dev/install.sh | bash -s && \
+    curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee ~/.tokyonight_storm.omp.json >/dev/null && \
+    echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"' >> ~/.bashrc
+
+RUN case "${TARGETARCH}" in \
+    amd64) EZA_ARCH="x86_64-unknown-linux-musl" ;; \
+    arm64) EZA_ARCH="aarch64-unknown-linux-musl" ;; \
+    *) echo "Unsupported arch: ${TARGETARCH}" && exit 1 ;; \
+    esac && \
+    wget -qO /tmp/eza.tar.gz "https://github.com/eza-community/eza/releases/latest/download/eza_${EZA_ARCH}.tar.gz" && \
+    tar -xzf /tmp/eza.tar.gz -C ~/.local/bin && \
+    chmod +x ~/.local/bin/eza && \
+    rm /tmp/eza.tar.gz && \
+    echo 'alias ls="eza -l"' >> ~/.bashrc
+
+RUN curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key' | gpg --dearmor | sudo tee /etc/apt/keyrings/doppler.gpg >/dev/null \
+    && echo "deb [signed-by=/etc/apt/keyrings/doppler.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | sudo tee /etc/apt/sources.list.d/doppler-cli.list \
+    && sudo apt-get update && sudo apt-get install -y doppler && doppler --version
+
+RUN curl -fsSL https://tailscale.com/install.sh | sh
+
+RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git && \
+    mkdir -p ~/.local && \
+    make -C ble.sh install PREFIX=/home/coder/.local && \
+    rm -rf ble.sh && \
+    echo 'export LANG=en_US.UTF-8' >> ~/.bashrc && \
+    echo 'source -- ~/.local/share/blesh/ble.sh' >> ~/.bashrc
+
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
     echo 'export PATH=$PATH:$HOME/.atuin/bin:$HOME/.local/bin:$HOME/.npm-global/bin' >> ~/.bashrc && \
     echo 'eval "$(atuin init bash)"' >> ~/.bashrc || true
@@ -74,6 +116,12 @@ RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
 RUN mkdir -p ~/.npm-global && npm config set prefix "~/.npm-global"
 
 ENV PATH "/home/coder/.local/bin:/home/coder/.npm-global/bin:${PATH}"
+
+RUN npm install -g pm2
+
+RUN curl -fsSL https://deno.land/install.sh | sh
+
+RUN curl -fsSL https://bun.sh/install | bash
 
 RUN code-server --install-extension bastndev.lynx-theme --force && \
     touch ~/.vscode-setup-done

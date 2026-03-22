@@ -32,7 +32,7 @@ import { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import jwt from "@tsndr/cloudflare-worker-jwt";
 import { consola } from "consola";
 import decrypt from "./lib/decrypt";
-import { CloudflareSandbox } from "./providers/cloudflare";
+import crypto from "node:crypto";
 
 type Bindings = {
   Sandbox: DurableObjectNamespace<Sandbox<Env>>;
@@ -174,8 +174,10 @@ app.post("/v1/sandboxes", async (c) => {
         await saveVariables(tx, record!, { variables: params.variables });
       }
 
-      const sandbox = await createSandbox(params.provider, {
-        id: record!.name,
+      const sandboxId = crypto.randomBytes(32).toString("hex");
+
+      await createSandbox(params.provider, {
+        id: sandboxId,
         keepAlive: params.keepAlive,
         sleepAfter: params.sleepAfter,
       });
@@ -184,7 +186,7 @@ app.post("/v1/sandboxes", async (c) => {
         .update(sandboxes)
         .set({
           status: "RUNNING",
-          sandboxId: record!.name,
+          sandboxId,
           startedAt: new Date(),
         })
         .where(eq(sandboxes.id, record!.id))
@@ -252,7 +254,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
   try {
     sandbox = await createSandbox("cloudflare", {
-      id: record.name,
+      id: record.sandboxId!,
       memory: "4GiB",
     });
 
@@ -423,7 +425,7 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
     let sandbox: BaseSandbox | null = null;
 
     sandbox = await createSandbox("cloudflare", {
-      id: record.name,
+      id: record.sandboxId!,
     });
 
     if (!sandbox) {
@@ -473,7 +475,7 @@ app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
     let sandbox: BaseSandbox | null = null;
 
     sandbox = await createSandbox("cloudflare", {
-      id: record.name,
+      id: record.sandboxId!,
     });
 
     const { command } = await c.req.json();
@@ -504,7 +506,7 @@ app.delete("/v1/sandboxes/:sandboxId", async (c) => {
     let sandbox: BaseSandbox | null = null;
 
     sandbox = await createSandbox("cloudflare", {
-      id: record.name,
+      id: record.sandboxId!,
     });
 
     await sandbox.delete();
@@ -582,7 +584,7 @@ app.post("/v1/sandboxes/:sandboxId/ports", async (c) => {
     let sandbox: BaseSandbox | null = null;
 
     sandbox = await createSandbox("cloudflare", {
-      id: record.name,
+      id: record.sandboxId!,
     });
 
     const { port } = await c.req.json<{ port: number }>();
@@ -623,7 +625,7 @@ app.delete("/v1/sandboxes/:sandboxId/ports", async (c) => {
     let sandbox: BaseSandbox | null = null;
 
     sandbox = await createSandbox("cloudflare", {
-      id: record.name,
+      id: record.sandboxId!,
     });
 
     const port = parseInt(c.req.query("port") || "0", 10);
@@ -663,7 +665,7 @@ app.post("/v1/sandboxes/:sandboxId/vscode", async (c) => {
     let sandbox: BaseSandbox | null = null;
 
     sandbox = await createSandbox("cloudflare", {
-      id: record.name,
+      id: record.sandboxId!,
     });
 
     const { hostname } = new URL(c.req.url);
@@ -697,7 +699,7 @@ app.delete("/v1/sandboxes/:sandboxId/vscode", async (c) => {
     let sandbox: BaseSandbox | null = null;
 
     sandbox = await createSandbox("cloudflare", {
-      id: record.name,
+      id: record.sandboxId!,
     });
 
     await sandbox.unexposeVscode();

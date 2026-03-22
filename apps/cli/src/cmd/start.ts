@@ -4,12 +4,14 @@ import getAccessToken from "../lib/getAccessToken";
 import { client } from "../client";
 import { env } from "../lib/env";
 import connectToSandbox from "./ssh";
+import { expandRepo } from "../lib/expandRepo";
 
 async function start(
   name: string,
   { ssh, repo }: { ssh?: boolean; repo?: string },
 ) {
   const token = await getAccessToken();
+  if (repo) repo = expandRepo(repo);
 
   try {
     await client.post(

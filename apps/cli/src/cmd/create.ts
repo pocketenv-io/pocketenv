@@ -4,6 +4,7 @@ import getAccessToken from "../lib/getAccessToken";
 import type { Sandbox } from "../types/sandbox";
 import connectToSandbox from "./ssh";
 import { c } from "../theme";
+import { expandRepo } from "../lib/expandRepo";
 
 async function createSandbox(
   name: string,
@@ -20,6 +21,7 @@ async function createSandbox(
   },
 ) {
   const token = await getAccessToken();
+  if (repo) repo = expandRepo(repo);
 
   if (["deno", "vercel", "daytona"].includes(provider || "")) {
     consola.error(

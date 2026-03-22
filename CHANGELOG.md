@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.1] - 2026-03-22
+
+### Added
+
+- **Wasmer sandbox deployment**: New Wasmer runtime provider.
+- **Wasmer runtime in sandbox config**: Added Wasmer as a supported runtime option in sandbox configuration.
+- **`pocketenv exec` command**: New CLI command to execute commands inside a running sandbox via the exec RPC endpoint.
+- **Sandbox exec API**: New API endpoint for executing commands in sandboxes.
+- **Specify repo when starting sandbox**: The `start` command now accepts a `--repo` flag to clone a repository when starting a sandbox.
+- **Zoxide**: Added `zoxide` to sandbox images for smart directory jumping.
+- **`~/.local/bin` in PATH**: Sandbox images now include `~/.local/bin` in `PATH`.
+- **Deno in PATH**: Deno binary is now correctly added to `PATH` in sandbox Dockerfiles.
+- **`TARGETARCH` build arg**: `cf-sandbox` Dockerfile now uses `TARGETARCH` for multi-architecture builds.
+
+### Changed
+
+- **Enhanced cf-sandbox Dockerfile**: Added more developer tools to the Cloudflare sandbox image.
+- **`code-server` settings path**: Now uses `$HOME` for the code-server settings path for correctness across users.
+- **Cloudflare sandbox wrangler instances**: Switched to `standard-3` instance type.
+- **CI: Bun install via script**: GitHub Actions workflows now install Bun via the official install script instead of a pinned action version.
+- **Sandbox ID generation**: Sandbox IDs are now generated using `getRandomValues` (16-byte, random) for better uniqueness.
+- **Sandbox creation**: Uses `record.sandboxId` when creating sandbox records.
+- **Sandbox provider validation**: Cloudflare provider is now required and `sandboxId` must be empty on creation.
+- **Sandbox run validation**: Sandbox must be in RUNNING state before a run can be created.
+- **Sandbox lookup**: Uses `sandboxId` field consistently when retrieving sandboxes.
+- **Sandbox start order**: Sandbox is now started before fetching params and cloning the repository.
+- **Instance resources**: Sandbox configs now specify explicit instance resource requirements.
+
+### Fixed
+
+- Fixed newline not being appended to stdout/stderr when missing.
+- Fixed duplicate sandbox port inserts.
+
+---
+
 ## [0.3.0] - 2026-03-22
 
 ### Added

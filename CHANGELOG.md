@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.2] - 2026-03-22
+
+### Added
+
+- **Shorthand repo names**: The `--repo` flag in `create` and `start` commands now accepts shorthand notation (`github:owner/repo`, `tangled:owner/repo`) in addition to full URLs.
+
+---
+
 ## [0.3.1] - 2026-03-22
 
 ### Added

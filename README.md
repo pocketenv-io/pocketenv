@@ -1,110 +1,104 @@
 ![](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExb25lY3R1dmVyczRwMmE5a204cmlkcjVmazluZ3V3MDE3YzNyMW1oaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uWLJEGCSWdmvK/giphy.gif)
 
-
 [![discord](https://img.shields.io/discord/1270021300240252979?label=discord&logo=discord&color=5865F2)](https://discord.gg/9ada4pFUFS)
 [![Deploy Cloudflare Worker](https://github.com/pocketenv-io/pocketenv/actions/workflows/deploy.yml/badge.svg)](https://github.com/pocketenv-io/pocketenv/actions/workflows/deploy.yml)
 
-Pocketenv is an open, interoperable sandbox platform for agents and humans.
-Run code, test ideas, and prototype safely in isolated environments — without worrying about vendor lock-in.
+**Pocketenv** is an open sandbox platform — for agents, for tinkerers, for anyone tired of being locked into one provider's ecosystem.
+
+Spin up isolated environments, run code, test weird ideas. No drama.
 
 > [!NOTE]
-> **Still in development**
+> **heads up — still in early dev**
 >
-> This project is in early development. Expect breaking changes and rapid iteration.
+> Things will break. APIs will change. We move fast. You've been warned (and we appreciate your patience).
 
 ![Made with VHS](https://vhs.charm.sh/vhs-1y1YqClWEmOwPD3MFwp40V.gif)
- 
+
 ![](./preview.png)
 
-## 🚚 Installation (CLI)
+---
 
-With Bash:
+## Install
 
+**Bash:**
 ```sh
 curl -fsSL https://cli.pocketenv.io | bash
 ```
 
-With NPM:
-
+**npm:**
 ```sh
 npm install -g @pocketenv/cli
 ```
 
-With [Homebrew](https://brew.sh) (macOS/Linux):
-
+**Homebrew (macOS/Linux):**
 ```sh
 brew install pocketenv-io/tap/pocketenv
 ```
 
+---
 
-## 🤔 Why Pocketenv?
+## Why does this exist?
 
-Modern sandboxes are fragmented and vendor-specific. Each platform has its own API, its own format, and its own ecosystem.
+Honestly? Because every sandbox tool out there wants you to commit to their platform. Their API, their format, their rules. Switch providers and you're rewriting everything.
 
-Pocketenv solves this by providing:
-- A unified sandbox interface
-- Open, portable sandbox definitions
-- Vendor-agnostic execution
-- Interoperability via [AT Protocol](https://atproto.com) lexicons
-- A platform designed for both AI agents and humans
+Pocketenv is the escape hatch. One interface, multiple backends — Cloudflare, Daytona, Deno, Vercel, and more. Write once, run anywhere (for real this time).
 
-With Pocketenv, sandboxes become portable, shareable, and open.
+It also uses [AT Protocol](https://atproto.com) lexicons under the hood, which means sandbox definitions are open, portable, and not owned by anyone.
 
+---
 
-## 🚀 Pocketenv is right for you if
+## Is it for you?
 
-Pocketenv might be a great fit if you:
-- ✅ Want to spin up sandbox environments quickly without managing infrastructure.
-- ✅ Need isolated environments for AI agents, experiments, or automation.
-- ✅ Want to run code across multiple runtimes like Cloudflare Sandboxes, Daytona, Deno Sandbox ...
-- ✅ Prefer working from a simple CLI while still having remote compute power.
-- ✅ Need to manage environment variables, secrets, files, volumes, and SSH keys easily.
-- ✅ Are building AI tools, dev agents, or automation systems that require ephemeral environments.
-- ✅ Want a portable abstraction layer over different sandbox providers.
+Probably yes if any of these sound familiar:
 
-## ✨ Key Features
+- You keep spinning up environments and tearing them down manually
+- You're building AI agents that need a safe place to run code
+- You want to test untrusted code without torching your machine
+- You're sick of rewriting glue code every time you switch sandbox providers
+- You just want a clean CLI and a reliable environment, no infra headaches
 
-- **Secure Isolated Environments**  
-  Run commands, agents, and code safely inside isolated sandboxes with strong separation.
+---
 
-- **Vendor-Agnostic Abstraction**  
-  Run sandboxes transparently on Daytona, Cloudflare Sandbox, Vercel Sandbox, Deno Sandbox — and more coming.  
-  No provider lock-in.
+## What it can do
 
-- **Agent-Native Design**  
-  Built for modern AI workflows:  
-  - OpenClaw  
-  - Codex CLI  
-  - Claude Code  
-  - Gemini CLI  
-  - Copilot CLI  
-  - …and your custom agents
+**Run sandboxes on whatever backend you want**
+Daytona, Cloudflare Sandbox, Vercel Sandbox, Deno Sandbox — swap between them without changing your workflow.
 
-- **Open Sandbox Definitions via AT Protocol**  
-  Sandboxes defined with open lexicons and stored on [AT Protocol](https://atproto.com) PDS. Enables discoverable, shareable, versioned sandboxes and a growing community ecosystem.
+**Works with the AI tools you're already using**
+Claude Code, Codex CLI, Gemini CLI, Copilot, OpenClaw, your own agents — they all just work.
 
-## 💡 Example Use Cases
+**Handles the boring stuff**
+Env vars, secrets, files, volumes, SSH keys — managed cleanly so you don't have to think about it.
 
-- Prototype and run **OpenClaw** agents safely in isolated environments
-- Prototype AI agents in complete safety
-- Run Codex / Claude / Gemini / OpenClaw code in isolation
-- Securely test untrusted or third-party code
-- Share reproducible developer environments
-- Spin up temporary / ephemeral dev sandboxes
-- Provide sandbox infrastructure as a service for your application
+**Open sandbox definitions**
+Sandboxes are defined using open lexicons and stored on AT Protocol PDS. That means they're versioned, shareable, and actually portable.
 
-## 📚 Documentation
+---
 
-[View the full documentation](https://docs.pocketenv.io)
+## Things people use it for
 
-## ✍️ Feedback
+- Giving AI agents a safe place to run code (without the anxiety)
+- Sharing reproducible dev environments with teammates
+- Testing third-party or untrusted code in isolation
+- Quick throwaway sandboxes for experiments
+- Building internal tools that need ephemeral compute
 
-This repository is the central place to collect feedback and issues related to Pocketenv.
+---
 
-Please [**open an issue**](https://github.com/pocketenv-io/pocketenv/issues/new) if you want to leave feedback. Feel free to also join our [**Discord server**](https://discord.gg/9ada4pFUFS)
+## Docs
 
-## 🤝 Contributing
+Full docs over at [docs.pocketenv.io](https://docs.pocketenv.io)
 
-We would love to hear your feedback or suggestions. The best way to reach us is on [Discord](https://discord.gg/9ada4pFUFS).
+---
 
-We also welcome pull requests into this repo. See [CONTRIBUTING.md](CONTRIBUTING.md) for information on setting up this repo locally.
+## Feedback & bugs
+
+Open an [issue](https://github.com/pocketenv-io/pocketenv/issues/new) or come yell at us (nicely) on [Discord](https://discord.gg/9ada4pFUFS). We read everything.
+
+---
+
+## Contributing
+
+PRs are welcome. Come say hi on [Discord](https://discord.gg/9ada4pFUFS) first if you're planning something big — saves everyone time.
+
+Setup instructions are in [CONTRIBUTING.md](CONTRIBUTING.md).

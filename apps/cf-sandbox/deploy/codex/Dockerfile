@@ -91,6 +91,12 @@ RUN curl -fsSL https://code-server.dev/install.sh | sh && \
     fc-cache -fv && \
     touch /root/.vscode-setup-done
 
+RUN wget -qO /tmp/zoxide.tar.gz https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.9/zoxide-0.9.9-x86_64-unknown-linux-musl.tar.gz && \
+    tar -xzf /tmp/zoxide.tar.gz -C ~/.local/bin zoxide && \
+    chmod +x ~/.local/bin/zoxide && \
+    rm /tmp/zoxide.tar.gz && \
+    echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
+
 WORKDIR /workspace
 
 ENV COMMAND_TIMEOUT_MS 300000

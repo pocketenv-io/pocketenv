@@ -575,7 +575,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
     }
   }
 
-  const sandbox = getSandbox(c.env.Sandbox, record.name);
+  const sandbox = getSandbox(c.env.Sandbox, record.sandboxId!);
   const sessionId = c.req.query("session");
 
   try {

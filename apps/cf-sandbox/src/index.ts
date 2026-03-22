@@ -283,7 +283,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
   try {
     sandbox = await createSandbox("cloudflare", {
-      id: sandboxId,
+      id: record.sandboxId || sandboxId,
       memory: "4GiB",
     });
 

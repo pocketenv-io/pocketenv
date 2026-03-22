@@ -174,7 +174,10 @@ app.post("/v1/sandboxes", async (c) => {
         await saveVariables(tx, record!, { variables: params.variables });
       }
 
-      const sandboxId = crypto.randomBytes(16).toString("hex");
+      const sandboxId = Array.from(
+        crypto.getRandomValues(new Uint8Array(16)),
+        (b) => b.toString(16).padStart(2, "0"),
+      ).join("");
 
       await createSandbox(params.provider, {
         id: sandboxId,
@@ -246,6 +249,28 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     return c.json({ error: "Sandbox not found" }, 404);
   }
 
+  if (record.status === "RUNNING") {
+    return c.json({});
+  }
+
+  const sandboxId = Array.from(
+    crypto.getRandomValues(new Uint8Array(16)),
+    (b) => b.toString(16).padStart(2, "0"),
+  ).join("");
+
+  await c.var.db
+    .update(sandboxes)
+    .set({ sandboxId })
+    .where(
+      or(
+        eq(sandboxes.id, c.req.param("sandboxId")),
+        eq(sandboxes.sandboxId, c.req.param("sandboxId")),
+        eq(sandboxes.name, c.req.param("sandboxId")),
+      ),
+    )
+    .returning()
+    .execute();
+
   let sandbox: BaseSandbox | null = null;
 
   if (record.provider !== "cloudflare") {
@@ -254,7 +279,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
   try {
     sandbox = await createSandbox("cloudflare", {
-      id: record.sandboxId!,
+      id: sandboxId,
       memory: "4GiB",
     });
 

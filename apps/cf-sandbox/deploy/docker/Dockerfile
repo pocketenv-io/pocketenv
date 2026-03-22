@@ -112,12 +112,12 @@ RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akin
     echo 'source -- ~/.local/share/blesh/ble.sh' >> ~/.bashrc
 
 RUN curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh && \
-    echo 'export PATH=$PATH:$HOME/.atuin/bin:$HOME/.local/bin:$HOME/.npm-global/bin' >> ~/.bashrc && \
+    echo 'export PATH=$PATH:$HOME/.deno/bin:$HOME/.atuin/bin:$HOME/.local/bin:$HOME/.npm-global/bin' >> ~/.bashrc && \
     echo 'eval "$(atuin init bash)"' >> ~/.bashrc || true
 
 RUN mkdir -p ~/.npm-global && npm config set prefix "~/.npm-global"
 
-ENV PATH "/home/coder/.local/bin:/home/coder/.npm-global/bin:${PATH}"
+ENV PATH "/root/.deno/bin:/home/coder/.local/bin:/home/coder/.npm-global/bin:${PATH}"
 
 RUN npm install -g pm2
 

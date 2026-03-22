@@ -496,6 +496,10 @@ app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
+  if (record.status !== "RUNNING") {
+    return c.json({ error: "Sandbox is not running" }, 400);
+  }
+
   try {
     let sandbox: BaseSandbox | null = null;
 

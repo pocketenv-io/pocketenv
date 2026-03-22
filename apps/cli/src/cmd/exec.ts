@@ -27,8 +27,20 @@ export async function exec(sandbox: string, command: string[]) {
       },
     );
 
-    process.stdout.write(response.data.stdout);
-    process.stderr.write(response.data.stderr);
+    if (response.data.stdout) {
+      process.stdout.write(
+        response.data.stdout.endsWith("\n")
+          ? response.data.stdout
+          : response.data.stdout + "\n",
+      );
+    }
+    if (response.data.stderr) {
+      process.stderr.write(
+        response.data.stderr.endsWith("\n")
+          ? response.data.stderr
+          : response.data.stderr + "\n",
+      );
+    }
 
     if (response.data.exitCode !== 0) {
       consola.error(`Command exited with code ${response.data.exitCode}`);

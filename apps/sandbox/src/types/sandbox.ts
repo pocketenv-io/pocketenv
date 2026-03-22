@@ -70,4 +70,10 @@ export const SandboxConfigSchema = z.object({
     ),
 });
 
+export const StartSandboxInputSchema = z.object({
+  repo: z.string().optional(),
+});
+
 export type SandboxConfig = z.infer<typeof SandboxConfigSchema>;
+
+export type StartSandboxInput = z.infer<typeof StartSandboxInputSchema>;

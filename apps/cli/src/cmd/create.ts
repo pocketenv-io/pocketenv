@@ -11,10 +11,12 @@ async function createSandbox(
     provider,
     ssh,
     base,
+    repo,
   }: {
-    provider: string | undefined;
-    ssh: boolean | undefined;
-    base: string | undefined;
+    provider?: string;
+    ssh?: boolean;
+    base?: string;
+    repo?: string;
   },
 ) {
   const token = await getAccessToken();
@@ -34,6 +36,7 @@ async function createSandbox(
           base ??
           "at://did:plc:aturpi2ls3yvsmhc6wybomun/io.pocketenv.sandbox/openclaw",
         provider: provider ?? "cloudflare",
+        repo,
       },
       {
         headers: {

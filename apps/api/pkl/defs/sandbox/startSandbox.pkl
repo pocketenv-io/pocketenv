@@ -16,6 +16,19 @@ defs = new Mapping<String, Procedure> {
         }
       }
     }
+    input {
+      encoding = "application/json"
+      schema {
+        type = "object"
+        properties {
+          ["repo"] = new StringType {
+            type = "string"
+            description =
+              "The git repository URL to clone into the sandbox before starting it. Optional."
+          }
+        }
+      }
+    }
     output {
       encoding = "application/json"
       schema = new Ref {

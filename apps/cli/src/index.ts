@@ -77,6 +77,10 @@ program
   .command("start")
   .argument("<sandbox>", "the sandbox to start")
   .option("--ssh, -s", "connect to the Sandbox and automatically open a shell")
+  .option(
+    "--repo, -r <repo>",
+    "the repository to clone into the sandbox (e.g., github:user/repo, tangled:user/repo, or a Git URL)",
+  )
   .description("start the given sandbox")
   .action(start);
 
@@ -95,6 +99,10 @@ program
     "the base sandbox to use for the sandbox, e.g. openclaw, claude-code, codex, copilot ...",
   )
   .option("--ssh, -s", "connect to the Sandbox and automatically open a shell")
+  .option(
+    "--repo, -r <repo>",
+    "the repository to clone into the sandbox (e.g., github:user/repo, tangled:user/repo, or a Git URL)",
+  )
   .argument("[name]", "the name of the sandbox to create")
   .description("create a new sandbox")
   .action(createSandbox);

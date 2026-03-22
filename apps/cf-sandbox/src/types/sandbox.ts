@@ -31,6 +31,7 @@ export const SandboxConfigSchema = z.object({
   name: z.string().optional(),
   description: z.string().optional(),
   provider: z.enum(["cloudflare"]).optional().default("cloudflare"),
+  repo: z.string().optional(),
   base: z
     .enum([
       "openclaw",
@@ -90,4 +91,11 @@ export const SandboxConfigSchema = z.object({
     ),
 });
 
+export const StartSandboxConfigSchema = z.object({
+  repo: z.string().optional(),
+  keepAlive: z.boolean().optional().default(false),
+});
+
 export type SandboxConfig = z.infer<typeof SandboxConfigSchema>;
+
+export type StartSandboxConfig = z.infer<typeof StartSandboxConfigSchema>;

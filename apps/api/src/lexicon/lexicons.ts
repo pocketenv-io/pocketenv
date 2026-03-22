@@ -1704,6 +1704,19 @@ export const schemaDict = {
             },
           },
         },
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              repo: {
+                type: "string",
+                description:
+                  "The git repository URL to clone into the sandbox before starting it. Optional.",
+              },
+            },
+          },
+        },
         output: {
           encoding: "application/json",
           schema: {

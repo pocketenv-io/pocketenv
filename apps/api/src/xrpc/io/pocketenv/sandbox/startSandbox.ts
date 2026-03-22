@@ -3,12 +3,19 @@ import { Providers } from "consts";
 import type { Context } from "context";
 import { and, eq, isNull, or } from "drizzle-orm";
 import type { Server } from "lexicon";
-import type { QueryParams } from "lexicon/types/io/pocketenv/sandbox/startSandbox";
+import type {
+  QueryParams,
+  InputSchema,
+} from "lexicon/types/io/pocketenv/sandbox/startSandbox";
 import generateJwt from "lib/generateJwt";
 import schema from "schema";
 
 export default function (server: Server, ctx: Context) {
-  const startSandbox = async (params: QueryParams, auth: HandlerAuth) => {
+  const startSandbox = async (
+    params: QueryParams,
+    input: InputSchema,
+    auth: HandlerAuth,
+  ) => {
     let userId: string | undefined;
     if (auth.credentials) {
       const [user] = await ctx.db
@@ -45,17 +52,23 @@ export default function (server: Server, ctx: Context) {
         ? ctx.cfsandbox(record.base!)
         : ctx.sandbox();
 
-    await sandbox.post(`/v1/sandboxes/${record.id}/start`, undefined, {
-      headers: {
-        Authorization: `Bearer ${await generateJwt(auth?.credentials?.did || "")}`,
+    await sandbox.post(
+      `/v1/sandboxes/${record.id}/start`,
+      {
+        repo: input.repo,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${await generateJwt(auth?.credentials?.did || "")}`,
+        },
+      },
+    );
     return {};
   };
   server.io.pocketenv.sandbox.startSandbox({
     auth: ctx.authVerifier,
-    handler: async ({ params, auth }) => {
-      const result = await startSandbox(params, auth);
+    handler: async ({ params, input, auth }) => {
+      const result = await startSandbox(params, input.body, auth);
       return {
         encoding: "application/json",
         body: result,

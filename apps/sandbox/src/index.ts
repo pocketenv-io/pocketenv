@@ -21,7 +21,12 @@ import {
 } from "unique-username-generator";
 import { eq, ExtractTablesWithRelations, or } from "drizzle-orm";
 import { getConnection } from "./drizzle.ts";
-import { SandboxConfig, SandboxConfigSchema } from "./types/sandbox.ts";
+import {
+  SandboxConfig,
+  SandboxConfigSchema,
+  StartSandboxInput,
+  StartSandboxInputSchema,
+} from "./types/sandbox.ts";
 import {
   BaseSandbox,
   createSandbox,
@@ -209,6 +214,9 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
+  const body = await c.req.json<StartSandboxInput>();
+  const { repo } = StartSandboxInputSchema.parse(body);
+
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
@@ -260,6 +268,15 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       .clone(record.repo)
       .then(() =>
         consola.success(`Git Repository successfully cloned: ${record.repo}`),
+      )
+      .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
+  }
+
+  if (repo) {
+    sandbox
+      .clone(repo)
+      .then(() =>
+        consola.success(`Git Repository successfully cloned: ${repo}`),
       )
       .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
   }

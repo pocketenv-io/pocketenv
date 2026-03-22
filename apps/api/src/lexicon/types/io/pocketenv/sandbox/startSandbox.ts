@@ -14,9 +14,18 @@ export interface QueryParams {
   id: string;
 }
 
-export type InputSchema = undefined;
+export interface InputSchema {
+  /** The git repository URL to clone into the sandbox before starting it. Optional. */
+  repo?: string;
+  [k: string]: unknown;
+}
+
 export type OutputSchema = IoPocketenvSandboxDefs.SandboxViewBasic;
-export type HandlerInput = undefined;
+
+export interface HandlerInput {
+  encoding: "application/json";
+  body: InputSchema;
+}
 
 export interface HandlerSuccess {
   encoding: "application/json";

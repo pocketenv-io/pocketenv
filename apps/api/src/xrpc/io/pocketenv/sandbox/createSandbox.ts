@@ -3,7 +3,7 @@ import type { HandlerAuth } from "@atproto/xrpc-server";
 import { consola } from "consola";
 import type { Context } from "context";
 import type { Server } from "lexicon";
-import type { HandlerInput } from "lexicon/types/io/pocketenv/sandbox/createSandbox";
+import type { InputSchema } from "lexicon/types/io/pocketenv/sandbox/createSandbox";
 import generateJwt from "lib/generateJwt";
 import type * as Sandbox from "lexicon/types/io/pocketenv/sandbox";
 import chalk from "chalk";
@@ -19,7 +19,7 @@ import { Providers } from "consts";
 import sandboxes from "schema/sandboxes";
 
 export default function (server: Server, ctx: Context) {
-  const createSandbox = async (input: HandlerInput, auth: HandlerAuth) => {
+  const createSandbox = async (input: InputSchema, auth: HandlerAuth) => {
     let res;
     try {
       const { credentials, artifacts } = auth;
@@ -31,34 +31,35 @@ export default function (server: Server, ctx: Context) {
         );
       }
 
-      if (!input.body.base.startsWith("at://")) {
+      if (!input.base.startsWith("at://")) {
         const [sandbox] = await ctx.db
           .select()
           .from(sandboxes)
           .where(
             or(
-              eq(sandboxes.name, input.body.base),
-              eq(sandboxes.id, input.body.base),
-              eq(sandboxes.sandboxId, input.body.base),
+              eq(sandboxes.name, input.base),
+              eq(sandboxes.id, input.base),
+              eq(sandboxes.sandboxId, input.base),
             ),
           )
           .execute();
         if (!sandbox?.uri) {
           throw new XRPCError(404, "Sandbox not found", "SandboxNotFoundError");
         }
-        input.body.base = sandbox.uri;
+        input.base = sandbox.uri;
       }
 
-      const provider = input.body.provider || Providers.CLOUDFLARE;
+      const provider = input.provider || Providers.CLOUDFLARE;
       const sandbox =
         provider === Providers.CLOUDFLARE
-          ? ctx.cfsandbox(input.body.base.split("/").pop()!)
+          ? ctx.cfsandbox(input.base.split("/").pop()!)
           : ctx.sandbox();
       res = await sandbox.post(
         "/v1/sandboxes",
         {
           provider,
-          base: input.body.base.split("/").pop()!,
+          base: input.base.split("/").pop()!,
+          repo: input.repo,
         },
         {
           headers: {
@@ -102,7 +103,7 @@ export default function (server: Server, ctx: Context) {
         const base = await ctx.db
           .select()
           .from(schema.sandboxes)
-          .where(eq(schema.sandboxes.name, input.body.base.split("/").pop()!))
+          .where(eq(schema.sandboxes.name, input.base.split("/").pop()!))
           .execute()
           .then(([row]) => row);
 
@@ -139,6 +140,7 @@ export default function (server: Server, ctx: Context) {
         vcpus: res.data.vcpus,
         memory: res.data.memory,
         disk: res.data.disk,
+        repo: res.data.repo,
         ...(baseRef && { base: baseRef.value }),
         createdAt: new Date().toISOString(),
       };
@@ -178,14 +180,14 @@ export default function (server: Server, ctx: Context) {
     return {
       id: res.data.id,
       name: res.data.name,
-      provider: input.body.provider || Providers.CLOUDFLARE,
-      description: input.body.description,
-      topics: input.body.topics,
-      repo: input.body.repo,
-      vcpus: input.body.vcpus,
-      memory: input.body.memory,
-      disk: input.body.disk,
-      readme: input.body.readme,
+      provider: input.provider || Providers.CLOUDFLARE,
+      description: input.description,
+      topics: input.topics,
+      repo: input.repo,
+      vcpus: input.vcpus,
+      memory: input.memory,
+      disk: input.disk,
+      readme: input.readme,
       createdAt: new Date().toISOString(),
       uri,
     };
@@ -194,7 +196,7 @@ export default function (server: Server, ctx: Context) {
   server.io.pocketenv.sandbox.createSandbox({
     auth: ctx.authVerifier,
     handler: async ({ input, auth }) => {
-      const result = await createSandbox(input, auth);
+      const result = await createSandbox(input.body, auth);
       return {
         encoding: "application/json",
         body: result,

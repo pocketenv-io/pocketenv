@@ -24,7 +24,12 @@ import {
 import { and, eq, ExtractTablesWithRelations, isNull, or } from "drizzle-orm";
 import { getConnection } from "./drizzle";
 import { env } from "cloudflare:workers";
-import { SandboxConfig, SandboxConfigSchema } from "./types/sandbox";
+import {
+  SandboxConfig,
+  SandboxConfigSchema,
+  StartSandboxConfig,
+  StartSandboxConfigSchema,
+} from "./types/sandbox";
 import { BaseSandbox, createSandbox } from "./providers";
 import { SelectSandbox } from "./schema/sandboxes";
 import { PgTransaction } from "drizzle-orm/pg-core";
@@ -150,6 +155,7 @@ app.post("/v1/sandboxes", async (c) => {
           .values({
             base: params.base,
             name,
+            repo: params.repo,
             provider: params.provider,
             publicKey: env.PUBLIC_KEY,
             userId: user?.id,
@@ -244,6 +250,9 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     c.var.db,
     c.req.param("sandboxId"),
   );
+
+  const body = await c.req.json<StartSandboxConfig>();
+  const { repo } = StartSandboxConfigSchema.parse(body);
 
   if (!record) {
     return c.json({ error: "Sandbox not found" }, 404);
@@ -393,6 +402,15 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
         .clone(record.repo)
         .then(() =>
           consola.success(`Git Repository successfully cloned: ${record.repo}`),
+        )
+        .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
+    }
+
+    if (repo) {
+      sandbox
+        .clone(repo)
+        .then(() =>
+          consola.success(`Git Repository successfully cloned: ${repo}`),
         )
         .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
     }

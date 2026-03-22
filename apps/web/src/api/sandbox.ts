@@ -88,14 +88,18 @@ export const deleteSandbox = (id: string) =>
   });
 
 export const startSandbox = (id: string) =>
-  client.post("/xrpc/io.pocketenv.sandbox.startSandbox", undefined, {
-    params: {
-      id,
+  client.post(
+    "/xrpc/io.pocketenv.sandbox.startSandbox",
+    {},
+    {
+      params: {
+        id,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
     },
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  );
 
 export const putPreferences = () =>
   client.post(

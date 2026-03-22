@@ -5,18 +5,27 @@ import { client } from "../client";
 import { env } from "../lib/env";
 import connectToSandbox from "./ssh";
 
-async function start(name: string, { ssh }: { ssh?: boolean }) {
+async function start(
+  name: string,
+  { ssh, repo }: { ssh?: boolean; repo?: string },
+) {
   const token = await getAccessToken();
 
   try {
-    await client.post("/xrpc/io.pocketenv.sandbox.startSandbox", undefined, {
-      params: {
-        id: name,
+    await client.post(
+      "/xrpc/io.pocketenv.sandbox.startSandbox",
+      {
+        repo,
       },
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+      {
+        params: {
+          id: name,
+        },
+        headers: {
+          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+        },
       },
-    });
+    );
 
     if (ssh) {
       await connectToSandbox(name);

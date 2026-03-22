@@ -82,7 +82,8 @@ export class CloudflareSandbox implements BaseSandbox {
   }
 
   async setupSshKeys(privateKey: string, publicKey: string): Promise<void> {
-    const HOME = "/root";
+    const homeResult = await this.sh`echo $HOME`;
+    const HOME = homeResult.stdout.trim() || "/root";
     await this.sh`mkdir -p $HOME/.ssh`;
     await this.writeFile(`${HOME}/.ssh/id_ed25519`, privateKey);
     await this.writeFile(`${HOME}/.ssh/id_ed25519.pub`, publicKey);
@@ -149,8 +150,10 @@ export class CloudflareSandbox implements BaseSandbox {
 
   async exposeVscode(hostname: string): Promise<string | null> {
     try {
+      const homeResult = await this.sh`echo $HOME`;
+      const HOME = homeResult.stdout.trim() || "/root";
       await this.writeFile(
-        "/root/.local/share/code-server/User/settings.json",
+        `${HOME}/.local/share/code-server/User/settings.json`,
         JSON.stringify(
           {
             "workbench.colorTheme": "6. KIROㅤㅤ(Lynx Theme)",

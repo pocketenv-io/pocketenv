@@ -3,6 +3,7 @@ import process from "node:process";
 import consola from "consola";
 import { Sprite, SpritesClient } from "@fly/sprites";
 import path from "node:path";
+import { Buffer } from "node:buffer";
 
 export class SpriteSandbox implements BaseSandbox {
   constructor(private sprite: Sprite) {}
@@ -29,7 +30,14 @@ export class SpriteSandbox implements BaseSandbox {
     await this.sprite.delete();
   }
 
-  async sh(strings: TemplateStringsArray, ...values: any[]): Promise<any> {
+  async sh(
+    strings: TemplateStringsArray,
+    ...values: any[]
+  ): Promise<{
+    stdout: string | Buffer<ArrayBufferLike>;
+    stderr: string | Buffer<ArrayBufferLike>;
+    exitCode: number;
+  }> {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");

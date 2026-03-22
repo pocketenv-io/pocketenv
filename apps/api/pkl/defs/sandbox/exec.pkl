@@ -1,0 +1,53 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.exec"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    description = "Execute a command in a sandbox."
+    parameters {
+      type = "params"
+      required = List("id")
+      properties {
+        ["id"] = new StringType {
+          type = "string"
+          description = "The sandbox ID."
+        }
+      }
+    }
+    input {
+      encoding = "application/json"
+      schema {
+        type = "object"
+        required = List("command")
+        properties {
+          ["command"] = new StringType {
+            type = "string"
+            description = "The command to execute in the sandbox."
+          }
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        properties {
+          ["stdout"] = new StringType {
+            type = "string"
+            description = "The output of the executed command."
+          }
+          ["stderr"] = new StringType {
+            type = "string"
+            description = "The error output of the executed command, if any."
+          }
+          ["exitCode"] = new IntegerType {
+            type = "integer"
+            description = "The exit code of the executed command."
+          }
+        }
+      }
+    }
+  }
+}

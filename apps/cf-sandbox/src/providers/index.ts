@@ -4,7 +4,14 @@ export abstract class BaseSandbox {
   abstract start(): Promise<void>;
   abstract stop(): Promise<void>;
   abstract delete(): Promise<void>;
-  abstract sh(strings: TemplateStringsArray, ...values: any[]): Promise<any>;
+  abstract sh(
+    strings: TemplateStringsArray,
+    ...values: any[]
+  ): Promise<{
+    stdout: string;
+    stderr: string;
+    exitCode: number;
+  }>;
   abstract id(): Promise<string | null>;
   abstract setEnvs(envVars: Record<string, string>): Promise<void>;
   abstract mkdir(dir: string): Promise<void>;

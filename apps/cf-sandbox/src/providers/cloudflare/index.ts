@@ -51,7 +51,14 @@ export class CloudflareSandbox implements BaseSandbox {
     await this.sandbox.destroy();
   }
 
-  async sh(strings: TemplateStringsArray, ...values: any[]): Promise<any> {
+  async sh(
+    strings: TemplateStringsArray,
+    ...values: any[]
+  ): Promise<{
+    stdout: string;
+    stderr: string;
+    exitCode: number;
+  }> {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");

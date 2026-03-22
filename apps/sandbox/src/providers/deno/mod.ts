@@ -3,6 +3,7 @@ import { Sandbox } from "@deno/sandbox";
 import process from "node:process";
 import consola from "consola";
 import path from "node:path";
+import { Buffer } from "node:buffer";
 
 export class DenoSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
@@ -26,7 +27,14 @@ export class DenoSandbox implements BaseSandbox {
     await this.sandbox.kill();
   }
 
-  async sh(strings: TemplateStringsArray, ...values: any[]): Promise<any> {
+  async sh(
+    strings: TemplateStringsArray,
+    ...values: any[]
+  ): Promise<{
+    stdout?: string | Buffer<ArrayBufferLike>;
+    stderr?: string | Buffer<ArrayBufferLike>;
+    exitCode: number;
+  }> {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");
@@ -37,7 +45,12 @@ export class DenoSandbox implements BaseSandbox {
       stderr: "piped",
     });
     const output = await result.output();
-    return output;
+    const decoder = new TextDecoder();
+    return {
+      stdout: decoder.decode(output.stdout || new Uint8Array()),
+      stderr: decoder.decode(output.stderr || new Uint8Array()),
+      exitCode: (await result.status).code,
+    };
   }
 
   id(): Promise<string | null> {

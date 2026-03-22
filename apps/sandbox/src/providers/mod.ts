@@ -1,11 +1,19 @@
 import { Memory } from "@deno/sandbox";
+import { Buffer } from "node:buffer";
 import process from "node:process";
 
 export abstract class BaseSandbox {
   abstract start(): Promise<void>;
   abstract stop(): Promise<void>;
   abstract delete(): Promise<void>;
-  abstract sh(strings: TemplateStringsArray, ...values: any[]): Promise<any>;
+  abstract sh(
+    strings: TemplateStringsArray,
+    ...values: any[]
+  ): Promise<{
+    stdout?: string | Buffer<ArrayBufferLike>;
+    stderr?: string | Buffer<ArrayBufferLike>;
+    exitCode: number;
+  }>;
   abstract id(): Promise<string | null>;
   abstract ssh(): Promise<any>;
   abstract mkdir(dir: string): Promise<void>;

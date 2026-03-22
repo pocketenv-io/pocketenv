@@ -3,6 +3,7 @@ import { Daytona, Sandbox } from "@daytonaio/sdk";
 import process from "node:process";
 import consola from "consola";
 import path from "node:path";
+import { Buffer } from "node:buffer";
 
 export class DaytonaSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
@@ -25,11 +26,22 @@ export class DaytonaSandbox implements BaseSandbox {
   }
 
   // deno-lint-ignore no-explicit-any
-  sh(strings: TemplateStringsArray, ...values: any[]): Promise<any> {
+  async sh(
+    strings: TemplateStringsArray,
+    ...values: any[]
+  ): Promise<{
+    stdout?: string | Buffer<ArrayBufferLike>;
+    stderr?: string | Buffer<ArrayBufferLike>;
+    exitCode: number;
+  }> {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");
-    return this.sandbox.process.executeCommand(command);
+    const result = await this.sandbox.process.executeCommand(command);
+    return {
+      stdout: result.result,
+      exitCode: result.exitCode,
+    };
   }
 
   id(): Promise<string | null> {

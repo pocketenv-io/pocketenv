@@ -22,6 +22,7 @@ import consola from "consola";
 import { listPorts } from "./cmd/ports";
 import { c } from "./theme";
 import { exposeVscode } from "./cmd/vscode";
+import { exec } from "./cmd/exec";
 
 const program = new Command();
 
@@ -112,11 +113,19 @@ program
 
 program
   .command("vscode")
+  .aliases(["code", "code-server"])
   .argument("<sandbox>", "the sandbox to expose VS Code for")
-  .description(
-    "expose a VS Code Server instance running in the given sandbox to the internet",
-  )
+  .description("expose a visual code server to the internet")
   .action(exposeVscode);
+
+program
+  .enablePositionalOptions()
+  .command("exec")
+  .argument("<sandbox>", "the sandbox to execute the command in")
+  .argument("<command...>", "the command to execute")
+  .description("execute a command in the given sandbox")
+  .passThroughOptions()
+  .action(exec);
 
 program
   .command("expose")

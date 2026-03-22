@@ -1043,6 +1043,60 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSandboxExec: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.exec",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Execute a command in a sandbox.",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["command"],
+            properties: {
+              command: {
+                type: "string",
+                description: "The command to execute in the sandbox.",
+              },
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              stdout: {
+                type: "string",
+                description: "The output of the executed command.",
+              },
+              stderr: {
+                type: "string",
+                description:
+                  "The error output of the executed command, if any.",
+              },
+              exitCode: {
+                type: "integer",
+                description: "The exit code of the executed command.",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvSandboxExposePort: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.exposePort",
@@ -2518,6 +2572,7 @@ export const ids = {
   IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",
   IoPocketenvSandboxDefs: "io.pocketenv.sandbox.defs",
   IoPocketenvSandboxDeleteSandbox: "io.pocketenv.sandbox.deleteSandbox",
+  IoPocketenvSandboxExec: "io.pocketenv.sandbox.exec",
   IoPocketenvSandboxExposePort: "io.pocketenv.sandbox.exposePort",
   IoPocketenvSandboxExposeVscode: "io.pocketenv.sandbox.exposeVscode",
   IoPocketenvSandboxGetExposedPorts: "io.pocketenv.sandbox.getExposedPorts",

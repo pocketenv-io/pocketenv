@@ -3,6 +3,7 @@ import { Sandbox } from "@vercel/sandbox";
 import process from "node:process";
 import consola from "consola";
 import path from "node:path";
+import { Buffer } from "node:buffer";
 
 export class VercelSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
@@ -25,7 +26,14 @@ export class VercelSandbox implements BaseSandbox {
     // Vercel's sandbox does not have a separate delete method, so we just stop it.
   }
 
-  async sh(strings: TemplateStringsArray, ...values: any[]): Promise<any> {
+  async sh(
+    strings: TemplateStringsArray,
+    ...values: any[]
+  ): Promise<{
+    stdout?: string | Buffer<ArrayBufferLike>;
+    stderr?: string | Buffer<ArrayBufferLike>;
+    exitCode: number;
+  }> {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");

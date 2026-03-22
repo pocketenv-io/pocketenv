@@ -174,7 +174,7 @@ app.post("/v1/sandboxes", async (c) => {
         await saveVariables(tx, record!, { variables: params.variables });
       }
 
-      const sandboxId = crypto.randomBytes(32).toString("hex");
+      const sandboxId = crypto.randomBytes(16).toString("hex");
 
       await createSandbox(params.provider, {
         id: sandboxId,

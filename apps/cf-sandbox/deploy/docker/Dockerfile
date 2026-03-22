@@ -1,5 +1,7 @@
 FROM codercom/code-server:latest
 
+ARG TARGETARCH
+
 USER root
 
 RUN apt-get update && apt-get install -y --no-install-recommends \

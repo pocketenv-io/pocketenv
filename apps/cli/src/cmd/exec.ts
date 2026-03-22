@@ -13,7 +13,7 @@ export async function exec(sandbox: string, command: string[]) {
       stdout: string;
       exitCode: number;
     }>(
-      "/xrpc/io.pocketenv.sandbox.startSandbox",
+      "/xrpc/io.pocketenv.sandbox.exec",
       {
         command: `${cmd} ${args.join(" ")}`,
       },

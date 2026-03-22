@@ -54,7 +54,12 @@
     {
       "class_name": "Sandbox",
       "image": "./Dockerfile",
-      "instance_type": "standard-1",
+      //"instance_type": "standard-1",
+      "instance_type": {
+        "vcpu": 4,
+        "memory_mib": 4048,
+        "disk_mb": 8000,
+      },
       "max_instances": 20,
     },
   ],

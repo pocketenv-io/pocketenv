@@ -32,6 +32,7 @@ jobs:
             opencrust,
             picoclaw,
             zeroclaw,
+            wasmer,
           ]
     steps:
       - name: Checkout repository

@@ -304,6 +304,16 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
     await sandbox.start();
 
+    for (let i = 0; i < 10; i++) {
+      try {
+        await sandbox.sh`echo ready`;
+        break;
+      } catch {
+        if (i === 9) return c.json({ error: "Sandbox failed to start" }, 503);
+        await new Promise((r) => setTimeout(r, 500 * Math.pow(2, i)));
+      }
+    }
+
     await c.var.db
       .update(sandboxes)
       .set({

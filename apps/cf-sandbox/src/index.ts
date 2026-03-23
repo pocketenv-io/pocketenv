@@ -261,6 +261,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
   }
 
   if (record.status === "RUNNING") {
+    console.log(`Sandbox ${record.id} is already running`);
     return c.json({});
   }
 
@@ -302,10 +303,10 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       return c.json({ error: "Sandbox provider not supported" }, 400);
     }
 
-    await sandbox.start();
-
     for (let i = 0; i < 10; i++) {
       try {
+        console.log(`Attempting to start sandbox (try ${i + 1}/10)`);
+        await sandbox.start();
         await sandbox.sh`echo ready`;
         break;
       } catch {

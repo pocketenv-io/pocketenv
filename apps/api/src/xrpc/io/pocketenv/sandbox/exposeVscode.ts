@@ -112,7 +112,7 @@ export default function (server: Server, ctx: Context) {
       );
 
       if (data.previewUrl) {
-        await ctx.db
+        const updated = await ctx.db
           .update(schema.sandboxPorts)
           .set({ previewUrl: data.previewUrl })
           .where(
@@ -121,7 +121,20 @@ export default function (server: Server, ctx: Context) {
               eq(schema.sandboxPorts.exposedPort, VSCODE_PORT),
             ),
           )
+          .returning()
           .execute();
+
+        if (updated.length === 0) {
+          await ctx.db
+            .insert(schema.sandboxPorts)
+            .values({
+              sandboxId: record.sandboxes.id,
+              exposedPort: VSCODE_PORT,
+              previewUrl: data.previewUrl,
+              description: "VS Code Server",
+            })
+            .execute();
+        }
       }
 
       return data.previewUrl;

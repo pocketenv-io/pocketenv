@@ -63,7 +63,7 @@ RUN mkdir -p /root/.npm-global && npm config set prefix "/root/.npm-global"
 
 ENV PATH "/root/.npm-global/bin:${PATH}"
 
-RUN npm install -g pm2
+RUN npm install -g @anthropic-ai/claude-code pm2
 
 ENV PATH "/root/.local/bin:${PATH}"
 

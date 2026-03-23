@@ -42,7 +42,7 @@ COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbo
 
 RUN mise install node@25 && \
     mise use -g node@25 && \
-    npm install -g pm2
+    npm install -g @anthropic-ai/claude-code pm2
 
 ENV PATH "/root/.local/bin:${PATH}"
 

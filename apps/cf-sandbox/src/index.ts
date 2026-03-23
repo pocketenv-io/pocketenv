@@ -303,18 +303,6 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       return c.json({ error: "Sandbox provider not supported" }, 400);
     }
 
-    for (let i = 0; i < 10; i++) {
-      try {
-        console.log(`Attempting to start sandbox (try ${i + 1}/10)`);
-        await sandbox.start();
-        await sandbox.sh`echo ready`;
-        break;
-      } catch {
-        if (i === 9) return c.json({ error: "Sandbox failed to start" }, 503);
-        await new Promise((r) => setTimeout(r, 500 * Math.pow(2, i)));
-      }
-    }
-
     await c.var.db
       .update(sandboxes)
       .set({
@@ -627,20 +615,6 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
   }
   const sandbox = getSandbox(c.env.Sandbox, record.sandboxId);
   await sandbox.start();
-
-  // Wait for the sandbox container to be ready before connecting terminal
-  const maxRetries = 10;
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      await sandbox.exec("echo ready");
-      break;
-    } catch {
-      if (i === maxRetries - 1) {
-        return c.text("Sandbox not ready after retries", 503);
-      }
-      await new Promise((r) => setTimeout(r, 500 * Math.pow(2, i)));
-    }
-  }
 
   const sessionId = c.req.query("session");
 

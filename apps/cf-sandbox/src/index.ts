@@ -185,11 +185,13 @@ app.post("/v1/sandboxes", async (c) => {
         (b) => b.toString(16).padStart(2, "0"),
       ).join("");
 
-      await createSandbox(params.provider, {
+      const sandboxInstance = await createSandbox(params.provider, {
         id: sandboxId,
         keepAlive: params.keepAlive,
         sleepAfter: params.sleepAfter,
       });
+
+      await sandboxInstance.start();
 
       [record] = await tx
         .update(sandboxes)
@@ -471,8 +473,12 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
   try {
     let sandbox: BaseSandbox | null = null;
 
+    if (!record.sandboxId) {
+      return c.json({ error: "Sandbox is not running" }, 400);
+    }
+
     sandbox = await createSandbox("cloudflare", {
-      id: record.sandboxId!,
+      id: record.sandboxId,
     });
 
     if (!sandbox) {
@@ -493,7 +499,7 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
     await sandbox.stop();
     await c.var.db
       .update(sandboxes)
-      .set({ status: "STOPPED" })
+      .set({ status: "STOPPED", sandboxId: null })
       .where(eq(sandboxes.id, c.req.param("sandboxId")))
       .execute();
     return c.json({});
@@ -601,7 +607,10 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
     }
   }
 
-  const sandbox = getSandbox(c.env.Sandbox, record.sandboxId!);
+  if (!record.sandboxId) {
+    return c.text("Sandbox not started", 400);
+  }
+  const sandbox = getSandbox(c.env.Sandbox, record.sandboxId);
   const sessionId = c.req.query("session");
 
   try {

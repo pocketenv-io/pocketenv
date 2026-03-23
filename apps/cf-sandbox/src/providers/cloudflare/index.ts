@@ -43,7 +43,6 @@ export class CloudflareSandbox implements BaseSandbox {
   async stop(): Promise<void> {
     await this.sandbox.setKeepAlive(false);
     await this.sandbox.stop();
-    await this.sandbox.destroy();
   }
 
   async delete(): Promise<void> {

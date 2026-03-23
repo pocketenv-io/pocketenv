@@ -618,6 +618,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
     return c.text("Sandbox not started", 400);
   }
   const sandbox = getSandbox(c.env.Sandbox, record.sandboxId);
+  await sandbox.start();
   const sessionId = c.req.query("session");
 
   try {

@@ -271,7 +271,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
   await c.var.db
     .update(sandboxes)
-    .set({ sandboxId })
+    .set({ sandboxId: record.sandboxId || sandboxId })
     .where(
       and(
         or(

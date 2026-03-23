@@ -305,7 +305,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     await sandbox.start();
 
     console.log("Wait for sandbox to be fully up and running ...");
-    await new Promise((resolve) => setTimeout(resolve, 2500));
+    await new Promise((resolve) => setTimeout(resolve, 4000));
 
     await c.var.db
       .update(sandboxes)
@@ -457,7 +457,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     );
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
-    consola.error("Failed to start sandbox:", errorMessage);
+    consola.log("Failed to start sandbox:", errorMessage);
     return c.json({ error: `Failed to start sandbox: ${errorMessage}` }, 500);
   }
   return c.json({});

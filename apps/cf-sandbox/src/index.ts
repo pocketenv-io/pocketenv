@@ -303,6 +303,17 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       return c.json({ error: "Sandbox provider not supported" }, 400);
     }
 
+    if (repo) {
+      c.executionCtx.waitUntil(
+        sandbox
+          .clone(repo)
+          .then(() =>
+            consola.success(`Git Repository successfully cloned: ${repo}`),
+          )
+          .catch((e) => consola.error(`Failed to Clone Repository: ${e}`)),
+      );
+    }
+
     await c.var.db
       .update(sandboxes)
       .set({
@@ -409,21 +420,16 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     ]);
 
     if (record.repo) {
-      sandbox
-        .clone(record.repo)
-        .then(() =>
-          consola.success(`Git Repository successfully cloned: ${record.repo}`),
-        )
-        .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
-    }
-
-    if (repo) {
-      sandbox
-        .clone(repo)
-        .then(() =>
-          consola.success(`Git Repository successfully cloned: ${repo}`),
-        )
-        .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
+      c.executionCtx.waitUntil(
+        sandbox
+          .clone(record.repo)
+          .then(() =>
+            consola.success(
+              `Git Repository successfully cloned: ${record.repo}`,
+            ),
+          )
+          .catch((e) => consola.error(`Failed to Clone Repository: ${e}`)),
+      );
     }
 
     const previewUrls = await Promise.all(

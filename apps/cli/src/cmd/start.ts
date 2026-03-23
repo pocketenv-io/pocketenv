@@ -16,6 +16,7 @@ async function start(
 
   try {
     const authToken = env.POCKETENV_TOKEN || token;
+    console.log(repo);
 
     await client.post(
       "/xrpc/io.pocketenv.sandbox.startSandbox",

@@ -54,7 +54,7 @@
     {
       "class_name": "Sandbox",
       "image": "./Dockerfile",
-      "instance_type": "standard-2",
+      "instance_type": "standard-3",
     },
   ],
   "durable_objects": {

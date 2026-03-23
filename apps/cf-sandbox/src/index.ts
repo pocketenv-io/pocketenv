@@ -304,9 +304,6 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
     await sandbox.start();
 
-    console.log("Wait for sandbox to be fully up and running ...");
-    await new Promise((resolve) => setTimeout(resolve, 4000));
-
     await c.var.db
       .update(sandboxes)
       .set({
@@ -629,7 +626,7 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
 
     return sandbox.terminal(c.req.raw);
   } catch (err) {
-    console.error(err);
+    console.log(err);
     return c.text("Failed to connect to sandbox", 500);
   }
 });

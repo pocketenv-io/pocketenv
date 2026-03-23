@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.3] - 2026-03-23
+
+### Added
+
+- **`waitUntilRunning` helper**: CLI now waits for a sandbox to reach RUNNING status (up to 60s, polling every 2s) before connecting via SSH in `create` and `start` commands.
+- **Sandbox cleanup cron**: New cron job and worker list to automatically clean up uninitialized sandboxes every 5 minutes.
+
+### Changed
+
+- **Logging for sandbox cleanup**: Uninitialized sandbox cleanup now logs when it runs.
+
+---
+
 ## [0.3.2] - 2026-03-22
 
 ### Added

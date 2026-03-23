@@ -616,6 +616,21 @@ app.get("/v1/sandboxes/:sandboxId/ws/terminal", async (c) => {
   }
   const sandbox = getSandbox(c.env.Sandbox, record.sandboxId);
   await sandbox.start();
+
+  // Wait for the sandbox container to be ready before connecting terminal
+  const maxRetries = 10;
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      await sandbox.exec("echo ready");
+      break;
+    } catch {
+      if (i === maxRetries - 1) {
+        return c.text("Sandbox not ready after retries", 503);
+      }
+      await new Promise((r) => setTimeout(r, 500 * Math.pow(2, i)));
+    }
+  }
+
   const sessionId = c.req.query("session");
 
   try {

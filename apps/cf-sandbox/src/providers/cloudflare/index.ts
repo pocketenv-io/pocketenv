@@ -36,8 +36,8 @@ export class CloudflareSandbox implements BaseSandbox {
   }
 
   async start(): Promise<void> {
-    await this.sh`echo "Starting sandbox with ID: ${this.normalizedId}"`;
     await this.sandbox.start();
+    await this.sh`echo "Starting sandbox with ID: ${this.normalizedId}"`;
   }
 
   async stop(): Promise<void> {

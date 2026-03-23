@@ -7,6 +7,9 @@
 
 Spin up isolated environments, run code, test weird ideas. No drama.
 
+[![Open in Pocketenv](https://pocketenv.io/open-in-pocketenv.svg)](https://pocketenv.io/new?repo=tangled:pocketenv.io/pocketenv)
+
+
 > [!NOTE]
 > **heads up — still in early dev**
 >

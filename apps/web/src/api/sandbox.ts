@@ -7,16 +7,19 @@ export const createSandbox = ({
   base,
   provider,
   challenge,
+  repo,
 }: {
   base: string;
   provider: Provider;
   challenge: string | null;
+  repo?: string;
 }) =>
   client.post<Sandbox | undefined>(
     "/xrpc/io.pocketenv.sandbox.createSandbox",
     {
       base,
       provider,
+      repo,
     },
     {
       headers: {
@@ -165,3 +168,17 @@ export const getExposedPorts = (id: string) =>
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
   });
+
+export const exposeVscode = (id: string) =>
+  client.post<{ previewUrl?: string }>(
+    `/xrpc/io.pocketenv.sandbox.exposeVscode`,
+    undefined,
+    {
+      params: {
+        id,
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  );

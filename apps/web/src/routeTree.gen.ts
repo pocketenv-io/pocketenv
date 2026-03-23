@@ -15,6 +15,7 @@ import { Route as SigninRouteImport } from './routes/signin'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SecretsRouteImport } from './routes/secrets'
 import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as NewRouteImport } from './routes/new'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SandboxIdRouteImport } from './routes/sandbox/$id'
 import { Route as DidSandboxRkeyRouteImport } from './routes/$did.sandbox.$rkey'
@@ -58,6 +59,11 @@ const SecretsRoute = SecretsRouteImport.update({
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewRoute = NewRouteImport.update({
+  id: '/new',
+  path: '/new',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -135,6 +141,7 @@ const DidSandboxRkeyFilesRoute = DidSandboxRkeyFilesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/new': typeof NewRoute
   '/projects': typeof ProjectsRoute
   '/secrets': typeof SecretsRoute
   '/settings': typeof SettingsRoute
@@ -157,6 +164,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/new': typeof NewRoute
   '/projects': typeof ProjectsRoute
   '/secrets': typeof SecretsRoute
   '/settings': typeof SettingsRoute
@@ -179,6 +187,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/new': typeof NewRoute
   '/projects': typeof ProjectsRoute
   '/secrets': typeof SecretsRoute
   '/settings': typeof SettingsRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/new'
     | '/projects'
     | '/secrets'
     | '/settings'
@@ -225,6 +235,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/new'
     | '/projects'
     | '/secrets'
     | '/settings'
@@ -246,6 +257,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/new'
     | '/projects'
     | '/secrets'
     | '/settings'
@@ -269,6 +281,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  NewRoute: typeof NewRoute
   ProjectsRoute: typeof ProjectsRoute
   SecretsRoute: typeof SecretsRoute
   SettingsRoute: typeof SettingsRoute
@@ -321,6 +334,13 @@ declare module '@tanstack/react-router' {
       path: '/projects'
       fullPath: '/projects'
       preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/new': {
+      id: '/new'
+      path: '/new'
+      fullPath: '/new'
+      preLoaderRoute: typeof NewRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -458,6 +478,7 @@ const DidSandboxRkeyRouteWithChildren = DidSandboxRkeyRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  NewRoute: NewRoute,
   ProjectsRoute: ProjectsRoute,
   SecretsRoute: SecretsRoute,
   SettingsRoute: SettingsRoute,

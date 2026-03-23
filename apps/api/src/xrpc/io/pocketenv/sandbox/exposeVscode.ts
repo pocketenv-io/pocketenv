@@ -3,7 +3,7 @@ import { updateSandbox } from "atproto/sandbox";
 import { consola } from "consola";
 import { Providers, VSCODE_PORT } from "consts";
 import type { Context } from "context";
-import { and, eq, or } from "drizzle-orm";
+import { and, eq, isNull, or } from "drizzle-orm";
 import type { Server } from "lexicon";
 import type {
   QueryParams,
@@ -15,23 +15,6 @@ import schema from "schema";
 
 export default function (server: Server, ctx: Context) {
   const exposeVscode = async (params: QueryParams, auth: HandlerAuth) => {
-    if (!auth.credentials) {
-      throw new XRPCError(401, "Unauthorized");
-    }
-
-    const agent = await createAgent(ctx.oauthClient, auth.credentials.did);
-    if (!agent) {
-      consola.error(
-        "Failed to create AT Protocol agent for DID:",
-        auth.credentials.did,
-      );
-      throw new XRPCError(
-        500,
-        "Failed to create AT Protocol agent",
-        "AgentCreationError",
-      );
-    }
-
     return ctx.db.transaction(async (tx) => {
       const [record] = await tx
         .select()
@@ -44,7 +27,9 @@ export default function (server: Server, ctx: Context) {
               eq(schema.sandboxes.uri, params.id),
               eq(schema.sandboxes.name, params.id),
             ),
-            eq(schema.users.did, auth.credentials.did),
+            auth.credentials
+              ? eq(schema.users.did, auth.credentials.did)
+              : isNull(schema.sandboxes.userId),
           ),
         )
         .execute();
@@ -86,6 +71,23 @@ export default function (server: Server, ctx: Context) {
       const ports = records.map((r) => r.exposedPort);
 
       if (record.sandboxes.uri) {
+        if (!auth.credentials) {
+          throw new XRPCError(401, "Unauthorized");
+        }
+
+        const agent = await createAgent(ctx.oauthClient, auth.credentials.did);
+        if (!agent) {
+          consola.error(
+            "Failed to create AT Protocol agent for DID:",
+            auth.credentials.did,
+          );
+          throw new XRPCError(
+            500,
+            "Failed to create AT Protocol agent",
+            "AgentCreationError",
+          );
+        }
+
         updateSandbox(agent, {
           rkey: record.sandboxes.uri.split("/").pop()!,
           ports,

@@ -11,6 +11,7 @@ import {
   getExposedPorts,
   exposePort,
   unexposePort,
+  exposeVscode,
 } from "../api/sandbox";
 import type { Provider } from "../types/providers";
 
@@ -47,6 +48,7 @@ export const useCreateSandboxMutation = () =>
       base: string;
       provider: Provider;
       challenge: string | null;
+      repo?: string;
     }) => createSandbox(params),
   });
 
@@ -113,5 +115,12 @@ export const useUnexposePortMutation = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["exposedPorts"] });
     },
+  });
+};
+
+export const useExposeVscodeMutation = () => {
+  return useMutation({
+    mutationKey: ["exposeVscode"],
+    mutationFn: async (id: string) => exposeVscode(id),
   });
 };

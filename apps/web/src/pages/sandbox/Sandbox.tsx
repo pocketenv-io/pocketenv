@@ -4,6 +4,7 @@ import SignIn from "../../components/signin";
 import { useLocation, useNavigate } from "@tanstack/react-router";
 import {
   useClaimSandboxMutation,
+  useExposeVscodeMutation,
   useSandboxQuery,
   useStartSandboxMutation,
   useStopSandboxMutation,
@@ -21,6 +22,7 @@ dayjs.extend(relativeTime);
 
 function New() {
   const profile = useAtomValue(profileAtom);
+  const { mutateAsync: exposeVscode, isPending } = useExposeVscodeMutation();
   const queryClient = useQueryClient();
   const [displayLoading, setDisplayLoading] = useState(false);
   const [loadingClaim, setLoadingClaim] = useState(false);
@@ -117,6 +119,37 @@ function New() {
                     <span className="badge bg-white/15 rounded-full text-white/80 border-none mr-1">
                       Sandbox
                     </span>
+                    <button
+                      className="ml-[5px] flex items-center"
+                      disabled={
+                        isPending ||
+                        !data?.sandbox?.status ||
+                        data.sandbox.status !== "RUNNING"
+                      }
+                      onClick={async () => {
+                        if (isPending) return;
+
+                        const response = await exposeVscode(data!.sandbox!.id!);
+                        if (response.data?.previewUrl) {
+                          window.open(response.data.previewUrl, "_blank");
+                        }
+                      }}
+                    >
+                      {!isPending && (
+                        <span
+                          className={`icon-[proicons--visual-studio-code] size-5.5 btn-text ${
+                            isPending ||
+                            !data?.sandbox?.status ||
+                            data.sandbox.status !== "RUNNING"
+                              ? "opacity-50"
+                              : "hover:text-white"
+                          }`}
+                        ></span>
+                      )}
+                      {isPending && (
+                        <span className="loading loading-spinner loading-sm btn-text" />
+                      )}
+                    </button>
                     {((profile && data?.sandbox?.owner?.did === profile.did) ||
                       !data?.sandbox?.owner) && (
                       <ContextMenu

@@ -23,7 +23,7 @@ async function withConcurrency<T>(
   return results;
 }
 
-Deno.cron("clean-uninitialized-sandboxes", "* * * * *", async () => {
+Deno.cron("clean-uninitialized-sandboxes", "*/5 * * * *", async () => {
   const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
   const stale = await db

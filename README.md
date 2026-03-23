@@ -7,7 +7,7 @@
 
 Spin up isolated environments, run code, test weird ideas. No drama.
 
-[![Open in Pocketenv](https://pocketenv.io/open-in-pocketenv.svg)](https://pocketenv.io/new?repo=tangled:pocketenv.io/pocketenv)
+<a href="https://pocketenv.io/new?repo=tangled:pocketenv.io/pocketenv" target="_blank"><img src="https://pocketenv.io/open-in-pocketenv.svg" alt="Open in Pocketenv" /></a>
 
 
 > [!NOTE]

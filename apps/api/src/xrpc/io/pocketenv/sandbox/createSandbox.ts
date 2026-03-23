@@ -60,6 +60,7 @@ export default function (server: Server, ctx: Context) {
           provider,
           base: input.base.split("/").pop()!,
           repo: input.repo,
+          keepAlive: input.keepAlive,
         },
         {
           headers: {

@@ -1,71 +1,71 @@
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
-import type express from "express";
-import { ValidationResult, BlobRef } from "@atproto/lexicon";
-import { lexicons } from "../../../../lexicons";
-import { isObj, hasProp } from "../../../../util";
-import { CID } from "multiformats/cid";
-import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
-import type * as IoPocketenvSecretDefs from "../secret/defs";
-import type * as IoPocketenvVariableDefs from "../variable/defs";
-import type * as IoPocketenvFileDefs from "../file/defs";
-import type * as IoPocketenvVolumeDefs from "../volume/defs";
-import type * as IoPocketenvSandboxDefs from "./defs";
+import type express from 'express'
+import { ValidationResult, BlobRef } from '@atproto/lexicon'
+import { lexicons } from '../../../../lexicons'
+import { isObj, hasProp } from '../../../../util'
+import { CID } from 'multiformats/cid'
+import type { HandlerAuth, HandlerPipeThrough } from '@atproto/xrpc-server'
+import type * as IoPocketenvSecretDefs from '../secret/defs'
+import type * as IoPocketenvVariableDefs from '../variable/defs'
+import type * as IoPocketenvFileDefs from '../file/defs'
+import type * as IoPocketenvVolumeDefs from '../volume/defs'
+import type * as IoPocketenvSandboxDefs from './defs'
 
-export type QueryParams = {};
+export type QueryParams = {}
 
 export interface InputSchema {
   /** The name of the sandbox */
-  name?: string;
+  name?: string
   /** A description for the sandbox */
-  description?: string;
+  description?: string
   /** A list of topics/tags to associate with the sandbox */
-  topics?: string[];
+  topics?: string[]
   /** A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo. */
-  repo?: string;
+  repo?: string
   /** The number of virtual CPUs to allocate for the sandbox */
-  vcpus?: number;
+  vcpus?: number
   /** The amount of memory (in GB) to allocate for the sandbox */
-  memory?: number;
+  memory?: number
   /** The amount of disk space (in GB) to allocate for the sandbox */
-  disk?: number;
+  disk?: number
   /** A URI to a README for the sandbox. */
-  readme?: string;
-  secrets?: IoPocketenvSecretDefs.Secrets;
-  variables?: IoPocketenvVariableDefs.Variables;
-  files?: IoPocketenvFileDefs.File;
-  volumes?: IoPocketenvVolumeDefs.Volumes;
-  [k: string]: unknown;
+  readme?: string
+  secrets?: IoPocketenvSecretDefs.Secrets
+  variables?: IoPocketenvVariableDefs.Variables
+  files?: IoPocketenvFileDefs.File
+  volumes?: IoPocketenvVolumeDefs.Volumes
+  [k: string]: unknown
 }
 
-export type OutputSchema = IoPocketenvSandboxDefs.ProfileViewDetailed;
+export type OutputSchema = IoPocketenvSandboxDefs.ProfileViewDetailed
 
 export interface HandlerInput {
-  encoding: "application/json";
-  body: InputSchema;
+  encoding: 'application/json'
+  body: InputSchema
 }
 
 export interface HandlerSuccess {
-  encoding: "application/json";
-  body: OutputSchema;
-  headers?: { [key: string]: string };
+  encoding: 'application/json'
+  body: OutputSchema
+  headers?: { [key: string]: string }
 }
 
 export interface HandlerError {
-  status: number;
-  message?: string;
+  status: number
+  message?: string
 }
 
-export type HandlerOutput = HandlerError | HandlerSuccess | HandlerPipeThrough;
+export type HandlerOutput = HandlerError | HandlerSuccess | HandlerPipeThrough
 export type HandlerReqCtx<HA extends HandlerAuth = never> = {
-  auth: HA;
-  params: QueryParams;
-  input: HandlerInput;
-  req: express.Request;
-  res: express.Response;
-  resetRouteRateLimits: () => Promise<void>;
-};
+  auth: HA
+  params: QueryParams
+  input: HandlerInput
+  req: express.Request
+  res: express.Response
+  resetRouteRateLimits: () => Promise<void>
+}
 export type Handler<HA extends HandlerAuth = never> = (
   ctx: HandlerReqCtx<HA>,
-) => Promise<HandlerOutput> | HandlerOutput;
+) => Promise<HandlerOutput> | HandlerOutput

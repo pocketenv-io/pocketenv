@@ -254,7 +254,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
   );
 
   const body = await c.req.json<StartSandboxConfig>();
-  const { repo } = StartSandboxConfigSchema.parse(body);
+  const { repo, keepAlive } = StartSandboxConfigSchema.parse(body);
 
   if (!record) {
     return c.json({ error: "Sandbox not found" }, 404);
@@ -297,6 +297,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     sandbox = await createSandbox("cloudflare", {
       id: record.sandboxId || sandboxId,
       memory: "4GiB",
+      keepAlive,
     });
 
     if (!sandbox) {

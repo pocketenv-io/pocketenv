@@ -1,53 +1,53 @@
 /**
  * GENERATED CODE - DO NOT MODIFY
  */
-import { type ValidationResult, BlobRef } from "@atproto/lexicon";
-import { lexicons } from "../../../../lexicons";
-import { isObj, hasProp } from "../../../../util";
-import { CID } from "multiformats/cid";
+import { type ValidationResult, BlobRef } from '@atproto/lexicon'
+import { lexicons } from '../../../../lexicons'
+import { isObj, hasProp } from '../../../../util'
+import { CID } from 'multiformats/cid'
 
 export interface VariableView {
   /** Unique identifier of the environment variable. */
-  id?: string;
+  id?: string
   /** Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc. */
-  name?: string;
+  name?: string
   /** Value of the environment variable. This will be visible in API responses and should not contain sensitive information. */
-  value?: string;
-  [k: string]: unknown;
+  value?: string
+  [k: string]: unknown
 }
 
 export function isVariableView(v: unknown): v is VariableView {
   return (
     isObj(v) &&
-    hasProp(v, "$type") &&
-    v.$type === "io.pocketenv.variable.defs#variableView"
-  );
+    hasProp(v, '$type') &&
+    v.$type === 'io.pocketenv.variable.defs#variableView'
+  )
 }
 
 export function validateVariableView(v: unknown): ValidationResult {
-  return lexicons.validate("io.pocketenv.variable.defs#variableView", v);
+  return lexicons.validate('io.pocketenv.variable.defs#variableView', v)
 }
 
 export interface Variable {
   /** The ID of the sandbox to which the environment variable belongs. This is used to associate the variable with a specific sandbox environment. */
-  sandboxId?: string;
+  sandboxId?: string
   /** Name of the environment variable, e.g. 'NODE_ENV', 'PORT', etc. */
-  name: string;
+  name: string
   /** Value of the environment variable. This will be visible in API responses and should not contain sensitive information. */
-  value: string;
-  [k: string]: unknown;
+  value: string
+  [k: string]: unknown
 }
 
 export function isVariable(v: unknown): v is Variable {
   return (
     isObj(v) &&
-    hasProp(v, "$type") &&
-    v.$type === "io.pocketenv.variable.defs#variable"
-  );
+    hasProp(v, '$type') &&
+    v.$type === 'io.pocketenv.variable.defs#variable'
+  )
 }
 
 export function validateVariable(v: unknown): ValidationResult {
-  return lexicons.validate("io.pocketenv.variable.defs#variable", v);
+  return lexicons.validate('io.pocketenv.variable.defs#variable', v)
 }
 
-export type Variables = EnvVar[];
+export type Variables = EnvVar[]

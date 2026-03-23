@@ -75,6 +75,11 @@ defs = new Mapping<String, Procedure> {
             ref = "io.pocketenv.sandbox.defs#envs"
             description = "A list of environment variables to add to the sandbox"
           }
+          ["keepAlive"] = new BooleanType {
+            type = "boolean"
+            description =
+              "Prevent the sandbox from being automatically stop after a period of inactivity. Use with caution, as this may lead to increased costs."
+          }
         }
       }
     }

@@ -56,6 +56,7 @@ export default function (server: Server, ctx: Context) {
       `/v1/sandboxes/${record.id}/start`,
       {
         repo: input.repo,
+        keepAlive: input.keepAlive,
       },
       {
         headers: {

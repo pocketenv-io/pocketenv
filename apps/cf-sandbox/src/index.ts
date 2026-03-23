@@ -304,6 +304,16 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
     await sandbox.start();
 
+    await c.var.db
+      .update(sandboxes)
+      .set({
+        status: "RUNNING",
+        sandboxId: record.sandboxId || sandboxId,
+        startedAt: new Date(),
+      })
+      .where(eq(sandboxes.id, c.req.param("sandboxId")))
+      .execute();
+
     const params = await Promise.all([
       c.var.db
         .select()
@@ -416,12 +426,6 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
         )
         .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
     }
-
-    await c.var.db
-      .update(sandboxes)
-      .set({ status: "RUNNING" })
-      .where(eq(sandboxes.id, c.req.param("sandboxId")))
-      .execute();
 
     const previewUrls = await Promise.all(
       params[6].map((port) =>

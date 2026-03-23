@@ -63,11 +63,11 @@ COPY banner.sh /usr/bin
 
 RUN chmod a+x /usr/bin/banner.sh
 
-COPY --from=docker.io/library/node:22 /usr/local/bin/node /usr/local/bin/node
+COPY --from=docker.io/library/node:24 /usr/local/bin/node /usr/local/bin/node
 
-COPY --from=docker.io/library/node:22 /usr/local/include /usr/local/include
+COPY --from=docker.io/library/node:24 /usr/local/include /usr/local/include
 
-COPY --from=docker.io/library/node:22 /usr/local/lib/node_modules /usr/local/lib/node_modules
+COPY --from=docker.io/library/node:24 /usr/local/lib/node_modules /usr/local/lib/node_modules
 
 RUN printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npm-cli.js "$@"\n' > /usr/local/bin/npm && \
     printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npx-cli.js "$@"\n' > /usr/local/bin/npx && \
@@ -119,7 +119,7 @@ RUN mkdir -p ~/.npm-global && npm config set prefix "~/.npm-global"
 
 ENV PATH "/root/.deno/bin:/home/coder/.local/bin:/home/coder/.npm-global/bin:${PATH}"
 
-RUN npm install -g pm2
+RUN npm install -g @anthropic-ai/claude-code pm2
 
 RUN curl -fsSL https://deno.land/install.sh | sh
 

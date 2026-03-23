@@ -24,6 +24,7 @@ async function withConcurrency<T>(
 }
 
 Deno.cron("clean-uninitialized-sandboxes", "*/5 * * * *", async () => {
+  consola.info("Cleaning uninitialized sandboxes...");
   const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
   const stale = await db

@@ -5,6 +5,7 @@ import { client } from "../client";
 import { env } from "../lib/env";
 import connectToSandbox from "./ssh";
 import { expandRepo } from "../lib/expandRepo";
+import waitUntilRunning from "../lib/waitUntilRunning";
 
 async function start(
   name: string,
@@ -14,6 +15,8 @@ async function start(
   if (repo) repo = expandRepo(repo);
 
   try {
+    const authToken = env.POCKETENV_TOKEN || token;
+
     await client.post(
       "/xrpc/io.pocketenv.sandbox.startSandbox",
       {
@@ -24,12 +27,13 @@ async function start(
           id: name,
         },
         headers: {
-          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+          Authorization: `Bearer ${authToken}`,
         },
       },
     );
 
     if (ssh) {
+      await waitUntilRunning(name, authToken);
       await connectToSandbox(name);
       return;
     }

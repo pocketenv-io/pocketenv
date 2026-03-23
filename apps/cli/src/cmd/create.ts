@@ -5,6 +5,7 @@ import type { Sandbox } from "../types/sandbox";
 import connectToSandbox from "./ssh";
 import { c } from "../theme";
 import { expandRepo } from "../lib/expandRepo";
+import waitUntilRunning from "../lib/waitUntilRunning";
 
 async function createSandbox(
   name: string,
@@ -52,6 +53,7 @@ async function createSandbox(
       );
       return;
     }
+    await waitUntilRunning(sandbox.data.name, token);
     await connectToSandbox(sandbox.data.name);
   } catch (error) {
     consola.error(`Failed to create sandbox: ${error}`);

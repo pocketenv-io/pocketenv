@@ -304,6 +304,9 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
     await sandbox.start();
 
+    console.log("Wait for sandbox to be fully up and running ...");
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+
     await c.var.db
       .update(sandboxes)
       .set({

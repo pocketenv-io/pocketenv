@@ -204,6 +204,19 @@ app.post("/v1/sandboxes", async (c) => {
         .returning()
         .execute();
 
+      if (params.repo) {
+        c.executionCtx.waitUntil(
+          sandboxInstance
+            .clone(params.repo)
+            .then(() =>
+              consola.success(
+                `Git Repository successfully cloned: ${params.repo}`,
+              ),
+            )
+            .catch((e) => consola.error(`Failed to Clone Repository: ${e}`)),
+        );
+      }
+
       const baseSandbox = await tx
         .select()
         .from(sandboxes)

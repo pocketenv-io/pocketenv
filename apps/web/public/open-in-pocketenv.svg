@@ -1,21 +1,37 @@
 <svg width="240" height="44" viewBox="0 0 240 44" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Background -->
-  <rect width="240" height="44" rx="10" fill="#06051d"/>
-  <rect x="0.5" y="0.5" width="239" height="43" rx="9.5" stroke="#1a1933"/>
+  <rect width="240" height="44" rx="9" fill="#7033ff"/>
+  <rect x="0.5" y="0.5" width="239" height="43" rx="9.5" stroke="#8a5cff"/>
 
   <!-- Terminal icon (>_) -->
   <g transform="translate(18 13)">
     <!-- > -->
-    <path d="M2 4 L8 10 L2 16" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <!-- _ (caret) -->
-    <line x1="10" y1="16" x2="18" y2="16" stroke="#7033ff" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M2 4 L8 10 L2 16"
+      stroke="#ffffff"
+      stroke-width="2.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+    <!-- _ (caret contrast) -->
+    <line x1="10" y1="16" x2="18" y2="16"
+      stroke="#ffffff"
+      stroke-width="2.2"
+      stroke-linecap="round"/>
   </g>
 
   <!-- Text -->
-  <text x="50" y="18" fill="#A1A1AA" font-family="Inter, Arial, sans-serif" font-size="10">
+  <text x="50" y="18"
+    fill="#E9E5FF"
+    opacity="80%"
+    font-family="'DM Sans', Inter, Arial, sans-serif"
+    font-size="10">
     Run instantly
   </text>
-  <text x="50" y="29" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="15" font-weight="600">
+
+  <text x="50" y="29"
+    fill="#ffffff"
+    font-family="'DM Sans', Inter, Arial, sans-serif"
+    font-size="15"
+    font-weight="600">
     Open in Pocketenv
   </text>
 </svg>

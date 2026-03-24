@@ -33,6 +33,7 @@ jobs:
             picoclaw,
             zeroclaw,
             wasmer,
+            nanoclaw,
           ]
     steps:
       - name: Checkout repository

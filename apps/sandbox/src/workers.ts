@@ -18,4 +18,5 @@ export const workers: Record<string, string> = {
   pkgx: "https://pkgx.pocketenv.io",
   zeroclaw: "https://zeroclaw.pocketenv.io",
   wasmer: "https://wasmer.pocketenv.io",
+  nanoclaw: "https://nanoclaw.pocketenv.io",
 };

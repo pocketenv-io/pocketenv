@@ -98,6 +98,8 @@ RUN wget -qO /tmp/zoxide.tar.gz https://github.com/ajeetdsouza/zoxide/releases/d
     rm /tmp/zoxide.tar.gz && \
     echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
 
+RUN curl -fsSL https://zerobrew.rs/install | bash
+
 WORKDIR /workspace
 
 ENV COMMAND_TIMEOUT_MS 300000

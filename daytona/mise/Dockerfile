@@ -26,3 +26,5 @@ RUN curl -fsSL https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.9/zo
     rm /tmp/zoxide.tar.gz && \
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
     echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
+
+RUN curl -fsSL https://zerobrew.rs/install | bash

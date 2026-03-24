@@ -8,6 +8,7 @@ RUN apt-get update -y
 
 RUN apt-get install -y curl git unzip tmux build-essential gawk sed procps  wget locales-all s3fs fontconfig \
     sudo \
+    && useradd -m -s /bin/bash coder \
     && echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
 
 ENV LC_ALL en_US.UTF-8

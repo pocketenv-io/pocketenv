@@ -131,7 +131,17 @@ function New() {
 
                         const response = await exposeVscode(data!.sandbox!.id!);
                         if (response.data?.previewUrl) {
-                          window.open(response.data.previewUrl, "_blank");
+                          const url = new URL(response.data.previewUrl);
+                          if (
+                            data.sandbox?.repo &&
+                            data.sandbox.provider === "cloudflare"
+                          ) {
+                            url.searchParams.set(
+                              "folder",
+                              `/workspace/${data.sandbox.repo.split("/").pop()!}`,
+                            );
+                          }
+                          window.open(url, "_blank");
                         }
                       }}
                     >

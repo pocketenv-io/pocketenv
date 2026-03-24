@@ -22,7 +22,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     locales-all \
     s3fs \
-    fontconfig
+    fontconfig \
+    sudo \
+    && echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8

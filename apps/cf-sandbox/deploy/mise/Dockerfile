@@ -2,7 +2,9 @@ FROM jdxcode/mise:latest
 
 ARG TARGETARCH
 
-RUN apt-get update -y && apt-get install -y curl git unzip tmux build-essential gawk sed procps wget locales-all s3fs fontconfig
+RUN apt-get update -y && apt-get install -y curl git unzip tmux build-essential gawk sed procps wget locales-all s3fs fontconfig \
+    sudo \
+    && echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -67,7 +69,13 @@ RUN wget -qO /tmp/zoxide.tar.gz https://github.com/ajeetdsouza/zoxide/releases/d
     rm /tmp/zoxide.tar.gz && \
     echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
 
-RUN curl -fsSL https://zerobrew.rs/install | bash
+USER coder
+RUN mkdir -p /home/coder && curl -fsSL https://zerobrew.rs/install | bash
+USER root
+
+RUN mv /home/coder/.zerobrew ~/.zerobrew && \
+    echo 'export PATH=$PATH:/root/.zerobrew/bin' >> ~/.bashrc
+
 
 WORKDIR /workspace
 

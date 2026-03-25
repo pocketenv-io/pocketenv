@@ -99,8 +99,7 @@ RUN wget -qO /tmp/zoxide.tar.gz https://github.com/ajeetdsouza/zoxide/releases/d
 RUN mkdir -p /home/coder && curl -fsSL https://zerobrew.rs/install | bash
 USER root
 
-RUN mv /home/coder/.zerobrew ~/.zerobrew && \
-    echo 'export PATH=$PATH:/root/.zerobrew/bin' >> ~/.bashrc
+RUN mv /home/coder/.local/bin/* ~/.local/bin
 
 
 WORKDIR /workspace

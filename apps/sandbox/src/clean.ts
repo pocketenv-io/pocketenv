@@ -1,6 +1,7 @@
-import { and, isNull, lt } from "drizzle-orm";
+import { and, inArray, isNull, lt } from "drizzle-orm";
 import { getConnection } from "./drizzle.ts";
 import sandboxes from "./schema/sandboxes.ts";
+import sandboxPorts from "./schema/sandbox-ports.ts";
 import consola from "consola";
 import chalk from "chalk";
 import { workers } from "./workers.ts";
@@ -69,6 +70,13 @@ Deno.cron("clean-uninitialized-sandboxes", "*/5 * * * *", async () => {
       "Failed to stop some uninitialized sandboxes on workers. They may have already been stopped or deleted.",
     );
   });
+
+  const staleIds = stale.map(({ id }) => id);
+
+  await db
+    .delete(sandboxPorts)
+    .where(inArray(sandboxPorts.sandboxId, staleIds))
+    .execute();
 
   const deleted = await db
     .delete(sandboxes)

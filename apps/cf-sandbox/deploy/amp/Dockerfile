@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM node:24-slim
+FROM --platform=$BUILDPLATFORM node:lts-trixie-slim
 ARG TARGETARCH
 
 COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbox

@@ -1,4 +1,4 @@
-FROM node:24-slim
+FROM node:lts-trixie-slim
 
 ARG TARGETARCH
 

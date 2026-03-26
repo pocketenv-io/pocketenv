@@ -10,7 +10,7 @@ import chalk from "chalk";
 import { createAgent } from "lib/agent";
 import { TID } from "@atproto/common";
 import schema from "schema";
-import { eq, or } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import {
   validateMain,
   type Main,
@@ -29,6 +29,36 @@ export default function (server: Server, ctx: Context) {
           "Authentication failed, invalid challenge",
           "AuthenticationError",
         );
+      }
+
+      if (input.repo && credentials?.did) {
+        const [existingSandbox] = await ctx.db
+          .select()
+          .from(sandboxes)
+          .leftJoin(schema.users, eq(sandboxes.userId, schema.users.id))
+          .where(
+            and(
+              eq(sandboxes.repo, input.repo),
+              eq(schema.users.did, credentials.did),
+            ),
+          )
+          .execute();
+        if (existingSandbox) {
+          return {
+            id: existingSandbox.sandboxes.id,
+            name: existingSandbox.sandboxes.name,
+            provider: input.provider || Providers.CLOUDFLARE,
+            description: input.description,
+            topics: input.topics,
+            repo: input.repo,
+            vcpus: existingSandbox.sandboxes.vcpus!,
+            memory: existingSandbox.sandboxes.memory!,
+            disk: existingSandbox.sandboxes.disk!,
+            readme: existingSandbox.sandboxes.readme!,
+            createdAt: existingSandbox.sandboxes.createdAt.toISOString(),
+            uri: existingSandbox.sandboxes.uri,
+          };
+        }
       }
 
       if (!input.base.startsWith("at://")) {

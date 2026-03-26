@@ -378,55 +378,61 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
         .execute(),
     ]);
 
-    await sandbox.setEnvs({
-      ...params[0]
-        .map(({ variables }) => variables)
-        .filter((v) => v !== null)
-        .reduce(
-          (acc, v) => {
-            acc[v.name] = v.value;
-            return acc;
-          },
-          {} as Record<string, string>,
+    c.executionCtx.waitUntil(
+      sandbox.setEnvs({
+        ...params[0]
+          .map(({ variables }) => variables)
+          .filter((v) => v !== null)
+          .reduce(
+            (acc, v) => {
+              acc[v.name] = v.value;
+              return acc;
+            },
+            {} as Record<string, string>,
+          ),
+        ...Object.fromEntries(
+          await Promise.all(
+            params[1]
+              .map(({ secrets }) => secrets)
+              .filter((v) => v !== null)
+              .map(async (v) => [v.name, await decrypt(v.value)] as const),
+          ),
         ),
-      ...Object.fromEntries(
-        await Promise.all(
-          params[1]
-            .map(({ secrets }) => secrets)
-            .filter((v) => v !== null)
-            .map(async (v) => [v.name, await decrypt(v.value)] as const),
-        ),
-      ),
-    });
+      }),
+    );
 
-    await sandbox.sh`[ -f /root/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -q -N "" || true`;
+    c.executionCtx.waitUntil(
+      sandbox.sh`[ -f /root/.ssh/id_ed25519 ] || ssh-keygen -t ed25519 -f /root/.ssh/id_ed25519 -q -N "" || true`,
+    );
 
     const { hostname } = new URL(c.req.url);
 
-    await Promise.all([
-      ...params[2]
-        .filter((x) => x.files !== null)
-        .map(async (record) =>
-          sandbox?.writeFile(
-            record.sandbox_files.path,
-            await decrypt(record.files!.content),
+    c.executionCtx.waitUntil(
+      Promise.all([
+        ...params[2]
+          .filter((x) => x.files !== null)
+          .map(async (record) =>
+            sandbox?.writeFile(
+              record.sandbox_files.path,
+              await decrypt(record.files!.content),
+            ),
+          ),
+        ...params[3].map(async (record) =>
+          sandbox?.setupSshKeys(
+            await decrypt(record.privateKey),
+            record.publicKey,
           ),
         ),
-      ...params[3].map(async (record) =>
-        sandbox?.setupSshKeys(
-          await decrypt(record.privateKey),
-          record.publicKey,
+        params[4].length > 0 &&
+          sandbox?.setupTailscale(await decrypt(params[4][0].authKey)),
+        ...params[5].map((volume) =>
+          sandbox?.mount(
+            volume.sandbox_volumes.path,
+            `/${volume.users?.did || ""}${volume.users?.did ? "/" : ""}${volume.sandbox_volumes.id}/`,
+          ),
         ),
-      ),
-      params[4].length > 0 &&
-        sandbox?.setupTailscale(await decrypt(params[4][0].authKey)),
-      ...params[5].map((volume) =>
-        sandbox?.mount(
-          volume.sandbox_volumes.path,
-          `/${volume.users?.did || ""}${volume.users?.did ? "/" : ""}${volume.sandbox_volumes.id}/`,
-        ),
-      ),
-    ]);
+      ]),
+    );
 
     if (record.repo) {
       c.executionCtx.waitUntil(

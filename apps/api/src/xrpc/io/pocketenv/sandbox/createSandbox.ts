@@ -45,6 +45,23 @@ export default function (server: Server, ctx: Context) {
           )
           .execute();
         if (existingSandbox) {
+          const sandbox =
+            existingSandbox.sandboxes.provider === Providers.CLOUDFLARE
+              ? ctx.cfsandbox(existingSandbox.sandboxes.base!)
+              : ctx.sandbox();
+
+          await sandbox.post(
+            `/v1/sandboxes/${existingSandbox.sandboxes.id}/start`,
+            {
+              repo: input.repo,
+              keepAlive: input.keepAlive,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${await generateJwt(auth.credentials.did)}`,
+              },
+            },
+          );
           return {
             id: existingSandbox.sandboxes.id,
             name: existingSandbox.sandboxes.name,

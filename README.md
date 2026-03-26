@@ -1,6 +1,7 @@
 ![](https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExb25lY3R1dmVyczRwMmE5a204cmlkcjVmazluZ3V3MDE3YzNyMW1oaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/uWLJEGCSWdmvK/giphy.gif)
 
 [![discord](https://img.shields.io/discord/1270021300240252979?label=discord&logo=discord&color=5865F2)](https://discord.gg/9ada4pFUFS)
+![GitHub Downloads](https://img.shields.io/github/downloads/pocketenv-io/pocketenv/total)
 [![Deploy Cloudflare Worker](https://github.com/pocketenv-io/pocketenv/actions/workflows/deploy.yml/badge.svg)](https://github.com/pocketenv-io/pocketenv/actions/workflows/deploy.yml)
 
 **Pocketenv** is an open sandbox platform — for agents, for tinkerers, for anyone tired of being locked into one provider's ecosystem.

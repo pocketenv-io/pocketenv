@@ -92,14 +92,11 @@ export class CloudflareSandbox implements BaseSandbox {
   async mount(path: string, prefix?: string): Promise<void> {
     try {
       await this.mkdir(path);
-      await this.sandbox.mountBucket(env.VOLUME_BUCKET, path, {
-        endpoint: `https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com`,
-        prefix,
-        credentials: {
-          accessKeyId: env.R2_ACCESS_KEY_ID,
-          secretAccessKey: env.R2_SECRET_ACCESS_KEY,
-        },
-      });
+      const passwdFile = `/tmp/.passwd-s3fs-${crypto.randomUUID()}`;
+      await this.writeFile(passwdFile, `${env.R2_ACCESS_KEY_ID}:${env.R2_SECRET_ACCESS_KEY}`);
+      await this.sh`chmod 0600 '${passwdFile}'`;
+      const bucketPath = prefix ? `${env.VOLUME_BUCKET}:${prefix}` : env.VOLUME_BUCKET;
+      await this.sh`s3fs '${bucketPath}' '${path}' -o 'passwd_file=${passwdFile},nomixupload,url=https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com'`;
     } catch (e) {
       console.log(e);
     }

@@ -273,11 +273,6 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     return c.json({ error: "Sandbox not found" }, 404);
   }
 
-  if (record.status === "RUNNING") {
-    console.log(`Sandbox ${record.id} is already running`);
-    return c.json({});
-  }
-
   const sandboxId = Array.from(
     crypto.getRandomValues(new Uint8Array(16)),
     (b) => b.toString(16).padStart(2, "0"),

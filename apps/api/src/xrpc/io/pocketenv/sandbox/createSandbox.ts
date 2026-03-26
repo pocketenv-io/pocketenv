@@ -10,7 +10,7 @@ import chalk from "chalk";
 import { createAgent } from "lib/agent";
 import { TID } from "@atproto/common";
 import schema from "schema";
-import { and, eq, or } from "drizzle-orm";
+import { and, eq, not, or } from "drizzle-orm";
 import {
   validateMain,
   type Main,
@@ -40,6 +40,7 @@ export default function (server: Server, ctx: Context) {
             and(
               eq(sandboxes.repo, input.repo),
               eq(schema.users.did, credentials.did),
+              eq(sandboxes.base, input.base.split("/").pop()!),
             ),
           )
           .execute();

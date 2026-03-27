@@ -255,7 +255,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
   await sandbox.setupDefaultSshKeys();
 
-  await Promise.all([
+  Promise.all([
     ...params[0]
       .filter((x) => x.files !== null)
       .map((record) =>
@@ -275,7 +275,13 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
         `/${volume.users?.did || ""}${volume.users?.did ? "/" : ""}${volume.sandbox_volumes.id}/`,
       ),
     ),
-  ]);
+  ])
+    .then(() => consola.success(`Sandbox ${c.req.param("sandboxId")} is ready`))
+    .catch((e) =>
+      consola.error(
+        `Failed to set up sandbox ${c.req.param("sandboxId")}: ${e}`,
+      ),
+    );
 
   if (record.repo) {
     sandbox

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.5] - 2026-03-27
+
+### Fixed
+
+- **Ctrl+C signal handling**: Replaced `stty raw` with `stty -icanon -echo` when probing terminal background color, preventing `ISIG` from being disabled so Ctrl+C continues to work even if the terminal restore fails.
+- **Terminal restore robustness**: `tty` close and `stty` restore in the `finally` block are now wrapped in individual try/catch blocks to avoid masking earlier errors.
+
+---
+
 ## [0.3.4] - 2026-03-27
 
 ### Added

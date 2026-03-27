@@ -23,14 +23,22 @@ function detectLightTerminal(): boolean {
   if (process.stdout.isTTY) {
     try {
       const savedState = execSync("stty -g </dev/tty 2>/dev/null", { encoding: "utf8" }).trim();
+      // If we couldn't save the state, skip to avoid leaving the terminal in raw mode.
+      if (!savedState) return false;
+      const tty = fs.openSync("/dev/tty", "r+");
       try {
-        const tty = fs.openSync("/dev/tty", "r+");
-        execSync("stty raw -echo min 0 time 5 </dev/tty 2>/dev/null");
+        execSync("stty raw -echo min 0 time 2 </dev/tty 2>/dev/null");
         fs.writeSync(tty, "\x1b]11;?\x07");
+        // Read in a loop until we see the response terminator (BEL or ST),
+        // so leftover bytes don't leak into the terminal input buffer.
+        let resp = "";
         const buf = Buffer.alloc(64);
-        const n = fs.readSync(tty, buf, 0, 64, null);
-        fs.closeSync(tty);
-        const resp = buf.slice(0, n).toString();
+        for (let i = 0; i < 16; i++) {
+          const n = fs.readSync(tty, buf, 0, 64, null);
+          if (n === 0) break;
+          resp += buf.slice(0, n).toString();
+          if (resp.includes("\x07") || resp.includes("\x1b\\")) break;
+        }
         const m = resp.match(/rgb:([0-9a-f]+)\/([0-9a-f]+)\/([0-9a-f]+)/i);
         if (m?.[1] && m[2] && m[3]) {
           // Components can be 2 or 4 hex digits; normalize to 0-255
@@ -39,6 +47,7 @@ function detectLightTerminal(): boolean {
           return 0.299 * r + 0.587 * g + 0.114 * b > 127;
         }
       } finally {
+        fs.closeSync(tty);
         execSync(`stty ${savedState} </dev/tty 2>/dev/null`);
       }
     } catch {}

@@ -8,6 +8,7 @@ import {
   sandboxFiles,
   sandboxSecrets,
   sandboxVariables,
+  sandboxVolumes,
   secrets,
   sshKeys,
   tailscaleAuthKeys,
@@ -243,6 +244,13 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       .from(tailscaleAuthKeys)
       .where(eq(tailscaleAuthKeys.sandboxId, c.req.param("sandboxId")))
       .execute(),
+    c.var.db
+      .select()
+      .from(sandboxVolumes)
+      .leftJoin(sandboxes, eq(sandboxes.id, sandboxVolumes.sandboxId))
+      .leftJoin(users, eq(users.id, sandboxes.userId))
+      .where(eq(sandboxVolumes.sandboxId, c.req.param("sandboxId")))
+      .execute(),
   ]);
 
   await sandbox.setupDefaultSshKeys();
@@ -261,6 +269,12 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     ),
     params[2].length > 0 &&
       sandbox?.setupTailscale(decrypt(params[2][0].authKey)),
+    ...params[3].map((volume) =>
+      sandbox?.mount(
+        volume.sandbox_volumes.path,
+        `/${volume.users?.did || ""}${volume.users?.did ? "/" : ""}${volume.sandbox_volumes.id}/`,
+      ),
+    ),
   ]);
 
   if (record.repo) {

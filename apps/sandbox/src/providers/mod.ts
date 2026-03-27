@@ -22,6 +22,8 @@ export abstract class BaseSandbox {
   abstract setupTailscale(authKey: string): Promise<void>;
   abstract clone(repoUrl: string): Promise<any>;
   abstract setupDefaultSshKeys(): Promise<void>;
+  abstract mount(path: string, prefix?: string): Promise<void>;
+  abstract unmount(path: string): Promise<void>;
 }
 
 abstract class BaseProvider {

@@ -1,9 +1,10 @@
 import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
-import process from "node:process";
+import process, { env } from "node:process";
 import consola from "consola";
 import { Sprite, SpritesClient } from "@fly/sprites";
 import path from "node:path";
 import { Buffer } from "node:buffer";
+import crypto from "node:crypto";
 
 export class SpriteSandbox implements BaseSandbox {
   constructor(private sprite: Sprite) {}
@@ -117,6 +118,43 @@ export class SpriteSandbox implements BaseSandbox {
       "-c",
       `git clone ${repoUrl} || git -C ${dir} pull`,
     ]);
+  }
+
+  async mount(path: string, prefix?: string): Promise<void> {
+    try {
+      await this
+        .sh`type s3fs || apt-get update && apt-get install -y s3fs || sudo apt-get update && sudo apt-get install -y s3fs || true`;
+      await this.sh`mkdir -p ${path} || sudo mkdir -p ${path}`;
+
+      await this.mkdir(path);
+
+      const passwdFile = `/tmp/.passwd-s3fs-${crypto.randomUUID()}`;
+
+      await this.writeFile(
+        passwdFile,
+        `${env.R2_ACCESS_KEY_ID}:${env.R2_SECRET_ACCESS_KEY}`,
+      );
+
+      await this.sh`chmod 0600 '${passwdFile}'`;
+
+      const bucketPath = prefix
+        ? `${env.VOLUME_BUCKET}:${prefix}`
+        : env.VOLUME_BUCKET;
+
+      await this
+        .sh`s3fs '${bucketPath}' '${path}' -o 'passwd_file=${passwdFile},nomixupload,compat_dir,url=https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com'`;
+    } catch (error) {
+      consola.error("Error mounting S3 bucket:", error);
+    }
+  }
+
+  async unmount(path: string): Promise<void> {
+    try {
+      await this
+        .sh`fusermount -u ${path} || sudo fusermount -u ${path} || umount ${path}`;
+    } catch (error) {
+      consola.error("Error unmounting S3 bucket:", error);
+    }
   }
 }
 

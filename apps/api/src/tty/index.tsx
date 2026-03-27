@@ -55,42 +55,53 @@ async function createTerminalSession(ctx: Context, id: string) {
     throw new Error(`Sandbox not found: ${id}`);
   }
 
-  const [variables, secrets, files, sshKeys, [tailscale]] = await Promise.all([
-    ctx.db
-      .select()
-      .from(schema.sandboxVariables)
-      .leftJoin(
-        schema.variables,
-        eq(schema.variables.id, schema.sandboxVariables.variableId),
-      )
-      .where(eq(schema.sandboxVariables.sandboxId, id))
-      .execute(),
-    ctx.db
-      .select()
-      .from(schema.sandboxSecrets)
-      .leftJoin(
-        schema.secrets,
-        eq(schema.secrets.id, schema.sandboxSecrets.secretId),
-      )
-      .where(eq(schema.sandboxSecrets.sandboxId, id))
-      .execute(),
-    ctx.db
-      .select()
-      .from(schema.sandboxFiles)
-      .leftJoin(schema.files, eq(schema.files.id, schema.sandboxFiles.fileId))
-      .where(eq(schema.sandboxFiles.sandboxId, id))
-      .execute(),
-    ctx.db
-      .select()
-      .from(schema.sshKeys)
-      .where(eq(schema.sshKeys.sandboxId, id))
-      .execute(),
-    ctx.db
-      .select()
-      .from(schema.tailscaleAuthKeys)
-      .where(eq(schema.tailscaleAuthKeys.sandboxId, id))
-      .execute(),
-  ]);
+  const [variables, secrets, files, sshKeys, [tailscale], volumes] =
+    await Promise.all([
+      ctx.db
+        .select()
+        .from(schema.sandboxVariables)
+        .leftJoin(
+          schema.variables,
+          eq(schema.variables.id, schema.sandboxVariables.variableId),
+        )
+        .where(eq(schema.sandboxVariables.sandboxId, id))
+        .execute(),
+      ctx.db
+        .select()
+        .from(schema.sandboxSecrets)
+        .leftJoin(
+          schema.secrets,
+          eq(schema.secrets.id, schema.sandboxSecrets.secretId),
+        )
+        .where(eq(schema.sandboxSecrets.sandboxId, id))
+        .execute(),
+      ctx.db
+        .select()
+        .from(schema.sandboxFiles)
+        .leftJoin(schema.files, eq(schema.files.id, schema.sandboxFiles.fileId))
+        .where(eq(schema.sandboxFiles.sandboxId, id))
+        .execute(),
+      ctx.db
+        .select()
+        .from(schema.sshKeys)
+        .where(eq(schema.sshKeys.sandboxId, id))
+        .execute(),
+      ctx.db
+        .select()
+        .from(schema.tailscaleAuthKeys)
+        .where(eq(schema.tailscaleAuthKeys.sandboxId, id))
+        .execute(),
+      ctx.db
+        .select()
+        .from(schema.sandboxVolumes)
+        .leftJoin(
+          schema.sandboxes,
+          eq(schema.sandboxes.id, schema.sandboxVolumes.sandboxId),
+        )
+        .leftJoin(schema.users, eq(schema.users.id, schema.sandboxes.userId))
+        .where(eq(schema.sandboxVolumes.sandboxId, id))
+        .execute(),
+    ]);
 
   const client = new SpritesClient(env.SPRITE_TOKEN);
   const sprite = client.sprite(sandbox.sandboxId!);
@@ -185,9 +196,53 @@ async function createTerminalSession(ctx: Context, id: string) {
     }
   };
 
+  const mount = async (path: string, prefix?: string): Promise<void> => {
+    try {
+      await sprite.execFile("bash", [
+        "-c",
+        `type s3fs || apt-get update && apt-get install -y s3fs || sudo apt-get update && sudo apt-get install -y s3fs`,
+      ]);
+      await sprite.execFile("bash", [
+        "-c",
+        `mkdir -p ${path} || sudo mkdir -p ${path}`,
+      ]);
+
+      const passwdFile = `/tmp/.passwd-s3fs-${crypto.randomUUID()}`;
+
+      await writeFile(
+        passwdFile,
+        `${env.R2_ACCESS_KEY_ID}:${env.R2_SECRET_ACCESS_KEY}`,
+      );
+
+      await sprite.execFile("bash", ["-c", `chmod 0600 '${passwdFile}'`]);
+
+      const bucketPath = prefix
+        ? `${env.VOLUME_BUCKET}:${prefix}`
+        : env.VOLUME_BUCKET;
+
+      await sprite.execFile("bash", [
+        "-c",
+        `s3fs '${bucketPath}' '${path}' -o 'passwd_file=${passwdFile},nomixupload,compat_dir,url=https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com'`,
+      ]);
+    } catch (error) {
+      consola.error("Error mounting S3 bucket:", error);
+    }
+  };
+
+  const unmount = async (path: string): Promise<void> => {
+    try {
+      await sprite.execFile("bash", [
+        "-c",
+        `fusermount -u ${path} || sudo fusermount -u ${path} || umount ${path}`,
+      ]);
+    } catch (error) {
+      consola.error("Error unmounting S3 bucket:", error);
+    }
+  };
+
   await setupDefaultSshKeys();
 
-  await Promise.all([
+  Promise.all([
     ...files
       .filter((x) => x.files !== null)
       .map(async (record) =>
@@ -197,7 +252,15 @@ async function createTerminalSession(ctx: Context, id: string) {
       setupSshKeys(decrypt(record.privateKey), record.publicKey),
     ),
     tailscale && setupTailscale(decrypt(tailscale.authKey)),
-  ]);
+    ...volumes.map((volume) =>
+      mount(
+        volume.sandbox_volumes.path,
+        `/${volume.users?.did || ""}${volume.users?.did ? "/" : ""}${volume.sandbox_volumes.id}/`,
+      ),
+    ),
+  ])
+    .then(() => consola.success(`Sandbox ${id} is ready`))
+    .catch((err) => consola.error(`Error setting up sandbox ${id}:`, err));
 
   const session: Session = {
     cmd,

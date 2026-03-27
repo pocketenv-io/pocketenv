@@ -27,7 +27,9 @@ function detectLightTerminal(): boolean {
       if (!savedState) return false;
       const tty = fs.openSync("/dev/tty", "r+");
       try {
-        execSync("stty raw -echo min 0 time 2 </dev/tty 2>/dev/null");
+        // Use -icanon -echo instead of raw: avoids disabling ISIG (Ctrl+C) so
+        // signal handling stays intact even if the restore below fails.
+        execSync("stty -icanon -echo min 0 time 2 </dev/tty 2>/dev/null");
         fs.writeSync(tty, "\x1b]11;?\x07");
         // Read in a loop until we see the response terminator (BEL or ST),
         // so leftover bytes don't leak into the terminal input buffer.
@@ -47,8 +49,8 @@ function detectLightTerminal(): boolean {
           return 0.299 * r + 0.587 * g + 0.114 * b > 127;
         }
       } finally {
-        fs.closeSync(tty);
-        execSync(`stty ${savedState} </dev/tty 2>/dev/null`);
+        try { fs.closeSync(tty); } catch {}
+        try { execSync(`stty ${savedState} </dev/tty 2>/dev/null`); } catch {}
       }
     } catch {}
   }

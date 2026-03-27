@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.4] - 2026-03-27
+
+### Added
+
+- **Nanoclaw sandbox provider**: New Cloudflare-based `nanoclaw` sandbox deployment with its own Dockerfile, Wrangler config, and banner.
+- **Volume support for Sprites, Daytona, Deno, and Vercel providers**: All major providers now support volume mounting alongside the existing Cloudflare provider.
+- **`@anthropic-ai/claude-code` in Dockerfiles**: Claude Code is now pre-installed in sandbox images.
+- **`keepAlive` option**: Sandbox APIs now accept a `keepAlive` option to control sandbox lifecycle.
+- **Sandbox reuse by repo and DID**: When a matching sandbox (same repo + DID) already exists, it is returned instead of creating a new one.
+- **GitLab repo expansion**: CLI and web now support GitLab repository URLs in addition to GitHub and Tangled.
+- **`/new` page in web**: New page for creating sandboxes directly from a repository URL.
+- **"Open in Pocketenv" badge**: Added SVG badge and README integration so projects can link directly to Pocketenv.
+- **GitHub downloads badge**: README now shows a download count badge.
+- **VS Code expose button in web UI**: Sandbox detail page now has a button to expose VS Code and open the preview URL.
+- **`folder` param for Cloudflare preview URL**: Preview URL generation now accepts an optional folder parameter.
+
+### Changed
+
+- **Sandbox creation flow**: Sandbox is now started on create; `sandboxId`, `status`, and `startedAt` are set on start. The `sandboxId` is no longer cleared on stop.
+- **Async repo cloning**: Repository cloning on sandbox creation is now done asynchronously, unblocking the terminal session sooner.
+- **Sandbox configs run in background on start**: Provider config steps are now non-blocking.
+- **Sandbox POST moved outside DB transaction**: Improves reliability of sandbox creation under load.
+- **s3fs options**: `compat_dir` option enabled; `s3fs` is now exec'd directly for volume mounting.
+- **Sandbox instance type**: Upgraded to `standard-3` for improved performance.
+- **Zerobrew setup**: Zerobrew binaries moved to root `~/.local/bin` and installed consistently across sandbox, Daytona, and Cloudflare Dockerfiles. Zerobrew installer script removed in favor of direct binary install.
+- **`node:lts-trixie-slim` base image**: Codex and related sandbox images now use `node:lts-trixie-slim`.
+- **`coder` user added to Codex and CF sandbox Dockerfiles**.
+- **oh-my-posh install combined** with Node version bump to reduce image layers.
+- **Stale sandbox port cleanup**: `sandboxPorts` records are now deleted for stale sandboxes.
+- **`exposeVscode` allows unauthenticated queries** for public (userId-less) sandboxes; AT Protocol agent creation is deferred until the sandbox has an `at://` URI.
+- **Sandbox filtered by base segment** when looking up existing sandboxes.
+- **Sandbox start retries removed**: Retry wrappers and readiness waits have been simplified; sandbox is started once before opening the terminal session.
+
+### Fixed
+
+- **Terminal rendering issue**: Fixed a CLI rendering bug affecting terminal output (theme.ts).
+- **Volume not correctly mounted on start**: Fixed volume mount logic when starting an existing sandbox.
+- **Sandbox port upsert**: Port record is now inserted if an update hits no rows.
+- **Sandbox port deduplication**: Stale sandbox ports are cleaned up to avoid duplicate entries.
+
+---
+
 ## [0.3.3] - 2026-03-23
 
 ### Added

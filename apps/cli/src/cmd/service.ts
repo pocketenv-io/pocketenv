@@ -12,7 +12,7 @@ import process from "node:process";
 dayjs.extend(relativeTime);
 
 type CreateServiceOptions = {
-  ports?: number[];
+  ports?: string[];
   description?: string;
 };
 
@@ -30,9 +30,9 @@ export async function createService(
       {
         service: {
           name,
-          command,
+          command: command.join(" "),
           description,
-          ports,
+          ports: ports?.map((port) => parseInt(port)),
         },
       },
       {

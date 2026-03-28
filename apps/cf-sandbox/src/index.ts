@@ -481,7 +481,16 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
     c.executionCtx.waitUntil(
       Promise.all(
-        params[7].map((service) => sandbox?.startService(service.command)),
+        params[7].map(async (service) => {
+          const id = await sandbox?.startService(service.command);
+          if (id) {
+            await c.var.db
+              .update(services)
+              .set({ serviceId: id, status: "RUNNING" })
+              .where(eq(services.id, service.id))
+              .execute();
+          }
+        }),
       ),
     );
   } catch (err) {

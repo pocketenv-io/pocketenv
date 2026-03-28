@@ -43,6 +43,7 @@ export default function (server: Server, ctx: Context) {
         name: record.name,
         description: record.description!,
         command: record.command,
+        status: record.status,
         createdAt: record.createdAt.toISOString(),
       })),
     } satisfies OutputSchema;

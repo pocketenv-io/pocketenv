@@ -81,6 +81,10 @@ program
     "--repo, -r <repo>",
     "the repository to clone into the sandbox (e.g., github:user/repo, tangled:user/repo, or a Git URL)",
   )
+  .option(
+    "--keep-alive, -k",
+    "keep the sandbox alive, ignoring inactivity timeout",
+  )
   .description("start the given sandbox")
   .action(start);
 

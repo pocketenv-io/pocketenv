@@ -9,7 +9,11 @@ import waitUntilRunning from "../lib/waitUntilRunning";
 
 async function start(
   name: string,
-  { ssh, repo }: { ssh?: boolean; repo?: string },
+  {
+    ssh,
+    repo,
+    keepAlive,
+  }: { ssh?: boolean; repo?: string; keepAlive?: boolean },
 ) {
   const token = await getAccessToken();
   if (repo) repo = expandRepo(repo);
@@ -20,6 +24,7 @@ async function start(
       "/xrpc/io.pocketenv.sandbox.startSandbox",
       {
         repo,
+        keepAlive,
       },
       {
         params: {

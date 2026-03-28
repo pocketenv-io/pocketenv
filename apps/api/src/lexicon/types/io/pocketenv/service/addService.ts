@@ -9,7 +9,10 @@ import { CID } from "multiformats/cid";
 import { type HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
 import type * as IoPocketenvServiceDefs from "./defs";
 
-export type QueryParams = {};
+export interface QueryParams {
+  /** The ID of the sandbox to which the service belongs. */
+  sandboxId: string;
+}
 
 export interface InputSchema {
   service: IoPocketenvServiceDefs.Service;

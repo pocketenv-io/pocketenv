@@ -12,6 +12,7 @@ import sandboxFiles from "./sandbox-files";
 import tailscaleAuthKeys from "./tailscale-auth-keys";
 import sshKeys from "./ssh-keys";
 import sandboxPorts from "./sandbox-ports";
+import services from "./services";
 
 export {
   sandboxes,
@@ -28,4 +29,5 @@ export {
   tailscaleAuthKeys,
   sshKeys,
   sandboxPorts,
+  services,
 };

@@ -12,6 +12,7 @@ import sandboxFiles from "./sandbox-files.ts";
 import sshKeys from "./ssh-keys.ts";
 import tailscaleAuthKeys from "./tailscale-auth-keys.ts";
 import sandboxPorts from "./sandbox-ports.ts";
+import services from "./services.ts";
 
 export {
   sandboxes,
@@ -28,4 +29,5 @@ export {
   sshKeys,
   tailscaleAuthKeys,
   sandboxPorts,
+  services,
 };

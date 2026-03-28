@@ -5,6 +5,16 @@ id = "io.pocketenv.service.addService"
 defs = new Mapping<String, Procedure> {
   ["main"] {
     type = "procedure"
+    parameters {
+      type = "params"
+      required = List("sandboxId")
+      properties {
+        ["sandboxId"] = new StringType {
+          type = "string"
+          description = "The ID of the sandbox to which the service belongs."
+        }
+      }
+    }
     input {
       encoding = "application/json"
       schema {

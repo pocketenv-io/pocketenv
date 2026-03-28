@@ -2104,6 +2104,17 @@ export const schemaDict = {
     defs: {
       main: {
         type: "procedure",
+        parameters: {
+          type: "params",
+          required: ["sandboxId"],
+          properties: {
+            sandboxId: {
+              type: "string",
+              description:
+                "The ID of the sandbox to which the service belongs.",
+            },
+          },
+        },
         input: {
           encoding: "application/json",
           schema: {

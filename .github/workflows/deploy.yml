@@ -34,6 +34,7 @@ jobs:
             zeroclaw,
             wasmer,
             nanoclaw,
+            cursor,
           ]
     steps:
       - name: Checkout repository

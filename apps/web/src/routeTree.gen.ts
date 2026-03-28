@@ -25,6 +25,7 @@ import { Route as DidSandboxRkeyVariablesRouteImport } from './routes/$did.sandb
 import { Route as DidSandboxRkeyTailscaleRouteImport } from './routes/$did.sandbox.$rkey/tailscale'
 import { Route as DidSandboxRkeySshKeysRouteImport } from './routes/$did.sandbox.$rkey/ssh-keys'
 import { Route as DidSandboxRkeySettingsRouteImport } from './routes/$did.sandbox.$rkey/settings'
+import { Route as DidSandboxRkeyServicesRouteImport } from './routes/$did.sandbox.$rkey/services'
 import { Route as DidSandboxRkeySecretsRouteImport } from './routes/$did.sandbox.$rkey/secrets'
 import { Route as DidSandboxRkeyRepositoryRouteImport } from './routes/$did.sandbox.$rkey/repository'
 import { Route as DidSandboxRkeyPortsRouteImport } from './routes/$did.sandbox.$rkey/ports'
@@ -111,6 +112,11 @@ const DidSandboxRkeySettingsRoute = DidSandboxRkeySettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DidSandboxRkeyRoute,
 } as any)
+const DidSandboxRkeyServicesRoute = DidSandboxRkeyServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => DidSandboxRkeyRoute,
+} as any)
 const DidSandboxRkeySecretsRoute = DidSandboxRkeySecretsRouteImport.update({
   id: '/secrets',
   path: '/secrets',
@@ -155,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/$did/sandbox/$rkey/ports': typeof DidSandboxRkeyPortsRoute
   '/$did/sandbox/$rkey/repository': typeof DidSandboxRkeyRepositoryRoute
   '/$did/sandbox/$rkey/secrets': typeof DidSandboxRkeySecretsRoute
+  '/$did/sandbox/$rkey/services': typeof DidSandboxRkeyServicesRoute
   '/$did/sandbox/$rkey/settings': typeof DidSandboxRkeySettingsRoute
   '/$did/sandbox/$rkey/ssh-keys': typeof DidSandboxRkeySshKeysRoute
   '/$did/sandbox/$rkey/tailscale': typeof DidSandboxRkeyTailscaleRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/$did/sandbox/$rkey/ports': typeof DidSandboxRkeyPortsRoute
   '/$did/sandbox/$rkey/repository': typeof DidSandboxRkeyRepositoryRoute
   '/$did/sandbox/$rkey/secrets': typeof DidSandboxRkeySecretsRoute
+  '/$did/sandbox/$rkey/services': typeof DidSandboxRkeyServicesRoute
   '/$did/sandbox/$rkey/settings': typeof DidSandboxRkeySettingsRoute
   '/$did/sandbox/$rkey/ssh-keys': typeof DidSandboxRkeySshKeysRoute
   '/$did/sandbox/$rkey/tailscale': typeof DidSandboxRkeyTailscaleRoute
@@ -201,6 +209,7 @@ export interface FileRoutesById {
   '/$did/sandbox/$rkey/ports': typeof DidSandboxRkeyPortsRoute
   '/$did/sandbox/$rkey/repository': typeof DidSandboxRkeyRepositoryRoute
   '/$did/sandbox/$rkey/secrets': typeof DidSandboxRkeySecretsRoute
+  '/$did/sandbox/$rkey/services': typeof DidSandboxRkeyServicesRoute
   '/$did/sandbox/$rkey/settings': typeof DidSandboxRkeySettingsRoute
   '/$did/sandbox/$rkey/ssh-keys': typeof DidSandboxRkeySshKeysRoute
   '/$did/sandbox/$rkey/tailscale': typeof DidSandboxRkeyTailscaleRoute
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/$did/sandbox/$rkey/ports'
     | '/$did/sandbox/$rkey/repository'
     | '/$did/sandbox/$rkey/secrets'
+    | '/$did/sandbox/$rkey/services'
     | '/$did/sandbox/$rkey/settings'
     | '/$did/sandbox/$rkey/ssh-keys'
     | '/$did/sandbox/$rkey/tailscale'
@@ -248,6 +258,7 @@ export interface FileRouteTypes {
     | '/$did/sandbox/$rkey/ports'
     | '/$did/sandbox/$rkey/repository'
     | '/$did/sandbox/$rkey/secrets'
+    | '/$did/sandbox/$rkey/services'
     | '/$did/sandbox/$rkey/settings'
     | '/$did/sandbox/$rkey/ssh-keys'
     | '/$did/sandbox/$rkey/tailscale'
@@ -271,6 +282,7 @@ export interface FileRouteTypes {
     | '/$did/sandbox/$rkey/ports'
     | '/$did/sandbox/$rkey/repository'
     | '/$did/sandbox/$rkey/secrets'
+    | '/$did/sandbox/$rkey/services'
     | '/$did/sandbox/$rkey/settings'
     | '/$did/sandbox/$rkey/ssh-keys'
     | '/$did/sandbox/$rkey/tailscale'
@@ -406,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DidSandboxRkeySettingsRouteImport
       parentRoute: typeof DidSandboxRkeyRoute
     }
+    '/$did/sandbox/$rkey/services': {
+      id: '/$did/sandbox/$rkey/services'
+      path: '/services'
+      fullPath: '/$did/sandbox/$rkey/services'
+      preLoaderRoute: typeof DidSandboxRkeyServicesRouteImport
+      parentRoute: typeof DidSandboxRkeyRoute
+    }
     '/$did/sandbox/$rkey/secrets': {
       id: '/$did/sandbox/$rkey/secrets'
       path: '/secrets'
@@ -450,6 +469,7 @@ interface DidSandboxRkeyRouteChildren {
   DidSandboxRkeyPortsRoute: typeof DidSandboxRkeyPortsRoute
   DidSandboxRkeyRepositoryRoute: typeof DidSandboxRkeyRepositoryRoute
   DidSandboxRkeySecretsRoute: typeof DidSandboxRkeySecretsRoute
+  DidSandboxRkeyServicesRoute: typeof DidSandboxRkeyServicesRoute
   DidSandboxRkeySettingsRoute: typeof DidSandboxRkeySettingsRoute
   DidSandboxRkeySshKeysRoute: typeof DidSandboxRkeySshKeysRoute
   DidSandboxRkeyTailscaleRoute: typeof DidSandboxRkeyTailscaleRoute
@@ -464,6 +484,7 @@ const DidSandboxRkeyRouteChildren: DidSandboxRkeyRouteChildren = {
   DidSandboxRkeyPortsRoute: DidSandboxRkeyPortsRoute,
   DidSandboxRkeyRepositoryRoute: DidSandboxRkeyRepositoryRoute,
   DidSandboxRkeySecretsRoute: DidSandboxRkeySecretsRoute,
+  DidSandboxRkeyServicesRoute: DidSandboxRkeyServicesRoute,
   DidSandboxRkeySettingsRoute: DidSandboxRkeySettingsRoute,
   DidSandboxRkeySshKeysRoute: DidSandboxRkeySshKeysRoute,
   DidSandboxRkeyTailscaleRoute: DidSandboxRkeyTailscaleRoute,

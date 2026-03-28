@@ -1,0 +1,21 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.service.restartService",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "serviceId"
+        ],
+        "properties": {
+          "serviceId": {
+            "type": "string",
+            "description": "The ID of the service to restart."
+          }
+        }
+      }
+    }
+  }
+}

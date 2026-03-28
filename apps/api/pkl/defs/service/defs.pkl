@@ -1,0 +1,65 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.service.defs"
+defs = new Mapping<String, ObjectType> {
+  ["serviceView"] = new ObjectType {
+    type = "object"
+    properties {
+      ["id"] = new StringType {
+        type = "string"
+        description = "Unique identifier of the service."
+      }
+      ["name"] = new StringType {
+        type = "string"
+        description = "Name of the service."
+      }
+      ["command"] = new StringType {
+        type = "string"
+        description = "Command to run the service."
+      }
+      ["description"] = new StringType {
+        type = "string"
+        description = "Description of the service."
+      }
+      ["ports"] = new Array {
+        type = "array"
+        items = new IntegerType {
+          type = "integer"
+        }
+      }
+      ["createdAt"] = new StringType {
+        type = "string"
+        format = "datetime"
+      }
+      ["updatedAt"] = new StringType {
+        type = "string"
+        format = "datetime"
+      }
+    }
+  }
+  ["service"] = new ObjectType {
+    type = "object"
+    required = List("name", "command")
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "Name of the service."
+      }
+      ["command"] = new StringType {
+        type = "string"
+        description = "Command to run the service."
+      }
+      ["description"] = new StringType {
+        type = "string"
+        description = "Description of the service."
+      }
+      ["ports"] = new Array {
+        type = "array"
+        items = new IntegerType {
+          type = "integer"
+        }
+      }
+    }
+  }
+}

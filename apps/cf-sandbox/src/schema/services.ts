@@ -14,6 +14,7 @@ const services = pgTable(
     name: text("name").notNull(),
     command: text("command").notNull(),
     description: text("description"),
+    serviceId: text("service_id"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },

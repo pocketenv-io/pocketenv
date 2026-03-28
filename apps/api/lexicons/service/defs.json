@@ -1,0 +1,68 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.service.defs",
+  "defs": {
+    "serviceView": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the service."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the service."
+        },
+        "command": {
+          "type": "string",
+          "description": "Command to run the service."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the service."
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "datetime"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "datetime"
+        }
+      }
+    },
+    "service": {
+      "type": "object",
+      "required": [
+        "name",
+        "command"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the service."
+        },
+        "command": {
+          "type": "string",
+          "description": "Command to run the service."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the service."
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}

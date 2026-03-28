@@ -25,6 +25,8 @@ export abstract class BaseSandbox {
   abstract unexpose(port: number): Promise<void>;
   abstract exposeVscode(hostname: string): Promise<string | null>;
   abstract unexposeVscode(): Promise<void>;
+  abstract startService(command: string): Promise<string>;
+  abstract stopService(id: string): Promise<void>;
 }
 
 abstract class BaseProvider {

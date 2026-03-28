@@ -43,6 +43,11 @@ import getExposedPorts from "./io/pocketenv/sandbox/getExposedPorts";
 import unexposePort from "./io/pocketenv/sandbox/unexposePort";
 import exposeVscode from "./io/pocketenv/sandbox/exposeVscode";
 import exec from "./io/pocketenv/sandbox/exec";
+import addService from "./io/pocketenv/service/addService";
+import deleteService from "./io/pocketenv/service/deleteService";
+import getServices from "./io/pocketenv/service/getServices";
+import restartService from "./io/pocketenv/service/restartService";
+import updateService from "./io/pocketenv/service/updateService";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
@@ -92,6 +97,11 @@ export default function (server: Server, ctx: Context) {
   unexposePort(server, ctx);
   exposeVscode(server, ctx);
   exec(server, ctx);
+  addService(server, ctx);
+  deleteService(server, ctx);
+  getServices(server, ctx);
+  restartService(server, ctx);
+  updateService(server, ctx);
 
   return server;
 }

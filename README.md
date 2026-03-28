@@ -39,6 +39,11 @@ npm install -g @pocketenv/cli
 brew install pocketenv-io/tap/pocketenv
 ```
 
+**Arch Linux:**
+```sh
+yay -Syu pocketenv
+```
+
 ---
 
 ## Why does this exist?

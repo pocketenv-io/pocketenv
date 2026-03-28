@@ -1,6 +1,7 @@
 # Pocketenv CLI
 
 [![npm version](https://img.shields.io/npm/v/@pocketenv/cli?color=green)](https://www.npmjs.com/package/@pocketenv/cli)
+![NPM Downloads](https://img.shields.io/npm/dw/%40pocketenv%2Fcli)
 [![discord](https://img.shields.io/discord/1270021300240252979?label=discord&logo=discord&color=5865F2)](https://discord.gg/9ada4pFUFS)
 [![License: MPL-2.0](https://img.shields.io/badge/License-MPL_2.0-blue.svg)](https://opensource.org/licenses/MPL-2.0)
 

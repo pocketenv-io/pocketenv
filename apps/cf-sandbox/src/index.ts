@@ -38,6 +38,7 @@ import jwt from "@tsndr/cloudflare-worker-jwt";
 import { consola } from "consola";
 import decrypt from "./lib/decrypt";
 import crypto from "node:crypto";
+import services from "./schema/services";
 
 type Bindings = {
   Sandbox: DurableObjectNamespace<Sandbox<Env>>;
@@ -798,6 +799,100 @@ app.delete("/v1/sandboxes/:sandboxId/vscode", async (c) => {
       errorMessage,
     );
     return c.json({ error: `Failed to unexpose vscode: ${errorMessage}` }, 500);
+  }
+});
+
+app.post("/v1/sandboxes/:sandboxId/services/:serviceId", async (c) => {
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
+
+  if (!record) {
+    return c.json({ error: "Sandbox not found" }, 404);
+  }
+
+  if (record.provider !== "cloudflare") {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  try {
+    let sandbox: BaseSandbox | null = null;
+
+    sandbox = await createSandbox("cloudflare", {
+      id: record.sandboxId!,
+    });
+
+    const [service] = await c.var.db
+      .select()
+      .from(services)
+      .where(
+        and(
+          eq(services.id, c.req.param("serviceId")),
+          eq(services.sandboxId, record.id),
+        ),
+      )
+      .execute();
+
+    if (!service) {
+      return c.json({ error: "Service not found" }, 404);
+    }
+
+    const serviceId = await sandbox.startService(service.command);
+
+    await c.var.db
+      .update(services)
+      .set({ serviceId })
+      .where(eq(services.id, service.id))
+      .execute();
+
+    return c.json({ serviceId });
+  } catch (err) {
+    console.log(`Failed to start service:`, err);
+  }
+});
+
+app.delete("/v1/sandboxes/:sandboxId/services/:serviceId", async (c) => {
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
+
+  if (!record) {
+    return c.json({ error: "Sandbox not found" }, 404);
+  }
+
+  if (record.provider !== "cloudflare") {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  try {
+    let sandbox: BaseSandbox | null = null;
+
+    sandbox = await createSandbox("cloudflare", {
+      id: record.sandboxId!,
+    });
+
+    const [service] = await c.var.db
+      .select()
+      .from(services)
+      .where(
+        and(
+          eq(services.id, c.req.param("serviceId")),
+          eq(services.sandboxId, record.id),
+        ),
+      )
+      .execute();
+
+    if (!service) {
+      return c.json({ error: "Service not found" }, 404);
+    }
+
+    await sandbox.stopService(service.serviceId!);
+
+    return c.json({});
+  } catch (err) {
+    console.log(`Failed to stop service:`, err);
   }
 });
 

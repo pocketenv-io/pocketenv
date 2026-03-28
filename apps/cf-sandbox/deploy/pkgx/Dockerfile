@@ -2,6 +2,20 @@ FROM pkgxdev/pkgx:latest
 
 ARG TARGETARCH
 
+COPY --from=docker.io/library/node:24 /usr/local/bin/node /usr/local/bin/node
+
+COPY --from=docker.io/library/node:24 /usr/local/include /usr/local/include
+
+COPY --from=docker.io/library/node:24 /usr/local/lib/node_modules /usr/local/lib/node_modules
+
+RUN printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npm-cli.js "$@"\n' > /usr/local/bin/npm && \
+    printf '#!/bin/sh\nexec node /usr/local/lib/node_modules/npm/bin/npx-cli.js "$@"\n' > /usr/local/bin/npx && \
+    chmod +x /usr/local/bin/npm /usr/local/bin/npx
+
+RUN mkdir -p ~/.npm-global && npm config set prefix ~/.npm-global
+
+ENV PATH "/root/.npm-global/bin:${PATH}"
+
 RUN apt-get update -y && apt-get install -y \
     curl \
     git \
@@ -61,8 +75,7 @@ COPY banner.sh /root/.local/bin
 
 RUN chmod a+x /root/.local/bin/banner.sh
 
-RUN pkgm install node && \
-    npm install -g pm2
+RUN npm install -g pm2
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh && \
     code-server --install-extension bastndev.lynx-theme --force && \

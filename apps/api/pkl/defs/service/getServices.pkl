@@ -1,0 +1,33 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.service.getServices"
+defs = new Mapping<String, Query> {
+  ["main"] {
+    type = "query"
+    parameters {
+      type = "params"
+      required = List("sandboxId")
+      properties {
+        ["sandboxId"] = new StringType {
+          type = "string"
+          description = "The ID of the sandbox for which to retrieve services."
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        properties {
+          ["services"] = new Array {
+            type = "array"
+            items = new Ref {
+              ref = "io.pocketenv.service.defs#serviceView"
+            }
+          }
+        }
+      }
+    }
+  }
+}

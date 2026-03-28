@@ -1,0 +1,36 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.service.updateService",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "serviceId"
+        ],
+        "properties": {
+          "serviceId": {
+            "type": "string",
+            "description": "The ID of the service to delete."
+          }
+        }
+      },
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "service"
+          ],
+          "properties": {
+            "service": {
+              "type": "ref",
+              "ref": "io.pocketenv.service.defs#service"
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -187,6 +187,15 @@ export class CloudflareSandbox implements BaseSandbox {
       console.log("Failed to unexpose vscode port", e);
     }
   }
+
+  async startService(command: string): Promise<string> {
+    const { id } = await this.sandbox.startProcess(command);
+    return id;
+  }
+
+  async stopService(id: string): Promise<void> {
+    await this.sandbox.killProcess(id);
+  }
 }
 
 class CloudflareProvider implements BaseProvider {

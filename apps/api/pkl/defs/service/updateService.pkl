@@ -1,0 +1,32 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.service.updateService"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    parameters {
+      type = "params"
+      required = List("serviceId")
+      properties {
+        ["serviceId"] = new StringType {
+          type = "string"
+          description = "The ID of the service to delete."
+        }
+      }
+    }
+    input {
+      encoding = "application/json"
+      schema {
+        type = "object"
+        required = List("service")
+        properties {
+          ["service"] = new Ref {
+            type = "ref"
+            ref = "io.pocketenv.service.defs#service"
+          }
+        }
+      }
+    }
+  }
+}

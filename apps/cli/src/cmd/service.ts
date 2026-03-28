@@ -1,6 +1,6 @@
-export async function createService() {}
+export async function createService(sandbox: string) {}
 
-export async function listServices() {}
+export async function listServices(sandbox: string) {}
 
 export async function restartService() {}
 

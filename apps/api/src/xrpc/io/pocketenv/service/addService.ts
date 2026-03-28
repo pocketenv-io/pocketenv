@@ -9,7 +9,7 @@ import schema from "schema";
 import type { InsertService } from "schema/services";
 import { consola } from "consola";
 import type { InsertSandboxPort } from "schema/sandbox-ports";
-import { and, eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import { Providers } from "consts";
 import generateJwt from "lib/generateJwt";
 
@@ -29,7 +29,11 @@ export default function (server: Server, ctx: Context) {
       .leftJoin(schema.users, eq(schema.users.id, schema.sandboxes.userId))
       .where(
         and(
-          eq(schema.sandboxes.id, params.sandboxId),
+          or(
+            eq(schema.sandboxes.id, params.sandboxId),
+            eq(schema.sandboxes.name, params.sandboxId),
+            eq(schema.sandboxes.uri, params.sandboxId),
+          ),
           eq(schema.users.did, auth.credentials.did),
         ),
       )

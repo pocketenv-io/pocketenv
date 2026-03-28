@@ -6,7 +6,7 @@ import type {
 } from "lexicon/types/io/pocketenv/service/getServices";
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import schema from "schema";
-import { eq } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 
 export default function (server: Server, ctx: Context) {
   const getServices = async (params: QueryParams, auth: HandlerAuth) => {
@@ -17,8 +17,25 @@ export default function (server: Server, ctx: Context) {
     const services = await ctx.db
       .select()
       .from(schema.services)
-      .where(eq(schema.services.sandboxId, params.sandboxId))
-      .execute();
+      .leftJoin(
+        schema.sandboxes,
+        eq(schema.sandboxes.id, schema.services.sandboxId),
+      )
+      .leftJoin(schema.users, eq(schema.users.id, schema.sandboxes.userId))
+      .where(
+        and(
+          or(
+            eq(schema.services.sandboxId, params.sandboxId),
+            eq(schema.sandboxes.name, params.sandboxId),
+            eq(schema.sandboxes.uri, params.sandboxId),
+          ),
+          eq(schema.users.did, auth.credentials.did),
+        ),
+      )
+      .execute()
+      .then((results) =>
+        results.map(({ services }) => services).filter((service) => service),
+      );
 
     return {
       services: services.map((record) => ({

@@ -870,6 +870,8 @@ app.post("/v1/sandboxes/:sandboxId/services/:serviceId", async (c) => {
   } catch (err) {
     console.log(`Failed to start service:`, err);
   }
+
+  return c.json({});
 });
 
 app.delete("/v1/sandboxes/:sandboxId/services/:serviceId", async (c) => {
@@ -915,11 +917,10 @@ app.delete("/v1/sandboxes/:sandboxId/services/:serviceId", async (c) => {
       .set({ status: "STOPPED" })
       .where(eq(services.id, service.id))
       .execute();
-
-    return c.json({});
   } catch (err) {
     console.log(`Failed to stop service:`, err);
   }
+  return c.json({});
 });
 
 export const getSandboxById = async (db: Context["db"], sandboxId: string) => {

@@ -23,6 +23,14 @@ import { listPorts } from "./cmd/ports";
 import { c } from "./theme";
 import { exposeVscode } from "./cmd/vscode";
 import { exec } from "./cmd/exec";
+import {
+  createService,
+  deleteService,
+  listServices,
+  restartService,
+  startService,
+  stopService,
+} from "./cmd/service";
 
 const program = new Command();
 
@@ -299,6 +307,48 @@ tailscale
   .argument("<sandbox>", "the sandbox to get the Tailscale Auth Key from")
   .description("get a Tailscale Auth Key (redacted) from the given sandbox")
   .action(getTailscaleAuthKey);
+
+const service = program.command("service").description("manage services");
+
+service
+  .command("create")
+  .argument("<sandbox>", "the sandbox to create the service in")
+  .argument("<name>", "the name of the service")
+  .argument("<command...>", "the command to run for the service")
+  .description("create a new service in the given sandbox")
+  .action(createService);
+
+service
+  .command("list")
+  .aliases(["ls"])
+  .argument("<sandbox>", "the sandbox to list services for")
+  .description("list services in the given sandbox")
+  .action(listServices);
+
+service
+  .command("delete")
+  .aliases(["rm", "remove"])
+  .argument("<service_id>", "the ID of the service to delete")
+  .description("delete a service")
+  .action(deleteService);
+
+service
+  .command("start")
+  .argument("<service_id>", "the ID of the service to start")
+  .description("start a service")
+  .action(startService);
+
+service
+  .command("stop")
+  .argument("<service_id>", "the ID of the service to stop")
+  .description("stop a service")
+  .action(stopService);
+
+service
+  .command("restart")
+  .argument("<service_id>", "the ID of the service to restart")
+  .description("restart a service")
+  .action(restartService);
 
 if (process.argv.length <= 2) {
   program.help();

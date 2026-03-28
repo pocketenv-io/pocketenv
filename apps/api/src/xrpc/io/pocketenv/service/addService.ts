@@ -75,6 +75,15 @@ export default function (server: Server, ctx: Context) {
       return service;
     });
 
+    if (record.status !== "RUNNING") {
+      consola.info("Sandbox is not running, skipping service start", {
+        sandboxId: record.id,
+        serviceId: service.id,
+        status: record.status,
+      });
+      return;
+    }
+
     // start service
     const sandbox =
       record.provider === Providers.CLOUDFLARE

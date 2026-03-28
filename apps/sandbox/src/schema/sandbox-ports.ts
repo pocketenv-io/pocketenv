@@ -7,6 +7,7 @@ import {
   integer,
 } from "drizzle-orm/pg-core";
 import sandboxes from "./sandboxes.ts";
+import services from "./services.ts";
 
 const sandboxPorts = pgTable(
   "sandbox_ports",
@@ -20,6 +21,7 @@ const sandboxPorts = pgTable(
     exposedPort: integer("exposed_port").notNull(),
     previewUrl: text("preview_url"),
     description: text("description"),
+    serviceId: text("service_id").references(() => services.id),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },

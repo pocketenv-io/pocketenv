@@ -239,6 +239,13 @@
       "when": 1774692682855,
       "tag": "0033_ambiguous_masked_marvel",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1774713955840,
+      "tag": "0034_fearless_black_cat",
+      "breakpoints": true
     }
   ]
 }

@@ -2269,6 +2269,44 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvServiceStartService: {
+    lexicon: 1,
+    id: "io.pocketenv.service.startService",
+    defs: {
+      main: {
+        type: "procedure",
+        parameters: {
+          type: "params",
+          required: ["serviceId"],
+          properties: {
+            serviceId: {
+              type: "string",
+              description: "The ID of the service to start.",
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvServiceStopService: {
+    lexicon: 1,
+    id: "io.pocketenv.service.stopService",
+    defs: {
+      main: {
+        type: "procedure",
+        parameters: {
+          type: "params",
+          required: ["serviceId"],
+          properties: {
+            serviceId: {
+              type: "string",
+              description: "The ID of the service to stop.",
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvServiceUpdateService: {
     lexicon: 1,
     id: "io.pocketenv.service.updateService",
@@ -2832,6 +2870,8 @@ export const ids = {
   IoPocketenvServiceDeleteService: "io.pocketenv.service.deleteService",
   IoPocketenvServiceGetServices: "io.pocketenv.service.getServices",
   IoPocketenvServiceRestartService: "io.pocketenv.service.restartService",
+  IoPocketenvServiceStartService: "io.pocketenv.service.startService",
+  IoPocketenvServiceStopService: "io.pocketenv.service.stopService",
   IoPocketenvServiceUpdateService: "io.pocketenv.service.updateService",
   IoPocketenvVariableAddVariable: "io.pocketenv.variable.addVariable",
   IoPocketenvVariableDefs: "io.pocketenv.variable.defs",

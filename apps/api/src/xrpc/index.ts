@@ -48,6 +48,8 @@ import deleteService from "./io/pocketenv/service/deleteService";
 import getServices from "./io/pocketenv/service/getServices";
 import restartService from "./io/pocketenv/service/restartService";
 import updateService from "./io/pocketenv/service/updateService";
+import startService from "./io/pocketenv/service/startService";
+import stopService from "./io/pocketenv/service/stopService";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
@@ -102,6 +104,8 @@ export default function (server: Server, ctx: Context) {
   getServices(server, ctx);
   restartService(server, ctx);
   updateService(server, ctx);
+  startService(server, ctx);
+  stopService(server, ctx);
 
   return server;
 }

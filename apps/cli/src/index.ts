@@ -315,6 +315,8 @@ service
   .argument("<sandbox>", "the sandbox to create the service in")
   .argument("<name>", "the name of the service")
   .argument("<command...>", "the command to run for the service")
+  .option("--description, -d <description>", "a description for the service")
+  .option("--ports, -p <ports...>", "a list of ports to expose for the service")
   .description("create a new service in the given sandbox")
   .action(createService);
 

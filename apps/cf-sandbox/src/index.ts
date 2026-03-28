@@ -853,7 +853,7 @@ app.post("/v1/sandboxes/:sandboxId/services/:serviceId", async (c) => {
 
     await c.var.db
       .update(services)
-      .set({ serviceId })
+      .set({ serviceId, status: "RUNNING" })
       .where(eq(services.id, service.id))
       .execute();
 
@@ -900,6 +900,12 @@ app.delete("/v1/sandboxes/:sandboxId/services/:serviceId", async (c) => {
     }
 
     await sandbox.stopService(service.serviceId!);
+
+    await c.var.db
+      .update(services)
+      .set({ status: "STOPPED" })
+      .where(eq(services.id, service.id))
+      .execute();
 
     return c.json({});
   } catch (err) {

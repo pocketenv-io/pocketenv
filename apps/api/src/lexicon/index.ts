@@ -49,6 +49,8 @@ import type * as IoPocketenvServiceAddService from "./types/io/pocketenv/service
 import type * as IoPocketenvServiceDeleteService from "./types/io/pocketenv/service/deleteService";
 import type * as IoPocketenvServiceGetServices from "./types/io/pocketenv/service/getServices";
 import type * as IoPocketenvServiceRestartService from "./types/io/pocketenv/service/restartService";
+import type * as IoPocketenvServiceStartService from "./types/io/pocketenv/service/startService";
+import type * as IoPocketenvServiceStopService from "./types/io/pocketenv/service/stopService";
 import type * as IoPocketenvServiceUpdateService from "./types/io/pocketenv/service/updateService";
 import type * as IoPocketenvVariableAddVariable from "./types/io/pocketenv/variable/addVariable";
 import type * as IoPocketenvVariableDeleteVariable from "./types/io/pocketenv/variable/deleteVariable";
@@ -587,6 +589,28 @@ export class IoPocketenvServiceNS {
     >,
   ) {
     const nsid = "io.pocketenv.service.restartService"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  startService<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvServiceStartService.Handler<ExtractAuth<AV>>,
+      IoPocketenvServiceStartService.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.service.startService"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  stopService<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvServiceStopService.Handler<ExtractAuth<AV>>,
+      IoPocketenvServiceStopService.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.service.stopService"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 

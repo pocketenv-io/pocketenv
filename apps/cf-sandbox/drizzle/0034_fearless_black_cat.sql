@@ -1,0 +1,1 @@
+ALTER TABLE "services" ADD COLUMN "status" text DEFAULT 'STOPPED' NOT NULL;

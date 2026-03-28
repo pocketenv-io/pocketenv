@@ -1,0 +1,19 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.service.startService"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    parameters {
+      type = "params"
+      required = List("serviceId")
+      properties {
+        ["serviceId"] = new StringType {
+          type = "string"
+          description = "The ID of the service to start."
+        }
+      }
+    }
+  }
+}

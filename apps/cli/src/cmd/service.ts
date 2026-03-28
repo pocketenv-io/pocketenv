@@ -183,6 +183,7 @@ export async function deleteService(serviceId: string) {
         Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
       },
     });
+    consola.success(`Service ${c.highlight(serviceId)} deleted successfully`);
   } catch (error) {
     consola.error(`Failed to delete service ${serviceId}`, error);
     process.exit(1);

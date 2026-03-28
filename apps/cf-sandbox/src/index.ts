@@ -377,6 +377,11 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
         .leftJoin(users, eq(sandboxes.userId, users.id))
         .where(eq(sandboxPorts.sandboxId, c.req.param("sandboxId")))
         .execute(),
+      c.var.db
+        .select()
+        .from(services)
+        .where(eq(services.sandboxId, c.req.param("sandboxId")))
+        .execute(),
     ]);
 
     c.executionCtx.waitUntil(
@@ -472,6 +477,12 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
             .execute();
         }
       }),
+    );
+
+    c.executionCtx.waitUntil(
+      Promise.all(
+        params[7].map((service) => sandbox?.startService(service.command)),
+      ),
     );
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";

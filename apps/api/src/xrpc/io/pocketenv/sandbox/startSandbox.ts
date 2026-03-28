@@ -64,6 +64,7 @@ export default function (server: Server, ctx: Context) {
         },
       },
     );
+
     return {};
   };
   server.io.pocketenv.sandbox.startSandbox({

@@ -49,7 +49,7 @@ export default function (server: Server, ctx: Context) {
       const [service] = await tx
         .insert(schema.services)
         .values({
-          sandboxId: params.sandboxId,
+          sandboxId: record.id,
           name: input.body.service.name,
           description: input.body.service.description,
           command: input.body.service.command,
@@ -67,7 +67,7 @@ export default function (server: Server, ctx: Context) {
           tx
             .insert(schema.sandboxPorts)
             .values({
-              sandboxId: params.sandboxId,
+              sandboxId: record.id,
               serviceId: service.id,
               exposedPort: port,
               description: `Port ${port} for service ${service.name}`,

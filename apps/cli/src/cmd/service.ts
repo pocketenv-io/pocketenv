@@ -17,20 +17,35 @@ type CreateServiceOptions = {
 };
 
 export async function createService(
-  sandbox: string,
+  sandboxId: string,
   name: string,
   command: string[],
   { ports, description }: CreateServiceOptions,
 ) {
   const token = await getAccessToken();
 
-  console.log(
-    `Creating service ${name} in sandbox ${sandbox} with command: ${command.join(" ")}`,
-  );
-  console.log(`Ports: ${ports?.join(", ") || "None"}`);
-  console.log(`Description: ${description || "None"}`);
-
   try {
+    await client.post(
+      "/xrpc/io.pocketenv.service.addService",
+      {
+        service: {
+          name,
+          command,
+          description,
+          ports,
+        },
+      },
+      {
+        params: {
+          sandboxId,
+        },
+        headers: {
+          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+        },
+      },
+    );
+
+    consola.success(`Service ${c.highlight(name)} created successfully`);
   } catch (error) {
     consola.error("Failed to create service", error);
     process.exit(1);
@@ -103,41 +118,73 @@ export async function listServices(sandboxId: string) {
   }
 }
 
-export async function restartService(id: string) {
+export async function restartService(serviceId: string) {
   const token = await getAccessToken();
   try {
+    await client.post("/xrpc/io.pocketenv.service.restartService", undefined, {
+      params: {
+        serviceId,
+      },
+      headers: {
+        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+      },
+    });
   } catch (error) {
-    consola.error(`Failed to restart service ${id}`, error);
+    consola.error(`Failed to restart service ${serviceId}`, error);
     process.exit(1);
   }
 }
 
-export async function startService(id: string) {
+export async function startService(serviceId: string) {
   const token = await getAccessToken();
 
   try {
+    await client.post("/xrpc/io.pocketenv.service.startService", undefined, {
+      params: {
+        serviceId,
+      },
+      headers: {
+        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+      },
+    });
   } catch (error) {
-    consola.error(`Failed to start service ${id}`, error);
+    consola.error(`Failed to start service ${serviceId}`, error);
     process.exit(1);
   }
 }
 
-export async function stopService(id: string) {
+export async function stopService(serviceId: string) {
   const token = await getAccessToken();
 
   try {
+    await client.post("/xrpc/io.pocketenv.service.stopService", undefined, {
+      params: {
+        serviceId,
+      },
+      headers: {
+        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+      },
+    });
   } catch (error) {
-    consola.error(`Failed to stop service ${id}`, error);
+    consola.error(`Failed to stop service ${serviceId}`, error);
     process.exit(1);
   }
 }
 
-export async function deleteService(id: string) {
+export async function deleteService(serviceId: string) {
   const token = await getAccessToken();
 
   try {
+    await client.post("/xrpc/io.pocketenv.service.deleteService", undefined, {
+      params: {
+        serviceId,
+      },
+      headers: {
+        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
+      },
+    });
   } catch (error) {
-    consola.error(`Failed to delete service ${id}`, error);
+    consola.error(`Failed to delete service ${serviceId}`, error);
     process.exit(1);
   }
 }

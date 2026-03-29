@@ -10,6 +10,7 @@ interface SSHSession {
   client: Client;
   stream: NodeJS.ReadWriteStream | null;
   sseRes: import("express").Response | null;
+  buffer: string[];
 }
 
 const sessions = new Map<string, SSHSession>();
@@ -65,6 +66,7 @@ router.post("/connect", async (req, res) => {
     client,
     stream: null,
     sseRes: null,
+    buffer: [],
   };
 
   sessions.set(sessionId, session);
@@ -83,9 +85,11 @@ router.post("/connect", async (req, res) => {
       session.stream = stream;
 
       stream.on("data", (data: Buffer) => {
+        const encoded = Buffer.from(data).toString("base64");
         if (session.sseRes && !session.sseRes.writableEnded) {
-          const encoded = Buffer.from(data).toString("base64");
           session.sseRes.write(`data: ${encoded}\n\n`);
+        } else {
+          session.buffer.push(encoded);
         }
       });
 
@@ -100,9 +104,11 @@ router.post("/connect", async (req, res) => {
       });
 
       stream.stderr.on("data", (data: Buffer) => {
+        const encoded = Buffer.from(data).toString("base64");
         if (session.sseRes && !session.sseRes.writableEnded) {
-          const encoded = Buffer.from(data).toString("base64");
           session.sseRes.write(`data: ${encoded}\n\n`);
+        } else {
+          session.buffer.push(encoded);
         }
       });
 
@@ -162,6 +168,12 @@ router.get("/stream/:sessionId", (req, res) => {
   res.write(`event: connected\ndata: ${sessionId}\n\n`);
 
   session.sseRes = res;
+
+  // Flush buffered output that arrived before the SSE client connected
+  for (const encoded of session.buffer) {
+    res.write(`data: ${encoded}\n\n`);
+  }
+  session.buffer = [];
 
   // Handle client disconnect
   req.on("close", () => {

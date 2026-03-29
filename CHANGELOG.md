@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-03-29
+
+### Added
+
+- **Services support**: Full services feature across the stack — schema, API endpoints, lexicon, CLI commands, and a web management UI. Sandboxes can now define, start, stop, and monitor named services.
+- **`pocketenv service` CLI commands**: New CLI subcommands for managing sandbox services (start, stop, status).
+- **Service start/stop API endpoints**: New API routes for starting and stopping individual services with JSON responses.
+- **Service status tracking**: Service status is now exposed and updated on start; services are set to `STOPPED` when their sandbox is stopped.
+- **`--keep-alive` option for `start`**: The `start` command now accepts `--keep-alive` to keep the sandbox running after the terminal session ends.
+- **Cursor sandbox deployment**: New Cursor-based sandbox provider with publish workflow model support.
+- **Sandbox lookup by id, name, or URI**: Sandbox resolution now accepts any of these identifiers uniformly.
+
+### Changed
+
+- **`npm` global bin added to PATH in Dockerfile**: Ensures globally installed npm packages are available in the sandbox.
+- **Increased Cloudflare default memory and disk**: Higher resource defaults for Cloudflare sandbox deployments.
+- **`record.id` used for sandbox wiring**: Sandbox CLI calls now use `record.id` consistently.
+- **Services started when starting sandbox**: All configured services are automatically started when a sandbox starts.
+
+### Fixed
+
+- **ON DELETE CASCADE on sandbox foreign keys**: Sandbox-related records are now automatically removed when a sandbox is deleted.
+- **Service start guard**: Prevents starting a service that is already running.
+- **Service delete logs success**: A success message is now logged after a service is deleted.
+
+---
+
 ## [0.3.5] - 2026-03-27
 
 ### Fixed

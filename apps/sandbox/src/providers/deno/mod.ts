@@ -1,6 +1,6 @@
 import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
 import { Sandbox } from "@deno/sandbox";
-import process, { env } from "node:process";
+import { env } from "node:process";
 import consola from "consola";
 import path from "node:path";
 import { Buffer } from "node:buffer";

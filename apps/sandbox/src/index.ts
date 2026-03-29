@@ -315,6 +315,20 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
 
   await sandbox.start();
 
+  c.var.db
+    .update(sandboxes)
+    .set({
+      sandboxId:
+        record.provider === "deno" ? await sandbox.id() : record.sandboxId,
+    })
+    .where(eq(sandboxes.id, record.id))
+    .execute()
+    .catch((e) =>
+      consola.error(
+        `Failed to update SSH info for sandbox ${c.req.param("sandboxId")}: ${e}`,
+      ),
+    );
+
   const params = await Promise.all([
     c.var.db
       .select()
@@ -612,6 +626,20 @@ app.get("/v1/sandboxes/:sandboxId/ssh", async (c) => {
   if (!sandbox) {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
+
+  c.var.db
+    .update(sandboxes)
+    .set({
+      sandboxId:
+        record.provider === "deno" ? await sandbox.id() : record.sandboxId,
+    })
+    .where(eq(sandboxes.id, record.id))
+    .execute()
+    .catch((e) =>
+      consola.error(
+        `Failed to update SSH info for sandbox ${c.req.param("sandboxId")}: ${e}`,
+      ),
+    );
 
   return c.json(await sandbox.ssh());
 });

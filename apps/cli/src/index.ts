@@ -135,7 +135,7 @@ program
   .command("vscode")
   .aliases(["code", "code-server"])
   .argument("<sandbox>", "the sandbox to expose VS Code for")
-  .description("expose a visual code server to the internet")
+  .description("expose a visual studio code server to the internet")
   .action(exposeVscode);
 
 program

@@ -46,7 +46,7 @@ function Services() {
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { provider: "daytona", apiKey: "" },
+    defaultValues: { provider: "cloudflare", apiKey: "" },
   });
 
   const provider = useWatch({ control, name: "provider" }) as Provider;

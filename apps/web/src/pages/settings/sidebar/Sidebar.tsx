@@ -70,7 +70,7 @@ function Sidebar() {
                 {!isCollapsed && "General"}
               </Link>
             </li>
-            {/*<li>
+            <li>
               <Link
                 to={`/${did}/sandbox/${rkey}/provider`}
                 className={`${
@@ -85,7 +85,7 @@ function Sidebar() {
                 ></span>
                 {!isCollapsed && "Sandbox Provider"}
               </Link>
-            </li>*/}
+            </li>
             <li>
               <Link
                 to={`/${did}/sandbox/${rkey}/repository`}

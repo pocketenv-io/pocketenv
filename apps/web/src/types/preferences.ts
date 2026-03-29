@@ -6,4 +6,11 @@ export type SandboxDetails = {
   $type: "io.pocketenv.sandbox.defs#sandboxDetailsPref";
 };
 
-export type Preference = SandboxDetails;
+export type SandboxProvider = {
+  name: string;
+  apiKey?: string;
+  redactedApiKey?: string;
+  $type: "io.pocketenv.sandbox.defs#sandboxProviderPref";
+};
+
+export type Preference = SandboxDetails | SandboxProvider;

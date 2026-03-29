@@ -11,3 +11,14 @@ export const putPreferences = (sandboxId: string, preferences: Preference[]) =>
       },
     },
   );
+
+export const getPreferences = (sandboxId: string) =>
+  client.get<{ preferences: Preference[] }>(
+    "/xrpc/io.pocketenv.sandbox.getPreferences",
+    {
+      params: { id: sandboxId },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    },
+  );

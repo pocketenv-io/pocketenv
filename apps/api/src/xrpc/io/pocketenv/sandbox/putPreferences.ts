@@ -1,7 +1,7 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
 import { updateSandbox } from "atproto/sandbox";
 import type { Context } from "context";
-import { and, eq, type ExtractTablesWithRelations } from "drizzle-orm";
+import { and, eq, or, type ExtractTablesWithRelations } from "drizzle-orm";
 import type { Server } from "lexicon";
 import {
   isSandboxDetailsPref,
@@ -189,6 +189,29 @@ const saveSandboxProvider = async (
         .execute();
       break;
     default:
+      const sandboxFilter = or(
+        eq(sandboxes.sandboxId, input.body.sandboxId),
+        eq(sandboxes.uri, input.body.sandboxId),
+        eq(sandboxes.name, input.body.sandboxId),
+      );
+      await Promise.all([
+        tx
+          .delete(daytonaAuth)
+          .where(and(eq(daytonaAuth.userId, user.id), sandboxFilter))
+          .execute(),
+        tx
+          .delete(denoAuth)
+          .where(and(eq(denoAuth.userId, user.id), sandboxFilter))
+          .execute(),
+        tx
+          .delete(vercelAuth)
+          .where(and(eq(vercelAuth.userId, user.id), sandboxFilter))
+          .execute(),
+        tx
+          .delete(spriteAuth)
+          .where(and(eq(spriteAuth.userId, user.id), sandboxFilter))
+          .execute(),
+      ]);
       break;
   }
 };

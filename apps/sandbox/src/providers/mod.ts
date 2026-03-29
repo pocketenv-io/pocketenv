@@ -84,10 +84,19 @@ export async function getSandboxById(
   organizationId?: string,
 ): Promise<BaseSandbox> {
   switch (provider) {
-    case "daytona":
-      return import("./daytona/mod.ts").then((module) =>
-        new module.default().get(id, token, organizationId),
-      );
+    case "daytona": {
+      const module = await import("./daytona/mod.ts");
+      try {
+        return new module.default().get(id, token, organizationId);
+      } catch (err) {
+        console.error(`Error getting Daytona sandbox with ID ${id}:`, err);
+        return createSandbox("daytona", {
+          id,
+          daytonaApiKey: token,
+          organizationId,
+        });
+      }
+    }
     case "deno": {
       const module = await import("./deno/mod.ts");
       try {

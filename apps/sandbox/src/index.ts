@@ -261,6 +261,22 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       .execute(),
   ]);
 
+  if (!record.sandboxId) {
+    sandbox = await createSandbox(record.provider as Provider, {
+      id: record.id,
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      organizationId: daytonaAuthParams?.organizationId,
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+    });
+    const sandboxId = await sandbox.id();
+    await c.var.db
+      .update(sandboxes)
+      .set({ sandboxId })
+      .where(eq(sandboxes.id, record.id))
+      .execute();
+    record.sandboxId = sandboxId;
+  }
+
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,

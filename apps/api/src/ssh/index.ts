@@ -127,6 +127,10 @@ router.post("/connect", async (req, res) => {
     }
   });
 
+  consola.info(
+    `Connecting SSH session ${sessionId} to ${ssh.data?.hostname}, username ${ssh.data?.username}…`,
+  );
+
   client.connect({
     host: ssh.data?.hostname,
     port: 22,

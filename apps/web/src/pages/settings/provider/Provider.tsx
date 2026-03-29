@@ -1,7 +1,7 @@
 import { useRouterState } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
@@ -59,7 +59,7 @@ function Services() {
   const {
     register,
     handleSubmit,
-    control,
+    watch,
     setValue,
     formState: { errors },
   } = useForm<FormValues>({
@@ -79,7 +79,9 @@ function Services() {
     }
   }, [preferences, setValue]);
 
-  const provider = useWatch({ control, name: "provider" }) as Provider;
+  const provider = watch("provider") as Provider;
+
+  const { onChange: onProviderChange, ...providerRegister } = register("provider");
 
   const onSubmit = async (values: FormValues) => {
     const pref: SandboxProvider = {
@@ -142,7 +144,11 @@ function Services() {
                     Pick your Sandbox Provider
                   </label>
                   <select
-                    {...register("provider")}
+                    {...providerRegister}
+                    onChange={(e) => {
+                      onProviderChange(e);
+                      setValue("apiKey", "");
+                    }}
                     className="select select-lg font-medium text-[15px]"
                   >
                     <option value="cloudflare">

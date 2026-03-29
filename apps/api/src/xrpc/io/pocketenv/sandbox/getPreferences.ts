@@ -31,7 +31,7 @@ export default function (server: Server, ctx: Context) {
     }
 
     const sandboxFilter = or(
-      eq(sandboxes.sandboxId, params.id),
+      eq(sandboxes.id, params.id),
       eq(sandboxes.uri, params.id),
       eq(sandboxes.name, params.id),
     );
@@ -66,17 +66,32 @@ export default function (server: Server, ctx: Context) {
         .execute()
         .then(([row]) => row?.vercel_auth),
     ]);
+    console.log(daytona, deno, sprite, vercel);
 
     if (!daytona && !deno && !sprite && !vercel) {
       return [];
     }
 
-    const provider = (
-      (daytona && { name: "daytona" as const, redactedApiKey: daytona.redactedApiKey }) ||
-      (deno && { name: "deno" as const, redactedApiKey: deno.redactedDenoToken }) ||
-      (sprite && { name: "sprites" as const, redactedApiKey: sprite.redactedSpriteToken }) ||
-      (vercel && { name: "vercel" as const, redactedApiKey: vercel.redactedVercelToken })
-    )!;
+    const provider = ((daytona && {
+      $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
+      name: "daytona" as const,
+      redactedApiKey: daytona.redactedApiKey,
+    }) ||
+      (deno && {
+        $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
+        name: "deno" as const,
+        redactedApiKey: deno.redactedDenoToken,
+      }) ||
+      (sprite && {
+        $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
+        name: "sprites" as const,
+        redactedApiKey: sprite.redactedSpriteToken,
+      }) ||
+      (vercel && {
+        $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
+        name: "vercel" as const,
+        redactedApiKey: vercel.redactedVercelToken,
+      }))!;
 
     return [provider satisfies SandboxProviderPref];
   };

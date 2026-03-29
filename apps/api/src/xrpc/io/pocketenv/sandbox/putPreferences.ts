@@ -80,19 +80,28 @@ export default function (server: Server, ctx: Context) {
           );
       }
       if (isSandboxProviderPref(pref)) {
-        await ctx.db.transaction(async (tx) => {
-          await tx
-            .update(sandboxes)
-            .set({ provider: pref.name })
-            .where(
-              and(
-                eq(sandboxes.id, input.body.sandboxId),
-                eq(sandboxes.userId, user.id),
-              ),
-            )
-            .execute();
-          await saveSandboxProvider(tx, user, input, pref);
-        });
+        try {
+          await ctx.db.transaction(async (tx) => {
+            await tx
+              .update(sandboxes)
+              .set({ provider: pref.name })
+              .where(
+                and(
+                  eq(sandboxes.id, input.body.sandboxId),
+                  eq(sandboxes.userId, user.id),
+                ),
+              )
+              .execute();
+            await saveSandboxProvider(tx, user, input, pref);
+          });
+        } catch (err) {
+          consola.error("Failed to save sandbox provider preferences:", err);
+          throw new XRPCError(
+            500,
+            "Failed to save sandbox provider preferences",
+            "SavePreferencesError",
+          );
+        }
       }
     }
     return {};
@@ -189,27 +198,56 @@ const saveSandboxProvider = async (
         .execute();
       break;
     case "cloudflare":
-      const sandboxFilter = or(
-        eq(sandboxes.sandboxId, input.body.sandboxId),
-        eq(sandboxes.uri, input.body.sandboxId),
-        eq(sandboxes.name, input.body.sandboxId),
-      );
+      const [record] = await tx
+        .select()
+        .from(sandboxes)
+        .where(
+          and(
+            or(
+              eq(sandboxes.id, input.body.sandboxId),
+              eq(sandboxes.name, input.body.sandboxId),
+              eq(sandboxes.uri, input.body.sandboxId),
+            ),
+            eq(sandboxes.userId, user.id),
+          ),
+        )
+        .execute();
       await Promise.all([
         tx
           .delete(daytonaAuth)
-          .where(and(eq(daytonaAuth.userId, user.id), sandboxFilter))
+          .where(
+            and(
+              eq(daytonaAuth.userId, user.id),
+              eq(daytonaAuth.sandboxId, record!.id),
+            ),
+          )
           .execute(),
         tx
           .delete(denoAuth)
-          .where(and(eq(denoAuth.userId, user.id), sandboxFilter))
+          .where(
+            and(
+              eq(denoAuth.userId, user.id),
+              eq(denoAuth.sandboxId, record!.id),
+            ),
+          )
           .execute(),
         tx
           .delete(vercelAuth)
-          .where(and(eq(vercelAuth.userId, user.id), sandboxFilter))
+          .where(
+            and(
+              eq(vercelAuth.userId, user.id),
+              eq(vercelAuth.sandboxId, record!.id),
+            ),
+          )
           .execute(),
         tx
           .delete(spriteAuth)
-          .where(and(eq(spriteAuth.userId, user.id), sandboxFilter))
+          .where(
+            and(
+              eq(spriteAuth.userId, user.id),
+              eq(spriteAuth.sandboxId, record!.id),
+            ),
+          )
           .execute(),
       ]);
       break;

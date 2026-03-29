@@ -1,8 +1,18 @@
 import { useRouterState } from "@tanstack/react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useSandboxQuery } from "../../../hooks/useSandbox";
+import {
+  usePreferences,
+  useUpdatePreferencesMutation,
+} from "../../../hooks/usePreferences";
+import type { SandboxProvider } from "../../../types/preferences";
+import { useSodium } from "../../../hooks/useSodium";
+import { PUBLIC_KEY } from "../../../consts";
+import { useNotyf } from "../../../hooks/useNotyf";
 import Main from "../../../layouts/Main";
 import Sidebar from "../sidebar/Sidebar";
 
@@ -39,20 +49,74 @@ function Services() {
     `at:/${pathname.replace("/provider", "").replace("sandbox", "io.pocketenv.sandbox")}`,
   );
 
+  const notyf = useNotyf();
+  const queryClient = useQueryClient();
+  const sodium = useSodium();
+  const sandboxId = data?.sandbox?.id ?? "";
+  const { data: preferences } = usePreferences(sandboxId);
+  const { mutateAsync: updatePreferences } = useUpdatePreferencesMutation();
+
   const {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { provider: "cloudflare", apiKey: "" },
   });
 
+  useEffect(() => {
+    if (!preferences) return;
+    const providerPref = preferences.find(
+      (p): p is SandboxProvider =>
+        p.$type === "io.pocketenv.sandbox.defs#sandboxProviderPref",
+    );
+    if (providerPref) {
+      setValue("provider", providerPref.name as FormValues["provider"]);
+      setValue("apiKey", providerPref.redactedApiKey ?? "");
+    }
+  }, [preferences, setValue]);
+
   const provider = useWatch({ control, name: "provider" }) as Provider;
 
-  const onSubmit = (values: FormValues) => {
-    console.log(values);
+  const onSubmit = async (values: FormValues) => {
+    const pref: SandboxProvider = {
+      $type: "io.pocketenv.sandbox.defs#sandboxProviderPref",
+      name: values.provider,
+    };
+
+    if (values.apiKey?.includes("**") && values.provider !== "cloudflare") {
+      return;
+    }
+
+    if (values.apiKey && !values.apiKey.includes("**")) {
+      const sealed = sodium.cryptoBoxSeal(
+        sodium.fromString(values.apiKey),
+        sodium.fromHex(PUBLIC_KEY),
+      );
+      pref.apiKey = sodium.toBase64(
+        sealed,
+        sodium.base64Variants.URLSAFE_NO_PADDING,
+      );
+      pref.redactedApiKey =
+        values.apiKey.length > 14
+          ? values.apiKey.slice(0, 11) +
+            "*".repeat(24) +
+            values.apiKey.slice(-3)
+          : values.apiKey;
+    }
+
+    try {
+      await updatePreferences({ sandboxId, preferences: [pref] });
+      await queryClient.invalidateQueries({
+        queryKey: ["preferences", sandboxId],
+      });
+      notyf.open("primary", "Provider saved successfully!");
+    } catch {
+      notyf.open("error", "Failed to save provider.");
+    }
   };
 
   return (

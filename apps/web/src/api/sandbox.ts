@@ -115,13 +115,6 @@ export const putPreferences = () =>
     },
   );
 
-export const getPreferences = () =>
-  client.get(`/xrpc/io.pocketenv.sandbox.getPreferences`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
-
 export const exposePort = (
   id: string,
   {

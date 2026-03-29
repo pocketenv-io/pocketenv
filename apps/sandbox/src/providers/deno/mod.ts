@@ -146,14 +146,14 @@ class DenoProvider implements BaseProvider {
       port: options.port,
       memory: options.memory,
       env: options.envVars,
-      token: process.env.DENO_DEPLOY_TOKEN,
+      token: options.denoDeployToken,
     });
 
     return new DenoSandbox(sandbox);
   }
 
-  async get(id: string): Promise<BaseSandbox> {
-    const sandbox = await Sandbox.connect(id);
+  async get(id: string, token?: string): Promise<BaseSandbox> {
+    const sandbox = await Sandbox.connect(id, { token });
     return new DenoSandbox(sandbox);
   }
 }

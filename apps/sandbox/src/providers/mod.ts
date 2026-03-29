@@ -1,6 +1,6 @@
 import { Memory } from "@deno/sandbox";
 import { Buffer } from "node:buffer";
-import process from "node:process";
+import { consola } from "consola";
 
 export abstract class BaseSandbox {
   abstract start(): Promise<void>;
@@ -47,6 +47,7 @@ export interface SandboxOptions {
   spriteName?: string;
   daytonaApiKey?: string;
   organizationId?: string;
+  denoDeployToken?: string;
   [key: string]: any;
 }
 
@@ -100,12 +101,13 @@ export async function getSandboxById(
     case "deno": {
       const module = await import("./deno/mod.ts");
       try {
-        return await new module.default().get(id);
+        return await new module.default().get(id, token);
       } catch (err) {
         console.error(`Error getting Deno sandbox with ID ${id}:`, err);
         return createSandbox("deno", {
           id,
-          snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
+          denoDeployToken: token,
+          // snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
         });
       }
     }
@@ -118,7 +120,7 @@ export async function getSandboxById(
         new module.default().get(id, token),
       );
     default:
-      console.log(`Provider ${provider} is not supported yet.`);
+      consola.error(`Provider ${provider} is not supported yet.`);
       throw new Error(`Unsupported provider: ${provider}`);
   }
 }

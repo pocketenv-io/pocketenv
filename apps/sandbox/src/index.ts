@@ -15,6 +15,7 @@ import {
   users,
   variables,
   spriteAuth,
+  denoAuth,
 } from "./schema/mod.ts";
 import {
   adjectives,
@@ -44,6 +45,7 @@ import jwt from "@tsndr/cloudflare-worker-jwt";
 import decrypt from "./lib/decrypt.ts";
 import { InsertSpriteAuth } from "./schema/sprite-auth.ts";
 import daytonaAuth, { InsertDaytonaAuth } from "./schema/daytona-auth.ts";
+import { InsertDenoAuth } from "./schema/deno-auth.ts";
 
 const app = new Hono<{ Variables: Context }>();
 
@@ -179,6 +181,18 @@ app.post("/v1/sandboxes", async (c) => {
           .execute();
       }
 
+      if (params.denoDeployToken && user?.id) {
+        await tx
+          .insert(denoAuth)
+          .values({
+            sandboxId: record.id,
+            deployToken: params.denoDeployToken,
+            redactedDenoToken: params.redactedDenoDeployToken ?? "",
+            userId: user.id,
+          } satisfies InsertDenoAuth)
+          .execute();
+      }
+
       const sandbox = await createSandbox(params.provider, {
         id: record.id,
         keepAlive: params.keepAlive,
@@ -248,18 +262,24 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
   const body = await c.req.json<StartSandboxInput>();
   const { repo } = StartSandboxInputSchema.parse(body);
 
-  const [[spriteAuthParams], [daytonaAuthParams]] = await Promise.all([
-    c.var.db
-      .select()
-      .from(spriteAuth)
-      .where(eq(spriteAuth.sandboxId, record.id))
-      .execute(),
-    c.var.db
-      .select()
-      .from(daytonaAuth)
-      .where(eq(daytonaAuth.sandboxId, record.id))
-      .execute(),
-  ]);
+  const [[spriteAuthParams], [daytonaAuthParams], [denoAuthParams]] =
+    await Promise.all([
+      c.var.db
+        .select()
+        .from(spriteAuth)
+        .where(eq(spriteAuth.sandboxId, record.id))
+        .execute(),
+      c.var.db
+        .select()
+        .from(daytonaAuth)
+        .where(eq(daytonaAuth.sandboxId, record.id))
+        .execute(),
+      c.var.db
+        .select()
+        .from(denoAuth)
+        .where(eq(denoAuth.sandboxId, record.id))
+        .execute(),
+    ]);
 
   if (!record.sandboxId) {
     sandbox = await createSandbox(record.provider as Provider, {
@@ -267,6 +287,7 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
       organizationId: daytonaAuthParams?.organizationId,
       spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
     });
     const sandboxId = await sandbox.id();
     await c.var.db
@@ -280,7 +301,11 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
-    decrypt(spriteAuthParams?.spriteToken || daytonaAuthParams?.apiKey),
+    decrypt(
+      spriteAuthParams?.spriteToken ||
+        daytonaAuthParams?.apiKey ||
+        denoAuthParams?.deployToken,
+    ),
     daytonaAuthParams?.organizationId,
   );
 
@@ -390,23 +415,33 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  const [[spriteAuthParams], [daytonaAuthParams]] = await Promise.all([
-    c.var.db
-      .select()
-      .from(spriteAuth)
-      .where(eq(spriteAuth.sandboxId, record.id))
-      .execute(),
-    c.var.db
-      .select()
-      .from(daytonaAuth)
-      .where(eq(daytonaAuth.sandboxId, record.id))
-      .execute(),
-  ]);
+  const [[spriteAuthParams], [daytonaAuthParams], [denoAuthParams]] =
+    await Promise.all([
+      c.var.db
+        .select()
+        .from(spriteAuth)
+        .where(eq(spriteAuth.sandboxId, record.id))
+        .execute(),
+      c.var.db
+        .select()
+        .from(daytonaAuth)
+        .where(eq(daytonaAuth.sandboxId, record.id))
+        .execute(),
+      c.var.db
+        .select()
+        .from(denoAuth)
+        .where(eq(denoAuth.sandboxId, record.id))
+        .execute(),
+    ]);
 
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
-    decrypt(spriteAuthParams?.spriteToken || daytonaAuthParams?.apiKey),
+    decrypt(
+      spriteAuthParams?.spriteToken ||
+        daytonaAuthParams?.apiKey ||
+        denoAuthParams?.deployToken,
+    ),
     daytonaAuthParams?.organizationId,
   );
 
@@ -436,23 +471,33 @@ app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  const [[spriteAuthParams], [daytonaAuthParams]] = await Promise.all([
-    c.var.db
-      .select()
-      .from(spriteAuth)
-      .where(eq(spriteAuth.sandboxId, record.id))
-      .execute(),
-    c.var.db
-      .select()
-      .from(daytonaAuth)
-      .where(eq(daytonaAuth.sandboxId, record.id))
-      .execute(),
-  ]);
+  const [[spriteAuthParams], [daytonaAuthParams], [denoAuthParams]] =
+    await Promise.all([
+      c.var.db
+        .select()
+        .from(spriteAuth)
+        .where(eq(spriteAuth.sandboxId, record.id))
+        .execute(),
+      c.var.db
+        .select()
+        .from(daytonaAuth)
+        .where(eq(daytonaAuth.sandboxId, record.id))
+        .execute(),
+      c.var.db
+        .select()
+        .from(denoAuth)
+        .where(eq(denoAuth.sandboxId, record.id))
+        .execute(),
+    ]);
 
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
-    decrypt(spriteAuthParams?.spriteToken || daytonaAuthParams?.apiKey),
+    decrypt(
+      spriteAuthParams?.spriteToken ||
+        daytonaAuthParams?.apiKey ||
+        denoAuthParams?.deployToken,
+    ),
     daytonaAuthParams?.organizationId,
   );
 
@@ -478,23 +523,32 @@ app.delete("/v1/sandboxes/:sandboxId", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  const [[spriteAuthParams], [daytonaAuthParams]] = await Promise.all([
-    c.var.db
-      .select()
-      .from(spriteAuth)
-      .where(eq(spriteAuth.sandboxId, record.id))
-      .execute(),
-    c.var.db
-      .select()
-      .from(daytonaAuth)
-      .where(eq(daytonaAuth.sandboxId, record.id))
-      .execute(),
-  ]);
-
+  const [[spriteAuthParams], [daytonaAuthParams], [denoAuthParams]] =
+    await Promise.all([
+      c.var.db
+        .select()
+        .from(spriteAuth)
+        .where(eq(spriteAuth.sandboxId, record.id))
+        .execute(),
+      c.var.db
+        .select()
+        .from(daytonaAuth)
+        .where(eq(daytonaAuth.sandboxId, record.id))
+        .execute(),
+      c.var.db
+        .select()
+        .from(denoAuth)
+        .where(eq(denoAuth.sandboxId, record.id))
+        .execute(),
+    ]);
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
-    decrypt(spriteAuthParams?.spriteToken || daytonaAuthParams?.apiKey),
+    decrypt(
+      spriteAuthParams?.spriteToken ||
+        daytonaAuthParams?.apiKey ||
+        denoAuthParams?.deployToken,
+    ),
     daytonaAuthParams?.organizationId,
   );
 
@@ -525,23 +579,33 @@ app.get("/v1/sandboxes/:sandboxId/ssh", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  const [[spriteAuthParams], [daytonaAuthParams]] = await Promise.all([
-    c.var.db
-      .select()
-      .from(spriteAuth)
-      .where(eq(spriteAuth.sandboxId, record.id))
-      .execute(),
-    c.var.db
-      .select()
-      .from(daytonaAuth)
-      .where(eq(daytonaAuth.sandboxId, record.id))
-      .execute(),
-  ]);
+  const [[spriteAuthParams], [daytonaAuthParams], [denoAuthParams]] =
+    await Promise.all([
+      c.var.db
+        .select()
+        .from(spriteAuth)
+        .where(eq(spriteAuth.sandboxId, record.id))
+        .execute(),
+      c.var.db
+        .select()
+        .from(daytonaAuth)
+        .where(eq(daytonaAuth.sandboxId, record.id))
+        .execute(),
+      c.var.db
+        .select()
+        .from(denoAuth)
+        .where(eq(denoAuth.sandboxId, record.id))
+        .execute(),
+    ]);
 
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
-    decrypt(spriteAuthParams?.spriteToken || daytonaAuthParams?.apiKey),
+    decrypt(
+      spriteAuthParams?.spriteToken ||
+        daytonaAuthParams?.apiKey ||
+        denoAuthParams?.deployToken,
+    ),
     daytonaAuthParams?.organizationId,
   );
 

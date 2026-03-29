@@ -109,6 +109,8 @@ export default function (server: Server, ctx: Context) {
           base: input.base.split("/").pop()!,
           repo: input.repo,
           keepAlive: input.keepAlive,
+          spriteToken: input.spriteToken,
+          redactedSpriteToken: input.redactedSpriteToken,
         },
         {
           headers: {

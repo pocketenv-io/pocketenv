@@ -55,55 +55,68 @@ async function createTerminalSession(ctx: Context, id: string) {
     throw new Error(`Sandbox not found: ${id}`);
   }
 
-  const [variables, secrets, files, sshKeys, [tailscale], volumes] =
-    await Promise.all([
-      ctx.db
-        .select()
-        .from(schema.sandboxVariables)
-        .leftJoin(
-          schema.variables,
-          eq(schema.variables.id, schema.sandboxVariables.variableId),
-        )
-        .where(eq(schema.sandboxVariables.sandboxId, id))
-        .execute(),
-      ctx.db
-        .select()
-        .from(schema.sandboxSecrets)
-        .leftJoin(
-          schema.secrets,
-          eq(schema.secrets.id, schema.sandboxSecrets.secretId),
-        )
-        .where(eq(schema.sandboxSecrets.sandboxId, id))
-        .execute(),
-      ctx.db
-        .select()
-        .from(schema.sandboxFiles)
-        .leftJoin(schema.files, eq(schema.files.id, schema.sandboxFiles.fileId))
-        .where(eq(schema.sandboxFiles.sandboxId, id))
-        .execute(),
-      ctx.db
-        .select()
-        .from(schema.sshKeys)
-        .where(eq(schema.sshKeys.sandboxId, id))
-        .execute(),
-      ctx.db
-        .select()
-        .from(schema.tailscaleAuthKeys)
-        .where(eq(schema.tailscaleAuthKeys.sandboxId, id))
-        .execute(),
-      ctx.db
-        .select()
-        .from(schema.sandboxVolumes)
-        .leftJoin(
-          schema.sandboxes,
-          eq(schema.sandboxes.id, schema.sandboxVolumes.sandboxId),
-        )
-        .leftJoin(schema.users, eq(schema.users.id, schema.sandboxes.userId))
-        .where(eq(schema.sandboxVolumes.sandboxId, id))
-        .execute(),
-    ]);
+  const [
+    variables,
+    secrets,
+    files,
+    sshKeys,
+    [tailscale],
+    volumes,
+    [spriteAuth],
+  ] = await Promise.all([
+    ctx.db
+      .select()
+      .from(schema.sandboxVariables)
+      .leftJoin(
+        schema.variables,
+        eq(schema.variables.id, schema.sandboxVariables.variableId),
+      )
+      .where(eq(schema.sandboxVariables.sandboxId, id))
+      .execute(),
+    ctx.db
+      .select()
+      .from(schema.sandboxSecrets)
+      .leftJoin(
+        schema.secrets,
+        eq(schema.secrets.id, schema.sandboxSecrets.secretId),
+      )
+      .where(eq(schema.sandboxSecrets.sandboxId, id))
+      .execute(),
+    ctx.db
+      .select()
+      .from(schema.sandboxFiles)
+      .leftJoin(schema.files, eq(schema.files.id, schema.sandboxFiles.fileId))
+      .where(eq(schema.sandboxFiles.sandboxId, id))
+      .execute(),
+    ctx.db
+      .select()
+      .from(schema.sshKeys)
+      .where(eq(schema.sshKeys.sandboxId, id))
+      .execute(),
+    ctx.db
+      .select()
+      .from(schema.tailscaleAuthKeys)
+      .where(eq(schema.tailscaleAuthKeys.sandboxId, id))
+      .execute(),
+    ctx.db
+      .select()
+      .from(schema.sandboxVolumes)
+      .leftJoin(
+        schema.sandboxes,
+        eq(schema.sandboxes.id, schema.sandboxVolumes.sandboxId),
+      )
+      .leftJoin(schema.users, eq(schema.users.id, schema.sandboxes.userId))
+      .where(eq(schema.sandboxVolumes.sandboxId, id))
+      .execute(),
+    ctx.db
+      .select()
+      .from(schema.spriteAuth)
+      .where(eq(schema.spriteAuth.sandboxId, sandbox.id))
+      .execute(),
+  ]);
 
-  const client = new SpritesClient(env.SPRITE_TOKEN);
+  const spriteToken = decrypt(spriteAuth!.spriteToken);
+  const client = new SpritesClient(spriteToken);
   const sprite = client.sprite(sandbox.sandboxId!);
   const cmd = sprite.spawn("bash", [], {
     tty: true,

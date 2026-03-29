@@ -43,6 +43,7 @@ export interface SandboxOptions {
   snapshotRoot?: string;
   port?: number;
   memory?: Memory;
+  spriteToken?: string;
   spriteName?: string;
   [key: string]: any;
 }
@@ -77,6 +78,7 @@ export async function createSandbox(
 export async function getSandboxById(
   provider: Provider,
   id: string,
+  token?: string,
 ): Promise<BaseSandbox> {
   switch (provider) {
     case "daytona":
@@ -101,7 +103,7 @@ export async function getSandboxById(
       );
     case "sprites":
       return import("./sprites/mod.ts").then((module) =>
-        new module.default().get(id),
+        new module.default().get(id, token),
       );
     default:
       console.log(`Provider ${provider} is not supported yet.`);

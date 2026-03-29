@@ -14,6 +14,7 @@ import {
   tailscaleAuthKeys,
   users,
   variables,
+  spriteAuth,
 } from "./schema/mod.ts";
 import {
   adjectives,
@@ -41,6 +42,7 @@ import chalk from "chalk";
 import process from "node:process";
 import jwt from "@tsndr/cloudflare-worker-jwt";
 import decrypt from "./lib/decrypt.ts";
+import { InsertSpriteAuth } from "./schema/sprite-auth.ts";
 
 const app = new Hono<{ Variables: Context }>();
 
@@ -151,12 +153,25 @@ app.post("/v1/sandboxes", async (c) => {
         await saveVariables(tx, record, { variables: params.variables });
       }
 
+      if (params.spriteToken && user?.id) {
+        await tx
+          .insert(spriteAuth)
+          .values({
+            sandboxId: record.id,
+            spriteToken: params.spriteToken,
+            redactedSpriteToken: params.redacredSpriteToken ?? "",
+            userId: user.id,
+          } satisfies InsertSpriteAuth)
+          .execute();
+      }
+
       const sandbox = await createSandbox(params.provider, {
         id: record.id,
         keepAlive: params.keepAlive,
         sleepAfter: params.sleepAfter,
         organizationId: process.env.DAYTONA_ORGANIZATION_ID,
         snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
+        spriteToken: decrypt(params.spriteToken),
         spriteName,
       });
       const sandboxId = await sandbox.id();
@@ -218,9 +233,16 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
   const body = await c.req.json<StartSandboxInput>();
   const { repo } = StartSandboxInputSchema.parse(body);
 
+  const [spriteAuthParams] = await c.var.db
+    .select()
+    .from(spriteAuth)
+    .where(eq(spriteAuth.sandboxId, record.id))
+    .execute();
+
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
+    decrypt(spriteAuthParams?.spriteToken),
   );
 
   if (!sandbox) {
@@ -261,14 +283,14 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       .map((record) =>
         sandbox?.writeFile(
           record.sandbox_files.path,
-          decrypt(record.files!.content),
+          decrypt(record.files!.content)!,
         ),
       ),
     ...params[1].map((record) =>
-      sandbox?.setupSshKeys(decrypt(record.privateKey), record.publicKey),
+      sandbox?.setupSshKeys(decrypt(record.privateKey)!, record.publicKey),
     ),
     params[2].length > 0 &&
-      sandbox?.setupTailscale(decrypt(params[2][0].authKey)),
+      sandbox?.setupTailscale(decrypt(params[2][0].authKey)!),
     ...params[3].map((volume) =>
       sandbox?.mount(
         volume.sandbox_volumes.path,
@@ -328,9 +350,16 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
+  const [spriteAuthParams] = await c.var.db
+    .select()
+    .from(spriteAuth)
+    .where(eq(spriteAuth.sandboxId, record.id))
+    .execute();
+
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
+    decrypt(spriteAuthParams?.spriteToken),
   );
 
   if (!sandbox) {
@@ -359,9 +388,16 @@ app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
+  const [spriteAuthParams] = await c.var.db
+    .select()
+    .from(spriteAuth)
+    .where(eq(spriteAuth.sandboxId, record.id))
+    .execute();
+
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
+    decrypt(spriteAuthParams?.spriteToken),
   );
 
   if (!sandbox) {
@@ -386,9 +422,16 @@ app.delete("/v1/sandboxes/:sandboxId", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
+  const [spriteAuthParams] = await c.var.db
+    .select()
+    .from(spriteAuth)
+    .where(eq(spriteAuth.sandboxId, record.id))
+    .execute();
+
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
+    decrypt(spriteAuthParams?.spriteToken),
   );
 
   if (!sandbox) {
@@ -418,9 +461,16 @@ app.get("/v1/sandboxes/:sandboxId/ssh", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
+  const [spriteAuthParams] = await c.var.db
+    .select()
+    .from(spriteAuth)
+    .where(eq(spriteAuth.sandboxId, record.id))
+    .execute();
+
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
+    decrypt(spriteAuthParams?.spriteToken),
   );
 
   if (!sandbox) {

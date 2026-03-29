@@ -586,6 +586,15 @@ export const schemaDict = {
                 description:
                   "Prevent the sandbox from being automatically stop after a period of inactivity. Use with caution, as this may lead to increased costs.",
               },
+              spriteToken: {
+                type: "string",
+                description:
+                  "A token (encrypted) for accessing sprite resources",
+              },
+              redactedSpriteToken: {
+                type: "string",
+                description: "A redacted token for accessing sprite resources",
+              },
             },
           },
         },

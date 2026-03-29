@@ -28,8 +28,6 @@ export const env = cleanEnv(process.env, {
   CF_SANDBOX_API_URL: str({ default: "http://localhost:8787" }),
   CF_SECRET_KEY: str({}),
   CF_LOCAL: bool({ default: false }),
-  SPRITE_TOKEN: str({}),
-  SPRITE_NAME: str({}),
   ACCOUNT_ID: str({}),
   VOLUME_BUCKET: str({}),
   R2_ACCESS_KEY_ID: str({}),

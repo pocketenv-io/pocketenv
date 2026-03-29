@@ -27,48 +27,69 @@ export const VariableSchema = z.object({
   value: z.string(),
 });
 
-export const SandboxConfigSchema = z.object({
-  name: z.string().optional(),
-  description: z.string().optional(),
-  provider: z
-    .enum(["daytona", "vercel", "deno", "sprites"])
-    .optional()
-    .default("deno"),
-  base: z.enum(["openclaw"]).optional().default("openclaw"),
-  keepAlive: z.boolean().optional().default(false),
-  vcpus: z.number().optional().default(2),
-  memory: z.number().optional().default(4),
-  disk: z.number().optional().default(3),
-  sleepAfter: z
-    .string()
-    .regex(
-      /^\d+(h|m|s)$/,
-      "Invalid format. Use a number followed by 'h', 'm', or 's' (e.g., '1h', '30m', '15s').",
-    )
-    .optional(),
-  variables: z
-    .array(VariableSchema)
-    .optional()
-    .default([])
-    .refine(
-      (secrets) => {
-        enforceUniqueNames(secrets);
-        return true;
-      },
-      { message: "Duplicate secret names are not allowed." },
-    ),
-  secrets: z
-    .array(SecretSchema)
-    .optional()
-    .default([])
-    .refine(
-      (secrets) => {
-        enforceUniqueNames(secrets);
-        return true;
-      },
-      { message: "Duplicate secret names are not allowed." },
-    ),
-});
+export const SandboxConfigSchema = z
+  .object({
+    name: z.string().optional(),
+    description: z.string().optional(),
+    provider: z
+      .enum(["daytona", "vercel", "deno", "sprites"])
+      .optional()
+      .default("deno"),
+    base: z.enum(["openclaw"]).optional().default("openclaw"),
+    keepAlive: z.boolean().optional().default(false),
+    spriteToken: z.string().optional(),
+    redacredSpriteToken: z.string().optional(),
+    vcpus: z.number().optional().default(2),
+    memory: z.number().optional().default(4),
+    disk: z.number().optional().default(3),
+    sleepAfter: z
+      .string()
+      .regex(
+        /^\d+(h|m|s)$/,
+        "Invalid format. Use a number followed by 'h', 'm', or 's' (e.g., '1h', '30m', '15s').",
+      )
+      .optional(),
+    variables: z
+      .array(VariableSchema)
+      .optional()
+      .default([])
+      .refine(
+        (secrets) => {
+          enforceUniqueNames(secrets);
+          return true;
+        },
+        { message: "Duplicate secret names are not allowed." },
+      ),
+    secrets: z
+      .array(SecretSchema)
+      .optional()
+      .default([])
+      .refine(
+        (secrets) => {
+          enforceUniqueNames(secrets);
+          return true;
+        },
+        { message: "Duplicate secret names are not allowed." },
+      ),
+  })
+  .superRefine((data, ctx) => {
+    if (data.provider === "sprites") {
+      if (!data.spriteToken) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "spriteToken is required when provider is 'sprites'",
+          path: ["spriteToken"],
+        });
+      }
+      if (!data.redacredSpriteToken) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "redacredSpriteToken is required when provider is 'sprites'",
+          path: ["redacredSpriteToken"],
+        });
+      }
+    }
+  });
 
 export const StartSandboxInputSchema = z.object({
   repo: z.string().optional(),

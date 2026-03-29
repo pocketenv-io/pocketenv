@@ -197,7 +197,7 @@ const saveSandboxProvider = async (
         })
         .execute();
       break;
-    case "cloudflare":
+    case "cloudflare": {
       const [record] = await tx
         .select()
         .from(sandboxes)
@@ -251,6 +251,7 @@ const saveSandboxProvider = async (
           .execute(),
       ]);
       break;
+    }
     default:
       break;
   }

@@ -36,6 +36,10 @@ export interface InputSchema {
   envs?: IoPocketenvSandboxDefs.Envs;
   /** Prevent the sandbox from being automatically stop after a period of inactivity. Use with caution, as this may lead to increased costs. */
   keepAlive?: boolean;
+  /** A token (encrypted) for accessing sprite resources */
+  spriteToken?: string;
+  /** A redacted token for accessing sprite resources */
+  redactedSpriteToken?: string;
   [k: string]: unknown;
 }
 

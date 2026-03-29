@@ -7,10 +7,13 @@ import { Buffer } from "node:buffer";
 import crypto from "node:crypto";
 
 export class SpriteSandbox implements BaseSandbox {
-  constructor(private sprite: Sprite) {}
+  constructor(
+    private sprite: Sprite,
+    private spriteToken: string,
+  ) {}
 
   async start(): Promise<void> {
-    const client = new SpritesClient(process.env.SPRITE_TOKEN!);
+    const client = new SpritesClient(this.spriteToken);
     const name = await this.id();
     if (!name) {
       consola.error("Sprite name is not available");
@@ -160,20 +163,20 @@ export class SpriteSandbox implements BaseSandbox {
 
 class SpritesProvider implements BaseProvider {
   async create(options: SandboxOptions): Promise<BaseSandbox> {
-    const client = new SpritesClient(process.env.SPRITE_TOKEN!);
+    const client = new SpritesClient(options.spriteToken!);
 
     if (!options.spriteName) {
       throw new Error("spriteName is required");
     }
 
     const sprite = await client.createSprite(options.spriteName);
-    return new SpriteSandbox(sprite);
+    return new SpriteSandbox(sprite, options.spriteToken!);
   }
 
-  async get(id: string): Promise<BaseSandbox> {
-    const client = new SpritesClient(process.env.SPRITE_TOKEN!);
+  async get(id: string, token?: string): Promise<BaseSandbox> {
+    const client = new SpritesClient(token!);
     const sprite = client.sprite(id);
-    return new SpriteSandbox(sprite);
+    return new SpriteSandbox(sprite, token!);
   }
 }
 

@@ -3,12 +3,16 @@ import process from "node:process";
 
 await sodium.ready;
 
-export default function decrypt(value: string): string {
+export default function decrypt(value?: string): string | undefined {
+  if (!value) {
+    return undefined;
+  }
+
   const sealed = sodium.from_base64(
     value,
     sodium.base64_variants.URLSAFE_NO_PADDING,
   );
-  let decryptedBytes = sodium.crypto_box_seal_open(
+  const decryptedBytes = sodium.crypto_box_seal_open(
     sealed,
     sodium.from_hex(process.env.PUBLIC_KEY!),
     sodium.from_hex(process.env.PRIVATE_KEY!),

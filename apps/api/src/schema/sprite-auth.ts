@@ -6,9 +6,7 @@ import users from "./users";
 const spriteAuth = pgTable(
   "sprite_auth",
   {
-    id: text("id")
-      .primaryKey()
-      .default(sql`xata_id()`),
+    id: text("id").primaryKey().default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id, { onDelete: "cascade" }),

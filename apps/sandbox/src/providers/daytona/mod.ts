@@ -135,24 +135,29 @@ class DaytonaProvider implements BaseProvider {
     }
     const daytona = new Daytona({
       organizationId: options.organizationId,
-      apiKey: process.env.DAYTONA_API_KEY,
+      apiKey: options.daytonaApiKey,
       apiUrl: process.env.DAYTONA_API_URL,
       _experimental: {},
     });
 
     const sandbox = await daytona.create({
       language: "typescript",
-      snapshot: process.env.DAYTONA_SNAPSHOT,
+      // snapshot: process.env.DAYTONA_SNAPSHOT,
       envVars: options.envVars,
     });
 
     return new DaytonaSandbox(sandbox);
   }
 
-  async get(id: string): Promise<BaseSandbox> {
+  async get(
+    id: string,
+    apiKey?: string,
+    organizationId?: string,
+  ): Promise<BaseSandbox> {
     const daytona = new Daytona({
-      apiKey: process.env.DAYTONA_API_KEY,
+      apiKey,
       apiUrl: process.env.DAYTONA_API_URL,
+      organizationId,
       _experimental: {},
     });
 

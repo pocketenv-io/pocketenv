@@ -45,6 +45,8 @@ export interface SandboxOptions {
   memory?: Memory;
   spriteToken?: string;
   spriteName?: string;
+  daytonaApiKey?: string;
+  organizationId?: string;
   [key: string]: any;
 }
 
@@ -79,11 +81,12 @@ export async function getSandboxById(
   provider: Provider,
   id: string,
   token?: string,
+  organizationId?: string,
 ): Promise<BaseSandbox> {
   switch (provider) {
     case "daytona":
       return import("./daytona/mod.ts").then((module) =>
-        new module.default().get(id),
+        new module.default().get(id, token, organizationId),
       );
     case "deno": {
       const module = await import("./deno/mod.ts");

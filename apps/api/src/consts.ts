@@ -32,8 +32,8 @@ export const DefaultResources: Record<Providers, Resources> = {
   },
   cloudflare: {
     vcpus: 2,
-    memory: 4,
-    disk: 8,
+    memory: 8,
+    disk: 16,
   },
   sprite: {
     vcpus: 2,

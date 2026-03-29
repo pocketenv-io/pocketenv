@@ -16,6 +16,7 @@ const spriteAuth = pgTable(
       .notNull()
       .references(() => users.id),
     spriteToken: text("sprite_token").notNull(),
+    redactedSpriteToken: text("redacted_sprite_token").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [uniqueIndex("unique_sprite_auth").on(t.sandboxId, t.userId)],

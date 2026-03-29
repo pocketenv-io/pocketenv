@@ -16,6 +16,7 @@ const denoAuth = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id),
+    redactedDenoToken: text("redacted_deno_token").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [uniqueIndex("unique_deno_auth").on(t.sandboxId, t.userId)],

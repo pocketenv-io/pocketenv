@@ -16,6 +16,7 @@ const daytonaAuth = pgTable(
       .notNull()
       .references(() => users.id),
     apiKey: text("api_key").notNull(),
+    redactedApiKey: text("redacted_api_key").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [uniqueIndex("unique_daytona_auth").on(t.sandboxId, t.userId)],

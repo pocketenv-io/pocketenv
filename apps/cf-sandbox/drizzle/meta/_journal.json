@@ -260,6 +260,13 @@
       "when": 1774776863772,
       "tag": "0036_fine_weapon_omega",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1774781602578,
+      "tag": "0037_parallel_ravenous",
+      "breakpoints": true
     }
   ]
 }

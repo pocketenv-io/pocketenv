@@ -223,6 +223,8 @@ export interface SandboxProviderPref {
   apiKey?: string;
   /** The redacted API key for the sandbox provider, returned in API responses. */
   redactedApiKey?: string;
+  /** The ID of the organization in the sandbox provider, if applicable. This can be used to associate the sandbox with a specific organization or team within the provider's platform. */
+  organizationId?: string;
   [k: string]: unknown;
 }
 

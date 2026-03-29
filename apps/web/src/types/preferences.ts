@@ -10,6 +10,7 @@ export type SandboxProvider = {
   name: string;
   apiKey?: string;
   redactedApiKey?: string;
+  organizationId?: string;
   $type: "io.pocketenv.sandbox.defs#sandboxProviderPref";
 };
 

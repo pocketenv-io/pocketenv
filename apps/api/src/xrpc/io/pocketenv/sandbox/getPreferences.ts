@@ -75,6 +75,7 @@ export default function (server: Server, ctx: Context) {
       $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
       name: "daytona" as const,
       redactedApiKey: daytona.redactedApiKey,
+      organizationId: daytona.organizationId,
     }) ||
       (deno && {
         $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,

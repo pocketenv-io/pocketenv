@@ -29,6 +29,7 @@ const schema = z
   .object({
     provider: z.enum(["cloudflare", "daytona", "vercel", "deno", "sprites"]),
     apiKey: z.string().optional(),
+    organizationId: z.uuid().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.provider !== "cloudflare" && !data.apiKey?.trim()) {
@@ -36,6 +37,13 @@ const schema = z
         code: z.ZodIssueCode.custom,
         message: `${LABELS[data.provider as keyof typeof LABELS]} is required`,
         path: ["apiKey"],
+      });
+    }
+    if (data.provider === "daytona" && !data.organizationId?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Daytona Organization ID is required",
+        path: ["organizationId"],
       });
     }
   });
@@ -76,18 +84,24 @@ function Services() {
     if (providerPref) {
       setValue("provider", providerPref.name as FormValues["provider"]);
       setValue("apiKey", providerPref.redactedApiKey ?? "");
+      setValue("organizationId", providerPref.organizationId ?? "");
     }
   }, [preferences, setValue]);
 
   const provider = watch("provider") as Provider;
 
-  const { onChange: onProviderChange, ...providerRegister } = register("provider");
+  const { onChange: onProviderChange, ...providerRegister } =
+    register("provider");
 
   const onSubmit = async (values: FormValues) => {
     const pref: SandboxProvider = {
       $type: "io.pocketenv.sandbox.defs#sandboxProviderPref",
       name: values.provider,
     };
+
+    if (values.provider === "daytona" && values.organizationId?.trim()) {
+      pref.organizationId = values.organizationId.trim();
+    }
 
     if (values.apiKey?.includes("**") && values.provider !== "cloudflare") {
       return;
@@ -138,39 +152,59 @@ function Services() {
           </p>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="w-full overflow-x-auto">
-              <div className="flex flex-row">
-                <div className="w-96 mr-6">
-                  <label className="label-text">
-                    Pick your Sandbox Provider
-                  </label>
-                  <select
-                    {...providerRegister}
-                    onChange={(e) => {
-                      onProviderChange(e);
-                      setValue("apiKey", "");
-                    }}
-                    className="select select-lg font-medium text-[15px]"
-                  >
-                    <option value="cloudflare">
-                      Cloudflare Sandbox (Recommended)
-                    </option>
-                    <option value="daytona">Daytona</option>
-                    <option value="vercel">Vercel Sandbox</option>
-                    <option value="deno">Deno Sandbox</option>
-                    <option value="sprites">Sprites</option>
-                  </select>
+              <div className="w-fit">
+                <div className="flex flex-row">
+                  <div className="w-96 mr-6">
+                    <label className="label-text">
+                      Pick your Sandbox Provider
+                    </label>
+                    <select
+                      {...providerRegister}
+                      onChange={(e) => {
+                        onProviderChange(e);
+                        setValue("apiKey", "");
+                        setValue("organizationId", "");
+                      }}
+                      className="select select-lg font-medium text-[15px]"
+                    >
+                      <option value="cloudflare">
+                        Cloudflare Sandbox (Recommended)
+                      </option>
+                      <option value="daytona">Daytona</option>
+                      <option value="vercel">Vercel Sandbox</option>
+                      <option value="deno">Deno Sandbox</option>
+                      <option value="sprites">Sprites</option>
+                    </select>
+                  </div>
+                  {provider !== "cloudflare" && (
+                    <div className="w-96">
+                      <label className="label-text">{LABELS[provider]}</label>
+                      <input
+                        {...register("apiKey")}
+                        type="text"
+                        className="input input-lg font-medium text-[15px]"
+                      />
+                      {errors.apiKey && (
+                        <p className="text-error text-sm mt-1">
+                          {errors.apiKey.message}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
-                {provider !== "cloudflare" && (
-                  <div className="w-96">
-                    <label className="label-text">{LABELS[provider]}</label>
+                {provider === "daytona" && (
+                  <div className="w-full mt-4">
+                    <label className="label-text">
+                      Daytona Organization ID
+                    </label>
                     <input
-                      {...register("apiKey")}
+                      {...register("organizationId")}
                       type="text"
                       className="input input-lg font-medium text-[15px]"
                     />
-                    {errors.apiKey && (
+                    {errors.organizationId && (
                       <p className="text-error text-sm mt-1">
-                        {errors.apiKey.message}
+                        {errors.organizationId.message}
                       </p>
                     )}
                   </div>

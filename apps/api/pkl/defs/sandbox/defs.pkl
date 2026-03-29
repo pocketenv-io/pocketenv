@@ -320,6 +320,11 @@ defs = new Mapping<String, ObjectType | Array> {
         type = "string"
         description = "The redacted API key for the sandbox provider, returned in API responses."
       }
+      ["organizationId"] = new StringType {
+        type = "string"
+        description =
+          "The ID of the organization in the sandbox provider, if applicable. This can be used to associate the sandbox with a specific organization or team within the provider's platform."
+      }
     }
   }
   ["preferences"] = new Array {

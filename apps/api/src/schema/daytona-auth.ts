@@ -6,7 +6,9 @@ import users from "./users";
 const daytonaAuth = pgTable(
   "daytona_auth",
   {
-    id: text("id").primaryKey().default(sql`xata_id()`),
+    id: text("id")
+      .primaryKey()
+      .default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id, { onDelete: "cascade" }),
@@ -15,6 +17,7 @@ const daytonaAuth = pgTable(
       .references(() => users.id),
     apiKey: text("api_key").notNull(),
     redactedApiKey: text("redacted_api_key").notNull(),
+    organizationId: text("organization_id").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [uniqueIndex("unique_daytona_auth").on(t.sandboxId, t.userId)],

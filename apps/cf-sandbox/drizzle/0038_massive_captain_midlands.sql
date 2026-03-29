@@ -1,0 +1,1 @@
+ALTER TABLE "daytona_auth" ADD COLUMN "organization_id" text NOT NULL;

@@ -288,6 +288,8 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
+  await sandbox.start();
+
   const params = await Promise.all([
     c.var.db
       .select()
@@ -362,7 +364,6 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       .catch((e) => consola.error(`Failed to Clone Repository: ${e}`));
   }
 
-  await sandbox.start();
   await c.var.db
     .update(sandboxes)
     .set({

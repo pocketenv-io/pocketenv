@@ -542,11 +542,19 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
     }
 
     await sandbox.stop();
-    await c.var.db
-      .update(sandboxes)
-      .set({ status: "STOPPED" })
-      .where(eq(sandboxes.id, c.req.param("sandboxId")))
-      .execute();
+    await Promise.all([
+      c.var.db
+        .update(sandboxes)
+        .set({ status: "STOPPED" })
+        .where(eq(sandboxes.id, c.req.param("sandboxId")))
+        .execute(),
+      c.var.db
+        .update(services)
+        .set({ status: "STOPPED" })
+        .where(eq(services.sandboxId, c.req.param("sandboxId")))
+        .execute(),
+    ]);
+
     return c.json({});
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";

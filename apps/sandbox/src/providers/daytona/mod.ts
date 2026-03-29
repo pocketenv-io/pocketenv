@@ -143,6 +143,7 @@ class DaytonaProvider implements BaseProvider {
     const sandbox = await daytona.create({
       language: "typescript",
       // snapshot: process.env.DAYTONA_SNAPSHOT,
+      snapshot: "daytona-medium",
       envVars: options.envVars,
     });
 

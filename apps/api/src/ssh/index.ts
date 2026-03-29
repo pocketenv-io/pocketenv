@@ -49,13 +49,15 @@ router.post("/connect", async (req, res) => {
   consola.log(req.did);
   consola.log(req.sandboxId);
 
-  const ssh = await req.ctx.sandbox.get(`/v1/sandboxes/${req.sandboxId}/ssh`, {
-    headers: {
-      ...(req.did && {
-        Authorization: `Bearer ${await generateJwt(req.did)}`,
-      }),
-    },
-  });
+  const ssh = await req.ctx
+    .sandbox()
+    .get(`/v1/sandboxes/${req.sandboxId}/ssh`, {
+      headers: {
+        ...(req.did && {
+          Authorization: `Bearer ${await generateJwt(req.did)}`,
+        }),
+      },
+    });
 
   const client = new Client();
 

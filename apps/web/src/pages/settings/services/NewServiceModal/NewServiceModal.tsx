@@ -3,7 +3,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
-import { useAddServiceMutation, useUpdateServiceMutation } from "../../../../hooks/useService";
+import {
+  useAddServiceMutation,
+  useUpdateServiceMutation,
+} from "../../../../hooks/useService";
 import type { Service } from "../../../../types/service";
 
 const schema = z.object({
@@ -26,10 +29,17 @@ export type NewServiceModalProps = {
   service?: Service;
 };
 
-function NewServiceModal({ isOpen, onClose, sandboxId, service }: NewServiceModalProps) {
+function NewServiceModal({
+  isOpen,
+  onClose,
+  sandboxId,
+  service,
+}: NewServiceModalProps) {
   const isEdit = !!service;
-  const { mutateAsync: addService, isPending: isAdding } = useAddServiceMutation();
-  const { mutateAsync: updateService, isPending: isUpdating } = useUpdateServiceMutation();
+  const { mutateAsync: addService, isPending: isAdding } =
+    useAddServiceMutation();
+  const { mutateAsync: updateService, isPending: isUpdating } =
+    useUpdateServiceMutation();
   const isLoading = isAdding || isUpdating;
 
   const {
@@ -128,7 +138,9 @@ function NewServiceModal({ isOpen, onClose, sandboxId, service }: NewServiceModa
         >
           <div className="modal-content">
             <div className="modal-header">
-              <div className="flex-1">{isEdit ? "Edit Service" : "New Service"}</div>
+              <div className="flex-1">
+                {isEdit ? "Edit Service" : "New Service"}
+              </div>
               <button
                 type="button"
                 className="btn btn-text btn-circle btn-sm absolute end-3 top-3"
@@ -179,7 +191,7 @@ function NewServiceModal({ isOpen, onClose, sandboxId, service }: NewServiceModa
                     >
                       <input
                         type="text"
-                        placeholder="e.g. npx serve"
+                        placeholder="e.g. npx serve -l 3001"
                         className={`grow`}
                         autoComplete="off"
                         data-1p-ignore

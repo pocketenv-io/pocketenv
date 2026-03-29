@@ -9,6 +9,7 @@ import chalk from "chalk";
 import API from "./xrpc";
 import ssh from "./ssh";
 import tty from "./tty";
+import { createRateLimiter } from "./ratelimiter";
 
 let server = createServer({
   validateResponse: false,
@@ -26,6 +27,7 @@ const app = express();
 app.use(contextMiddleware);
 app.use(cors());
 app.use(morgan("dev"));
+app.use(createRateLimiter({ windowMs: 60_000, max: 300 }));
 
 const banner = `
     ___           __       __

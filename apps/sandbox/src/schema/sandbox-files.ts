@@ -11,7 +11,7 @@ const sandboxFiles = pgTable(
       .default(sql`file_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
-      .references(() => sandboxes.id),
+      .references(() => sandboxes.id, { onDelete: "cascade" }),
     fileId: text("file_id")
       .notNull()
       .references(() => files.id),

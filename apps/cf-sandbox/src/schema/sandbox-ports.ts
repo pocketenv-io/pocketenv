@@ -17,7 +17,7 @@ const sandboxPorts = pgTable(
       .default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
-      .references(() => sandboxes.id),
+      .references(() => sandboxes.id, { onDelete: "cascade" }),
     exposedPort: integer("exposed_port").notNull(),
     previewUrl: text("preview_url"),
     description: text("description"),

@@ -5,10 +5,12 @@ import sandboxes from "./sandboxes";
 const integrations = pgTable(
   "integrations",
   {
-    id: text("id").primaryKey().default(sql`xata_id()`),
+    id: text("id")
+      .primaryKey()
+      .default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
-      .references(() => sandboxes.id),
+      .references(() => sandboxes.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     description: text("description"),
     webhookUrl: text("webhook_url").notNull(),

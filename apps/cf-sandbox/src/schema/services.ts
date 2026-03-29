@@ -10,7 +10,7 @@ const services = pgTable(
       .default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
-      .references(() => sandboxes.id),
+      .references(() => sandboxes.id, { onDelete: "cascade" }),
     name: text("name").notNull(),
     command: text("command").notNull(),
     description: text("description"),

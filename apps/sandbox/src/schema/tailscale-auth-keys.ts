@@ -8,7 +8,7 @@ const tailscaleAuthKey = pgTable("tailscale_auth_keys", {
     .default(sql`xata_id()`),
   sandboxId: text("sandbox_id")
     .notNull()
-    .references(() => sandboxes.id),
+    .references(() => sandboxes.id, { onDelete: "cascade" }),
   authKey: text("auth_key").notNull(),
   redacted: text("redacted").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),

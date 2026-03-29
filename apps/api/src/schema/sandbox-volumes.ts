@@ -6,10 +6,12 @@ import volumes from "./volumes";
 const sandboxVolumes = pgTable(
   "sandbox_volumes",
   {
-    id: text("id").primaryKey().default(sql`volume_id()`),
+    id: text("id")
+      .primaryKey()
+      .default(sql`volume_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
-      .references(() => sandboxes.id),
+      .references(() => sandboxes.id, { onDelete: "cascade" }),
     volumeId: text("volume_id")
       .notNull()
       .references(() => volumes.id),

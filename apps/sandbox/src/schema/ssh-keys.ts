@@ -10,7 +10,7 @@ const sshKeys = pgTable(
       .default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
-      .references(() => sandboxes.id),
+      .references(() => sandboxes.id, { onDelete: "cascade" }),
     publicKey: text("public_key").notNull(),
     privateKey: text("private_key").notNull(),
     redacted: text("redacted").notNull(),

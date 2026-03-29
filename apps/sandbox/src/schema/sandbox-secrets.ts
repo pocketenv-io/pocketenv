@@ -11,7 +11,7 @@ const sandboxSecrets = pgTable(
       .default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
-      .references(() => sandboxes.id),
+      .references(() => sandboxes.id, { onDelete: "cascade" }),
     secretId: text("secret_id")
       .notNull()
       .references(() => secrets.id),

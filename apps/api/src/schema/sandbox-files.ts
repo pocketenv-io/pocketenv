@@ -6,10 +6,12 @@ import files from "./files";
 const sandboxFiles = pgTable(
   "sandbox_files",
   {
-    id: text("id").primaryKey().default(sql`file_id()`),
+    id: text("id")
+      .primaryKey()
+      .default(sql`file_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
-      .references(() => sandboxes.id),
+      .references(() => sandboxes.id, { onDelete: "cascade" }),
     fileId: text("file_id")
       .notNull()
       .references(() => files.id),

@@ -160,7 +160,7 @@ app.post("/v1/sandboxes", async (c) => {
             provider: params.provider,
             publicKey: env.PUBLIC_KEY,
             userId: user?.id,
-            instanceType: "standard-1",
+            instanceType: "standard-3",
             keepAlive: params.keepAlive,
             sleepAfter: params.sleepAfter,
             vcpus: params.vcpus,

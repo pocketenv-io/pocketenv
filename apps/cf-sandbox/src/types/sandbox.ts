@@ -60,8 +60,8 @@ export const SandboxConfigSchema = z.object({
     .default("openclaw"),
   keepAlive: z.boolean().optional().default(false),
   vcpus: z.number().int().positive().optional().default(2),
-  memory: z.number().int().positive().optional().default(4),
-  disk: z.number().int().positive().optional().default(8),
+  memory: z.number().int().positive().optional().default(8),
+  disk: z.number().int().positive().optional().default(16),
   sleepAfter: z
     .string()
     .regex(

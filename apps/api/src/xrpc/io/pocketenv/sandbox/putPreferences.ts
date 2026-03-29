@@ -126,27 +126,39 @@ const saveSandboxProvider = async (
 ) => {
   switch (pref.name) {
     case "daytona":
-      await tx
-        .insert(daytonaAuth)
-        .values({
-          userId: user.id,
-          sandboxId: input.body.sandboxId,
-          apiKey: pref.apiKey!,
-          redactedApiKey: pref.redactedApiKey!,
-          organizationId: pref.organizationId!,
-        })
-        .onConflictDoUpdate({
-          target: [daytonaAuth.sandboxId, daytonaAuth.userId],
-          set: {
-            ...(pref.apiKey
-              ? { apiKey: pref.apiKey, redactedApiKey: pref.redactedApiKey! }
-              : {}),
-            ...(pref.organizationId
-              ? { organizationId: pref.organizationId }
-              : {}),
-          },
-        })
-        .execute();
+      if (pref.apiKey) {
+        await tx
+          .insert(daytonaAuth)
+          .values({
+            userId: user.id,
+            sandboxId: input.body.sandboxId,
+            apiKey: pref.apiKey,
+            redactedApiKey: pref.redactedApiKey!,
+            organizationId: pref.organizationId!,
+          })
+          .onConflictDoUpdate({
+            target: [daytonaAuth.sandboxId, daytonaAuth.userId],
+            set: {
+              apiKey: pref.apiKey,
+              redactedApiKey: pref.redactedApiKey!,
+              ...(pref.organizationId
+                ? { organizationId: pref.organizationId }
+                : {}),
+            },
+          })
+          .execute();
+      } else if (pref.organizationId) {
+        await tx
+          .update(daytonaAuth)
+          .set({ organizationId: pref.organizationId })
+          .where(
+            and(
+              eq(daytonaAuth.sandboxId, input.body.sandboxId),
+              eq(daytonaAuth.userId, user.id),
+            ),
+          )
+          .execute();
+      }
       break;
     case "deno":
       await tx

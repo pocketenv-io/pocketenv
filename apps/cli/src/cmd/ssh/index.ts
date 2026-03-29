@@ -7,6 +7,7 @@ import type { Sandbox } from "../../types/sandbox";
 import type { Profile } from "../../types/profile";
 import cloudflare from "./cloudflare";
 import tty from "./tty";
+import terminal from "./terminal";
 
 async function ssh(sandboxName: string | undefined) {
   const token = await getAccessToken();
@@ -75,10 +76,13 @@ async function ssh(sandboxName: string | undefined) {
       await cloudflare(sandbox);
       break;
     case "daytona":
+      await terminal(sandbox);
       break;
     case "deno":
+      await terminal(sandbox);
       break;
     case "vercel":
+      // await terminal(sandbox);
       break;
     case "sprites":
       await tty(sandbox);

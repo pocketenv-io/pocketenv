@@ -216,12 +216,35 @@ export function validateVolumePref(v: unknown): ValidationResult {
   return lexicons.validate("io.pocketenv.sandbox.defs#volumePref", v);
 }
 
+export interface SandboxProviderPref {
+  /** The name of the sandbox provider */
+  name: string;
+  /** The encrypted API key used to authenticate with the sandbox provider. */
+  apiKey?: string;
+  /** The redacted API key for the sandbox provider, returned in API responses. */
+  redactedApiKey?: string;
+  [k: string]: unknown;
+}
+
+export function isSandboxProviderPref(v: unknown): v is SandboxProviderPref {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#sandboxProviderPref"
+  );
+}
+
+export function validateSandboxProviderPref(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#sandboxProviderPref", v);
+}
+
 export type Preferences = (
   | SandboxDetailsPref
   | SecretPref
   | VariablePref
   | FilePref
   | VolumePref
+  | SandboxProviderPref
   | { $type: string; [k: string]: unknown }
 )[];
 

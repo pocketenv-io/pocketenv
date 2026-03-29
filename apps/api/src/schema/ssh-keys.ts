@@ -5,9 +5,7 @@ import sandboxes from "./sandboxes";
 const sshKeys = pgTable(
   "ssh_keys",
   {
-    id: text("id")
-      .primaryKey()
-      .default(sql`xata_id()`),
+    id: text("id").primaryKey().default(sql`xata_id()`),
     sandboxId: text("sandbox_id")
       .notNull()
       .references(() => sandboxes.id, { onDelete: "cascade" }),

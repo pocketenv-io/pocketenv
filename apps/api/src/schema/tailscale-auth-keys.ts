@@ -3,9 +3,7 @@ import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import sandboxes from "./sandboxes";
 
 const tailscaleAuthKey = pgTable("tailscale_auth_keys", {
-  id: text("id")
-    .primaryKey()
-    .default(sql`xata_id()`),
+  id: text("id").primaryKey().default(sql`xata_id()`),
   sandboxId: text("sandbox_id")
     .notNull()
     .references(() => sandboxes.id, { onDelete: "cascade" }),

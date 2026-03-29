@@ -70,6 +70,22 @@ function Sidebar() {
                 {!isCollapsed && "General"}
               </Link>
             </li>
+            {/*<li>
+              <Link
+                to={`/${did}/sandbox/${rkey}/provider`}
+                className={`${
+                  isActive("/provider")
+                    ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
+                    : "rounded-full hover:text-white"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? "Sandbox Provider" : undefined}
+              >
+                <span
+                  className={`icon-[solar--play-outline] size-5 ${isCollapsed ? "" : "mr-2.5"}`}
+                ></span>
+                {!isCollapsed && "Sandbox Provider"}
+              </Link>
+            </li>*/}
             <li>
               <Link
                 to={`/${did}/sandbox/${rkey}/repository`}

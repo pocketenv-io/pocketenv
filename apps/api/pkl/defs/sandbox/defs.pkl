@@ -302,6 +302,26 @@ defs = new Mapping<String, ObjectType | Array> {
     }
     description = "A volume to add to the sandbox"
   }
+  ["sandboxProviderPref"] = new ObjectType {
+    type = "object"
+    required = List("name")
+    properties {
+      ["name"] = new StringType {
+        type = "string"
+        description = "The name of the sandbox provider"
+        minLength = 1
+      }
+      ["apiKey"] = new StringType {
+        type = "string"
+        description = "The encrypted API key used to authenticate with the sandbox provider."
+        minLength = 1
+      }
+      ["redactedApiKey"] = new StringType {
+        type = "string"
+        description = "The redacted API key for the sandbox provider, returned in API responses."
+      }
+    }
+  }
   ["preferences"] = new Array {
     type = "array"
     items = new Union {
@@ -313,6 +333,7 @@ defs = new Mapping<String, ObjectType | Array> {
           "#variablePref",
           "#filePref",
           "#volumePref",
+          "#sandboxProviderPref",
         )
     }
   }

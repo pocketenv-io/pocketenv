@@ -35,6 +35,7 @@ function Main({ children, sidebar, root, rootLink }: MainProps) {
       /^\/did:plc:[a-z0-9]+\/sandbox\/[a-z0-9]+\/repository$/.test(path) ||
       /^\/did:plc:[a-z0-9]+\/sandbox\/[a-z0-9]+\/ports$/.test(path) ||
       /^\/did:plc:[a-z0-9]+\/sandbox\/[a-z0-9]+\/services/.test(path) ||
+      /^\/did:plc:[a-z0-9]+\/sandbox\/[a-z0-9]+\/provider/.test(path) ||
       /^\/did:plc:[a-z0-9]+\/sandbox\/[a-z0-9]+\/tailscale$/.test(path)
     )
       return "Settings";

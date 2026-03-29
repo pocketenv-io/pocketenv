@@ -299,6 +299,28 @@
         }
       }
     },
+    "sandboxProviderPref": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the sandbox provider",
+          "minLength": 1
+        },
+        "apiKey": {
+          "type": "string",
+          "description": "The encrypted API key used to authenticate with the sandbox provider.",
+          "minLength": 1
+        },
+        "redactedApiKey": {
+          "type": "string",
+          "description": "The redacted API key for the sandbox provider, returned in API responses."
+        }
+      }
+    },
     "preferences": {
       "type": "array",
       "items": {
@@ -308,7 +330,8 @@
           "#secretPref",
           "#variablePref",
           "#filePref",
-          "#volumePref"
+          "#volumePref",
+          "#sandboxProviderPref"
         ]
       }
     },

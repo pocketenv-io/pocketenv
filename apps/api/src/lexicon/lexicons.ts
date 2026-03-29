@@ -913,6 +913,28 @@ export const schemaDict = {
           },
         },
       },
+      sandboxProviderPref: {
+        type: "object",
+        required: ["name"],
+        properties: {
+          name: {
+            type: "string",
+            description: "The name of the sandbox provider",
+            minLength: 1,
+          },
+          apiKey: {
+            type: "string",
+            description:
+              "The encrypted API key used to authenticate with the sandbox provider.",
+            minLength: 1,
+          },
+          redactedApiKey: {
+            type: "string",
+            description:
+              "The redacted API key for the sandbox provider, returned in API responses.",
+          },
+        },
+      },
       preferences: {
         type: "array",
         items: {
@@ -923,6 +945,7 @@ export const schemaDict = {
             "lex:io.pocketenv.sandbox.defs#variablePref",
             "lex:io.pocketenv.sandbox.defs#filePref",
             "lex:io.pocketenv.sandbox.defs#volumePref",
+            "lex:io.pocketenv.sandbox.defs#sandboxProviderPref",
           ],
         },
       },

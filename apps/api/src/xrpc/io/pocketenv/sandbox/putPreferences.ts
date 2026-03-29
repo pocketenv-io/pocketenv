@@ -188,7 +188,7 @@ const saveSandboxProvider = async (
         })
         .execute();
       break;
-    default:
+    case "cloudflare":
       const sandboxFilter = or(
         eq(sandboxes.sandboxId, input.body.sandboxId),
         eq(sandboxes.uri, input.body.sandboxId),
@@ -212,6 +212,8 @@ const saveSandboxProvider = async (
           .where(and(eq(spriteAuth.userId, user.id), sandboxFilter))
           .execute(),
       ]);
+      break;
+    default:
       break;
   }
 };

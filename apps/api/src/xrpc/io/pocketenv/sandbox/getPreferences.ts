@@ -66,7 +66,6 @@ export default function (server: Server, ctx: Context) {
         .execute()
         .then(([row]) => row?.vercel_auth),
     ]);
-    console.log(daytona, deno, sprite, vercel);
 
     if (!daytona && !deno && !sprite && !vercel) {
       return [];

@@ -160,11 +160,13 @@ function Volumes() {
           </div>
           <div className="fixed bottom-3.75 left-0 right-0">
             <div className="flex justify-center items-center">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={onPageChange}
-              />
+              {volumes && volumes.total > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={onPageChange}
+                />
+              )}
             </div>
           </div>
         </div>

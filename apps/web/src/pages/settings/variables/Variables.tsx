@@ -141,7 +141,7 @@ function Variables() {
                         <td className="normal-case text-[14px] text-right">
                           <div className="join">
                             <button
-                              className="btn btn-outline join-item"
+                              className="btn btn-outline join-item w-[72.63px]"
                               onClick={() => {
                                 setSelectedVariableId(variable.id);
                                 setIsOpen(true);
@@ -168,11 +168,13 @@ function Variables() {
           </div>
           <div className="fixed bottom-3.75 left-0 right-0">
             <div className="flex justify-center items-center">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={onPageChange}
-              />
+              {variables && variables.total > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={onPageChange}
+                />
+              )}
             </div>
           </div>
         </div>

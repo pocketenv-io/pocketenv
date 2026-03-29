@@ -190,6 +190,7 @@ export class CloudflareSandbox implements BaseSandbox {
 
   async startService(command: string): Promise<string> {
     const { id } = await this.sandbox.startProcess(command);
+    await this.sandbox.setKeepAlive(true);
     return id;
   }
 

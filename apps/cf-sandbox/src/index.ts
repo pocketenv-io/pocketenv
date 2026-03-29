@@ -858,6 +858,10 @@ app.post("/v1/sandboxes/:sandboxId/services/:serviceId", async (c) => {
       return c.json({ error: "Service not found" }, 404);
     }
 
+    if (service.status === "RUNNING") {
+      return c.json({});
+    }
+
     const serviceId = await sandbox.startService(service.command);
 
     await c.var.db
@@ -908,6 +912,10 @@ app.delete("/v1/sandboxes/:sandboxId/services/:serviceId", async (c) => {
 
     if (!service) {
       return c.json({ error: "Service not found" }, 404);
+    }
+
+    if (service.status !== "RUNNING" || !service.serviceId) {
+      return c.json({});
     }
 
     await sandbox.stopService(service.serviceId!);

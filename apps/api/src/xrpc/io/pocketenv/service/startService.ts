@@ -40,7 +40,7 @@ export default function (server: Server, ctx: Context) {
         ? ctx.cfsandbox(record!.sandboxes!.base!)
         : ctx.sandbox();
 
-    if (record?.sandboxes?.status === "RUNNING") {
+    if (record?.services?.status === "RUNNING") {
       consola.info("Service is already running, skipping start", {
         params,
         auth,

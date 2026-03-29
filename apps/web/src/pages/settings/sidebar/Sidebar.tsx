@@ -186,6 +186,22 @@ function Sidebar() {
             </li>
             <li>
               <Link
+                to={`/${did}/sandbox/${rkey}/services`}
+                className={`${
+                  isActive("/services")
+                    ? "active bg-white/7 text-[#00e8c6]! font-semibold rounded-full"
+                    : "rounded-full hover:text-white"
+                } ${isCollapsed ? "justify-center px-2" : ""}`}
+                title={isCollapsed ? "Services" : undefined}
+              >
+                <span
+                  className={`icon-[bi--app] size-6 ${isCollapsed ? "" : "mr-2 ml-1"}`}
+                ></span>
+                {!isCollapsed && "Services"}
+              </Link>
+            </li>
+            <li>
+              <Link
                 to={`/${did}/sandbox/${rkey}/ssh-keys`}
                 className={`${
                   isActive("/ssh-keys")

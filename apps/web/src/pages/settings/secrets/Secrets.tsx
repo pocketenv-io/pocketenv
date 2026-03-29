@@ -129,7 +129,7 @@ function Secrets() {
                         <td className="normal-case text-[14px] text-right">
                           <div className="join">
                             <button
-                              className="btn btn-outline join-item"
+                              className="btn btn-outline join-item w-[72.63px]"
                               onClick={() => {
                                 setSelectedSecretId(secret.id);
                                 setIsOpen(true);
@@ -156,11 +156,13 @@ function Secrets() {
           </div>
           <div className="fixed bottom-3.75 left-0 right-0">
             <div className="flex justify-center items-center">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={onPageChange}
-              />
+              {secrets && secrets.total > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={onPageChange}
+                />
+              )}
             </div>
           </div>
         </div>

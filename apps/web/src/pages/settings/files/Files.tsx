@@ -121,7 +121,7 @@ function Files() {
                         <td className="normal-case text-[14px] text-right">
                           <div className="join">
                             <button
-                              className="btn btn-outline join-item"
+                              className="btn btn-outline join-item w-[72.63px]"
                               onClick={() => {
                                 setSelectedFileId(file.id);
                                 setIsOpen(true);
@@ -148,11 +148,13 @@ function Files() {
           </div>
           <div className="fixed bottom-3.75 left-0 right-0">
             <div className="flex justify-center items-center">
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={onPageChange}
-              />
+              {files && files.total > 0 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={onPageChange}
+                />
+              )}
             </div>
           </div>
         </div>

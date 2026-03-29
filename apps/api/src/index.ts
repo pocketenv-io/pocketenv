@@ -27,7 +27,7 @@ const app = express();
 app.use(contextMiddleware);
 app.use(cors());
 app.use(morgan("dev"));
-app.use(createRateLimiter({ windowMs: 60_000, max: 300 }));
+app.use(createRateLimiter({ windowMs: 30_000, max: 500 }));
 
 const banner = `
     ___           __       __

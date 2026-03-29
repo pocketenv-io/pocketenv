@@ -29,7 +29,7 @@ const schema = z
   .object({
     provider: z.enum(["cloudflare", "daytona", "vercel", "deno", "sprites"]),
     apiKey: z.string().optional(),
-    organizationId: z.uuid().optional(),
+    organizationId: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.provider !== "cloudflare" && !data.apiKey?.trim()) {
@@ -104,7 +104,9 @@ function Services() {
     }
 
     if (values.apiKey?.includes("**") && values.provider !== "cloudflare") {
-      return;
+      if (values.provider !== "daytona") {
+        return;
+      }
     }
 
     if (values.apiKey && !values.apiKey.includes("**")) {

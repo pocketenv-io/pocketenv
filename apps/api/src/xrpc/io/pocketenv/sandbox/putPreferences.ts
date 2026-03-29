@@ -138,8 +138,12 @@ const saveSandboxProvider = async (
         .onConflictDoUpdate({
           target: [daytonaAuth.sandboxId, daytonaAuth.userId],
           set: {
-            apiKey: pref.apiKey!,
-            redactedApiKey: pref.redactedApiKey!,
+            ...(pref.apiKey
+              ? { apiKey: pref.apiKey, redactedApiKey: pref.redactedApiKey! }
+              : {}),
+            ...(pref.organizationId
+              ? { organizationId: pref.organizationId }
+              : {}),
           },
         })
         .execute();

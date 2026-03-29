@@ -54,6 +54,7 @@ export const SandboxConfigSchema = z.object({
       "zeroclaw",
       "wasmer",
       "nanoclaw",
+      "cursor",
     ])
     .optional()
     .default("openclaw"),

@@ -13,6 +13,10 @@ import tailscaleAuthKeys from "./tailscale-auth-keys";
 import sshKeys from "./ssh-keys";
 import sandboxPorts from "./sandbox-ports";
 import services from "./services";
+import daytonaAuth from "./daytona-auth";
+import denoAuth from "./deno-auth";
+import spriteAuth from "./sprite-auth";
+import vercelAuth from "./vercel-auth";
 
 export default {
   sandboxes,
@@ -30,4 +34,8 @@ export default {
   sshKeys,
   sandboxPorts,
   services,
+  daytonaAuth,
+  denoAuth,
+  spriteAuth,
+  vercelAuth,
 };

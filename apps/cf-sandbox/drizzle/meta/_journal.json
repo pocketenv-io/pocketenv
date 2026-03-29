@@ -253,6 +253,13 @@
       "when": 1774759561873,
       "tag": "0035_slim_jack_power",
       "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1774776863772,
+      "tag": "0036_fine_weapon_omega",
+      "breakpoints": true
     }
   ]
 }

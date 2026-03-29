@@ -13,6 +13,10 @@ import sshKeys from "./ssh-keys.ts";
 import tailscaleAuthKeys from "./tailscale-auth-keys.ts";
 import sandboxPorts from "./sandbox-ports.ts";
 import services from "./services.ts";
+import daytonaAuth from "./daytona-auth.ts";
+import denoAuth from "./deno-auth.ts";
+import spriteAuth from "./sprite-auth.ts";
+import vercelAuth from "./vercel-auth.ts";
 
 export {
   sandboxes,
@@ -30,4 +34,8 @@ export {
   tailscaleAuthKeys,
   sandboxPorts,
   services,
+  daytonaAuth,
+  denoAuth,
+  spriteAuth,
+  vercelAuth,
 };

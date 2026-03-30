@@ -1,7 +1,9 @@
-import { parse, Parser } from "jsonlines";
+import * as jsonlines from "jsonlines";
 import * as Messages from "./messages";
 import type { Writable } from "node:stream";
 import { WebSocket } from "ws";
+
+const { parse } = jsonlines;
 
 export interface Connection {
   port: number;
@@ -11,7 +13,7 @@ export interface Connection {
   createClient(origin: `${"ws" | "wss"}://${string}`): ListenerSocket;
 }
 
-async function readConnectionInfo(stream: Parser): Promise<{
+async function readConnectionInfo(stream: jsonlines.Parser): Promise<{
   port: number;
   processId: number;
   token: string;

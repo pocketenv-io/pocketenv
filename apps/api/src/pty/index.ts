@@ -116,6 +116,7 @@ async function setupSandboxEnvironment(
       `--mode=client`,
       `--cols=${process.stdout.columns ?? 80}`,
       `--rows=${process.stdout.rows ?? 24}`,
+      "sh",
     ],
     env: {
       TERM,
@@ -159,12 +160,16 @@ async function createTerminalSession(ctx: Context, id: string) {
 
   const listener = createListener();
 
-  // Pipe the pty-tunnel-server's stdout (running inside the sandbox) into the
-  // listener so readConnectionInfo() can parse the JSON connection handshake.
+  // Pipe the pty-tunnel-server's stdout into the listener so
+  // readConnectionInfo() can parse the JSON connection handshake.
+  // We also accept stderr in case the binary writes there instead.
   (async () => {
     for await (const log of cmd.logs()) {
+      consola.debug(`pty-tunnel-server [${log.stream}]:`, log.data.trimEnd());
       if (log.stream === "stdout") {
-        listener.stdoutStream.write(log.data);
+        // jsonlines parser requires newline-terminated data
+        const data = log.data.endsWith("\n") ? log.data : log.data + "\n";
+        listener.stdoutStream.write(data);
       }
     }
     listener.stdoutStream.end();

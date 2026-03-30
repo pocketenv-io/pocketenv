@@ -202,6 +202,7 @@ app.post("/v1/sandboxes", async (c) => {
         spriteName,
         daytonaApiKey: decrypt(params.daytonaApiKey),
         organizationId: params.daytonaOrganizationId,
+        denoDeployToken: decrypt(params.denoDeployToken),
       });
       const sandboxId = await sandbox.id();
 

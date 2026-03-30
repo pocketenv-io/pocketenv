@@ -111,6 +111,11 @@ export default function (server: Server, ctx: Context) {
           keepAlive: input.keepAlive,
           spriteToken: input.spriteToken,
           redactedSpriteToken: input.redactedSpriteToken,
+          denoDeployToken: input.denoDeployToken,
+          redactedDenoDeployToken: input.redactedDenoDeployToken,
+          daytonaApiKey: input.daytonaApiKey,
+          redactedDaytonaApiKey: input.redactedDaytonaApiKey,
+          daytonaOrganizationId: input.daytonaOrganizationId,
         },
         {
           headers: {

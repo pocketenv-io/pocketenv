@@ -40,6 +40,16 @@ export interface InputSchema {
   spriteToken?: string;
   /** A redacted token for accessing sprite resources */
   redactedSpriteToken?: string;
+  /** A token (encrypted) for accessing Deno Deploy resources */
+  denoDeployToken?: string;
+  /** A redacted token for accessing Deno Deploy resources */
+  redactedDenoDeployToken?: string;
+  /** A token (encrypted) for accessing Daytona resources */
+  daytonaApiKey?: string;
+  /** A redacted token for accessing Daytona resources */
+  redactedDaytonaApiKey?: string;
+  /** The organization ID for Daytona resources */
+  daytonaOrganizationId?: string;
   [k: string]: unknown;
 }
 

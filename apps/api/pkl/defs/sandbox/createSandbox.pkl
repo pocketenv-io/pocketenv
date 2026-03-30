@@ -88,6 +88,26 @@ defs = new Mapping<String, Procedure> {
             type = "string"
             description = "A redacted token for accessing sprite resources"
           }
+          ["denoDeployToken"] = new StringType {
+            type = "string"
+            description = "A token (encrypted) for accessing Deno Deploy resources"
+          }
+          ["redactedDenoDeployToken"] = new StringType {
+            type = "string"
+            description = "A redacted token for accessing Deno Deploy resources"
+          }
+          ["daytonaApiKey"] = new StringType {
+            type = "string"
+            description = "A token (encrypted) for accessing Daytona resources"
+          }
+          ["redactedDaytonaApiKey"] = new StringType {
+            type = "string"
+            description = "A redacted token for accessing Daytona resources"
+          }
+          ["daytonaOrganizationId"] = new StringType {
+            type = "string"
+            description = "The organization ID for Daytona resources"
+          }
         }
       }
     }

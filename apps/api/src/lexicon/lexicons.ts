@@ -595,6 +595,29 @@ export const schemaDict = {
                 type: "string",
                 description: "A redacted token for accessing sprite resources",
               },
+              denoDeployToken: {
+                type: "string",
+                description:
+                  "A token (encrypted) for accessing Deno Deploy resources",
+              },
+              redactedDenoDeployToken: {
+                type: "string",
+                description:
+                  "A redacted token for accessing Deno Deploy resources",
+              },
+              daytonaApiKey: {
+                type: "string",
+                description:
+                  "A token (encrypted) for accessing Daytona resources",
+              },
+              redactedDaytonaApiKey: {
+                type: "string",
+                description: "A redacted token for accessing Daytona resources",
+              },
+              daytonaOrganizationId: {
+                type: "string",
+                description: "The organization ID for Daytona resources",
+              },
             },
           },
         },

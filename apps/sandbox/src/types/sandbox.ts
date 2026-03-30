@@ -96,6 +96,50 @@ export const SandboxConfigSchema = z
         });
       }
     }
+
+    if (data.provider === "daytona") {
+      if (!data.daytonaApiKey) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "daytonaApiKey is required when provider is 'daytona'",
+          path: ["daytonaApiKey"],
+        });
+      }
+      if (!data.redactedDaytonaApiKey) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "redactedDaytonaApiKey is required when provider is 'daytona'",
+          path: ["redactedDaytonaApiKey"],
+        });
+      }
+      if (!data.daytonaOrganizationId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "daytonaOrganizationId is required when provider is 'daytona'",
+          path: ["daytonaOrganizationId"],
+        });
+      }
+    }
+
+    if (data.provider === "deno") {
+      if (!data.denoDeployToken) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "denoDeployToken is required when provider is 'deno'",
+          path: ["denoDeployToken"],
+        });
+      }
+      if (!data.redactedDenoDeployToken) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "redactedDenoDeployToken is required when provider is 'deno'",
+          path: ["redactedDenoDeployToken"],
+        });
+      }
+    }
   });
 
 export const StartSandboxInputSchema = z.object({

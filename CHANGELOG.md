@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2026-03-31
+
+### Added
+
+- **PTY support with pty-tunnel and UI integration**: Full pseudo-terminal (PTY) support via a `pty-tunnel` server, wired into the web UI for interactive terminal sessions in the browser.
+- **Vercel credentials when starting sandbox**: Vercel auth tokens and project IDs are now passed through when starting a Vercel-backed sandbox.
+- **Vercel auth fields and DB migration**: New database fields for Vercel (`vercelApiToken`, project/deployment IDs) with a corresponding migration.
+- **Vercel auth persisted on create**: Vercel auth is now saved when a sandbox is first created.
+
+### Changed
+
+- **Fixed PTY port 26661**: The PTY tunnel server now uses a fixed port for predictable connections.
+- **`sandboxId` validated for terminal sessions**: Terminal sessions now validate and use the correct `sandboxId`.
+- **Zeroclaw bumped to v0.1.7-beta.1** and switched to `openagen`.
+- **`sandboxId` cleared for Deno and Vercel on stop**: Sandbox ID is properly cleared when stopping Deno/Vercel sandboxes.
+- **`jsonlines` packages pinned to exact versions** for reproducible builds.
+
+### Fixed
+
+- **Guarantee newline for PTY stdout**: PTY stdout now always ends with a newline; `sh` added for compatibility.
+- **Pipe PTY tunnel server stdout into listener**: PTY output is properly forwarded to connected clients.
+- **Await socket open and capture sandbox logs**: Socket is awaited before proceeding; sandbox start logs are now captured.
+- **Zod schema messages and `superRefine` closure**: Fixed validation error messages and properly closed `superRefine` calls.
+- **Misspelled `redactedSpriteToken`** corrected (was `redacredSpriteToken`).
+- **`vercelApiKey` renamed to `vercelApiToken`** for naming consistency.
+
+---
+
 ## [0.5.0] - 2026-03-30
 
 ### Added

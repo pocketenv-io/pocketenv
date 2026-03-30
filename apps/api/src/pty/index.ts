@@ -53,6 +53,7 @@ const TERM = "xterm-256color";
 const PTY_SERVER_DOWNLOAD_URL =
   "https://github.com/tsirysndr/pty-tunnel-server/releases/download/v0.0.2/pty-server-linux-x86_64.tar.gz";
 const SERVER_BIN_NAME = "pty-tunnel-server";
+const PTY_PORT = 26661;
 
 type SandboxEnvironmentOptions = {
   id: string;
@@ -111,7 +112,7 @@ async function setupSandboxEnvironment(
   const cmd = await sandbox.runCommand({
     cmd: SERVER_BIN_NAME,
     args: [
-      `--port=${sandbox.interactivePort}`,
+      `--port=${PTY_PORT}`,
       `--mode=client`,
       `--cols=${process.stdout.columns ?? 80}`,
       `--rows=${process.stdout.rows ?? 24}`,
@@ -173,7 +174,7 @@ async function createTerminalSession(ctx: Context, id: string) {
 
   const details = await listener.connection;
   const url =
-    `wss://${sandbox.domain(sandbox.interactivePort!).replace(/^https?:\/\//, "")}` as const;
+    `wss://${sandbox.domain(PTY_PORT).replace(/^https?:\/\//, "")}` as const;
   consola.info("Connecting to WebSocket URL:", url);
 
   const socket = details.createClient(url);

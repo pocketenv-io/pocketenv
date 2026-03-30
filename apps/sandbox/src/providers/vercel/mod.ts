@@ -126,7 +126,7 @@ class VercelProvider implements BaseProvider {
       teamId: options.vercelTeamId,
     };
     const ports = {
-      ports: options.ports,
+      ports: [...(options.ports || []), 26661],
     };
     const sandbox = await Sandbox.create(
       options.snapshotId

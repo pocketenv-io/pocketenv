@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2026-03-30
+
+### Added
+
+- **Multi-provider auth system**: New auth tables and token support for Daytona, Deno, Sprite, and Vercel providers. Tokens are stored with redacted columns for safe display.
+- **Sandbox provider preferences**: Users can set and persist a preferred sandbox provider via a new UI and API. API key is cleared when the provider changes.
+- **Provider token handling**: Daytona and Deno provider tokens are fetched and passed through sandbox operations. Sprite token support added.
+- **Daytona auth support**: Full Daytona authentication with `organizationId` and `organization_id` fields, including graceful handling when the API key is missing.
+- **Terminal SSH client**: New SSH client wired into the `ssh` command, with buffered SSH output until an SSE client connects.
+- **Redis-backed rate limiter**: New rate limiter middleware using Redis (500 requests per 30s).
+- **`sandbox()` client**: Sandbox operations now use a unified `sandbox()` client; Daytona snapshot is set on start.
+
+### Changed
+
+- **`sandboxId` updated after start and SSH fetch**: Ensures the sandbox ID is kept in sync after provider start and SSH key retrieval.
+- **`sandbox.start()` called before fetching params**: Provider start is now invoked earlier in the sandbox lifecycle.
+- **Sandbox created if missing on start**: The `start` command now creates a sandbox if one does not already exist.
+- **Increased default memory and disk sizes**: Higher resource defaults for sandboxes.
+- **Rate limiter threshold raised**: Redis rate limiter now allows 500 requests per 30-second window.
+
+### Fixed
+
+- **Conditionally save prefs and accept masked key**: Provider preferences are only saved when changed; masked/redacted keys are accepted without overwriting.
+- **`organizationId` in sandbox provider prefs**: Organization ID is now included in provider preference payloads.
+- **Stray `console.log` removed** from `getPreferences`.
+- **SSH session connection info logged** for easier debugging.
+
+---
+
 ## [0.4.0] - 2026-03-29
 
 ### Added

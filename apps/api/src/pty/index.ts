@@ -81,6 +81,8 @@ async function setupSandboxEnvironment(
   if (!(await checkIfServerInstalled(sandbox))) {
     await $`bash -c "type /tmp/pty-tunnel-server || curl -L ${PTY_SERVER_DOWNLOAD_URL} | tar xz -C /tmp"`;
 
+    consola.info("Uploading pty-tunnel server binary to sandbox", options.id);
+
     const pathname = path.join("/tmp", `pty-server-${crypto.randomUUID()}`);
     await sandbox.writeFiles([
       {
@@ -88,6 +90,8 @@ async function setupSandboxEnvironment(
         content: await fs.readFile("/tmp/pty-tunnel-server"),
       },
     ]);
+
+    consola.info("Setting up pty-tunnel server binary in sandbox", options.id);
 
     await sandbox.runCommand({
       cmd: "bash",
@@ -97,7 +101,11 @@ async function setupSandboxEnvironment(
       ],
       sudo: true,
     });
+
+    consola.info("Pty-tunnel server binary set up in sandbox", options.id);
   }
+
+  consola.info("Starting pty-tunnel server in sandbox", options.id);
 
   await sandbox.runCommand({
     cmd: SERVER_BIN_NAME,
@@ -113,6 +121,8 @@ async function setupSandboxEnvironment(
     },
     detached: true,
   });
+
+  consola.info("Sandbox environment set up for sandbox", options.id);
 
   return sandbox;
 }
@@ -167,7 +177,7 @@ async function createTerminalSession(ctx: Context, id: string) {
     }
   });
 
-  socket.waitForOpen();
+  await socket.waitForOpen();
 
   sessions.set(id, session);
   return session;

@@ -316,6 +316,9 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
       organizationId: daytonaAuthParams?.organizationId,
       spriteToken: decrypt(spriteAuthParams?.spriteToken),
       denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
     });
     const sandboxId = await sandbox.id();
     await c.var.db

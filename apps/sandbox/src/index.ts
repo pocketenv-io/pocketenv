@@ -529,7 +529,12 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
   await sandbox.stop();
   await c.var.db
     .update(sandboxes)
-    .set({ status: "STOPPED" })
+    .set({
+      status: "STOPPED",
+      sandboxId: ["deno", "vercel"].includes(record.provider)
+        ? null
+        : record.sandboxId,
+    })
     .where(eq(sandboxes.id, c.req.param("sandboxId")))
     .execute();
   return c.json({});

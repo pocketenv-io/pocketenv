@@ -133,8 +133,13 @@ async function createTerminalSession(ctx: Context, id: string) {
     throw new Error("Vercel auth not found for sandbox " + id);
   }
 
+  if (!record.sandboxes.sandboxId) {
+    consola.error("Sandbox ID not found for sandbox", { id });
+    throw new Error("Sandbox ID not found for sandbox " + id);
+  }
+
   const sandbox = await setupSandboxEnvironment({
-    id,
+    id: record.sandboxes.sandboxId,
     vercelApiToken: decrypt(record.vercel_auth.vercelToken),
     vercelProjectId: record.vercel_auth.projectId,
     vercelTeamId: record.vercel_auth.teamId,

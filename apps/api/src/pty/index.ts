@@ -11,7 +11,8 @@ import path from "node:path";
 import crypto from "node:crypto";
 import fs from "fs/promises";
 import { createListener } from "./pty-tunnel";
-import { Sandbox, type Command } from "@vercel/sandbox";
+import { Sandbox } from "@vercel/sandbox";
+import type { Command } from "@vercel/sandbox";
 import type { ListenerSocket } from "./pty-tunnel/websocket";
 import { $ } from "zx";
 
@@ -70,7 +71,7 @@ async function checkIfServerInstalled(sandbox: Sandbox) {
 
 async function setupSandboxEnvironment(
   options: SandboxEnvironmentOptions,
-): Promise<Sandbox> {
+): Promise<{ sandbox: Sandbox; cmd: Command }> {
   const sandbox = await Sandbox.get({
     sandboxId: options.id,
     token: options.vercelApiToken,
@@ -107,13 +108,13 @@ async function setupSandboxEnvironment(
 
   consola.info("Starting pty-tunnel server in sandbox", options.id);
 
-  await sandbox.runCommand({
+  const cmd = await sandbox.runCommand({
     cmd: SERVER_BIN_NAME,
     args: [
       `--port=${sandbox.interactivePort}`,
       `--mode=client`,
-      `--cols=${process.stdout.columns}`,
-      `--rows=${process.stdout.rows}`,
+      `--cols=${process.stdout.columns ?? 80}`,
+      `--rows=${process.stdout.rows ?? 24}`,
     ],
     env: {
       TERM,
@@ -124,7 +125,7 @@ async function setupSandboxEnvironment(
 
   consola.info("Sandbox environment set up for sandbox", options.id);
 
-  return sandbox;
+  return { sandbox, cmd };
 }
 
 async function createTerminalSession(ctx: Context, id: string) {
@@ -148,7 +149,7 @@ async function createTerminalSession(ctx: Context, id: string) {
     throw new Error("Sandbox ID not found for sandbox " + id);
   }
 
-  const sandbox = await setupSandboxEnvironment({
+  const { sandbox, cmd } = await setupSandboxEnvironment({
     id: record.sandboxes.sandboxId,
     vercelApiToken: decrypt(record.vercel_auth.vercelToken),
     vercelProjectId: record.vercel_auth.projectId,
@@ -156,6 +157,20 @@ async function createTerminalSession(ctx: Context, id: string) {
   });
 
   const listener = createListener();
+
+  // Pipe the pty-tunnel-server's stdout (running inside the sandbox) into the
+  // listener so readConnectionInfo() can parse the JSON connection handshake.
+  (async () => {
+    for await (const log of cmd.logs()) {
+      if (log.stream === "stdout") {
+        listener.stdoutStream.write(log.data);
+      }
+    }
+    listener.stdoutStream.end();
+  })().catch((err) =>
+    consola.error("pty-tunnel-server log stream error:", err),
+  );
+
   const details = await listener.connection;
   const url =
     `wss://${sandbox.domain(sandbox.interactivePort!).replace(/^https?:\/\//, "")}` as const;
@@ -178,6 +193,7 @@ async function createTerminalSession(ctx: Context, id: string) {
   });
 
   await socket.waitForOpen();
+  socket.sendMessage({ type: "ready" });
 
   sessions.set(id, session);
   return session;
@@ -233,12 +249,7 @@ router.post("/:id/resize", async (req, res) => {
     return;
   }
 
-  session.socket.sendMessage({ type: "ready" });
-  session.socket.sendMessage({
-    type: "resize",
-    cols,
-    rows,
-  });
+  session.socket.sendMessage({ type: "resize", cols, rows });
   res.status(204).end();
 });
 

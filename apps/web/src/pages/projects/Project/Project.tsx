@@ -121,7 +121,8 @@ function Project({ sandbox }: ProjectProps) {
           }}
           sandboxId={sandbox.id}
           isCloudflare={sandbox.provider === "cloudflare"}
-          isTty={sandbox.provider === "sprites"}
+          isTty={["sprites", "vercel"].includes(sandbox.provider)}
+          pty={sandbox.provider === "vercel"}
           worker={sandbox.baseSandbox}
         />
       </td>

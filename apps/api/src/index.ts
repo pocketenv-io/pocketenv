@@ -9,6 +9,7 @@ import chalk from "chalk";
 import API from "./xrpc";
 import ssh from "./ssh";
 import tty from "./tty";
+import pty from "./pty";
 import { createRateLimiter } from "./ratelimiter";
 
 let server = createServer({
@@ -54,6 +55,7 @@ app.use(bsky);
 app.use(server.xrpc.router);
 app.use("/ssh", ssh);
 app.use("/tty", tty);
+app.use("/pty", pty);
 
 app.listen(process.env.POCKETENV_XPRC_PORT || 8789, () => {
   consola.log(chalk.greenBright(banner));

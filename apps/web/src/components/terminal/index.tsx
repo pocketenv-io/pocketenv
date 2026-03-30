@@ -8,6 +8,7 @@ type TerminalProps = {
   worker: string;
   isCloudflare?: boolean;
   isTty?: boolean;
+  pty?: boolean;
 };
 
 function Terminal(props: TerminalProps) {

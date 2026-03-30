@@ -61,6 +61,7 @@ interface TerminalContentProps {
   isDarkMode: boolean;
   sandboxId: string;
   onClose: () => void;
+  pty?: boolean;
 }
 
 function authHeaders(): Record<string, string> {
@@ -72,12 +73,15 @@ function TerminalContent({
   isDarkMode,
   sandboxId,
   onClose,
+  pty,
 }: TerminalContentProps) {
   // Stable refs so the main effect never re-runs because these changed
   const eventSourceRef = useRef<EventSource | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
   const sandboxIdRef = useRef(sandboxId);
   const onCloseRef = useRef(onClose);
+
+  const BASE_URL = `${API_URL}/${pty ? "pty" : "tty"}`;
 
   // Keep refs in sync with the latest props after every render,
   // without listing them as effect deps (which would retrigger connect).
@@ -137,7 +141,7 @@ function TerminalContent({
     // --- Helper functions that read latest values from refs ---
     const sendInput = async (data: string) => {
       try {
-        await fetch(`${API_URL}/tty/${sandboxIdRef.current}/input`, {
+        await fetch(`${BASE_URL}/${sandboxIdRef.current}/input`, {
           method: "POST",
           headers: { "Content-Type": "text/plain", ...authHeaders() },
           body: data,
@@ -149,7 +153,7 @@ function TerminalContent({
 
     const sendResize = async (cols: number, rows: number) => {
       try {
-        await fetch(`${API_URL}/tty/${sandboxIdRef.current}/resize`, {
+        await fetch(`${BASE_URL}/${sandboxIdRef.current}/resize`, {
           method: "POST",
           headers: { "Content-Type": "application/json", ...authHeaders() },
           body: JSON.stringify({ cols, rows }),
@@ -177,9 +181,7 @@ function TerminalContent({
 
       instance.write(`\x1b[35mConnecting to terminal...\x1b[0m\r\n`);
 
-      const es = new EventSource(
-        `${API_URL}/tty/${sandboxIdRef.current}/stream`,
-      );
+      const es = new EventSource(`${BASE_URL}/${sandboxIdRef.current}/stream`);
       eventSourceRef.current = es;
 
       es.addEventListener("open", () => {
@@ -262,9 +264,10 @@ export interface TtyTerminalProps {
   sandboxId: string;
   worker: string;
   onClose: () => void;
+  pty?: boolean;
 }
 
-function TtyTerminal({ sandboxId, onClose }: TtyTerminalProps) {
+function TtyTerminal({ sandboxId, onClose, pty }: TtyTerminalProps) {
   const [isDarkMode, setIsDarkMode] = useState(
     document.documentElement.classList.contains("dark"),
   );
@@ -292,6 +295,7 @@ function TtyTerminal({ sandboxId, onClose }: TtyTerminalProps) {
       isDarkMode={isDarkMode}
       sandboxId={sandboxId}
       onClose={onClose}
+      pty={pty}
     />
   );
 }

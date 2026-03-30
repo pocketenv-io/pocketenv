@@ -10,6 +10,7 @@ export type TerminalModalProps = {
   title?: string;
   isCloudflare?: boolean;
   isTty?: boolean;
+  pty?: boolean;
 };
 
 function TerminalModal({
@@ -20,6 +21,7 @@ function TerminalModal({
   sandboxId,
   isCloudflare,
   isTty,
+  pty,
 }: TerminalModalProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -136,6 +138,7 @@ function TerminalModal({
                 isCloudflare={isCloudflare}
                 worker={worker}
                 isTty={isTty}
+                pty={pty}
               />
             </div>
           </div>

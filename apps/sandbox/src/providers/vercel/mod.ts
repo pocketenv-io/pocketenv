@@ -2,6 +2,7 @@ import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
 import { Sandbox } from "@vercel/sandbox";
 import consola from "consola";
 import path from "node:path";
+import { env } from "node:process";
 import { Buffer } from "node:buffer";
 import crypto from "node:crypto";
 

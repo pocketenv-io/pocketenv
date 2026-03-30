@@ -82,10 +82,10 @@ async function ssh(sandboxName: string | undefined) {
       await terminal(sandbox);
       break;
     case "vercel":
-      // await terminal(sandbox);
+      await tty(sandbox, false); // pty
       break;
     case "sprites":
-      await tty(sandbox);
+      await tty(sandbox, true);
       break;
     default:
       consola.error(

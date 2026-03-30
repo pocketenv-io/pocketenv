@@ -25,7 +25,7 @@ async function sendInput(
 ): Promise<void> {
   try {
     await axios.post(
-      `${ttyUrl}/tty/${sandboxId}/input`,
+      `${ttyUrl}/${sandboxId}/input`,
       data instanceof Buffer ? data.toString("utf-8") : data,
       {
         headers: {
@@ -48,7 +48,7 @@ async function sendResize(
 ): Promise<void> {
   try {
     await axios.post(
-      `${ttyUrl}/tty/${sandboxId}/resize`,
+      `${ttyUrl}/${sandboxId}/resize`,
       { cols, rows },
       {
         headers: {
@@ -77,11 +77,11 @@ function makeAuthFetch(
   };
 }
 
-async function ssh(sandbox: Sandbox): Promise<void> {
+async function ssh(sandbox: Sandbox, tty: boolean = false): Promise<void> {
   const token = await getAccessToken();
   const authToken = env.POCKETENV_TOKEN || token;
 
-  const ttyUrl = env.POCKETENV_TTY_URL;
+  const ttyUrl = tty ? env.POCKETENV_TTY_URL : env.POCKETENV_PTY_URL;
 
   let cols = process.stdout.columns ?? 220;
   let rows = process.stdout.rows ?? 50;
@@ -157,7 +157,7 @@ async function ssh(sandbox: Sandbox): Promise<void> {
   // Open the SSE stream.
   // eventsource v3 is fetch-based, so we inject the Authorization header via
   // a custom fetch implementation instead of an `headers` init option.
-  es = new EventSource(`${ttyUrl}/tty/${sandbox.id}/stream`, {
+  es = new EventSource(`${ttyUrl}/${sandbox.id}/stream`, {
     fetch: makeAuthFetch(authToken),
   });
 

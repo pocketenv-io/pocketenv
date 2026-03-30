@@ -481,6 +481,9 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
       organizationId: daytonaAuthParams?.organizationId,
       spriteToken: decrypt(spriteAuthParams?.spriteToken),
       denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
     });
     const sandboxId = await sandbox.id();
     await c.var.db
@@ -566,6 +569,9 @@ app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
       organizationId: daytonaAuthParams?.organizationId,
       spriteToken: decrypt(spriteAuthParams?.spriteToken),
       denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
     });
     const sandboxId = await sandbox.id();
     await c.var.db
@@ -647,6 +653,9 @@ app.delete("/v1/sandboxes/:sandboxId", async (c) => {
       organizationId: daytonaAuthParams?.organizationId,
       spriteToken: decrypt(spriteAuthParams?.spriteToken),
       denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
     });
     const sandboxId = await sandbox.id();
     await c.var.db
@@ -733,6 +742,9 @@ app.get("/v1/sandboxes/:sandboxId/ssh", async (c) => {
       organizationId: daytonaAuthParams?.organizationId,
       spriteToken: decrypt(spriteAuthParams?.spriteToken),
       denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
     });
     const sandboxId = await sandbox.id();
     await c.var.db

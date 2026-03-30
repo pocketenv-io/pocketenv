@@ -204,7 +204,7 @@ app.post("/v1/sandboxes", async (c) => {
         daytonaApiKey: decrypt(params.daytonaApiKey),
         organizationId: params.daytonaOrganizationId,
         denoDeployToken: decrypt(params.denoDeployToken),
-        vercelApiToken: decrypt(params.vercelApiKey),
+        vercelApiToken: decrypt(params.vercelApiToken),
         vercelProjectId: params.vercelProjectId,
         vercelTeamId: params.vercelTeamId,
       });

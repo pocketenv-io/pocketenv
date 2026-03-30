@@ -50,6 +50,14 @@ export interface InputSchema {
   redactedDaytonaApiKey?: string;
   /** The organization ID for Daytona resources */
   daytonaOrganizationId?: string;
+  /** A token (encrypted) for accessing Vercel resources */
+  vercelApiToken?: string;
+  /** A redacted token for accessing Vercel resources */
+  redactedVercelApiToken?: string;
+  /** The project ID for Vercel resources */
+  vercelProjectId?: string;
+  /** The team ID for Vercel resources */
+  vercelTeamId?: string;
   [k: string]: unknown;
 }
 

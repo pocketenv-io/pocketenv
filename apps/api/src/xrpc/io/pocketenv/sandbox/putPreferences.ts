@@ -186,6 +186,8 @@ const saveSandboxProvider = async (
           sandboxId: input.body.sandboxId,
           vercelToken: pref.apiKey!,
           redactedVercelToken: pref.redactedApiKey!,
+          projectId: pref.vercelProjectId!,
+          teamId: pref.vercelTeamId!,
         })
         .onConflictDoUpdate({
           target: [vercelAuth.sandboxId, vercelAuth.userId],

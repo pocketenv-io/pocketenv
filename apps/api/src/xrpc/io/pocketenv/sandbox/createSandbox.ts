@@ -116,6 +116,10 @@ export default function (server: Server, ctx: Context) {
           daytonaApiKey: input.daytonaApiKey,
           redactedDaytonaApiKey: input.redactedDaytonaApiKey,
           daytonaOrganizationId: input.daytonaOrganizationId,
+          vercelApiToken: input.vercelApiToken,
+          redactedVercelApiToken: input.redactedVercelApiToken,
+          vercelProjectId: input.vercelProjectId,
+          vercelTeamId: input.vercelTeamId,
         },
         {
           headers: {

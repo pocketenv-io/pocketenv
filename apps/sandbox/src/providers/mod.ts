@@ -48,6 +48,9 @@ export interface SandboxOptions {
   daytonaApiKey?: string;
   organizationId?: string;
   denoDeployToken?: string;
+  vercelApiToken?: string;
+  vercelProjectId?: string;
+  vercelTeamId?: string;
   [key: string]: any;
 }
 
@@ -81,43 +84,46 @@ export async function createSandbox(
 export async function getSandboxById(
   provider: Provider,
   id: string,
-  token?: string,
-  organizationId?: string,
+  options?: SandboxOptions,
 ): Promise<BaseSandbox> {
   switch (provider) {
     case "daytona": {
       const module = await import("./daytona/mod.ts");
       try {
-        return new module.default().get(id, token, organizationId);
+        return new module.default().get(
+          id,
+          options?.daytonaApiKey,
+          options?.organizationId,
+        );
       } catch (err) {
         console.error(`Error getting Daytona sandbox with ID ${id}:`, err);
         return createSandbox("daytona", {
           id,
-          daytonaApiKey: token,
-          organizationId,
+          daytonaApiKey: options?.daytonaApiKey,
+          organizationId: options?.organizationId,
         });
       }
     }
     case "deno": {
       const module = await import("./deno/mod.ts");
       try {
-        return await new module.default().get(id, token);
+        return await new module.default().get(id, options?.denoDeployToken);
       } catch (err) {
         console.error(`Error getting Deno sandbox with ID ${id}:`, err);
         return createSandbox("deno", {
           id,
-          denoDeployToken: token,
+          denoDeployToken: options?.denoDeployToken,
           // snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
         });
       }
     }
     case "vercel":
       return import("./vercel/mod.ts").then((module) =>
-        new module.default().get(id),
+        new module.default().get(id, options!),
       );
     case "sprites":
       return import("./sprites/mod.ts").then((module) =>
-        new module.default().get(id, token),
+        new module.default().get(id, options?.spriteToken),
       );
     default:
       consola.error(`Provider ${provider} is not supported yet.`);

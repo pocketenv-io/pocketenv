@@ -77,6 +77,22 @@ async function createSandbox(
     providerOptions.redactedDenoDeployToken = redact(denoDeployToken);
   }
 
+  if (provider === "vercel") {
+    const vercelApiToken = process.env.VERCEL_API_TOKEN;
+    const vercelProjectId = process.env.VERCEL_PROJECT_ID;
+    const vercelTeamId = process.env.VERCEL_TEAM_ID;
+    if (!vercelApiToken || !vercelProjectId || !vercelTeamId) {
+      consola.error(
+        "VERCEL_API_TOKEN, VERCEL_PROJECT_ID and VERCEL_TEAM_ID environment variables are required for Vercel provider.",
+      );
+      process.exit(1);
+    }
+    providerOptions.vercelApiToken = await encrypt(vercelApiToken);
+    providerOptions.redactedVercelApiToken = redact(vercelApiToken);
+    providerOptions.vercelProjectId = vercelProjectId;
+    providerOptions.vercelTeamId = vercelTeamId;
+  }
+
   try {
     const sandbox = await client.post<Sandbox>(
       "/xrpc/io.pocketenv.sandbox.createSandbox",

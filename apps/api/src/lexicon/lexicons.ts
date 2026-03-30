@@ -618,6 +618,23 @@ export const schemaDict = {
                 type: "string",
                 description: "The organization ID for Daytona resources",
               },
+              vercelApiToken: {
+                type: "string",
+                description:
+                  "A token (encrypted) for accessing Vercel resources",
+              },
+              redactedVercelApiToken: {
+                type: "string",
+                description: "A redacted token for accessing Vercel resources",
+              },
+              vercelProjectId: {
+                type: "string",
+                description: "The project ID for Vercel resources",
+              },
+              vercelTeamId: {
+                type: "string",
+                description: "The team ID for Vercel resources",
+              },
             },
           },
         },
@@ -969,6 +986,16 @@ export const schemaDict = {
             type: "string",
             description:
               "The ID of the organization in the sandbox provider, if applicable. This can be used to associate the sandbox with a specific organization or team within the provider's platform.",
+          },
+          vercelProjectId: {
+            type: "string",
+            description:
+              "The project ID for Vercel, if the sandbox provider is Vercel. This is used to determine which Vercel project the sandbox should be created in.",
+          },
+          vercelTeamId: {
+            type: "string",
+            description:
+              "The team ID for Vercel, if the sandbox provider is Vercel and the sandbox should be created within a specific team. This is used to determine which team within the Vercel project the sandbox should be associated with.",
           },
         },
       },

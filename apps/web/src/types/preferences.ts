@@ -11,6 +11,8 @@ export type SandboxProvider = {
   apiKey?: string;
   redactedApiKey?: string;
   organizationId?: string;
+  vercelProjectId?: string;
+  vercelTeamId?: string;
   $type: "io.pocketenv.sandbox.defs#sandboxProviderPref";
 };
 

@@ -18,7 +18,7 @@ import Sidebar from "../sidebar/Sidebar";
 
 const LABELS = {
   daytona: "Daytona API Key",
-  vercel: "Vercel Access Token",
+  vercel: "Vercel API Token",
   deno: "Deno Deploy Token",
   sprites: "Sprites API Key",
 } as const;
@@ -30,6 +30,8 @@ const schema = z
     provider: z.enum(["cloudflare", "daytona", "vercel", "deno", "sprites"]),
     apiKey: z.string().optional(),
     organizationId: z.string().optional(),
+    vercelProjectId: z.string().optional(),
+    vercelTeamId: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.provider !== "cloudflare" && !data.apiKey?.trim()) {
@@ -44,6 +46,20 @@ const schema = z
         code: z.ZodIssueCode.custom,
         message: "Daytona Organization ID is required",
         path: ["organizationId"],
+      });
+    }
+    if (data.provider === "vercel" && !data.vercelProjectId?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Vercel Project ID is required",
+        path: ["vercelProjectId"],
+      });
+    }
+    if (data.provider === "vercel" && !data.vercelTeamId?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Vercel Team ID is required",
+        path: ["vercelTeamId"],
       });
     }
   });
@@ -72,7 +88,12 @@ function Services() {
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { provider: "cloudflare", apiKey: "" },
+    defaultValues: {
+      provider: "cloudflare",
+      apiKey: "",
+      vercelProjectId: "",
+      vercelTeamId: "",
+    },
   });
 
   useEffect(() => {
@@ -85,6 +106,8 @@ function Services() {
       setValue("provider", providerPref.name as FormValues["provider"]);
       setValue("apiKey", providerPref.redactedApiKey ?? "");
       setValue("organizationId", providerPref.organizationId ?? "");
+      setValue("vercelProjectId", providerPref.vercelProjectId ?? "");
+      setValue("vercelTeamId", providerPref.vercelTeamId ?? "");
     }
   }, [preferences, setValue]);
 
@@ -103,8 +126,13 @@ function Services() {
       pref.organizationId = values.organizationId.trim();
     }
 
+    if (values.provider === "vercel") {
+      pref.vercelProjectId = values.vercelProjectId?.trim();
+      pref.vercelTeamId = values.vercelTeamId?.trim();
+    }
+
     if (values.apiKey?.includes("**") && values.provider !== "cloudflare") {
-      if (values.provider !== "daytona") {
+      if (values.provider !== "daytona" && values.provider !== "vercel") {
         return;
       }
     }
@@ -166,6 +194,8 @@ function Services() {
                         onProviderChange(e);
                         setValue("apiKey", "");
                         setValue("organizationId", "");
+                        setValue("vercelProjectId", "");
+                        setValue("vercelTeamId", "");
                       }}
                       className="select select-lg font-medium text-[15px]"
                     >
@@ -209,6 +239,36 @@ function Services() {
                         {errors.organizationId.message}
                       </p>
                     )}
+                  </div>
+                )}
+                {provider === "vercel" && (
+                  <div className="flex flex-row mt-4 gap-6">
+                    <div className="w-96">
+                      <label className="label-text">Vercel Project ID</label>
+                      <input
+                        {...register("vercelProjectId")}
+                        type="text"
+                        className="input input-lg font-medium text-[15px]"
+                      />
+                      {errors.vercelProjectId && (
+                        <p className="text-error text-sm mt-1">
+                          {errors.vercelProjectId.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="w-96">
+                      <label className="label-text">Vercel Team ID</label>
+                      <input
+                        {...register("vercelTeamId")}
+                        type="text"
+                        className="input input-lg font-medium text-[15px]"
+                      />
+                      {errors.vercelTeamId && (
+                        <p className="text-error text-sm mt-1">
+                          {errors.vercelTeamId.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

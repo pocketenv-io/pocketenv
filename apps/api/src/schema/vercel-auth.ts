@@ -15,6 +15,8 @@ const vercelAuth = pgTable(
       .references(() => users.id),
     vercelToken: text("vercel_token").notNull(),
     redactedVercelToken: text("redacted_vercel_token").notNull(),
+    projectId: text("project_id").notNull(),
+    teamId: text("team_id").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
   },
   (t) => [uniqueIndex("unique_vercel_auth").on(t.sandboxId, t.userId)],

@@ -108,6 +108,22 @@ defs = new Mapping<String, Procedure> {
             type = "string"
             description = "The organization ID for Daytona resources"
           }
+          ["vercelApiToken"] = new StringType {
+            type = "string"
+            description = "A token (encrypted) for accessing Vercel resources"
+          }
+          ["redactedVercelApiToken"] = new StringType {
+            type = "string"
+            description = "A redacted token for accessing Vercel resources"
+          }
+          ["vercelProjectId"] = new StringType {
+            type = "string"
+            description = "The project ID for Vercel resources"
+          }
+          ["vercelTeamId"] = new StringType {
+            type = "string"
+            description = "The team ID for Vercel resources"
+          }
         }
       }
     }

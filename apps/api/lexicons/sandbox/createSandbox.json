@@ -110,6 +110,22 @@
             "daytonaOrganizationId": {
               "type": "string",
               "description": "The organization ID for Daytona resources"
+            },
+            "vercelApiToken": {
+              "type": "string",
+              "description": "A token (encrypted) for accessing Vercel resources"
+            },
+            "redactedVercelApiToken": {
+              "type": "string",
+              "description": "A redacted token for accessing Vercel resources"
+            },
+            "vercelProjectId": {
+              "type": "string",
+              "description": "The project ID for Vercel resources"
+            },
+            "vercelTeamId": {
+              "type": "string",
+              "description": "The team ID for Vercel resources"
             }
           }
         }

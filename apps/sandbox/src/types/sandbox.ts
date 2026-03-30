@@ -44,8 +44,10 @@ export const SandboxConfigSchema = z
     redactedDenoDeployToken: z.string().optional(),
     redactedDaytonaApiKey: z.string().optional(),
     daytonaApiKey: z.string().optional(),
-    vercelToken: z.string().optional(),
-    redactedVercelToken: z.string().optional(),
+    vercelApiKey: z.string().optional(),
+    redactedVercelApiKey: z.string().optional(),
+    vercelProjectId: z.string().optional(),
+    vercelTeamId: z.string().optional(),
     vcpus: z.number().optional().default(2),
     memory: z.number().optional().default(4),
     disk: z.number().optional().default(3),
@@ -140,7 +142,32 @@ export const SandboxConfigSchema = z
         });
       }
     }
-  });
+
+    if (data.provider === "vercel") {
+      if (!data.vercelApiKey) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "vercelApiKey is required when provider is 'vercel'",
+          path: ["vercelApiKey"],
+        });
+      }
+      if (!data.redactedVercelApiKey) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "redactedVercelApiKey is required when provider is 'vercel'",
+          path: ["redactedVercelApiKey"],
+        });
+      }
+      if (!data.vercelProjectId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "vercelProjectId is required when provider is 'vercel'",
+          path: ["vercelProjectId"],
+        });
+      }
+    }
 
 export const StartSandboxInputSchema = z.object({
   repo: z.string().optional(),

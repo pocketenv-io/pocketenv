@@ -1,6 +1,5 @@
 import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
 import { Sandbox } from "@vercel/sandbox";
-import process, { env } from "node:process";
 import consola from "consola";
 import path from "node:path";
 import { Buffer } from "node:buffer";
@@ -121,9 +120,9 @@ export class VercelSandbox implements BaseSandbox {
 class VercelProvider implements BaseProvider {
   async create(options: SandboxOptions): Promise<BaseSandbox> {
     const credentials = {
-      token: process.env.VERCEL_API_TOKEN,
-      projectId: process.env.VERCEL_PROJECT_ID,
-      teamId: process.env.VERCEL_TEAM_ID,
+      token: options.vercelApiToken,
+      projectId: options.vercelProjectId,
+      teamId: options.vercelTeamId,
     };
     const ports = {
       ports: options.ports,
@@ -144,12 +143,12 @@ class VercelProvider implements BaseProvider {
     return new VercelSandbox(sandbox);
   }
 
-  async get(id: string): Promise<BaseSandbox> {
+  async get(id: string, options: SandboxOptions): Promise<BaseSandbox> {
     const sandbox = await Sandbox.get({
       sandboxId: id,
-      token: process.env.VERCEL_API_TOKEN,
-      projectId: process.env.VERCEL_PROJECT_ID,
-      teamId: process.env.VERCEL_TEAM_ID,
+      token: options.vercelApiToken,
+      projectId: options.vercelProjectId,
+      teamId: options.vercelTeamId,
     });
     return new VercelSandbox(sandbox);
   }

@@ -16,6 +16,7 @@ import {
   variables,
   spriteAuth,
   denoAuth,
+  vercelAuth,
 } from "./schema/mod.ts";
 import {
   adjectives,
@@ -203,6 +204,9 @@ app.post("/v1/sandboxes", async (c) => {
         daytonaApiKey: decrypt(params.daytonaApiKey),
         organizationId: params.daytonaOrganizationId,
         denoDeployToken: decrypt(params.denoDeployToken),
+        vercelApiToken: decrypt(params.vercelApiKey),
+        vercelProjectId: params.vercelProjectId,
+        vercelTeamId: params.vercelTeamId,
       });
       const sandboxId = await sandbox.id();
 
@@ -263,24 +267,33 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
   const body = await c.req.json<StartSandboxInput>();
   const { repo } = StartSandboxInputSchema.parse(body);
 
-  const [[spriteAuthParams], [daytonaAuthParams], [denoAuthParams]] =
-    await Promise.all([
-      c.var.db
-        .select()
-        .from(spriteAuth)
-        .where(eq(spriteAuth.sandboxId, record.id))
-        .execute(),
-      c.var.db
-        .select()
-        .from(daytonaAuth)
-        .where(eq(daytonaAuth.sandboxId, record.id))
-        .execute(),
-      c.var.db
-        .select()
-        .from(denoAuth)
-        .where(eq(denoAuth.sandboxId, record.id))
-        .execute(),
-    ]);
+  const [
+    [spriteAuthParams],
+    [daytonaAuthParams],
+    [denoAuthParams],
+    [vercelAuthParams],
+  ] = await Promise.all([
+    c.var.db
+      .select()
+      .from(spriteAuth)
+      .where(eq(spriteAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(daytonaAuth)
+      .where(eq(daytonaAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(denoAuth)
+      .where(eq(denoAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(vercelAuth)
+      .where(eq(vercelAuth.sandboxId, record.id))
+      .execute(),
+  ]);
 
   if (!record.sandboxId) {
     sandbox = await createSandbox(record.provider as Provider, {
@@ -302,12 +315,15 @@ app.post("/v1/sandboxes/:sandboxId/start", async (c) => {
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
-    decrypt(
-      spriteAuthParams?.spriteToken ||
-        daytonaAuthParams?.apiKey ||
-        denoAuthParams?.deployToken,
-    ),
-    daytonaAuthParams?.organizationId,
+    {
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      organizationId: daytonaAuthParams?.organizationId,
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
+    },
   );
 
   if (!sandbox) {
@@ -430,34 +446,63 @@ app.post("/v1/sandboxes/:sandboxId/stop", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  const [[spriteAuthParams], [daytonaAuthParams], [denoAuthParams]] =
-    await Promise.all([
-      c.var.db
-        .select()
-        .from(spriteAuth)
-        .where(eq(spriteAuth.sandboxId, record.id))
-        .execute(),
-      c.var.db
-        .select()
-        .from(daytonaAuth)
-        .where(eq(daytonaAuth.sandboxId, record.id))
-        .execute(),
-      c.var.db
-        .select()
-        .from(denoAuth)
-        .where(eq(denoAuth.sandboxId, record.id))
-        .execute(),
-    ]);
+  const [
+    [spriteAuthParams],
+    [daytonaAuthParams],
+    [denoAuthParams],
+    [vercelAuthParams],
+  ] = await Promise.all([
+    c.var.db
+      .select()
+      .from(spriteAuth)
+      .where(eq(spriteAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(daytonaAuth)
+      .where(eq(daytonaAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(denoAuth)
+      .where(eq(denoAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(vercelAuth)
+      .where(eq(vercelAuth.sandboxId, record.id))
+      .execute(),
+  ]);
+
+  if (!record.sandboxId) {
+    sandbox = await createSandbox(record.provider as Provider, {
+      id: record.id,
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      organizationId: daytonaAuthParams?.organizationId,
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+    });
+    const sandboxId = await sandbox.id();
+    await c.var.db
+      .update(sandboxes)
+      .set({ sandboxId })
+      .where(eq(sandboxes.id, record.id))
+      .execute();
+    record.sandboxId = sandboxId;
+  }
 
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
-    decrypt(
-      spriteAuthParams?.spriteToken ||
-        daytonaAuthParams?.apiKey ||
-        denoAuthParams?.deployToken,
-    ),
-    daytonaAuthParams?.organizationId,
+    {
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      organizationId: daytonaAuthParams?.organizationId,
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
+    },
   );
 
   if (!sandbox) {
@@ -486,34 +531,63 @@ app.post("/v1/sandboxes/:sandboxId/runs", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  const [[spriteAuthParams], [daytonaAuthParams], [denoAuthParams]] =
-    await Promise.all([
-      c.var.db
-        .select()
-        .from(spriteAuth)
-        .where(eq(spriteAuth.sandboxId, record.id))
-        .execute(),
-      c.var.db
-        .select()
-        .from(daytonaAuth)
-        .where(eq(daytonaAuth.sandboxId, record.id))
-        .execute(),
-      c.var.db
-        .select()
-        .from(denoAuth)
-        .where(eq(denoAuth.sandboxId, record.id))
-        .execute(),
-    ]);
+  const [
+    [spriteAuthParams],
+    [daytonaAuthParams],
+    [denoAuthParams],
+    [vercelAuthParams],
+  ] = await Promise.all([
+    c.var.db
+      .select()
+      .from(spriteAuth)
+      .where(eq(spriteAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(daytonaAuth)
+      .where(eq(daytonaAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(denoAuth)
+      .where(eq(denoAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(vercelAuth)
+      .where(eq(vercelAuth.sandboxId, record.id))
+      .execute(),
+  ]);
+
+  if (!record.sandboxId) {
+    sandbox = await createSandbox(record.provider as Provider, {
+      id: record.id,
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      organizationId: daytonaAuthParams?.organizationId,
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+    });
+    const sandboxId = await sandbox.id();
+    await c.var.db
+      .update(sandboxes)
+      .set({ sandboxId })
+      .where(eq(sandboxes.id, record.id))
+      .execute();
+    record.sandboxId = sandboxId;
+  }
 
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
-    decrypt(
-      spriteAuthParams?.spriteToken ||
-        daytonaAuthParams?.apiKey ||
-        denoAuthParams?.deployToken,
-    ),
-    daytonaAuthParams?.organizationId,
+    {
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      organizationId: daytonaAuthParams?.organizationId,
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
+    },
   );
 
   if (!sandbox) {
@@ -538,33 +612,63 @@ app.delete("/v1/sandboxes/:sandboxId", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  const [[spriteAuthParams], [daytonaAuthParams], [denoAuthParams]] =
-    await Promise.all([
-      c.var.db
-        .select()
-        .from(spriteAuth)
-        .where(eq(spriteAuth.sandboxId, record.id))
-        .execute(),
-      c.var.db
-        .select()
-        .from(daytonaAuth)
-        .where(eq(daytonaAuth.sandboxId, record.id))
-        .execute(),
-      c.var.db
-        .select()
-        .from(denoAuth)
-        .where(eq(denoAuth.sandboxId, record.id))
-        .execute(),
-    ]);
+  const [
+    [spriteAuthParams],
+    [daytonaAuthParams],
+    [denoAuthParams],
+    [vercelAuthParams],
+  ] = await Promise.all([
+    c.var.db
+      .select()
+      .from(spriteAuth)
+      .where(eq(spriteAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(daytonaAuth)
+      .where(eq(daytonaAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(denoAuth)
+      .where(eq(denoAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(vercelAuth)
+      .where(eq(vercelAuth.sandboxId, record.id))
+      .execute(),
+  ]);
+
+  if (!record.sandboxId) {
+    sandbox = await createSandbox(record.provider as Provider, {
+      id: record.id,
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      organizationId: daytonaAuthParams?.organizationId,
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+    });
+    const sandboxId = await sandbox.id();
+    await c.var.db
+      .update(sandboxes)
+      .set({ sandboxId })
+      .where(eq(sandboxes.id, record.id))
+      .execute();
+    record.sandboxId = sandboxId;
+  }
+
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
-    decrypt(
-      spriteAuthParams?.spriteToken ||
-        daytonaAuthParams?.apiKey ||
-        denoAuthParams?.deployToken,
-    ),
-    daytonaAuthParams?.organizationId,
+    {
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      organizationId: daytonaAuthParams?.organizationId,
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
+    },
   );
 
   if (!sandbox) {
@@ -594,34 +698,63 @@ app.get("/v1/sandboxes/:sandboxId/ssh", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
-  const [[spriteAuthParams], [daytonaAuthParams], [denoAuthParams]] =
-    await Promise.all([
-      c.var.db
-        .select()
-        .from(spriteAuth)
-        .where(eq(spriteAuth.sandboxId, record.id))
-        .execute(),
-      c.var.db
-        .select()
-        .from(daytonaAuth)
-        .where(eq(daytonaAuth.sandboxId, record.id))
-        .execute(),
-      c.var.db
-        .select()
-        .from(denoAuth)
-        .where(eq(denoAuth.sandboxId, record.id))
-        .execute(),
-    ]);
+  const [
+    [spriteAuthParams],
+    [daytonaAuthParams],
+    [denoAuthParams],
+    [vercelAuthParams],
+  ] = await Promise.all([
+    c.var.db
+      .select()
+      .from(spriteAuth)
+      .where(eq(spriteAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(daytonaAuth)
+      .where(eq(daytonaAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(denoAuth)
+      .where(eq(denoAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(vercelAuth)
+      .where(eq(vercelAuth.sandboxId, record.id))
+      .execute(),
+  ]);
+
+  if (!record.sandboxId) {
+    sandbox = await createSandbox(record.provider as Provider, {
+      id: record.id,
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      organizationId: daytonaAuthParams?.organizationId,
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+    });
+    const sandboxId = await sandbox.id();
+    await c.var.db
+      .update(sandboxes)
+      .set({ sandboxId })
+      .where(eq(sandboxes.id, record.id))
+      .execute();
+    record.sandboxId = sandboxId;
+  }
 
   sandbox = await getSandboxById(
     record.provider as Provider,
     record.sandboxId!,
-    decrypt(
-      spriteAuthParams?.spriteToken ||
-        daytonaAuthParams?.apiKey ||
-        denoAuthParams?.deployToken,
-    ),
-    daytonaAuthParams?.organizationId,
+    {
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      organizationId: daytonaAuthParams?.organizationId,
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
+    },
   );
 
   if (!sandbox) {

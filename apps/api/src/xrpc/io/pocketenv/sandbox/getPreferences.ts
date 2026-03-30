@@ -91,6 +91,8 @@ export default function (server: Server, ctx: Context) {
         $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
         name: "vercel" as const,
         redactedApiKey: vercel.redactedVercelToken,
+        vercelProjectId: vercel.projectId,
+        vercelTeamId: vercel.teamId,
       }))!;
 
     return [provider satisfies SandboxProviderPref];

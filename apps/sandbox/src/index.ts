@@ -162,7 +162,7 @@ app.post("/v1/sandboxes", async (c) => {
           .values({
             sandboxId: record.id,
             spriteToken: params.spriteToken,
-            redactedSpriteToken: params.redacredSpriteToken ?? "",
+            redactedSpriteToken: params.redactedSpriteToken ?? "",
             userId: user.id,
           } satisfies InsertSpriteAuth)
           .execute();

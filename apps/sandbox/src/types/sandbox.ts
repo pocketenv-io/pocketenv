@@ -38,7 +38,7 @@ export const SandboxConfigSchema = z
     base: z.enum(["openclaw"]).optional().default("openclaw"),
     keepAlive: z.boolean().optional().default(false),
     spriteToken: z.string().optional(),
-    redacredSpriteToken: z.string().optional(),
+    redactedSpriteToken: z.string().optional(),
     daytonaOrganizationId: z.string().optional(),
     denoDeployToken: z.string().optional(),
     redactedDenoDeployToken: z.string().optional(),
@@ -88,11 +88,11 @@ export const SandboxConfigSchema = z
           path: ["spriteToken"],
         });
       }
-      if (!data.redacredSpriteToken) {
+      if (!data.redactedSpriteToken) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "redacredSpriteToken is required when provider is 'sprites'",
-          path: ["redacredSpriteToken"],
+          message: "redactedSpriteToken is required when provider is 'sprites'",
+          path: ["redactedSpriteToken"],
         });
       }
     }

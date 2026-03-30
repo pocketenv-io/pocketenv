@@ -154,20 +154,19 @@ export const SandboxConfigSchema = z
       if (!data.redactedVercelApiKey) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message:
-            "redactedVercelApiKey is required when provider is 'vercel'",
+          message: "redactedVercelApiKey is required when provider is 'vercel'",
           path: ["redactedVercelApiKey"],
         });
       }
       if (!data.vercelProjectId) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message:
-            "vercelProjectId is required when provider is 'vercel'",
+          message: "vercelProjectId is required when provider is 'vercel'",
           path: ["vercelProjectId"],
         });
       }
     }
+  });
 
 export const StartSandboxInputSchema = z.object({
   repo: z.string().optional(),

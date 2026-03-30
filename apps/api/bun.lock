@@ -36,7 +36,7 @@
         "express": "^5.2.1",
         "hono": "^4.11.9",
         "ioredis": "^5.9.3",
-        "jsonlines": "^0.1.1",
+        "jsonlines": "0.1.1",
         "jsonwebtoken": "^9.0.3",
         "kysely": "^0.28.11",
         "libsodium-wrappers": "^0.8.2",
@@ -59,7 +59,7 @@
         "@types/better-sqlite3": "^7.6.13",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.6",
-        "@types/jsonlines": "^0.1.5",
+        "@types/jsonlines": "0.1.1",
         "@types/jsonwebtoken": "^9.0.10",
         "@types/lodash": "^4.17.23",
         "@types/morgan": "^1.9.10",
@@ -338,7 +338,7 @@
 
     "@types/http-errors": ["@types/http-errors@2.0.5", "", {}, "sha512-r8Tayk8HJnX0FztbZN7oVqGccWgw98T/0neJphO91KkmOzug1KkofZURD4UaD5uH8AqcFLfdPErnBod0u71/qg=="],
 
-    "@types/jsonlines": ["@types/jsonlines@0.1.5", "", { "dependencies": { "@types/node": "*" } }, "sha512-/zOl7I350g4/G6fEW9dktpTrkcKqZDMRkr2SuDla0utgwkUXrm7OFXq2WZT0W9Jl7BYoisGbn1EZsV/Z2F9LGg=="],
+    "@types/jsonlines": ["@types/jsonlines@0.1.1", "", { "dependencies": { "@types/node": "*" } }, "sha512-rjMlEDSBvlEPhpdtUqnfftkHzKBfBKxqSwhr5w0PwzzFf17PEdyr5z6kzAm/3SK/VqZMQCuxBeDiQMCibeDQVw=="],
 
     "@types/jsonwebtoken": ["@types/jsonwebtoken@9.0.10", "", { "dependencies": { "@types/ms": "*", "@types/node": "*" } }, "sha512-asx5hIG9Qmf/1oStypjanR7iKTv0gXQ1Ov/jfrX6kS/EO0OFni8orbmGCn0672NHR3kXHwpAwR+B368ZGN/2rA=="],
 

@@ -194,6 +194,20 @@ app.post("/v1/sandboxes", async (c) => {
           .execute();
       }
 
+      if (params.vercelApiToken && user?.id) {
+        await tx
+          .insert(vercelAuth)
+          .values({
+            sandboxId: record.id,
+            vercelToken: params.vercelApiToken,
+            redactedVercelToken: params.redactedVercelApiToken ?? "",
+            userId: user.id,
+            projectId: params.vercelProjectId!,
+            teamId: params.vercelTeamId!,
+          })
+          .execute();
+      }
+
       const sandbox = await createSandbox(params.provider, {
         id: record.id,
         keepAlive: params.keepAlive,

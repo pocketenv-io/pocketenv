@@ -144,7 +144,6 @@ class VercelProvider implements BaseProvider {
   }
 
   async get(id: string, options: SandboxOptions): Promise<BaseSandbox> {
-    console.log(options);
     const sandbox = await Sandbox.get({
       sandboxId: id,
       token: options.vercelApiToken,

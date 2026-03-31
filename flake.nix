@@ -79,7 +79,7 @@
           meta = with pkgs.lib; {
             description  = "pocketenv environment manager";
             homepage     = "https://github.com/pocketenv-io/pocketenv";
-            license      = licenses.mit;  # adjust if different
+            license      = "MPL-2.0";
             platforms    = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
             mainProgram  = "pocketenv";
           };

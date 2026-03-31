@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import dayjs from "dayjs";
 
-type InstallTab = "bash" | "npm" | "brew";
+type InstallTab = "bash" | "npm" | "brew" | "nix";
 
 const installCommands: Record<
   InstallTab,
@@ -17,6 +17,10 @@ const installCommands: Record<
   },
   npm: { prefix: "npm install -g ", highlight: "@pocketenv/cli" },
   brew: { prefix: "brew install ", highlight: "pocketenv-io/tap/pocketenv" },
+  nix: {
+    prefix: "nix profile add ",
+    highlight: "github:pocketenv-io/pocketenv",
+  },
 };
 
 const banner = [
@@ -88,16 +92,18 @@ function Home() {
                       className="tabs tabs-bordered justify-center mb-0"
                       role="tablist"
                     >
-                      {(["bash", "npm", "brew"] as InstallTab[]).map((tab) => (
-                        <button
-                          key={tab}
-                          role="tab"
-                          className={`tab font-semibold uppercase tracking-wide text-sm ${activeTab === tab ? "tab-active text-primary" : "text-purple-300 opacity-60"}`}
-                          onClick={() => setActiveTab(tab)}
-                        >
-                          {tab}
-                        </button>
-                      ))}
+                      {(["bash", "npm", "brew", "nix"] as InstallTab[]).map(
+                        (tab) => (
+                          <button
+                            key={tab}
+                            role="tab"
+                            className={`tab font-semibold uppercase tracking-wide text-sm ${activeTab === tab ? "tab-active text-primary" : "text-purple-300 opacity-60"}`}
+                            onClick={() => setActiveTab(tab)}
+                          >
+                            {tab}
+                          </button>
+                        ),
+                      )}
                     </div>
                     <div className="flex items-center gap-3 bg-[#12182dad] rounded-xl px-5 py-3 mt-0">
                       <span className=" text-purple-300">$</span>

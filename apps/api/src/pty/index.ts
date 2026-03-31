@@ -15,6 +15,7 @@ import { Sandbox } from "@vercel/sandbox";
 import type { Command } from "@vercel/sandbox";
 import type { ListenerSocket } from "./pty-tunnel/websocket";
 import { $ } from "zx";
+import chalk from "chalk";
 
 const router = Router();
 router.use((req, res, next) => {
@@ -81,19 +82,25 @@ async function setupSandboxEnvironment(
   });
 
   if (!(await checkIfServerInstalled(sandbox))) {
-    await $`bash -c "type /tmp/pty-tunnel-server || curl -L ${PTY_SERVER_DOWNLOAD_URL} | tar xz -C /tmp"`;
+    await $`bash -c "type /tmp/${SERVER_BIN_NAME} || curl -L ${PTY_SERVER_DOWNLOAD_URL} | tar xz -C /tmp"`;
 
-    consola.info("Uploading pty-tunnel server binary to sandbox", options.id);
+    consola.info(
+      "Uploading pty-tunnel server binary to sandbox",
+      chalk.greenBright(options.id),
+    );
 
     const pathname = path.join("/tmp", `pty-server-${crypto.randomUUID()}`);
     await sandbox.writeFiles([
       {
         path: pathname,
-        content: await fs.readFile("/tmp/pty-tunnel-server"),
+        content: await fs.readFile(`/tmp/${SERVER_BIN_NAME}`),
       },
     ]);
 
-    consola.info("Setting up pty-tunnel server binary in sandbox", options.id);
+    consola.info(
+      "Setting up pty-tunnel server binary in sandbox",
+      chalk.greenBright(options.id),
+    );
 
     await sandbox.runCommand({
       cmd: "bash",
@@ -104,10 +111,16 @@ async function setupSandboxEnvironment(
       sudo: true,
     });
 
-    consola.info("Pty-tunnel server binary set up in sandbox", options.id);
+    consola.info(
+      "Pty-tunnel server binary set up in sandbox",
+      chalk.greenBright(options.id),
+    );
   }
 
-  consola.info("Starting pty-tunnel server in sandbox", options.id);
+  consola.info(
+    "Starting pty-tunnel server in sandbox",
+    chalk.greenBright(options.id),
+  );
 
   const cmd = await sandbox.runCommand({
     cmd: SERVER_BIN_NAME,
@@ -125,7 +138,10 @@ async function setupSandboxEnvironment(
     detached: true,
   });
 
-  consola.info("Sandbox environment set up for sandbox", options.id);
+  consola.info(
+    "Sandbox environment set up for sandbox",
+    chalk.greenBright(options.id),
+  );
 
   return { sandbox, cmd };
 }

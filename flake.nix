@@ -62,8 +62,6 @@
             ${lib.optionalString pkgs.stdenv.isLinux ''
               cat > $out/bin/pocketenv <<'EOF'
 #!${pkgs.runtimeShell}
-export LANG="${LANG:-C.UTF-8}"
-unset LC_ALL
 exec "__TARGET__" "$@"
 EOF
 

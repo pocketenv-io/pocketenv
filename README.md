@@ -39,6 +39,11 @@ npm install -g @pocketenv/cli
 brew install pocketenv-io/tap/pocketenv
 ```
 
+**Nix (Flakes):**
+```sh
+nix profile install github:pocketenv-io/pocketenv
+```
+
 **Arch Linux:**
 ```sh
 yay -Syu pocketenv

@@ -89,6 +89,25 @@ app.get("/", async (c) => {
     `);
 });
 
+app.post("/cp", async (c) => {
+  console.log(">> did", c.var.did);
+  if (!c.var.did) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+  const formData = await c.req.formData();
+  const file = formData.get("file") as File;
+
+  if (!file) {
+    return c.json({ error: "No file uploaded" }, 400);
+  }
+
+  const fileBuffer = await file.arrayBuffer();
+  const uuid = crypto.randomUUID();
+  await env.POCKETENV_COPY.put(uuid, fileBuffer);
+
+  return c.json({ uuid });
+});
+
 app.post("/v1/sandboxes", async (c) => {
   const body = await c.req.json<SandboxConfig>();
 

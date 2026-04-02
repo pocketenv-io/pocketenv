@@ -31,6 +31,7 @@ import {
   startService,
   stopService,
 } from "./cmd/service";
+import copy from "./cmd/copy";
 
 const program = new Command();
 
@@ -80,6 +81,24 @@ program
   .action(ssh);
 
 program.command("ls").description("list sandboxes").action(listSandboxes);
+
+program
+  .command("copy")
+  .aliases(["cp"])
+  .argument("<source>", "the source file or directory")
+  .argument("<destination>", "the destination file or directory")
+  .description("copy files from or to a running sandbox")
+  .addHelpText(
+    "after",
+    `
+${chalk.bold("Examples:")}
+  ${c.primary("pocketenv cp ./local-file.txt my-sandbox:/remote-file.txt")}   Copy a local file to a sandbox
+  ${c.primary("pocketenv cp my-sandbox:/remote-file.txt ./local-file.txt")}   Copy a file from a sandbox to local
+  ${c.primary("pocketenv cp my-sandbox:/remote-dir ./local-dir")}             Copy a directory from a sandbox to local
+  ${c.primary("pocketenv cp ./local-dir my-sandbox:/remote-dir")}             Copy a local directory to a sandbox
+`,
+  )
+  .action(copy);
 
 program
   .command("start")

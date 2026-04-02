@@ -39,6 +39,7 @@ import { consola } from "consola";
 import decrypt from "./lib/decrypt";
 import crypto from "node:crypto";
 import services from "./schema/services";
+import { unknown } from "zod";
 
 type Bindings = {
   Sandbox: DurableObjectNamespace<Sandbox<Env>>;
@@ -57,7 +58,10 @@ app.use("*", async (c, next) => {
   if (token) {
     try {
       const decoded = await jwt.verify(token, process.env.JWT_SECRET!);
-      c.set("did", decoded?.payload?.sub);
+      c.set(
+        "did",
+        decoded?.payload?.sub || (decoded?.payload as { did: string })?.did,
+      );
     } catch (err) {
       consola.error("JWT verification failed:", err);
       return c.json({ error: "Unauthorized" }, 401);

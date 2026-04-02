@@ -29,6 +29,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
+          cp deploy/base/Dockerfile .
           bunx wrangler deploy
   deploy:
     runs-on: ubuntu-latest

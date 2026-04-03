@@ -17,6 +17,7 @@ import daytonaAuth from "./daytona-auth";
 import denoAuth from "./deno-auth";
 import spriteAuth from "./sprite-auth";
 import vercelAuth from "./vercel-auth";
+import sandboxCp from "./sandbox-cp";
 
 export default {
   sandboxes,
@@ -38,4 +39,5 @@ export default {
   denoAuth,
   spriteAuth,
   vercelAuth,
+  sandboxCp,
 };

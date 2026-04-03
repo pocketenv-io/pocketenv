@@ -281,6 +281,13 @@
       "when": 1774884985913,
       "tag": "0039_tense_micromax",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1775247751981,
+      "tag": "0040_silky_betty_brant",
+      "breakpoints": true
     }
   ]
 }

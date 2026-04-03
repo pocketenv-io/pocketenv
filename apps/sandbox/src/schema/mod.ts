@@ -17,6 +17,7 @@ import daytonaAuth from "./daytona-auth.ts";
 import denoAuth from "./deno-auth.ts";
 import spriteAuth from "./sprite-auth.ts";
 import vercelAuth from "./vercel-auth.ts";
+import sandboxCp from "./sandbox-cp.ts";
 
 export {
   sandboxes,
@@ -38,4 +39,5 @@ export {
   denoAuth,
   spriteAuth,
   vercelAuth,
+  sandboxCp,
 };

@@ -39,7 +39,6 @@ import { consola } from "consola";
 import decrypt from "./lib/decrypt";
 import crypto from "node:crypto";
 import services from "./schema/services";
-import { unknown } from "zod";
 
 type Bindings = {
   Sandbox: DurableObjectNamespace<Sandbox<Env>>;
@@ -94,7 +93,6 @@ app.get("/", async (c) => {
 });
 
 app.post("/cp", async (c) => {
-  console.log(">> did", c.var.did);
   if (!c.var.did) {
     return c.json({ error: "Unauthorized" }, 401);
   }

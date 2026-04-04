@@ -998,6 +998,7 @@ app.post("/v1/sandboxes/:sandboxId/pull-directory", async (c) => {
     return c.json({ error: "Sandbox provider not supported" }, 400);
   }
 
+  const token = c.req.header("Authorization");
   const params = await c.req.json<PullDirectoryParams>();
   await pullSchema.parseAsync(params);
 

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.1] - 2026-04-04
+
+### Added
+
+- **`pocketenv ps` command**: New CLI subcommand to list all running sandboxes in a formatted table showing name, base image, uptime, and creation time.
+
+### Fixed
+
+- **`push-directory` tar archive handling**: Fixed directory archiving to use `-C` with basename so paths inside the archive are relative. Non-directory paths are now handled correctly, and archives are compressed before being pushed to the sandbox. The sandbox side now decompresses the archive to the correct destination.
+
+---
+
 ## [0.6.0] - 2026-03-31
 
 ### Added

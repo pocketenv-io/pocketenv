@@ -1518,6 +1518,82 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSandboxPullDirectory: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.pullDirectory",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Pull a directory from the cp storage into a Sandbox.",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["sandboxId", "directoryPath"],
+            properties: {
+              sandboxId: {
+                type: "string",
+                description:
+                  "ID of the Sandbox into which to pull the directory.",
+              },
+              uuid: {
+                type: "string",
+                description:
+                  "ID of the directory in cp storage to pull into the Sandbox.",
+              },
+              directoryPath: {
+                type: "string",
+                description:
+                  "Destination path within the Sandbox where the directory should be pulled. This should be an absolute path.",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxPushDirectory: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.pushDirectory",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Push a directory from a Sandbox to the cp Storage.",
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["sandboxId", "directoryPath"],
+            properties: {
+              sandboxId: {
+                type: "string",
+                description:
+                  "ID of the source Sandbox to read the directory from.",
+              },
+              directoryPath: {
+                type: "string",
+                description:
+                  "Path of the directory within the Sandbox to push to cp storage. This should be an absolute path.",
+              },
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              uuid: {
+                type: "string",
+                description:
+                  "The UUID of the pushed directory in cp storage. This can be used to reference the directory in other API calls, such as creating a file from the directory or sharing the directory with another sandbox.",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   IoPocketenvSandboxPutPreferences: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.putPreferences",
@@ -2935,6 +3011,8 @@ export const ids = {
   IoPocketenvSandboxGetTailscaleAuthKey:
     "io.pocketenv.sandbox.getTailscaleAuthKey",
   IoPocketenvSandboxGetTailscaleToken: "io.pocketenv.sandbox.getTailscaleToken",
+  IoPocketenvSandboxPullDirectory: "io.pocketenv.sandbox.pullDirectory",
+  IoPocketenvSandboxPushDirectory: "io.pocketenv.sandbox.pushDirectory",
   IoPocketenvSandboxPutPreferences: "io.pocketenv.sandbox.putPreferences",
   IoPocketenvSandboxPutSshKeys: "io.pocketenv.sandbox.putSshKeys",
   IoPocketenvSandboxPutTailscaleAuthKey:

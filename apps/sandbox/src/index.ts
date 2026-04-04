@@ -47,6 +47,9 @@ import decrypt from "./lib/decrypt.ts";
 import { InsertSpriteAuth } from "./schema/sprite-auth.ts";
 import daytonaAuth, { InsertDaytonaAuth } from "./schema/daytona-auth.ts";
 import { InsertDenoAuth } from "./schema/deno-auth.ts";
+import crypto from "node:crypto";
+import { PullDirectoryParams, pullSchema } from "./types/pull.ts";
+import { PushDirectoryParams, pushSchema } from "./types/push.ts";
 
 const app = new Hono<{ Variables: Context }>();
 
@@ -820,6 +823,184 @@ app.post("/v1/sandboxes/:sandboxId/ports", async (c) => {
 app.delete("/v1/sandboxes/:sandboxId/ports", async (c) => {
   // TODO: Implement unexpose port
   return c.json({});
+});
+
+app.post("/v1/sandboxes/:sandboxId/pull-directory", async (c) => {
+  const record = await getSandbox(c.var.db, c.req.param("sandboxId"));
+
+  if (!record) {
+    return c.json({ error: "Sandbox not found" }, 404);
+  }
+
+  let sandbox: BaseSandbox | null = null;
+
+  if (!["daytona", "vercel", "deno", "sprites"].includes(record.provider)) {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  const [
+    [spriteAuthParams],
+    [daytonaAuthParams],
+    [denoAuthParams],
+    [vercelAuthParams],
+  ] = await Promise.all([
+    c.var.db
+      .select()
+      .from(spriteAuth)
+      .where(eq(spriteAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(daytonaAuth)
+      .where(eq(daytonaAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(denoAuth)
+      .where(eq(denoAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(vercelAuth)
+      .where(eq(vercelAuth.sandboxId, record.id))
+      .execute(),
+  ]);
+
+  if (!record.sandboxId) {
+    sandbox = await createSandbox(record.provider as Provider, {
+      id: record.id,
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      organizationId: daytonaAuthParams?.organizationId,
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
+    });
+    const sandboxId = await sandbox.id();
+    await c.var.db
+      .update(sandboxes)
+      .set({ sandboxId })
+      .where(eq(sandboxes.id, record.id))
+      .execute();
+    record.sandboxId = sandboxId;
+  }
+
+  sandbox = await getSandboxById(
+    record.provider as Provider,
+    record.sandboxId!,
+    {
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      organizationId: daytonaAuthParams?.organizationId,
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
+    },
+  );
+
+  if (!sandbox) {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  const token = c.req.header("Authorization");
+  const params = await c.req.json<PullDirectoryParams>();
+  await pullSchema.parseAsync(params);
+
+  const outdir = crypto.randomUUID();
+
+  await sandbox.sh`mkdir -p /tmp/${outdir} && cd /tmp/${outdir} && curl https://sandbox.pocketenv.io/cp/${params.uuid} -H "Authorization: ${token}" | tar xvf -`;
+  await sandbox.sh`cp -r /tmp/${outdir}/* ${params.directoryPath} || sudo cp -r /tmp/${outdir}/* ${params.directoryPath}`;
+
+  return c.json({ success: true });
+});
+
+app.post("/v1/sandboxes/:sandboxId/push-directory", async (c) => {
+  const record = await getSandbox(c.var.db, c.req.param("sandboxId"));
+
+  if (!record) {
+    return c.json({ error: "Sandbox not found" }, 404);
+  }
+
+  let sandbox: BaseSandbox | null = null;
+
+  if (!["daytona", "vercel", "deno", "sprites"].includes(record.provider)) {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  const [
+    [spriteAuthParams],
+    [daytonaAuthParams],
+    [denoAuthParams],
+    [vercelAuthParams],
+  ] = await Promise.all([
+    c.var.db
+      .select()
+      .from(spriteAuth)
+      .where(eq(spriteAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(daytonaAuth)
+      .where(eq(daytonaAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(denoAuth)
+      .where(eq(denoAuth.sandboxId, record.id))
+      .execute(),
+    c.var.db
+      .select()
+      .from(vercelAuth)
+      .where(eq(vercelAuth.sandboxId, record.id))
+      .execute(),
+  ]);
+
+  if (!record.sandboxId) {
+    sandbox = await createSandbox(record.provider as Provider, {
+      id: record.id,
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      organizationId: daytonaAuthParams?.organizationId,
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
+    });
+    const sandboxId = await sandbox.id();
+    await c.var.db
+      .update(sandboxes)
+      .set({ sandboxId })
+      .where(eq(sandboxes.id, record.id))
+      .execute();
+    record.sandboxId = sandboxId;
+  }
+
+  sandbox = await getSandboxById(
+    record.provider as Provider,
+    record.sandboxId!,
+    {
+      daytonaApiKey: decrypt(daytonaAuthParams?.apiKey),
+      spriteToken: decrypt(spriteAuthParams?.spriteToken),
+      denoDeployToken: decrypt(denoAuthParams?.deployToken),
+      organizationId: daytonaAuthParams?.organizationId,
+      vercelApiToken: decrypt(vercelAuthParams?.vercelToken),
+      vercelProjectId: vercelAuthParams?.projectId,
+      vercelTeamId: vercelAuthParams?.teamId,
+    },
+  );
+
+  if (!sandbox) {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  const token = c.req.header("Authorization");
+  const params = await c.req.json<PushDirectoryParams>();
+  await pushSchema.parseAsync(params);
+  const uuid = crypto.randomUUID();
+  await sandbox.sh`cd /tmp && tar czvf ${uuid}.tar.gz ${params.directoryPath} && curl -X POST "https://sandbox.pocketenv.io/cp?uuid=${uuid}" -H "Authorization: ${token}" -F "file=@${uuid}.tar.gz" && rm ${uuid}.tar.gz`;
+  return c.json({ success: true, uuid: uuid.toString() });
 });
 
 export const getSandbox = async (db: Context["db"], sandboxId: string) => {

@@ -1,0 +1,41 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.pushDirectory"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    description = "Push a directory from a Sandbox to the cp Storage."
+    input {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        required = List("sandboxId", "directoryPath")
+        properties {
+          ["sandboxId"] = new StringType {
+            type = "string"
+            description = "ID of the source Sandbox to read the directory from."
+          }
+          ["directoryPath"] = new StringType {
+            type = "string"
+            description =
+              "Path of the directory within the Sandbox to push to cp storage. This should be an absolute path."
+          }
+        }
+      }
+    }
+    output {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        properties {
+          ["uuid"] = new StringType {
+            type = "string"
+            description =
+              "The UUID of the pushed directory in cp storage. This can be used to reference the directory in other API calls, such as creating a file from the directory or sharing the directory with another sandbox."
+          }
+        }
+      }
+    }
+  }
+}

@@ -4,6 +4,7 @@ import { Context } from "./context";
 import { getSandbox, proxyToSandbox, Sandbox } from "@cloudflare/sandbox";
 import {
   files,
+  sandboxCp,
   sandboxes,
   sandboxFiles,
   sandboxPorts,
@@ -39,6 +40,8 @@ import { consola } from "consola";
 import decrypt from "./lib/decrypt";
 import crypto from "node:crypto";
 import services from "./schema/services";
+import { PushDirectoryParams, pushSchema } from "./types/push";
+import { PullDirectoryParams, pullSchema } from "./types/pull";
 
 type Bindings = {
   Sandbox: DurableObjectNamespace<Sandbox<Env>>;
@@ -104,10 +107,31 @@ app.post("/cp", async (c) => {
   }
 
   const fileBuffer = await file.arrayBuffer();
-  const uuid = crypto.randomUUID();
+  const uuid = c.req.query("uuid") || crypto.randomUUID();
   await env.POCKETENV_COPY.put(uuid, fileBuffer);
 
+  c.executionCtx.waitUntil(
+    c.var.db
+      .insert(sandboxCp)
+      .values({
+        copyUuid: uuid,
+      })
+      .execute(),
+  );
+
   return c.json({ uuid });
+});
+
+app.get("/cp/:uuid", async (c) => {
+  const { uuid } = c.req.param();
+  const file = await env.POCKETENV_COPY.get(uuid);
+  if (!file) {
+    return c.json({ error: "File not found" }, 404);
+  }
+  return c.body(file.body, 200, {
+    "Content-Type": "application/gzip",
+    "Content-Disposition": `attachment; filename="${uuid}.tar.gz"`,
+  });
 });
 
 app.post("/v1/sandboxes", async (c) => {
@@ -958,6 +982,65 @@ app.delete("/v1/sandboxes/:sandboxId/services/:serviceId", async (c) => {
     console.log(`Failed to stop service:`, err);
   }
   return c.json({});
+});
+
+app.post("/v1/sandboxes/:sandboxId/pull-directory", async (c) => {
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
+
+  if (!record) {
+    return c.json({ error: "Sandbox not found" }, 404);
+  }
+
+  if (record.provider !== "cloudflare") {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  const params = await c.req.json<PullDirectoryParams>();
+  await pullSchema.parseAsync(params);
+
+  const outdir = crypto.randomUUID();
+
+  let sandbox: BaseSandbox | null = null;
+
+  sandbox = await createSandbox("cloudflare", {
+    id: record.sandboxId!,
+  });
+  await sandbox.sh`mkdir -p /tmp/${outdir} && cd /tmp/${outdir} && curl https://sandbox.pocketenv.io/cp/${params.uuid} -H "Authorization: ${token}" | tar xvf -`;
+  await sandbox.sh`cp -r /tmp/${outdir}/* ${params.directoryPath} || sudo cp -r /tmp/${outdir}/* ${params.directoryPath}`;
+});
+
+app.post("/v1/sandboxes/:sandboxId/push-directory", async (c) => {
+  const { sandboxes: record } = await getSandboxById(
+    c.var.db,
+    c.req.param("sandboxId"),
+  );
+
+  if (!record) {
+    return c.json({ error: "Sandbox not found" }, 404);
+  }
+
+  if (record.provider !== "cloudflare") {
+    return c.json({ error: "Sandbox provider not supported" }, 400);
+  }
+
+  const params = await c.req.json<PushDirectoryParams>();
+  await pushSchema.parseAsync(params);
+
+  const token = c.req.header("Authorization");
+  await pushSchema.parseAsync(params);
+  const uuid = crypto.randomUUID();
+
+  let sandbox: BaseSandbox | null = null;
+
+  sandbox = await createSandbox("cloudflare", {
+    id: record.sandboxId!,
+  });
+  await sandbox.sh`cd /tmp && tar czvf ${uuid}.tar.gz ${params.directoryPath} && curl -X POST "https://sandbox.pocketenv.io/cp?uuid=${uuid}" -H "Authorization: ${token}" -F "file=@${uuid}.tar.gz" && rm ${uuid}.tar.gz`;
+
+  return c.json({ uuid });
 });
 
 export const getSandboxById = async (db: Context["db"], sandboxId: string) => {

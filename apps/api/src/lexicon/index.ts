@@ -32,6 +32,8 @@ import type * as IoPocketenvSandboxGetSandboxes from "./types/io/pocketenv/sandb
 import type * as IoPocketenvSandboxGetSshKeys from "./types/io/pocketenv/sandbox/getSshKeys";
 import type * as IoPocketenvSandboxGetTailscaleAuthKey from "./types/io/pocketenv/sandbox/getTailscaleAuthKey";
 import type * as IoPocketenvSandboxGetTailscaleToken from "./types/io/pocketenv/sandbox/getTailscaleToken";
+import type * as IoPocketenvSandboxPullDirectory from "./types/io/pocketenv/sandbox/pullDirectory";
+import type * as IoPocketenvSandboxPushDirectory from "./types/io/pocketenv/sandbox/pushDirectory";
 import type * as IoPocketenvSandboxPutPreferences from "./types/io/pocketenv/sandbox/putPreferences";
 import type * as IoPocketenvSandboxPutSshKeys from "./types/io/pocketenv/sandbox/putSshKeys";
 import type * as IoPocketenvSandboxPutTailscaleAuthKey from "./types/io/pocketenv/sandbox/putTailscaleAuthKey";
@@ -386,6 +388,28 @@ export class IoPocketenvSandboxNS {
     >,
   ) {
     const nsid = "io.pocketenv.sandbox.getTailscaleToken"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  pullDirectory<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxPullDirectory.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxPullDirectory.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.pullDirectory"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  pushDirectory<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxPushDirectory.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxPushDirectory.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.pushDirectory"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 

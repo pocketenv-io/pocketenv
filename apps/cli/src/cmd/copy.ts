@@ -1,19 +1,127 @@
-import consola from "consola";
 import ora from "ora";
 import { c } from "../theme";
+import { glob, unlink } from "node:fs/promises";
+import ignore from "ignore";
+import { readFile, lstat } from "node:fs/promises";
+import { join } from "node:path";
+import * as tar from "tar";
+import crypto from "node:crypto";
+import consola from "consola";
+import getAccessToken from "../lib/getAccessToken";
+import { client } from "../client";
 
 async function copy(source: string, destination: string) {
   const spinner = ora(
-    `Copying sandbox from ${c.primary(source)} to ${c.primary(destination)}...`,
+    `Copying files from ${c.primary(source)} to ${c.primary(destination)}...`,
   ).start();
 
-  setTimeout(() => {
-    spinner.color = "yellow";
-    spinner.text = "Loading rainbows";
-    spinner.stopAndPersist({
-      text: `Copied files from ${c.primary(source)} to ${c.primary(destination)}`,
+  if (!source.includes(":/")) {
+    const output = await compressDirectory(source);
+    const uuid = await uploadToStorage(output);
+    consola.info(`Uploaded to storage with UUID: ${uuid}`);
+    await unlink(output);
+    const sandboxId = destination.split(":/")[0];
+    await client.post(
+      "/xrpc/io.pocketenv.sandbox.pullDirectory",
+      {
+        uuid,
+        sandboxId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.POCKETENV_TOKEN || (await getAccessToken())}`,
+        },
+      },
+    );
+  }
+
+  spinner.stopAndPersist({
+    text: `Copied files from ${c.primary(source)} to ${c.primary(destination)}`,
+  });
+}
+
+async function loadIgnore(...files: string[]) {
+  const ig = ignore();
+  for (const file of files) {
+    try {
+      ig.add(await readFile(file, "utf8"));
+    } catch {
+      // Ignore if the file doesn't exist
+    }
+  }
+  return ig;
+}
+
+async function compressDirectory(source: string): Promise<string> {
+  try {
+    const ig = await loadIgnore(
+      ".pocketenvignore",
+      ".gitignore",
+      ".npmignore",
+      ".dockerignore",
+    );
+    const allFiles = await Array.fromAsync(
+      glob("**/*", { cwd: source, exclude: (path) => ig.ignores(path) }),
+    );
+    const files = (
+      await Promise.all(
+        allFiles.map(async (file) => {
+          const stat = await lstat(join(source, file));
+          return stat.isSymbolicLink() ? null : file;
+        }),
+      )
+    ).filter((f): f is string => f !== null);
+
+    const output = `${crypto
+      .createHash("sha256")
+      .update(source)
+      .digest("hex")}.tar.gz`;
+
+    await tar.create(
+      {
+        cwd: source,
+        file: output,
+        portable: true,
+        gzip: {
+          level: 6,
+        },
+      },
+      files,
+    );
+
+    return output;
+  } catch (error) {
+    consola.error("Failed to compress directory:", error);
+    process.exit(1);
+  }
+}
+
+async function uploadToStorage(filePath: string): Promise<string> {
+  try {
+    const token = await getAccessToken();
+
+    const fileBuffer = await readFile(filePath);
+    const form = new FormData();
+    form.append(
+      "file",
+      new Blob([fileBuffer], { type: "application/gzip" }),
+      "archive.tar.gz",
+    );
+
+    const BASE_URL = "https://sandbox.pocketenv.io";
+    const response = await fetch(`${BASE_URL}/cp`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.POCKETENV_TOKEN || token}`,
+      },
+      body: form,
     });
-  }, 1000);
+    const data = (await response.json()) as { uuid: string };
+    return data.uuid;
+  } catch (error) {
+    consola.error("Failed to upload", error);
+    process.exit(1);
+  }
 }
 
 export default copy;

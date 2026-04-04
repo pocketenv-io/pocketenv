@@ -1,0 +1,32 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.pullDirectory"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    description = "Pull a directory from the cp storage into a Sandbox."
+    input {
+      encoding = "application/json"
+      schema = new ObjectType {
+        type = "object"
+        required = List("sandboxId", "directoryPath")
+        properties {
+          ["sandboxId"] = new StringType {
+            type = "string"
+            description = "ID of the Sandbox into which to pull the directory."
+          }
+          ["uuid"] = new StringType {
+            type = "string"
+            description = "ID of the directory in cp storage to pull into the Sandbox."
+          }
+          ["directoryPath"] = new StringType {
+            type = "string"
+            description =
+              "Destination path within the Sandbox where the directory should be pulled. This should be an absolute path."
+          }
+        }
+      }
+    }
+  }
+}

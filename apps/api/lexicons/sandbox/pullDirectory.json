@@ -1,0 +1,34 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.pullDirectory",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Pull a directory from the cp storage into a Sandbox.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "sandboxId",
+            "directoryPath"
+          ],
+          "properties": {
+            "sandboxId": {
+              "type": "string",
+              "description": "ID of the Sandbox into which to pull the directory."
+            },
+            "uuid": {
+              "type": "string",
+              "description": "ID of the directory in cp storage to pull into the Sandbox."
+            },
+            "directoryPath": {
+              "type": "string",
+              "description": "Destination path within the Sandbox where the directory should be pulled. This should be an absolute path."
+            }
+          }
+        }
+      }
+    }
+  }
+}

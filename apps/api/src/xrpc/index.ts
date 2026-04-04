@@ -50,6 +50,8 @@ import restartService from "./io/pocketenv/service/restartService";
 import updateService from "./io/pocketenv/service/updateService";
 import startService from "./io/pocketenv/service/startService";
 import stopService from "./io/pocketenv/service/stopService";
+import pushDirectory from "./io/pocketenv/sandbox/pushDirectory";
+import pullDirectory from "./io/pocketenv/sandbox/pullDirectory";
 
 export default function (server: Server, ctx: Context) {
   // io.pocketenv
@@ -106,6 +108,8 @@ export default function (server: Server, ctx: Context) {
   updateService(server, ctx);
   startService(server, ctx);
   stopService(server, ctx);
+  pushDirectory(server, ctx);
+  pullDirectory(server, ctx);
 
   return server;
 }

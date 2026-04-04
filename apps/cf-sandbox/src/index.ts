@@ -128,6 +128,14 @@ app.get("/cp/:uuid", async (c) => {
   if (!file) {
     return c.json({ error: "File not found" }, 404);
   }
+
+  await c.var.db
+    .delete(sandboxCp)
+    .where(eq(sandboxCp.copyUuid, uuid))
+    .execute();
+
+  await env.POCKETENV_COPY.delete(uuid);
+
   return c.body(file.body, 200, {
     "Content-Type": "application/gzip",
     "Content-Disposition": `attachment; filename="${uuid}.tar.gz"`,
@@ -1012,11 +1020,6 @@ app.post("/v1/sandboxes/:sandboxId/pull-directory", async (c) => {
   await sandbox.sh`mkdir -p /tmp/${outdir} && cd /tmp/${outdir} && curl https://sandbox.pocketenv.io/cp/${params.uuid} -H "Authorization: ${token}" --output - | tar xvf -`;
   await sandbox.sh`mkdir -p ${params.directoryPath} || sudo mkdir -p ${params.directoryPath}`;
   await sandbox.sh`cp -r /tmp/${outdir}/* ${params.directoryPath} || sudo cp -r /tmp/${outdir}/* ${params.directoryPath}`;
-
-  await c.var.db
-    .delete(sandboxCp)
-    .where(eq(sandboxCp.copyUuid, params.uuid))
-    .execute();
 
   return c.json({ success: true });
 });

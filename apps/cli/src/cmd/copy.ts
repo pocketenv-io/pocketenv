@@ -57,6 +57,23 @@ async function loadIgnore(...files: string[]) {
 
 async function compressDirectory(source: string): Promise<string> {
   try {
+    if ((await lstat(source)).isFile()) {
+      const output = `${crypto
+        .createHash("sha256")
+        .update(source)
+        .digest("hex")}.tar.gz`;
+      await tar.create(
+        {
+          file: output,
+          gzip: {
+            level: 6,
+          },
+        },
+        [source],
+      );
+      return output;
+    }
+
     const ig = await loadIgnore(
       ".pocketenvignore",
       ".gitignore",

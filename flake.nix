@@ -17,7 +17,7 @@
         pkgs = import nixpkgs { inherit system; };
         lib = pkgs.lib;
 
-        version = "0.6.0";
+        version = "0.6.1";
 
         targetMap = {
           "x86_64-linux"   = "x86_64-unknown-linux-gnu";

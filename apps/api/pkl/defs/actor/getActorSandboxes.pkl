@@ -24,6 +24,10 @@ defs = new Mapping<String, Query> {
           description = "The number of sandboxes to skip before starting to collect the result set."
           minimum = 0
         }
+        ["isRunning"] = new BooleanType {
+          type = "boolean"
+          description = "Filter sandboxes by their running status."
+        }
       }
     }
     output {

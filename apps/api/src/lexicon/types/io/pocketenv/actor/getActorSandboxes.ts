@@ -16,6 +16,8 @@ export interface QueryParams {
   limit?: number;
   /** The number of sandboxes to skip before starting to collect the result set. */
   offset?: number;
+  /** Filter sandboxes by their running status. */
+  isRunning?: boolean;
 }
 
 export type InputSchema = undefined;

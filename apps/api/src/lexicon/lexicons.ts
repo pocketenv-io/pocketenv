@@ -73,6 +73,10 @@ export const schemaDict = {
                 "The number of sandboxes to skip before starting to collect the result set.",
               minimum: 0,
             },
+            isRunning: {
+              type: "boolean",
+              description: "Filter sandboxes by their running status.",
+            },
           },
         },
         output: {

@@ -32,6 +32,7 @@ import {
   stopService,
 } from "./cmd/service";
 import copy from "./cmd/copy";
+import ps from "./cmd/ps";
 
 const program = new Command();
 
@@ -99,6 +100,8 @@ ${chalk.bold("Examples:")}
 `,
   )
   .action(copy);
+
+program.command("ps").description("list running Sandboxes").action(ps);
 
 program
   .command("start")

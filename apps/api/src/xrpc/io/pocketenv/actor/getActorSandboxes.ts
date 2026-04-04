@@ -9,7 +9,7 @@ import type {
 import type { SelectSandbox } from "schema/sandboxes";
 import { consola } from "consola";
 import schema from "schema";
-import { count, eq, desc, or } from "drizzle-orm";
+import { count, eq, desc, or, and } from "drizzle-orm";
 
 export default function (server: Server, ctx: Context) {
   const getActorSandboxes = (params: QueryParams, auth: HandlerAuth) =>
@@ -47,9 +47,19 @@ const retrieve = ({
           .from(schema.sandboxes)
           .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
           .where(
-            or(
-              eq(schema.users.did, params.did),
-              eq(schema.users.handle, params.did),
+            and(
+              or(
+                eq(schema.users.did, params.did),
+                eq(schema.users.handle, params.did),
+              ),
+              ...(params.isRunning !== undefined
+                ? [
+                    eq(
+                      schema.sandboxes.status,
+                      params.isRunning ? "RUNNING" : "STOPPED",
+                    ),
+                  ]
+                : []),
             ),
           )
           .orderBy(desc(schema.sandboxes.createdAt))
@@ -62,9 +72,19 @@ const retrieve = ({
           .from(schema.sandboxes)
           .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
           .where(
-            or(
-              eq(schema.users.did, params.did),
-              eq(schema.users.handle, params.did),
+            and(
+              or(
+                eq(schema.users.did, params.did),
+                eq(schema.users.handle, params.did),
+              ),
+              ...(params.isRunning !== undefined
+                ? [
+                    eq(
+                      schema.sandboxes.status,
+                      params.isRunning ? "RUNNING" : "STOPPED",
+                    ),
+                  ]
+                : []),
             ),
           )
           .execute()

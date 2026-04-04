@@ -1009,6 +1009,7 @@ app.post("/v1/sandboxes/:sandboxId/pull-directory", async (c) => {
     id: record.sandboxId!,
   });
   await sandbox.sh`mkdir -p /tmp/${outdir} && cd /tmp/${outdir} && curl https://sandbox.pocketenv.io/cp/${params.uuid} -H "Authorization: ${token}" | tar xvf -`;
+  await sandbox.sh`mkdir -p ${params.directoryPath} || sudo mkdir -p ${params.directoryPath}`;
   await sandbox.sh`cp -r /tmp/${outdir}/* ${params.directoryPath} || sudo cp -r /tmp/${outdir}/* ${params.directoryPath}`;
 });
 

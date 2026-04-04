@@ -129,12 +129,14 @@ app.get("/cp/:uuid", async (c) => {
     return c.json({ error: "File not found" }, 404);
   }
 
+  /*
   await c.var.db
     .delete(sandboxCp)
     .where(eq(sandboxCp.copyUuid, uuid))
     .execute();
 
   await env.POCKETENV_COPY.delete(uuid);
+  */
 
   return c.body(file.body, 200, {
     "Content-Type": "application/gzip",

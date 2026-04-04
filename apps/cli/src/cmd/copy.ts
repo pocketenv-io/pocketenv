@@ -52,6 +52,7 @@ async function copy(source: string, destination: string) {
       {
         uuid,
         sandboxId,
+        directoryPath: destination.split(":")[1],
       },
       {
         headers: {

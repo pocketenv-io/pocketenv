@@ -1017,6 +1017,8 @@ app.post("/v1/sandboxes/:sandboxId/pull-directory", async (c) => {
     .delete(sandboxCp)
     .where(eq(sandboxCp.copyUuid, params.uuid))
     .execute();
+
+  return c.json({ success: true });
 });
 
 app.post("/v1/sandboxes/:sandboxId/push-directory", async (c) => {

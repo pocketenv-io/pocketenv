@@ -1050,7 +1050,7 @@ app.post("/v1/sandboxes/:sandboxId/push-directory", async (c) => {
   sandbox = await createSandbox("cloudflare", {
     id: record.sandboxId!,
   });
-  await sandbox.sh`cd /tmp && tar czvf ${uuid}.tar.gz ${params.directoryPath} && curl -X POST "https://sandbox.pocketenv.io/cp?uuid=${uuid}" -H "Authorization: ${token}" -F "file=@${uuid}.tar.gz" && rm ${uuid}.tar.gz`;
+  await sandbox.sh`cd /tmp && tar czvf ${uuid}.tar.gz -C $(dirname ${params.directoryPath}) $(basename ${params.directoryPath}) && curl -X POST "https://sandbox.pocketenv.io/cp?uuid=${uuid}" -H "Authorization: ${token}" -F "file=@${uuid}.tar.gz" && rm ${uuid}.tar.gz`;
 
   return c.json({ uuid });
 });

@@ -1006,7 +1006,7 @@ app.post("/v1/sandboxes/:sandboxId/push-directory", async (c) => {
   const params = await c.req.json<PushDirectoryParams>();
   await pushSchema.parseAsync(params);
   const uuid = crypto.randomUUID();
-  await sandbox.sh`cd /tmp && tar czvf ${uuid}.tar.gz ${params.directoryPath} && curl -X POST "https://sandbox.pocketenv.io/cp?uuid=${uuid}" -H "Authorization: ${token}" -F "file=@${uuid}.tar.gz" && rm ${uuid}.tar.gz`;
+  await sandbox.sh`cd /tmp && tar czvf ${uuid}.tar.gz -C $(dirname ${params.directoryPath}) $(basename ${params.directoryPath}) && curl -X POST "https://sandbox.pocketenv.io/cp?uuid=${uuid}" -H "Authorization: ${token}" -F "file=@${uuid}.tar.gz" && rm ${uuid}.tar.gz`;
   return c.json({ success: true, uuid: uuid.toString() });
 });
 

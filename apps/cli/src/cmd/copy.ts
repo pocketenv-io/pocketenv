@@ -9,19 +9,44 @@ import crypto from "node:crypto";
 import consola from "consola";
 import getAccessToken from "../lib/getAccessToken";
 import { client } from "../client";
+import type { Sandbox } from "../types/sandbox";
 
 async function copy(source: string, destination: string) {
   const spinner = ora(
     `Copying files from ${c.primary(source)} to ${c.primary(destination)}...`,
   ).start();
 
-  if (!source.includes(":/")) {
+  if (!source.includes(":/") && destination.includes(":/")) {
+    const sandboxId = destination.split(":/")[0]!;
+    const token = await getAccessToken();
+
+    const { data } = await client.get<{ sandbox: Sandbox }>(
+      "/xrpc/io.pocketenv.sandbox.getSandbox",
+      {
+        params: {
+          id: sandboxId,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    if (!data.sandbox) {
+      consola.error(`Sandbox not found: ${c.primary(sandboxId)}`);
+      process.exit(1);
+    }
+
+    if (data.sandbox.status !== "RUNNING") {
+      consola.error(`Sandbox ${c.primary(sandboxId)} is not running.`);
+      process.exit(1);
+    }
+
     const output = await compressDirectory(source);
     const uuid = await uploadToStorage(output);
     consola.info(`Uploaded to storage with UUID: ${uuid}`);
     await unlink(output);
-    const sandboxId = destination.split(":/")[0];
-    const token = await getAccessToken();
+
     await client.post(
       "/xrpc/io.pocketenv.sandbox.pullDirectory",
       {
@@ -34,6 +59,12 @@ async function copy(source: string, destination: string) {
         },
       },
     );
+  }
+
+  if (source.includes(":/") && !destination.includes(":/")) {
+  }
+
+  if (source.includes(":/") && destination.includes(":/")) {
   }
 
   spinner.stopAndPersist({

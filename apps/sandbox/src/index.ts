@@ -17,6 +17,7 @@ import {
   spriteAuth,
   denoAuth,
   vercelAuth,
+  sandboxCp,
 } from "./schema/mod.ts";
 import {
   adjectives,
@@ -913,6 +914,11 @@ app.post("/v1/sandboxes/:sandboxId/pull-directory", async (c) => {
   await sandbox.sh`mkdir -p /tmp/${outdir} && cd /tmp/${outdir} && curl https://sandbox.pocketenv.io/cp/${params.uuid} -H "Authorization: ${token}" | tar xvf -`;
   await sandbox.sh`mkdir -p ${params.directoryPath} || sudo mkdir -p ${params.directoryPath}`;
   await sandbox.sh`cp -r /tmp/${outdir}/* ${params.directoryPath} || sudo cp -r /tmp/${outdir}/* ${params.directoryPath}`;
+
+  await c.var.db
+    .delete(sandboxCp)
+    .where(eq(sandboxCp.copyUuid, params.uuid))
+    .execute();
 
   return c.json({ success: true });
 });

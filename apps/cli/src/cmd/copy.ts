@@ -21,6 +21,7 @@ async function copy(source: string, destination: string) {
     consola.info(`Uploaded to storage with UUID: ${uuid}`);
     await unlink(output);
     const sandboxId = destination.split(":/")[0];
+    const token = await getAccessToken();
     await client.post(
       "/xrpc/io.pocketenv.sandbox.pullDirectory",
       {
@@ -29,7 +30,7 @@ async function copy(source: string, destination: string) {
       },
       {
         headers: {
-          Authorization: `Bearer ${process.env.POCKETENV_TOKEN || (await getAccessToken())}`,
+          Authorization: `Bearer ${process.env.POCKETENV_TOKEN || token}`,
         },
       },
     );

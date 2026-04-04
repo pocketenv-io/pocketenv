@@ -2,7 +2,7 @@ import ora from "ora";
 import { c } from "../theme";
 import { glob, unlink } from "node:fs/promises";
 import ignore from "ignore";
-import { readFile, lstat, writeFile } from "node:fs/promises";
+import { readFile, lstat, writeFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import * as tar from "tar";
 import crypto from "node:crypto";
@@ -112,6 +112,19 @@ async function compressDirectory(source: string): Promise<string> {
     return output;
   } catch (error) {
     consola.error("Failed to compress directory:", error);
+    process.exit(1);
+  }
+}
+
+async function decompressDirectory(archive: string, destination: string) {
+  try {
+    await mkdir(destination, { recursive: true });
+    await tar.extract({
+      file: archive,
+      cwd: destination,
+    });
+  } catch (error) {
+    consola.error("Failed to decompress archive:", error);
     process.exit(1);
   }
 }
@@ -248,6 +261,8 @@ async function sandboxToLocal(source: string, destination: string) {
   const buffer = Buffer.from(arrayBuffer);
   const tempFile = `${crypto.randomBytes(16).toString("hex")}.tar.gz`;
   await writeFile(tempFile, buffer);
+  await decompressDirectory(tempFile, destination);
+  await unlink(tempFile);
 }
 
 async function sandboxToSandbox(source: string, destination: string) {

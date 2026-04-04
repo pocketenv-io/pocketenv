@@ -1019,7 +1019,7 @@ app.post("/v1/sandboxes/:sandboxId/pull-directory", async (c) => {
   sandbox = await createSandbox("cloudflare", {
     id: record.sandboxId!,
   });
-  await sandbox.sh`mkdir -p /tmp/${outdir} && cd /tmp/${outdir} && curl https://sandbox.pocketenv.io/cp/${params.uuid} -H "Authorization: ${token}" --output - | tar xvf -`;
+  await sandbox.sh`mkdir -p /tmp/${outdir} && cd /tmp/${outdir} && curl https://sandbox.pocketenv.io/cp/${params.uuid} -H "Authorization: ${token}" --output - | tar xzvf -`;
   await sandbox.sh`mkdir -p ${params.directoryPath} || sudo mkdir -p ${params.directoryPath}`;
   await sandbox.sh`cp -r /tmp/${outdir}/* ${params.directoryPath} || sudo cp -r /tmp/${outdir}/* ${params.directoryPath}`;
 

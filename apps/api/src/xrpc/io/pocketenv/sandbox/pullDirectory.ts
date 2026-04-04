@@ -34,6 +34,10 @@ export default function (server: Server, ctx: Context) {
       throw new XRPCError(404, "Sandbox not found");
     }
 
+    if (record.sandboxes.status !== "RUNNING") {
+      throw new XRPCError(400, "Sandbox is not running");
+    }
+
     const sandbox =
       record.sandboxes.provider === Providers.CLOUDFLARE
         ? ctx.cfsandbox(record.sandboxes.base!)

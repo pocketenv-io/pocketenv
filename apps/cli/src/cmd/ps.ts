@@ -68,9 +68,9 @@ async function ps() {
     table.push([
       c.secondary(sandbox.name),
       sandbox.baseSandbox,
-      sandbox.status === "RUNNING"
-        ? c.highlight(sandbox.status)
-        : sandbox.status,
+      c.highlight(
+        `Up ${dayjs(sandbox.startedAt).fromNow().replace("ago", "")}`,
+      ),
       dayjs(sandbox.createdAt).fromNow(),
     ]);
   }

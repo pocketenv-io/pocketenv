@@ -121,6 +121,7 @@ const presentation = ([sandboxes, total]: [
       memory: sandbox.memory as number,
       disk: sandbox.disk as number,
       createdAt: sandbox.createdAt.toISOString(),
+      startedAt: sandbox.startedAt?.toISOString(),
     })),
     total,
   }));

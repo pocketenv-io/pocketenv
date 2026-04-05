@@ -71,6 +71,7 @@ ENV PATH "/root/.npm-global/bin:${PATH}"
 
 RUN npm install -g \
     openclaw \
+    @chrysb/alphaclaw \
     pm2
 
 RUN curl -fsSL https://deno.land/install.sh | sh

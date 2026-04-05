@@ -16,7 +16,7 @@ RUN curl -fsSL https://openclaw.ai/install.sh | bash || true
 
 ENV PATH="/home/daytona/.local/bin:/home/daytona/.npm-global/bin:${PATH}"
 
-RUN npm install -g pm2
+RUN npm install -g @chrysb/alphaclaw pm2
 
 USER root
 RUN mkdir -p /home/daytona/.local/share/fonts && chown -R daytona:daytona /home/daytona/.local

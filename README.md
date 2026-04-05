@@ -99,6 +99,15 @@ Sandboxes are defined using open lexicons and stored on AT Protocol PDS. That me
 
 ---
 
+## SDKs
+
+- [JavaScript/TypeScript](https://github.com/pocketenv-io/pocketenv-js)
+- [Gleam](https://github.com/pocketenv-io/pocketenv-gleam)
+- [Clojure](https://github.com/pocketenv-io/pocketenv-clojure)
+- [Elixir](https://github.com/pocketenv-io/pocketenv-elixir)
+
+---
+
 ## Docs
 
 Full docs over at [docs.pocketenv.io](https://docs.pocketenv.io)

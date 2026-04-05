@@ -1,8 +1,14 @@
 import ora from "ora";
 import { c } from "../theme";
-import { glob, unlink } from "node:fs/promises";
-import ignore from "ignore";
-import { readFile, lstat, writeFile, mkdir } from "node:fs/promises";
+import {
+  readdir,
+  unlink,
+  lstat,
+  writeFile,
+  mkdir,
+  readFile,
+} from "node:fs/promises";
+import { loadIgnoreFiles, makeIsIgnored } from "../lib/ignore";
 import { join } from "node:path";
 import * as tar from "tar";
 import crypto from "node:crypto";
@@ -21,38 +27,43 @@ async function copy(source: string, destination: string) {
     process.exit(1);
   }
 
-  if (!source.includes(":/") && destination.includes(":/")) {
-    await localToSandbox(source, destination);
-  }
+  const controller = new AbortController();
+  const { signal } = controller;
+  const tempFiles: string[] = [];
 
-  if (source.includes(":/") && !destination.includes(":/")) {
-    await sandboxToLocal(source, destination);
-  }
+  const onInterrupt = async () => {
+    controller.abort();
+    spinner.stop();
+    await Promise.allSettled(tempFiles.map((f) => unlink(f)));
+    process.exit(130);
+  };
 
-  if (source.includes(":/") && destination.includes(":/")) {
-    await sandboxToSandbox(source, destination);
-  }
+  process.once("SIGINT", onInterrupt);
 
-  if (!source.includes(":/") && !destination.includes(":/")) {
-    consola.error("Both source and destination cannot be local paths.");
-    process.exit(1);
-  }
-
-  spinner.stopAndPersist({
-    text: `Copied files from ${c.primary(source)} to ${c.primary(destination)}`,
-  });
-}
-
-async function loadIgnore(...files: string[]) {
-  const ig = ignore();
-  for (const file of files) {
-    try {
-      ig.add(await readFile(file, "utf8"));
-    } catch {
-      // Ignore if the file doesn't exist
+  try {
+    if (!source.includes(":/") && destination.includes(":/")) {
+      await localToSandbox(source, destination, signal, tempFiles);
     }
+
+    if (source.includes(":/") && !destination.includes(":/")) {
+      await sandboxToLocal(source, destination, signal, tempFiles);
+    }
+
+    if (source.includes(":/") && destination.includes(":/")) {
+      await sandboxToSandbox(source, destination, signal);
+    }
+
+    if (!source.includes(":/") && !destination.includes(":/")) {
+      consola.error("Both source and destination cannot be local paths.");
+      process.exit(1);
+    }
+
+    spinner.stopAndPersist({
+      text: `Copied files from ${c.primary(source)} to ${c.primary(destination)}`,
+    });
+  } finally {
+    process.off("SIGINT", onInterrupt);
   }
-  return ig;
 }
 
 async function compressDirectory(source: string): Promise<string> {
@@ -74,20 +85,16 @@ async function compressDirectory(source: string): Promise<string> {
       return output;
     }
 
-    const ig = await loadIgnore(
-      ".pocketenvignore",
-      ".gitignore",
-      ".npmignore",
-      ".dockerignore",
-    );
-    const allFiles = await Array.fromAsync(
-      glob("**/*", { cwd: source, exclude: (path) => ig.ignores(path) }),
-    );
+    const isIgnored = makeIsIgnored(await loadIgnoreFiles(source));
+    // readdir with recursive:true includes hidden files/dirs (.git, .env, …)
+    // which glob("**/*") silently skips.
     const files = (
       await Promise.all(
-        allFiles.map(async (file) => {
-          const stat = await lstat(join(source, file));
-          return stat.isSymbolicLink() ? null : file;
+        (await readdir(source, { recursive: true })).map(async (entry) => {
+          if (isIgnored(entry)) return null;
+          const stat = await lstat(join(source, entry));
+          if (stat.isDirectory() || stat.isSymbolicLink()) return null;
+          return entry;
         }),
       )
     ).filter((f): f is string => f !== null);
@@ -129,7 +136,10 @@ async function decompressDirectory(archive: string, destination: string) {
   }
 }
 
-async function uploadToStorage(filePath: string): Promise<string> {
+async function uploadToStorage(
+  filePath: string,
+  signal: AbortSignal,
+): Promise<string> {
   try {
     const token = await getAccessToken();
 
@@ -144,6 +154,7 @@ async function uploadToStorage(filePath: string): Promise<string> {
     const BASE_URL = "https://sandbox.pocketenv.io";
     const response = await fetch(`${BASE_URL}/cp`, {
       method: "POST",
+      signal,
       headers: {
         Authorization: `Bearer ${process.env.POCKETENV_TOKEN || token}`,
       },
@@ -157,19 +168,21 @@ async function uploadToStorage(filePath: string): Promise<string> {
   }
 }
 
-async function localToSandbox(source: string, destination: string) {
+async function localToSandbox(
+  source: string,
+  destination: string,
+  signal: AbortSignal,
+  tempFiles: string[],
+) {
   const sandboxId = destination.split(":/")[0]!;
   const token = await getAccessToken();
 
   const { data } = await client.get<{ sandbox: Sandbox }>(
     "/xrpc/io.pocketenv.sandbox.getSandbox",
     {
-      params: {
-        id: sandboxId,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      params: { id: sandboxId },
+      signal,
+      headers: { Authorization: `Bearer ${token}` },
     },
   );
 
@@ -184,17 +197,19 @@ async function localToSandbox(source: string, destination: string) {
   }
 
   const output = await compressDirectory(source);
-  const uuid = await uploadToStorage(output);
+  tempFiles.push(output);
+
+  signal.throwIfAborted();
+
+  const uuid = await uploadToStorage(output, signal);
   await unlink(output);
+  tempFiles.splice(tempFiles.indexOf(output), 1);
 
   await client.post(
     "/xrpc/io.pocketenv.sandbox.pullDirectory",
+    { uuid, sandboxId, directoryPath: destination.split(":")[1] },
     {
-      uuid,
-      sandboxId,
-      directoryPath: destination.split(":")[1],
-    },
-    {
+      signal,
       headers: {
         Authorization: `Bearer ${process.env.POCKETENV_TOKEN || token}`,
       },
@@ -202,16 +217,20 @@ async function localToSandbox(source: string, destination: string) {
   );
 }
 
-async function sandboxToLocal(source: string, destination: string) {
+async function sandboxToLocal(
+  source: string,
+  destination: string,
+  signal: AbortSignal,
+  tempFiles: string[],
+) {
   const token = await getAccessToken();
   const sandboxId = source.split(":/")[0]!;
 
   const { data } = await client.get<{ sandbox: Sandbox }>(
     "/xrpc/io.pocketenv.sandbox.getSandbox",
     {
-      params: {
-        id: sandboxId,
-      },
+      params: { id: sandboxId },
+      signal,
       headers: {
         Authorization: `Bearer ${process.env.POCKETENV_TOKEN || token}`,
       },
@@ -230,11 +249,9 @@ async function sandboxToLocal(source: string, destination: string) {
 
   const response = await client.post<{ uuid: string }>(
     "/xrpc/io.pocketenv.sandbox.pushDirectory",
+    { sandboxId, directoryPath: source.split(":")[1] },
     {
-      sandboxId,
-      directoryPath: source.split(":")[1],
-    },
-    {
+      signal,
       headers: {
         Authorization: `Bearer ${process.env.POCKETENV_TOKEN || token}`,
       },
@@ -246,6 +263,7 @@ async function sandboxToLocal(source: string, destination: string) {
   const downloadResponse = await fetch(
     `https://sandbox.pocketenv.io/cp/${uuid}`,
     {
+      signal,
       headers: {
         Authorization: `Bearer ${process.env.POCKETENV_TOKEN || token}`,
       },
@@ -260,12 +278,18 @@ async function sandboxToLocal(source: string, destination: string) {
   const arrayBuffer = await downloadResponse.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   const tempFile = `${crypto.randomBytes(16).toString("hex")}.tar.gz`;
+  tempFiles.push(tempFile);
   await writeFile(tempFile, buffer);
   await decompressDirectory(tempFile, destination);
   await unlink(tempFile);
+  tempFiles.splice(tempFiles.indexOf(tempFile), 1);
 }
 
-async function sandboxToSandbox(source: string, destination: string) {
+async function sandboxToSandbox(
+  source: string,
+  destination: string,
+  signal: AbortSignal,
+) {
   const sourceSandboxId = source.split(":/")[0]!;
   const destinationSandboxId = destination.split(":/")[0]!;
 
@@ -276,9 +300,8 @@ async function sandboxToSandbox(source: string, destination: string) {
       client.get<{ sandbox: Sandbox }>(
         "/xrpc/io.pocketenv.sandbox.getSandbox",
         {
-          params: {
-            id: sourceSandboxId,
-          },
+          params: { id: sourceSandboxId },
+          signal,
           headers: {
             Authorization: `Bearer ${process.env.POCKETENV_TOKEN || token}`,
           },
@@ -287,9 +310,8 @@ async function sandboxToSandbox(source: string, destination: string) {
       client.get<{ sandbox: Sandbox }>(
         "/xrpc/io.pocketenv.sandbox.getSandbox",
         {
-          params: {
-            id: destinationSandboxId,
-          },
+          params: { id: destinationSandboxId },
+          signal,
           headers: {
             Authorization: `Bearer ${process.env.POCKETENV_TOKEN || token}`,
           },
@@ -325,11 +347,9 @@ async function sandboxToSandbox(source: string, destination: string) {
 
   const { data } = await client.post<{ uuid: string }>(
     "/xrpc/io.pocketenv.sandbox.pushDirectory",
+    { sandboxId: sourceSandboxId, directoryPath: source.split(":")[1] },
     {
-      sandboxId: sourceSandboxId,
-      directoryPath: source.split(":")[1],
-    },
-    {
+      signal,
       headers: {
         Authorization: `Bearer ${process.env.POCKETENV_TOKEN || token}`,
       },
@@ -344,6 +364,7 @@ async function sandboxToSandbox(source: string, destination: string) {
       directoryPath: destination.split(":")[1],
     },
     {
+      signal,
       headers: {
         Authorization: `Bearer ${process.env.POCKETENV_TOKEN || token}`,
       },

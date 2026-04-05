@@ -24,7 +24,9 @@
   },
   "scripts": {
     "dev": "tsx ./src/index.ts",
-    "build": "pkgroll && chmod +x ./dist/index.js"
+    "build": "pkgroll && chmod +x ./dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -35,7 +37,8 @@
     "@types/express": "^5.0.6",
     "@types/ws": "^8.18.1",
     "pkgroll": "^2.27.0",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "vitest": "^4.1.2"
   },
   "dependencies": {
     "@inquirer/prompts": "^8.3.0",

@@ -1,69 +1,40 @@
 import { editor, input } from "@inquirer/prompts";
-import getAccessToken from "../lib/getAccessToken";
-import { generateEd25519SSHKeyPair } from "../lib/sshKeys";
 import consola from "consola";
 import fs from "node:fs/promises";
-import encrypt from "../lib/sodium";
-import { client } from "../client";
-import type { Sandbox } from "../types/sandbox";
-import { env } from "../lib/env";
-import type { SshKeys } from "../types/sshkeys";
+import { Sandbox } from "@pocketenv/sdk";
 import chalk from "chalk";
+import { configureSdk } from "../lib/sdk";
 
-export async function getSshKey(sandbox: string) {
-  const token = await getAccessToken();
-
-  const { data } = await client.get<{ sandbox: Sandbox }>(
-    "/xrpc/io.pocketenv.sandbox.getSandbox",
-    {
-      params: {
-        id: sandbox,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
-
-  if (!data.sandbox) {
-    consola.error(`Sandbox not found: ${chalk.greenBright(sandbox)}`);
-    process.exit(1);
-  }
+export async function getSshKey(sandboxName: string) {
+  await configureSdk();
 
   try {
-    const { data: sshKeys } = await client.get<SshKeys>(
-      "/xrpc/io.pocketenv.sandbox.getSshKeys",
-      {
-        params: {
-          id: data.sandbox.id,
-        },
-        headers: {
-          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-        },
-      },
-    );
+    const sandbox = await Sandbox.get(sandboxName);
+    const sshKeys = await sandbox.sshKeys.get();
 
     consola.log("\nPrivate Key:");
-    consola.log(sshKeys.privateKey.replace(/\\n/g, "\n"));
+    consola.log((sshKeys.privateKey ?? "").replace(/\\n/g, "\n"));
     consola.log("\nPublic Key:");
     consola.log(sshKeys.publicKey, "\n");
   } catch (error) {
     consola.info(
-      `No SSH keys found for this sandbox.\n  Create one with ${chalk.greenBright(`pocketenv sshkeys put ${sandbox} --generate`)}.`,
+      `No SSH keys found for this sandbox.\n  Create one with ${chalk.greenBright(`pocketenv sshkeys put ${sandboxName} --generate`)}.`,
     );
   }
 }
 
 export async function putKeys(
-  sandbox: string,
+  sandboxName: string,
   options: { generate?: boolean; publicKey?: string; privateKey?: string },
 ) {
-  const token = await getAccessToken();
   let privateKey: string | undefined;
   let publicKey: string | undefined;
 
+  await configureSdk();
+  const sandbox = await Sandbox.get(sandboxName);
+
   if (options.generate) {
-    const generated = await generateEd25519SSHKeyPair("");
+    const generated = await sandbox.sshKeys.generate();
     privateKey = generated.privateKey;
     publicKey = generated.publicKey;
   }
@@ -108,71 +79,13 @@ export async function putKeys(
     ).trim();
   }
 
-  const { data } = await client.get<{ sandbox: Sandbox }>(
-    "/xrpc/io.pocketenv.sandbox.getSandbox",
-    {
-      params: {
-        id: sandbox,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
-
-  if (!data.sandbox) {
-    consola.error(`Sandbox not found: ${chalk.greenBright(sandbox)}`);
+  if (!sandbox) {
+    consola.error(`Sandbox not found: ${chalk.greenBright(sandboxName)}`);
     process.exit(1);
   }
 
-  const encryptedPrivateKey = await encrypt(privateKey);
-
-  const redacted = (() => {
-    const header = "-----BEGIN OPENSSH PRIVATE KEY-----";
-    const footer = "-----END OPENSSH PRIVATE KEY-----";
-    const headerIndex = privateKey.indexOf(header);
-    const footerIndex = privateKey.indexOf(footer);
-    if (headerIndex === -1 || footerIndex === -1)
-      return privateKey.replace(/\n/g, "\\n");
-    const body = privateKey.slice(headerIndex + header.length, footerIndex);
-    const chars = body.split("");
-    const nonNewlineIndices = chars
-      .map((c, i) => (c !== "\n" ? i : -1))
-      .filter((i) => i !== -1);
-    const maskedBody =
-      nonNewlineIndices.length > 15
-        ? (() => {
-            const middleIndices = nonNewlineIndices.slice(10, -5);
-            middleIndices.forEach((i) => {
-              chars[i] = "*";
-            });
-            return chars.join("");
-          })()
-        : body;
-    return `${header}${maskedBody}${footer}`.replace(/\n/g, "\\n");
-  })();
-
   try {
-    await client.post(
-      "/xrpc/io.pocketenv.sandbox.putSshKeys",
-      {
-        id: data.sandbox.id,
-        privateKey: encryptedPrivateKey,
-        publicKey,
-        redacted,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-        },
-      },
-    );
-
-    consola.log("\nPrivate Key:");
-    consola.log(redacted.replace(/\\n/g, "\n"));
-    consola.log("\nPublic Key:");
-    consola.log(publicKey, "\n");
-
+    await sandbox.sshKeys.put(publicKey, privateKey);
     consola.success("SSH keys saved successfully!");
   } catch {
     consola.error("Failed to save SSH keys");

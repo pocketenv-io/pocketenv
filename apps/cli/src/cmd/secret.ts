@@ -1,45 +1,22 @@
-import { client } from "../client";
-import getAccessToken from "../lib/getAccessToken";
+import { Sandbox } from "@pocketenv/sdk";
 import { password } from "@inquirer/prompts";
-import type { Sandbox } from "../types/sandbox";
-import type { Secret } from "../types/secret";
 import chalk from "chalk";
 import consola from "consola";
 import Table from "cli-table3";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { env } from "../lib/env";
-import encrypt from "../lib/sodium";
 import { c } from "../theme";
+import { configureSdk } from "../lib/sdk";
+import { client } from "../client";
+import getAccessToken from "../lib/getAccessToken";
+import { env } from "../lib/env";
 
 dayjs.extend(relativeTime);
 
-export async function listSecrets(sandbox: string) {
-  const token = await getAccessToken();
-  const { data } = await client.get<{ sandbox: Sandbox }>(
-    "/xrpc/io.pocketenv.sandbox.getSandbox",
-    {
-      params: {
-        id: sandbox,
-      },
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-      },
-    },
-  );
-  const response = await client.get<{ secrets: Secret[] }>(
-    "/xrpc/io.pocketenv.secret.getSecrets",
-    {
-      params: {
-        sandboxId: data.sandbox.id,
-        offset: 0,
-        limit: 100,
-      },
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-      },
-    },
-  );
+export async function listSecrets(sandboxName: string) {
+  await configureSdk();
+  const sandbox = await Sandbox.get(sandboxName);
+  const { secrets } = await sandbox.secret.list({ limit: 100, offset: 0 });
 
   const table = new Table({
     head: [c.primary("ID"), c.primary("NAME"), c.primary("CREATED AT")],
@@ -66,7 +43,7 @@ export async function listSecrets(sandbox: string) {
     },
   });
 
-  for (const secret of response.data.secrets) {
+  for (const secret of secrets) {
     table.push([
       c.secondary(secret.id),
       c.highlight(secret.name),
@@ -77,8 +54,7 @@ export async function listSecrets(sandbox: string) {
   consola.log(table.toString());
 }
 
-export async function putSecret(sandbox: string, key: string) {
-  const token = await getAccessToken();
+export async function putSecret(sandboxName: string, key: string) {
   const isStdinPiped = !process.stdin.isTTY;
   const value = isStdinPiped
     ? await new Promise<string>((resolve) => {
@@ -89,37 +65,17 @@ export async function putSecret(sandbox: string, key: string) {
       })
     : await password({ message: "Enter secret value" });
 
-  const { data } = await client.get("/xrpc/io.pocketenv.sandbox.getSandbox", {
-    params: {
-      id: sandbox,
-    },
-    headers: {
-      Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-    },
-  });
-
-  if (!data.sandbox) {
-    consola.error(`Sandbox not found: ${chalk.greenBright(sandbox)}`);
-    process.exit(1);
-  }
+  await configureSdk();
 
   try {
-    await client.post(
-      "/xrpc/io.pocketenv.secret.addSecret",
-      {
-        secret: {
-          sandboxId: data.sandbox.id,
-          name: key,
-          value: await encrypt(value),
-        },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-        },
-      },
-    );
+    const sandbox = await Sandbox.get(sandboxName);
 
+    if (!sandbox) {
+      consola.error(`Sandbox not found: ${chalk.greenBright(sandboxName)}`);
+      process.exit(1);
+    }
+
+    await sandbox.secret.put(key, value);
     consola.success("Secret added successfully");
   } catch (error) {
     consola.error("Failed to add secret:", error);
@@ -131,9 +87,7 @@ export async function deleteSecret(id: string) {
 
   try {
     await client.post("/xrpc/io.pocketenv.secret.deleteSecret", undefined, {
-      params: {
-        id,
-      },
+      params: { id },
       headers: {
         Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
       },

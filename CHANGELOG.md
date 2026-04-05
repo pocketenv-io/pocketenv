@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.3] - 2026-04-05
+
+### Changed
+
+- **Migrate CLI to `@pocketenv/sdk`**: All direct API/axios calls have been replaced with the official `@pocketenv/sdk`. A new `configureSdk()` helper initialises the SDK once per command using the resolved auth token. Encryption, redaction, and SSH key generation for secrets, files, tailscale, and SSH keys are now handled by the SDK internally. The `waitUntilRunning` local helper has been removed in favour of `sandbox.waitUntilRunning()`.
+
+---
+
 ## [0.6.2] - 2026-04-05
 
 ### Added

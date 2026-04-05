@@ -1,26 +1,24 @@
 import consola from "consola";
-import getAccessToken from "../lib/getAccessToken";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { client } from "../client";
-import { env } from "../lib/env";
+import { Sandbox } from "@pocketenv/sdk";
 import CliTable3 from "cli-table3";
-import type { File } from "../types/file";
 import { c } from "../theme";
 import { editor } from "@inquirer/prompts";
 import fs from "fs/promises";
 import path from "path";
-import encrypt from "../lib/sodium";
+import { configureSdk } from "../lib/sdk";
+import { client } from "../client";
+import getAccessToken from "../lib/getAccessToken";
+import { env } from "../lib/env";
 
 dayjs.extend(relativeTime);
 
 export async function putFile(
-  sandbox: string,
+  sandboxName: string,
   remotePath: string,
   localPath?: string,
 ) {
-  const token = await getAccessToken();
-
   let content: string;
   if (!process.stdin.isTTY) {
     const chunks: Buffer[] = [];
@@ -44,45 +42,24 @@ export async function putFile(
     ).trim();
   }
 
-  try {
-    await client.post(
-      "/xrpc/io.pocketenv.file.addFile",
-      {
-        file: {
-          sandboxId: sandbox,
-          path: remotePath,
-          content: await encrypt(content),
-        },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-        },
-      },
-    );
+  await configureSdk();
 
+  try {
+    const sandbox = await Sandbox.get(sandboxName);
+    await sandbox.file.write(remotePath, content);
     consola.success(
-      `File ${c.primary(remotePath)} successfully created in sandbox ${c.primary(sandbox)}`,
+      `File ${c.primary(remotePath)} successfully created in sandbox ${c.primary(sandboxName)}`,
     );
   } catch (error) {
     consola.error(`Failed to create file: ${error}`);
   }
 }
 
-export async function listFiles(sandboxId: string) {
-  const token = await getAccessToken();
+export async function listFiles(sandboxName: string) {
+  await configureSdk();
 
-  const response = await client.get<{ files: File[] }>(
-    "/xrpc/io.pocketenv.file.getFiles",
-    {
-      params: {
-        sandboxId,
-      },
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-      },
-    },
-  );
+  const sandbox = await Sandbox.get(sandboxName);
+  const { files } = await sandbox.file.list();
 
   const table = new CliTable3({
     head: [c.primary("ID"), c.primary("PATH"), c.primary("CREATED AT")],
@@ -109,7 +86,7 @@ export async function listFiles(sandboxId: string) {
     },
   });
 
-  for (const file of response.data.files) {
+  for (const file of files) {
     table.push([
       c.secondary(file.id),
       file.path,
@@ -125,9 +102,7 @@ export async function deleteFile(id: string) {
 
   try {
     await client.post(`/xrpc/io.pocketenv.file.deleteFile`, undefined, {
-      params: {
-        id,
-      },
+      params: { id },
       headers: {
         Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
       },

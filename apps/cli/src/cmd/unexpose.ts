@@ -1,28 +1,17 @@
 import consola from "consola";
-import getAccessToken from "../lib/getAccessToken";
-import { client } from "../client";
-import { env } from "../lib/env";
+import { Sandbox } from "@pocketenv/sdk";
 import { c } from "../theme";
+import { configureSdk } from "../lib/sdk";
 
-export async function unexposePort(sandbox: string, port: number) {
-  const token = await getAccessToken();
+export async function unexposePort(sandboxName: string, port: number) {
+  await configureSdk();
 
   try {
-    await client.post(
-      `/xrpc/io.pocketenv.sandbox.unexposePort`,
-      { port },
-      {
-        params: {
-          id: sandbox,
-        },
-        headers: {
-          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-        },
-      },
-    );
+    const sandbox = await Sandbox.get(sandboxName);
+    await sandbox.unexpose(port);
 
     consola.success(
-      `Port ${c.primary(port)} unexposed for sandbox ${c.primary(sandbox)}`,
+      `Port ${c.primary(port)} unexposed for sandbox ${c.primary(sandboxName)}`,
     );
   } catch (error) {
     consola.error(`Failed to unexpose port: ${error}`);

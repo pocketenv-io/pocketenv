@@ -1,30 +1,22 @@
 import chalk from "chalk";
 import consola from "consola";
-import getAccessToken from "../lib/getAccessToken";
-import { client } from "../client";
-import { env } from "../lib/env";
-import type { Volume } from "../types/volume";
+import { Sandbox } from "@pocketenv/sdk";
 import CliTable3 from "cli-table3";
 import { c } from "../theme";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { configureSdk } from "../lib/sdk";
+import { client } from "../client";
+import getAccessToken from "../lib/getAccessToken";
+import { env } from "../lib/env";
 
 dayjs.extend(relativeTime);
 
-export async function listVolumes(sandboxId: string) {
-  const token = await getAccessToken();
+export async function listVolumes(sandboxName: string) {
+  await configureSdk();
 
-  const response = await client.get<{ volumes: Volume[] }>(
-    "/xrpc/io.pocketenv.volume.getVolumes",
-    {
-      params: {
-        sandboxId,
-      },
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-      },
-    },
-  );
+  const sandbox = await Sandbox.get(sandboxName);
+  const { volumes } = await sandbox.volume.list();
 
   const table = new CliTable3({
     head: [
@@ -56,11 +48,11 @@ export async function listVolumes(sandboxId: string) {
     },
   });
 
-  for (const volume of response.data.volumes) {
+  for (const volume of volumes) {
     table.push([
       c.secondary(volume.id),
       volume.name,
-      volume.path,
+      volume.path ?? "",
       dayjs(volume.createdAt).fromNow(),
     ]);
   }
@@ -69,31 +61,18 @@ export async function listVolumes(sandboxId: string) {
 }
 
 export async function createVolume(
-  sandbox: string,
+  sandboxName: string,
   name: string,
-  path: string,
+  volumePath: string,
 ) {
-  const token = await getAccessToken();
+  await configureSdk();
 
   try {
-    await client.post(
-      "/xrpc/io.pocketenv.volume.addVolume",
-      {
-        volume: {
-          sandboxId: sandbox,
-          name,
-          path,
-        },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-        },
-      },
-    );
+    const sandbox = await Sandbox.get(sandboxName);
+    await sandbox.volume.create(name, { path: volumePath });
 
     consola.success(
-      `Volume ${chalk.rgb(0, 232, 198)(name)} successfully mounted in sandbox ${chalk.rgb(0, 232, 198)(sandbox)} at path ${chalk.rgb(0, 232, 198)(path)}`,
+      `Volume ${chalk.rgb(0, 232, 198)(name)} successfully mounted in sandbox ${chalk.rgb(0, 232, 198)(sandboxName)} at path ${chalk.rgb(0, 232, 198)(volumePath)}`,
     );
   } catch (error) {
     consola.error("Failed to create volume:", error);
@@ -105,9 +84,7 @@ export async function deleteVolume(id: string) {
 
   try {
     await client.post(`/xrpc/io.pocketenv.volume.deleteVolume`, undefined, {
-      params: {
-        id,
-      },
+      params: { id },
       headers: {
         Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
       },

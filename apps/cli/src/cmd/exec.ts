@@ -1,52 +1,31 @@
 import consola from "consola";
-import getAccessToken from "../lib/getAccessToken";
-import { client } from "../client";
-import { env } from "../lib/env";
+import { Sandbox } from "@pocketenv/sdk";
+import { configureSdk } from "../lib/sdk";
 
-export async function exec(sandbox: string, command: string[]) {
-  const token = await getAccessToken();
+export async function exec(sandboxName: string, command: string[]) {
+  await configureSdk();
 
   try {
+    const sandbox = await Sandbox.get(sandboxName);
     const [cmd, ...args] = command;
-    const response = await client.post<{
-      stderr: string;
-      stdout: string;
-      exitCode: number;
-    }>(
-      "/xrpc/io.pocketenv.sandbox.exec",
-      {
-        command: `${cmd} ${args.join(" ")}`,
-      },
-      {
-        params: {
-          id: sandbox,
-        },
-        headers: {
-          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-        },
-      },
-    );
+    const result = await sandbox.exec(`${cmd} ${args.join(" ")}`);
 
-    if (response.data.stdout) {
+    if (result.stdout) {
       process.stdout.write(
-        response.data.stdout.endsWith("\n")
-          ? response.data.stdout
-          : response.data.stdout + "\n",
+        result.stdout.endsWith("\n") ? result.stdout : result.stdout + "\n",
       );
     }
-    if (response.data.stderr) {
+    if (result.stderr) {
       process.stderr.write(
-        response.data.stderr.endsWith("\n")
-          ? response.data.stderr
-          : response.data.stderr + "\n",
+        result.stderr.endsWith("\n") ? result.stderr : result.stderr + "\n",
       );
     }
 
-    if (response.data.exitCode !== 0) {
-      consola.error(`Command exited with code ${response.data.exitCode}`);
+    if (result.exitCode !== 0) {
+      consola.error(`Command exited with code ${result.exitCode}`);
     }
 
-    process.exit(response.data.exitCode);
+    process.exit(result.exitCode);
   } catch (error) {
     consola.error("Failed to execute command:", error);
   }

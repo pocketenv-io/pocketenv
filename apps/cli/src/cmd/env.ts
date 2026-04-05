@@ -1,45 +1,17 @@
-import { client } from "../client";
-import getAccessToken from "../lib/getAccessToken";
-import type { Sandbox } from "../types/sandbox";
-import type { Variable } from "../types/variable";
+import { Sandbox } from "@pocketenv/sdk";
 import dayjs from "dayjs";
 import consola from "consola";
 import Table from "cli-table3";
-import { env } from "../lib/env";
 import { c } from "../theme";
+import { configureSdk } from "../lib/sdk";
+import { client } from "../client";
+import getAccessToken from "../lib/getAccessToken";
+import { env } from "../lib/env";
 
-export async function listEnvs(sandbox: string) {
-  const token = await getAccessToken();
-  const { data } = await client.get<{ sandbox: Sandbox }>(
-    "/xrpc/io.pocketenv.sandbox.getSandbox",
-    {
-      params: {
-        id: sandbox,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  );
-
-  if (!data.sandbox) {
-    consola.error(`Sandbox not found: ${c.primary(sandbox)}`);
-    process.exit(1);
-  }
-
-  const response = await client.get<{ variables: Variable[] }>(
-    "/xrpc/io.pocketenv.variable.getVariables",
-    {
-      params: {
-        sandboxId: data.sandbox.id,
-        offset: 0,
-        limit: 100,
-      },
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-      },
-    },
-  );
+export async function listEnvs(sandboxName: string) {
+  await configureSdk();
+  const sandbox = await Sandbox.get(sandboxName);
+  const { variables } = await sandbox.env.list({ limit: 100, offset: 0 });
 
   const table = new Table({
     head: [
@@ -71,7 +43,7 @@ export async function listEnvs(sandbox: string) {
     },
   });
 
-  for (const variable of response.data.variables) {
+  for (const variable of variables) {
     table.push([
       c.secondary(variable.id),
       c.highlight(variable.name),
@@ -83,32 +55,10 @@ export async function listEnvs(sandbox: string) {
   consola.log(table.toString());
 }
 
-export async function putEnv(sandbox: string, key: string, value: string) {
-  const token = await getAccessToken();
-  const { data } = await client.get<{ sandbox: Sandbox }>(
-    "/xrpc/io.pocketenv.sandbox.getSandbox",
-    {
-      params: {
-        id: sandbox,
-      },
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-      },
-    },
-  );
-
-  await client.post(
-    "/xrpc/io.pocketenv.variable.addVariable",
-    {
-      variable: { sandboxId: data.sandbox.id, name: key, value: value },
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-      },
-    },
-  );
-
+export async function putEnv(sandboxName: string, key: string, value: string) {
+  await configureSdk();
+  const sandbox = await Sandbox.get(sandboxName);
+  await sandbox.env.put(key, value);
   consola.success("Variable updated successfully");
 }
 

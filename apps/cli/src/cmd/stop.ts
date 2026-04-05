@@ -1,22 +1,14 @@
 import chalk from "chalk";
 import consola from "consola";
-import getAccessToken from "../lib/getAccessToken";
-import { client } from "../client";
-import { env } from "../lib/env";
+import { Sandbox } from "@pocketenv/sdk";
+import { configureSdk } from "../lib/sdk";
 
 async function stop(name: string) {
-  const token = await getAccessToken();
+  await configureSdk();
 
   try {
-    await client.post("/xrpc/io.pocketenv.sandbox.stopSandbox", undefined, {
-      params: {
-        id: name,
-      },
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-      },
-    });
-
+    const sandbox = await Sandbox.get(name);
+    await sandbox.stop();
     consola.success(`Sandbox ${chalk.greenBright(name)} stopped`);
   } catch {
     consola.error("Failed to stop sandbox");

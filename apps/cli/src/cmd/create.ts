@@ -1,13 +1,11 @@
 import consola from "consola";
-import { client } from "../client";
-import getAccessToken from "../lib/getAccessToken";
-import type { Sandbox } from "../types/sandbox";
+import { Sandbox } from "@pocketenv/sdk";
 import connectToSandbox from "./ssh";
 import { c } from "../theme";
 import { expandRepo } from "../lib/expandRepo";
-import waitUntilRunning from "../lib/waitUntilRunning";
 import encrypt from "../lib/sodium";
 import redact from "../lib/redact";
+import { configureSdk } from "../lib/sdk";
 
 async function createSandbox(
   name: string,
@@ -23,7 +21,7 @@ async function createSandbox(
     repo?: string;
   },
 ) {
-  const token = await getAccessToken();
+  await configureSdk();
   if (repo) repo = expandRepo(repo);
 
   const providerOptions: Record<string, any> = {};
@@ -94,30 +92,22 @@ async function createSandbox(
   }
 
   try {
-    const sandbox = await client.post<Sandbox>(
-      "/xrpc/io.pocketenv.sandbox.createSandbox",
-      {
-        name,
-        base:
-          base ??
-          "at://did:plc:aturpi2ls3yvsmhc6wybomun/io.pocketenv.sandbox/openclaw",
-        provider: provider ?? "cloudflare",
-        repo,
-        ...providerOptions,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    );
+    const sandbox = await Sandbox.create({
+      name,
+      base:
+        base ??
+        "at://did:plc:aturpi2ls3yvsmhc6wybomun/io.pocketenv.sandbox/openclaw",
+      provider: provider ?? "cloudflare",
+      repo,
+      providerOptions,
+    });
     if (!ssh) {
       consola.success(
         `Sandbox created successfully: ${c.primary(sandbox.data.name)}`,
       );
       return;
     }
-    await waitUntilRunning(sandbox.data.name, token);
+    await sandbox.waitUntilRunning();
     await connectToSandbox(sandbox.data.name);
   } catch (error) {
     consola.error(`Failed to create sandbox: ${error}`);

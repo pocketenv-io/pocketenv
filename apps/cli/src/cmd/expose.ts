@@ -1,35 +1,24 @@
 import consola from "consola";
-import getAccessToken from "../lib/getAccessToken";
-import { client } from "../client";
-import { env } from "../lib/env";
+import { Sandbox } from "@pocketenv/sdk";
 import { c } from "../theme";
+import { configureSdk } from "../lib/sdk";
 
 export async function exposePort(
-  sandbox: string,
+  sandboxName: string,
   port: number,
   description?: string,
 ) {
-  const token = await getAccessToken();
+  await configureSdk();
   try {
-    const response = await client.post<{ previewUrl?: string }>(
-      `/xrpc/io.pocketenv.sandbox.exposePort`,
-      { port, description },
-      {
-        params: {
-          id: sandbox,
-        },
-        headers: {
-          Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-        },
-      },
-    );
+    const sandbox = await Sandbox.get(sandboxName);
+    const result = await sandbox.expose(port, description);
 
     consola.success(
-      `Port ${c.primary(port)} exposed for sandbox ${c.primary(sandbox)}`,
+      `Port ${c.primary(port)} exposed for sandbox ${c.primary(sandboxName)}`,
     );
 
-    if (response.data.previewUrl) {
-      consola.success(`Preview URL: ${c.secondary(response.data.previewUrl)}`);
+    if (result.previewUrl) {
+      consola.success(`Preview URL: ${c.secondary(result.previewUrl)}`);
     }
   } catch (error) {
     consola.error("Failed to expose port:", error);

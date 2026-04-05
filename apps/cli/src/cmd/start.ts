@@ -1,11 +1,9 @@
 import consola from "consola";
 import chalk from "chalk";
-import getAccessToken from "../lib/getAccessToken";
-import { client } from "../client";
-import { env } from "../lib/env";
+import { Sandbox } from "@pocketenv/sdk";
 import connectToSandbox from "./ssh";
 import { expandRepo } from "../lib/expandRepo";
-import waitUntilRunning from "../lib/waitUntilRunning";
+import { configureSdk } from "../lib/sdk";
 
 async function start(
   name: string,
@@ -15,29 +13,15 @@ async function start(
     keepAlive,
   }: { ssh?: boolean; repo?: string; keepAlive?: boolean },
 ) {
-  const token = await getAccessToken();
+  await configureSdk();
   if (repo) repo = expandRepo(repo);
 
   try {
-    const authToken = env.POCKETENV_TOKEN || token;
-    await client.post(
-      "/xrpc/io.pocketenv.sandbox.startSandbox",
-      {
-        repo,
-        keepAlive,
-      },
-      {
-        params: {
-          id: name,
-        },
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      },
-    );
+    const sandbox = await Sandbox.get(name);
+    await sandbox.start({ repo, keepAlive });
 
     if (ssh) {
-      await waitUntilRunning(name, authToken);
+      await sandbox.waitUntilRunning();
       await connectToSandbox(name);
       return;
     }

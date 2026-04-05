@@ -1,37 +1,16 @@
-import { client } from "../client";
 import consola from "consola";
-import { env } from "../lib/env";
-import getAccessToken from "../lib/getAccessToken";
-import type { Sandbox } from "../types/sandbox";
+import { Sandbox } from "@pocketenv/sdk";
 import Table from "cli-table3";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import type { Profile } from "../types/profile";
 import { c } from "../theme";
+import { configureSdk } from "../lib/sdk";
+
 dayjs.extend(relativeTime);
 
 async function listSandboxes() {
-  const token = await getAccessToken();
-
-  const profile = await client.get<Profile>(
-    "/xrpc/io.pocketenv.actor.getProfile",
-    {
-      headers: {
-        Authorization: `Bearer ${env.POCKETENV_TOKEN || token}`,
-      },
-    },
-  );
-
-  const response = await client.get<{ sandboxes: Sandbox[] }>(
-    "/xrpc/io.pocketenv.actor.getActorSandboxes",
-    {
-      params: {
-        did: profile.data.did,
-        offset: 0,
-        limit: 100,
-      },
-    },
-  );
+  await configureSdk();
+  const { sandboxes } = await Sandbox.list({ limit: 100, offset: 0 });
 
   const table = new Table({
     head: [
@@ -63,13 +42,13 @@ async function listSandboxes() {
     },
   });
 
-  for (const sandbox of response.data.sandboxes) {
+  for (const sandbox of sandboxes) {
     table.push([
       c.secondary(sandbox.name),
-      sandbox.baseSandbox,
+      sandbox.baseSandbox ?? "",
       sandbox.status === "RUNNING"
         ? c.highlight(sandbox.status)
-        : sandbox.status,
+        : sandbox.status ?? "",
       dayjs(sandbox.createdAt).fromNow(),
     ]);
   }

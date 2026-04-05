@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.2] - 2026-04-05
+
+### Added
+
+- **Nested ignore file support**: `loadIgnoreFiles` and `makeIsIgnored` now handle per-directory `.gitignore`/`.pocketenvignore` contexts when packaging, correctly applying ignore rules at each directory level.
+- **Ignore file unit tests**: Comprehensive Vitest-based test suite for the ignore logic, with a `vitest.config.ts` and updated dev deps/test scripts.
+
+### Fixed
+
+- **Sandbox dotfile copying**: Enabled `bash dotglob` in sandbox copy commands so dotfiles are included when copying directories.
+
+---
+
 ## [0.6.1] - 2026-04-04
 
 ### Added

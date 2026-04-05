@@ -27,10 +27,10 @@
         };
 
         hashMap = {
-          "x86_64-linux"   = "sha256-XzSuI2HmmMcFPaG3ixApiY//9TlQuLrzu3jfecnRLhI=";
-          "aarch64-linux"  = "sha256-Pzh28zZTocug7/7VuUoPWqDwk+63Y6/iQovZgK2Ur0k=";
-          "x86_64-darwin"  = "sha256-lP1D/zS2BqIr/bUj5doFCx1UDAFvsRwkKMYlDPAYSC8=";
-          "aarch64-darwin" = "sha256-WkvSYttx5Z7MsFfCJ7mgAjmAcUW9AkKXaYCPPYOUlAA=";
+          "x86_64-linux"   = "sha256-KAFG5YgbTLmJbdNwSA5kQTOYpSusArM3jQ3BY1WGx6M=";
+          "aarch64-linux"  = "sha256-rmcC/jP9O9EMz+J1iOKANF4yY+eMJo/PfR5zJSRa+TE=";
+          "x86_64-darwin"  = "sha256-1OoFVutCkM1OgRuhQpDB0cp6vmkpmeJd+N8Os3F6XnU=";
+          "aarch64-darwin" = "sha256-Axpk7Mt2vsqokXoxp7ZIsXXooADeiTr0AbEFhA8jDwQ=";
         };
 
         target = targetMap.${system};

@@ -17,7 +17,7 @@
         pkgs = import nixpkgs { inherit system; };
         lib = pkgs.lib;
 
-        version = "0.6.1";
+        version = "0.6.2";
 
         targetMap = {
           "x86_64-linux"   = "x86_64-unknown-linux-gnu";
@@ -27,10 +27,10 @@
         };
 
         hashMap = {
-          "x86_64-linux"   = "sha256-KAFG5YgbTLmJbdNwSA5kQTOYpSusArM3jQ3BY1WGx6M=";
-          "aarch64-linux"  = "sha256-rmcC/jP9O9EMz+J1iOKANF4yY+eMJo/PfR5zJSRa+TE=";
-          "x86_64-darwin"  = "sha256-1OoFVutCkM1OgRuhQpDB0cp6vmkpmeJd+N8Os3F6XnU=";
-          "aarch64-darwin" = "sha256-Axpk7Mt2vsqokXoxp7ZIsXXooADeiTr0AbEFhA8jDwQ=";
+          "x86_64-linux"   = "sha256-srkt/TH4SyCKsiA15H5D/9eK0qsgTvYCesbQ2f2xAu0=";
+          "aarch64-linux"  = "sha256-eHkO9KYmkLiwlogbzGbyDDhnckjqNiZM0TvGDRv28YM=";
+          "x86_64-darwin"  = "sha256-YmDs9wBxJ+qd/68ltnDE/5O7qgsENxdzBK+9I9cHOQE=";
+          "aarch64-darwin" = "sha256-MBjfEwRCcIbn1Rwfh2NkEI4F+xPCGzuc3nqzi1ELn+E=";
         };
 
         target = targetMap.${system};

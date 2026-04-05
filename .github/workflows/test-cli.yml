@@ -1,0 +1,28 @@
+name: Test CLI
+
+on:
+  push:
+    paths:
+      - "apps/cli/**"
+      - ".github/workflows/test-cli.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "BUN_INSTALL=/home/runner/.bun" >> $GITHUB_ENV
+          echo "PATH=/home/runner/.bun/bin:$PATH" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        working-directory: apps/cli
+        run: bun install
+
+      - name: Run tests
+        working-directory: apps/cli
+        run: bun run test

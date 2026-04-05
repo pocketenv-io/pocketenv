@@ -24,6 +24,10 @@ jobs:
         working-directory: apps/cf-sandbox
         run: bun install
 
+      - name: Run tests
+        working-directory: apps/cf-sandbox
+        run: bun run test
+
       - name: Deploy Main Worker
         working-directory: apps/cf-sandbox
         env:

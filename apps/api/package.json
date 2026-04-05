@@ -13,7 +13,9 @@
     "lint": "biome lint src",
     "sandbox": "tsx ./scripts/sandbox.ts",
     "seed": "tsx ./scripts/seed.ts",
-    "build": "pkgroll"
+    "build": "pkgroll",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "dependencies": {
     "@atproto/api": "^0.13.31",
@@ -78,6 +80,8 @@
     "@types/ssh2": "^1.15.4",
     "drizzle-kit": "^0.31.9",
     "pkgroll": "^2.26.3",
-    "tsx": "^4.21.0"
+    "tsx": "^4.21.0",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.2"
   }
 }

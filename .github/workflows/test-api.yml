@@ -1,0 +1,28 @@
+name: Test API
+
+on:
+  push:
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/test-api.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "BUN_INSTALL=/home/runner/.bun" >> $GITHUB_ENV
+          echo "PATH=/home/runner/.bun/bin:$PATH" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        working-directory: apps/api
+        run: bun install
+
+      - name: Run tests
+        working-directory: apps/api
+        run: bun run test:run

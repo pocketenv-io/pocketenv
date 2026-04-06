@@ -16,6 +16,7 @@ async function ps() {
     head: [
       c.primary("NAME"),
       c.primary("BASE"),
+      c.primary("PROVIDER"),
       c.primary("STATUS"),
       c.primary("CREATED AT"),
     ],
@@ -46,6 +47,7 @@ async function ps() {
     table.push([
       c.secondary(sandbox.name),
       sandbox.baseSandbox ?? "",
+      sandbox.provider,
       c.highlight(
         `Up ${dayjs(sandbox.startedAt).fromNow().replace("ago", "")}`,
       ),

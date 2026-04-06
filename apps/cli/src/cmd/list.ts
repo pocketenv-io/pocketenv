@@ -16,6 +16,7 @@ async function listSandboxes() {
     head: [
       c.primary("NAME"),
       c.primary("BASE"),
+      c.primary("PROVIDER"),
       c.primary("STATUS"),
       c.primary("CREATED AT"),
     ],
@@ -46,9 +47,10 @@ async function listSandboxes() {
     table.push([
       c.secondary(sandbox.name),
       sandbox.baseSandbox ?? "",
+      sandbox.provider,
       sandbox.status === "RUNNING"
         ? c.highlight(sandbox.status)
-        : sandbox.status ?? "",
+        : (sandbox.status ?? ""),
       dayjs(sandbox.createdAt).fromNow(),
     ]);
   }

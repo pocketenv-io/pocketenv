@@ -64,7 +64,7 @@ async function prepareSandbox(sandbox: BaseSandbox, base: string) {
     if (item.if) {
       try {
         const { exitCode } = await sandbox.sh`${item.if}`;
-        if (exitCode === 0) {
+        if (exitCode !== 0) {
           console.info(
             chalk.yellow(
               `Condition "${chalk.rgb(100, 232, 130)(item.if)}" met. Skipping commands for "${chalk.rgb(100, 232, 130)(item.name)}".`,

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.6] - 2026-04-06
+
+### Changed
+
+- **Bumped CLI version to 0.6.6**.
+- **Updated `@pocketenv/sdk` to `^0.2.5`**: CLI now depends on the latest SDK release.
+
+---
+
 ## [0.6.5] - 2026-04-06
 
 ### Changed

@@ -45,6 +45,8 @@
     "SANDBOX_TRANSPORT": "websocket",
     "VOLUME_BUCKET": "pocketenv-volumes",
     "PREVIEW_TOKEN": "gemini",
+    "CLOUDFLARE_ACCOUNT_ID": "fe5b1e2ce9f94f4c0415ab94ce402012",
+    "BACKUP_BUCKET_NAME": "pocketenv-backup"
   },
   /**
    * Note: Use secrets to store sensitive data.

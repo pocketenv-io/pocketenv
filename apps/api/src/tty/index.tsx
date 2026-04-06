@@ -118,7 +118,7 @@ async function createTerminalSession(ctx: Context, id: string) {
   const spriteToken = decrypt(spriteAuth!.spriteToken);
   const client = new SpritesClient(spriteToken);
   const sprite = client.sprite(sandbox.sandboxId!);
-  const cmd = sprite.spawn("bash", [], {
+  const cmd = sprite.spawn("bash", ["-i"], {
     tty: true,
     rows: 24,
     cols: 80,

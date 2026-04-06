@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     s3fs \
     fontconfig \
     sudo \
+    squashfs-tools \
     && useradd -m -s /bin/bash coder \
     && echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
 

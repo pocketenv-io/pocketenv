@@ -20,6 +20,7 @@ import wasmer from "../presets/wasmer.yaml" with { type: "text" };
 import zeroclaw from "../presets/zeroclaw.yaml" with { type: "text" };
 import chalk from "chalk";
 import { BaseSandbox } from "../providers/mod.ts";
+import { Preset, PresetSchema } from "../types/preset.ts";
 
 const presets: Record<string, string> = {
   amp,
@@ -53,11 +54,8 @@ async function prepareSandbox(sandbox: BaseSandbox, base: string) {
     return;
   }
 
-  const preset = parse(presets[base]) as Array<{
-    name?: string;
-    if?: string;
-    run: string;
-  }>;
+  const preset = parse(presets[base]) as Preset;
+  PresetSchema.parse(preset); // Validate preset structure
 
   for (const item of preset) {
     console.info(`${chalk.rgb(0, 232, 198)(item.name)}`);

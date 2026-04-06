@@ -2,11 +2,16 @@
   description = "pocketenv - the universal sandbox runtime for agents and humans.";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/release-25.05";
     flake-utils.url = "github:numtide/flake-utils";
+    pocketenv-cli = {
+      url = "path:./apps/cli";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+    };
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { self, nixpkgs, flake-utils, pocketenv-cli }:
     flake-utils.lib.eachSystem [
       "x86_64-linux"
       "aarch64-linux"
@@ -15,94 +20,23 @@
     ] (system:
       let
         pkgs = import nixpkgs { inherit system; };
-        lib = pkgs.lib;
-
-        version = "0.6.6";
-
-        targetMap = {
-          "x86_64-linux"   = "x86_64-unknown-linux-gnu";
-          "aarch64-linux"  = "aarch64-unknown-linux-gnu";
-          "x86_64-darwin"  = "x86_64-apple-darwin";
-          "aarch64-darwin" = "aarch64-apple-darwin";
-        };
-
-        hashMap = {
-          "x86_64-linux"   = "sha256-CTIAOU0shF7dDYYA1ry9xm2h6AC3m6QZ1hQ6JSUsfLY=";
-          "aarch64-linux"  = "sha256-yvPcsr2lH1CQfMhzZVSbOZFgrj8SQoLr5GGEwYQEgjQ=";
-          "x86_64-darwin"  = "sha256-ATtD+p/LT7xhM5kZ66jcFsH/CyxbZb8nNNzxAo2otUk=";
-          "aarch64-darwin" = "sha256-KIeosurlMEkjYT07F0lvkrmW3FhUL43cfJjzafbTbTA=";
-        };
-
-        target = targetMap.${system};
-        hash = hashMap.${system};
-
-        pocketenv = pkgs.stdenv.mkDerivation rec {
-          pname = "pocketenv";
-          inherit version;
-
-          src = pkgs.fetchurl {
-            url = "https://github.com/pocketenv-io/pocketenv/releases/download/v${version}/pocketenv_v${version}_${target}.tar.gz";
-            sha256 = hash;
-          };
-
-          dontStrip = true;
-          dontPatchELF = true;
-          dontAutoPatchelf = true;
-
-          sourceRoot = ".";
-
-          installPhase = ''
-            runHook preInstall
-
-            mkdir -p $out/bin
-            mkdir -p $out/libexec/${pname}
-
-            install -m755 pocketenv $out/libexec/${pname}/pocketenv
-
-            ${lib.optionalString pkgs.stdenv.isLinux ''
-              cat > $out/bin/pocketenv <<'EOF'
-#!${pkgs.runtimeShell}
-exec "__TARGET__" "$@"
-EOF
-
-              substituteInPlace $out/bin/pocketenv \
-                --replace-fail "__TARGET__" "$out/libexec/${pname}/pocketenv"
-
-              chmod +x $out/bin/pocketenv
-            ''}
-
-            ${lib.optionalString pkgs.stdenv.isDarwin ''
-              ln -s $out/libexec/${pname}/pocketenv $out/bin/pocketenv
-            ''}
-
-            runHook postInstall
-          '';
-
-          meta = with pkgs.lib; {
-            description = "pocketenv - the universal sandbox runtime for agents and humans";
-            homepage = "https://github.com/pocketenv-io/pocketenv";
-            license = licenses.mpl20;
-            platforms = [
-              "x86_64-linux"
-              "aarch64-linux"
-              "x86_64-darwin"
-              "aarch64-darwin"
-            ];
-            mainProgram = "pocketenv";
-          };
-        };
+        cli = pocketenv-cli.packages.${system}.default;
       in {
         packages = {
-          default = pocketenv;
-          inherit pocketenv;
+          default = cli;
+          inherit cli;
         };
 
         apps.default = flake-utils.lib.mkApp {
-          drv = pocketenv;
+          drv = cli;
+          exePath = "/bin/pocketenv";
         };
 
         devShells.default = pkgs.mkShell {
-          buildInputs = [ pocketenv ];
+          packages = [
+            pkgs.nodejs_24
+            cli
+          ];
         };
       }
     );

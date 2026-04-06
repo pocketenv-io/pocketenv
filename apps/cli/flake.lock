@@ -34,30 +34,10 @@
         "type": "github"
       }
     },
-    "pocketenv-cli": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "path": "./apps/cli",
-        "type": "path"
-      },
-      "original": {
-        "path": "./apps/cli",
-        "type": "path"
-      },
-      "parent": []
-    },
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs",
-        "pocketenv-cli": "pocketenv-cli"
+        "nixpkgs": "nixpkgs"
       }
     },
     "systems": {

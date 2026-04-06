@@ -4,7 +4,7 @@
   "bin": {
     "pocketenv": "dist/index.js"
   },
-  "version": "0.6.7",
+  "version": "0.6.8",
   "type": "module",
   "keywords": [
     "sandbox",
@@ -42,7 +42,7 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^8.3.0",
-    "@pocketenv/sdk": "^0.2.6",
+    "@pocketenv/sdk": "^0.2.7",
     "axios": "^1.13.6",
     "chalk": "^5.6.2",
     "cli-table3": "^0.6.5",

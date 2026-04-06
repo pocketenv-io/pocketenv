@@ -20,6 +20,10 @@
       "binding": "POCKETENV_COPY",
       "bucket_name": "pocketenv-copy",
     },
+    {
+      "binding": "BACKUP_BUCKET",
+      "bucket_name": "pocketenv-backup",
+    },
   ],
   /**
    * Smart Placement

@@ -526,3 +526,13 @@ sandboxRoutes.post("/v1/sandboxes/:sandboxId/push-directory", async (c) => {
 
   return c.json({ uuid });
 });
+
+sandboxRoutes.post("/v1/sandboxes/:sandboxId/backup", async (c) => {
+  const result = await getSandboxRecord(c.var.db, c.req.param("sandboxId"));
+  const record = result?.sandbox;
+});
+
+sandboxRoutes.post("/v1/sandboxes/:sandboxId/restore", async (c) => {
+  const result = await getSandboxRecord(c.var.db, c.req.param("sandboxId"));
+  const record = result?.sandbox;
+});

@@ -288,6 +288,20 @@
       "when": 1775247751981,
       "tag": "0040_silky_betty_brant",
       "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1775496781360,
+      "tag": "0041_slippery_sunspot",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1775497153309,
+      "tag": "0042_awesome_havok",
+      "breakpoints": true
     }
   ]
 }

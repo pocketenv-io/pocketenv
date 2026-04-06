@@ -18,6 +18,7 @@ import denoAuth from "./deno-auth";
 import spriteAuth from "./sprite-auth";
 import vercelAuth from "./vercel-auth";
 import sandboxCp from "./sandbox-cp";
+import backups from "./backups";
 
 export {
   sandboxes,
@@ -40,4 +41,5 @@ export {
   spriteAuth,
   vercelAuth,
   sandboxCp,
+  backups,
 };

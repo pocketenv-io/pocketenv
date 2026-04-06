@@ -1,0 +1,1 @@
+ALTER TABLE "backups" ADD COLUMN "expires_at" timestamp;

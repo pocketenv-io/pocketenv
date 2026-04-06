@@ -12,9 +12,6 @@
   "main": "src/index.ts",
   "compatibility_date": "2025-05-06",
   "compatibility_flags": ["nodejs_compat"],
-  "observability": {
-    "enabled": true,
-  },
   "r2_buckets": [
     {
       "binding": "POCKETENV_COPY",

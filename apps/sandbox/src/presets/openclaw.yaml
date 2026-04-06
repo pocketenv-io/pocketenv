@@ -6,7 +6,7 @@
   if: "[ ! -f $HOME/.openclaw-setup-done ] || ! command -v openclaw &> /dev/null"
   run: |
     mkdir -p $HOME/.npm-global && npm config set prefix $HOME/.npm-global
-    curl -fsSL https://tailscale.com/install.sh | sh
+    command -v tailscale || curl -fsSL https://tailscale.com/install.sh | sh
     curl -fsSL https://openclaw.ai/install.sh | bash || true
     npm install -g @chrysb/alphaclaw pm2
     touch $HOME/.openclaw-setup-done

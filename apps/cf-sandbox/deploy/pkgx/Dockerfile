@@ -32,6 +32,8 @@ RUN apt-get update -y && apt-get install -y \
     fontconfig \
     sudo \
     squashfs-tools \
+    squashfuse \
+    fuse \
     && useradd -m -s /bin/bash coder \
     && echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
 

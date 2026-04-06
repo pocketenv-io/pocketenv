@@ -37,6 +37,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     locales-all \
     gnupg \
     squashfs-tools \
+    squashfuse \
+    fuse \
     && rm -rf /var/lib/apt/lists/* \
     && echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
 

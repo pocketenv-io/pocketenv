@@ -41,6 +41,7 @@ import { PullDirectoryParams, pullSchema } from "../types/pull.ts";
 import { PushDirectoryParams, pushSchema } from "../types/push.ts";
 import crypto from "node:crypto";
 import process from "node:process";
+import prepareSandbox from "../lib/prepare-sandbox.ts";
 
 const SUPPORTED_PROVIDERS = ["daytona", "vercel", "deno", "sprites"];
 
@@ -236,6 +237,17 @@ sandboxRouter.post("/:sandboxId/start", async (c) => {
   const sandbox = await resolveSandboxInstance(c.var.db, record, credentials);
 
   await sandbox.start();
+
+  // prepareSandbox in background since it can take a while and we want to return 200 OK as soon as possible to avoid timeouts on the client side
+  prepareSandbox(sandbox, record.base || "openclaw")
+    .then(() =>
+      consola.success(`Sandbox ${c.req.param("sandboxId")} is prepared`),
+    )
+    .catch((e) =>
+      consola.warn(
+        `Failed to prepare sandbox ${c.req.param("sandboxId")}: ${e}`,
+      ),
+    );
 
   c.var.db
     .update(sandboxes)

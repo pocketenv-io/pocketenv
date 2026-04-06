@@ -7,6 +7,7 @@
     "@daytonaio/sdk": "npm:@daytonaio/sdk@^0.141.0",
     "@deno/sandbox": "jsr:@deno/sandbox@^0.11.0",
     "@std/assert": "jsr:@std/assert@1",
+    "@std/yaml": "jsr:@std/yaml@^1.0.12",
     "@tsndr/cloudflare-worker-jwt": "npm:@tsndr/cloudflare-worker-jwt@^3.2.1",
     "@vercel/sandbox": "npm:@vercel/sandbox@^1.5.0",
     "chalk": "npm:chalk@^5.6.2",
@@ -29,5 +30,6 @@
     "allow": ["npm:esbuild@0.25.12", "npm:protobufjs@7.5.4"],
     "deny": ["npm:esbuild@0.18.20"]
   },
-  "nodeModulesDir": "auto"
+  "nodeModulesDir": "auto",
+  "unstable": ["raw-imports"]
 }

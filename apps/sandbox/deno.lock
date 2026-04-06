@@ -7,6 +7,7 @@
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/path@^1.1.2": "1.1.4",
     "jsr:@std/path@^1.1.4": "1.1.4",
+    "jsr:@std/yaml@^1.0.12": "1.0.12",
     "npm:@aws-sdk/client-s3@^3.1024.0": "3.1024.0",
     "npm:@daytonaio/sdk@0.141": "0.141.0_@aws-sdk+client-s3@3.988.0_@opentelemetry+api@1.9.0_ws@8.19.0",
     "npm:@fly/sprites@^0.0.1": "0.0.1",
@@ -60,6 +61,9 @@
       "dependencies": [
         "jsr:@std/internal"
       ]
+    },
+    "@std/yaml@1.0.12": {
+      "integrity": "7deabca4545bcedd07c5f69ea53acea71b8b4c67562f224e17b90d75944cb20c"
     }
   },
   "npm": {
@@ -2544,6 +2548,7 @@
     "dependencies": [
       "jsr:@deno/sandbox@0.11",
       "jsr:@std/assert@1",
+      "jsr:@std/yaml@^1.0.12",
       "npm:@daytonaio/sdk@0.141",
       "npm:@tsndr/cloudflare-worker-jwt@^3.2.1",
       "npm:@vercel/sandbox@^1.5.0",

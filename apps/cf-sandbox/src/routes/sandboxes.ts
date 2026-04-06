@@ -13,7 +13,7 @@ import {
 } from "../types/sandbox";
 import { createSandbox } from "../providers";
 import { SelectSandbox } from "../schema/sandboxes";
-import { sandboxes, users, services } from "../schema";
+import { sandboxes, users, services, backups } from "../schema";
 import {
   getSandboxRecord,
   generateSandboxId,
@@ -32,6 +32,9 @@ import {
 } from "../lib/sandbox-resources";
 import { PushDirectoryParams, pushSchema } from "../types/push";
 import { PullDirectoryParams, pullSchema } from "../types/pull";
+import { BackupParams } from "../types/backup";
+import dayjs from "dayjs";
+import { RestoreParams } from "../types/restore";
 
 type Bindings = { Sandbox: DurableObjectNamespace<Sandbox<Env>> };
 type App = { Variables: Context; Bindings: Bindings };
@@ -530,9 +533,47 @@ sandboxRoutes.post("/v1/sandboxes/:sandboxId/push-directory", async (c) => {
 sandboxRoutes.post("/v1/sandboxes/:sandboxId/backup", async (c) => {
   const result = await getSandboxRecord(c.var.db, c.req.param("sandboxId"));
   const record = result?.sandbox;
+
+  if (!record) return c.json({ error: "Sandbox not found" }, 404);
+  if (record.provider !== "cloudflare") return c.json({ error: "Sandbox provider not supported" }, 400);
+
+  const params = await c.req.json<BackupParams>();
+
+  const sandbox = await createSandbox("cloudflare", { id: record.sandboxId! });
+  const backupId = await sandbox.backup(params.directory, params.ttl);
+
+  await c.var.db.insert(backups).values({
+    backupId,
+    sandboxId: record.id,
+    directory: params.directory,
+    expiresAt: params.ttl ? dayjs().add(params.ttl, "second").toDate() : dayjs().add(3, "days").toDate(),
+  }).execute();
+
+  return c.json({ backupId });
 });
 
 sandboxRoutes.post("/v1/sandboxes/:sandboxId/restore", async (c) => {
   const result = await getSandboxRecord(c.var.db, c.req.param("sandboxId"));
   const record = result?.sandbox;
+
+  if (!record) return c.json({ error: "Sandbox not found" }, 404);
+  if (record.provider !== "cloudflare") return c.json({ error: "Sandbox provider not supported" }, 400);
+
+  const params = await c.req.json<RestoreParams>();
+
+  const [backup] = await c.var.db.select().from(backups)
+    .where(
+      and(
+        eq(backups.id, params.backupId),
+        eq(backups.sandboxId, record.id),
+      ),
+    )
+    .execute();
+
+  if (!backup) return c.json({ error: "Backup not found" }, 404);
+
+  const sandbox = await createSandbox("cloudflare", { id: record.sandboxId! });
+  await sandbox.restore(backup.backupId, backup.directory);
+
+  return c.json({ success: true });
 });

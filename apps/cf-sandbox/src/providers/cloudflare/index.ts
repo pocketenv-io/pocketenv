@@ -197,6 +197,15 @@ export class CloudflareSandbox implements BaseSandbox {
   async stopService(id: string): Promise<void> {
     await this.sandbox.killProcess(id);
   }
+
+  async backup(dir: string, ttl?: number): Promise<string> {
+    const { id } = await this.sandbox.createBackup({ dir, ttl });
+    return id;
+  }
+
+  async restore(id: string, dir: string): Promise<void> {
+    await this.sandbox.restoreBackup({ id, dir });
+  }
 }
 
 class CloudflareProvider implements BaseProvider {

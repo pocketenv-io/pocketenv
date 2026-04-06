@@ -27,6 +27,8 @@ export abstract class BaseSandbox {
   abstract unexposeVscode(): Promise<void>;
   abstract startService(command: string): Promise<string>;
   abstract stopService(id: string): Promise<void>;
+  abstract backup(dir: string, ttl?: number): Promise<string>;
+  abstract restore(id: string, dir: string): Promise<void>;
 }
 
 abstract class BaseProvider {

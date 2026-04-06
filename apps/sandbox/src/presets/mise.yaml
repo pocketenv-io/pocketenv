@@ -1,6 +1,6 @@
 - name: Install Dependencies
   run: |
-    apt-get update && apt-get install -y curl unzip wget fontconfig || sudo apt-get update && sudo apt-get install -y curl unzip wget fontconfig
+    sudo apt-get update && sudo apt-get install -y curl unzip wget fontconfig || apt-get update && apt-get install -y curl unzip wget fontconfig
 
 - name: Install Mise and Tailscale
   if: "[ ! -f $HOME/.mise-setup-done ] || ! command -v mise &> /dev/null"

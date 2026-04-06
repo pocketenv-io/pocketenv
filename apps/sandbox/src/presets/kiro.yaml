@@ -1,7 +1,6 @@
 - name: Install Dependencies
-  if: "[ ! -f $HOME/.dependencies-setup-done ]"
   run: |
-    apt-get update && apt-get install -y curl unzip wget fontconfig || sudo apt-get update && sudo apt-get install -y curl unzip wget fontconfig
+    sudo apt-get update && sudo apt-get install -y curl unzip wget fontconfig || apt-get update && apt-get install -y curl unzip wget fontconfig
 
 - name: Install Kiro and Tailscale
   if: "[ ! -f $HOME/.kiro-setup-done ]"

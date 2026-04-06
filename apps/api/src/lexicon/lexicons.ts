@@ -497,19 +497,16 @@ export const schemaDict = {
                 type: "string",
                 description: "The directory to backup.",
               },
+              description: {
+                type: "string",
+                description: "An optional description for the backup.",
+              },
               ttl: {
                 type: "integer",
                 description:
                   "The time-to-live (TTL) for the backup in seconds. After this time, the backup will be automatically deleted. If not provided, the backup will expire after 3 days.",
               },
             },
-          },
-        },
-        output: {
-          encoding: "application/json",
-          schema: {
-            type: "ref",
-            ref: "lex:io.pocketenv.sandbox.defs#backupViewBasic",
           },
         },
       },
@@ -1166,10 +1163,14 @@ export const schemaDict = {
             type: "string",
             description: "The directory that was backed up.",
           },
-          ttl: {
+          description: {
+            type: "string",
+            description: "An optional description for the backup.",
+          },
+          expiresAt: {
             type: "integer",
             description:
-              "The time-to-live (TTL) for the backup in seconds. After this time, the backup will be automatically deleted.",
+              "Datetime when the backup will expire and be automatically deleted.",
           },
           createdAt: {
             type: "string",

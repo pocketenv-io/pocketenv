@@ -448,9 +448,13 @@
           "type": "string",
           "description": "The directory that was backed up."
         },
-        "ttl": {
+        "description": {
+          "type": "string",
+          "description": "An optional description for the backup."
+        },
+        "expiresAt": {
           "type": "integer",
-          "description": "The time-to-live (TTL) for the backup in seconds. After this time, the backup will be automatically deleted."
+          "description": "Datetime when the backup will expire and be automatically deleted."
         },
         "createdAt": {
           "type": "string",

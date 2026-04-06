@@ -339,8 +339,10 @@ export interface BackupViewBasic {
   id?: string;
   /** The directory that was backed up. */
   directory?: string;
-  /** The time-to-live (TTL) for the backup in seconds. After this time, the backup will be automatically deleted. */
-  ttl?: number;
+  /** An optional description for the backup. */
+  description?: string;
+  /** Datetime when the backup will expire and be automatically deleted. */
+  expiresAt?: number;
   /** datetime when the backup was created. */
   createdAt?: string;
   [k: string]: unknown;

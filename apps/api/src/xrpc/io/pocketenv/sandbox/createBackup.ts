@@ -6,7 +6,6 @@ import type { Server } from "lexicon";
 import type {
   InputSchema,
   QueryParams,
-  OutputSchema,
 } from "lexicon/types/io/pocketenv/sandbox/createBackup";
 import generateJwt from "lib/generateJwt";
 import schema from "schema";
@@ -51,7 +50,7 @@ export default function (server: Server, ctx: Context) {
         ? ctx.cfsandbox(record.sandboxes.base!)
         : ctx.sandbox();
 
-    const { data: backup } = await sandbox.post<SelectBakcup>(
+    await sandbox.post<SelectBakcup>(
       `/v1/sandboxes/${record.sandboxes.id}/backup`,
       {
         directory: input.directory,
@@ -64,25 +63,11 @@ export default function (server: Server, ctx: Context) {
         },
       },
     );
-
-    return {
-      id: backup.backupId,
-      directory: backup.directory,
-      description: backup.description,
-      expiresAt: backup.expiresAt
-        ? new Date(backup.expiresAt).toISOString()
-        : undefined,
-      createdAt: new Date(backup.createdAt).toISOString(),
-    } satisfies OutputSchema;
   };
   server.io.pocketenv.sandbox.createBackup({
     auth: ctx.authVerifier,
     handler: async ({ input, params, auth }) => {
-      const result = await createBackup(input.body, params, auth);
-      return {
-        encoding: "application/json",
-        body: result,
-      };
+      await createBackup(input.body, params, auth);
     },
   });
 }

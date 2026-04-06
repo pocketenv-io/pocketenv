@@ -6,8 +6,7 @@ import { ValidationResult, BlobRef } from "@atproto/lexicon";
 import { lexicons } from "../../../../lexicons";
 import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
-import type { HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
-import type * as IoPocketenvSandboxDefs from "./defs";
+import { type HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
 
 export interface QueryParams {
   /** The sandbox ID. */
@@ -17,22 +16,16 @@ export interface QueryParams {
 export interface InputSchema {
   /** The directory to backup. */
   directory: string;
+  /** An optional description for the backup. */
+  description?: string;
   /** The time-to-live (TTL) for the backup in seconds. After this time, the backup will be automatically deleted. If not provided, the backup will expire after 3 days. */
   ttl?: number;
   [k: string]: unknown;
 }
 
-export type OutputSchema = IoPocketenvSandboxDefs.BackupViewBasic;
-
 export interface HandlerInput {
   encoding: "application/json";
   body: InputSchema;
-}
-
-export interface HandlerSuccess {
-  encoding: "application/json";
-  body: OutputSchema;
-  headers?: { [key: string]: string };
 }
 
 export interface HandlerError {
@@ -40,7 +33,7 @@ export interface HandlerError {
   message?: string;
 }
 
-export type HandlerOutput = HandlerError | HandlerSuccess | HandlerPipeThrough;
+export type HandlerOutput = HandlerError | void;
 export type HandlerReqCtx<HA extends HandlerAuth = never> = {
   auth: HA;
   params: QueryParams;

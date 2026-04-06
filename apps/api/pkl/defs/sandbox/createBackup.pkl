@@ -38,12 +38,5 @@ defs = new Mapping<String, Procedure> {
         }
       }
     }
-    output {
-      encoding = "application/json"
-      schema = new Ref {
-        type = "ref"
-        ref = "io.pocketenv.sandbox.defs#backupViewBasic"
-      }
-    }
   }
 }

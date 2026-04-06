@@ -21,6 +21,7 @@ import zeroclaw from "../presets/zeroclaw.yaml" with { type: "text" };
 import chalk from "chalk";
 import { BaseSandbox } from "../providers/mod.ts";
 import { Preset, PresetSchema } from "../types/preset.ts";
+import consola from "consola";
 
 const presets: Record<string, string> = {
   amp,
@@ -78,7 +79,10 @@ async function prepareSandbox(sandbox: BaseSandbox, base: string) {
 
     for (const line of item.run.trim().split("\n")) {
       console.log(`${chalk.rgb(100, 232, 130)("exec")}  ${line}`);
-      await sandbox.sh`${line}`;
+      const result = await sandbox.sh`${line}`;
+      if (result.exitCode !== 0) {
+        consola.warn(`Command "${chalk.rgb(100, 232, 130)(line)}" failed with exit code ${result.exitCode} ${result.stderr} ${result.stdout}.`);
+        throw new Error(`Command "${line}" failed with exit code ${result.exitCode}`);
     }
   }
 }

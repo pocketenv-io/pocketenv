@@ -1,7 +1,7 @@
 import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
 import process, { env } from "node:process";
 import consola from "consola";
-import { Sprite, SpritesClient } from "@fly/sprites";
+import { ExecError, Sprite, SpritesClient } from "@fly/sprites";
 import path from "node:path";
 import { Buffer } from "node:buffer";
 import crypto from "node:crypto";
@@ -45,7 +45,14 @@ export class SpriteSandbox implements BaseSandbox {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");
-    return this.sprite.execFile("bash", ["-c", command]);
+    try {
+      return await this.sprite.execFile("bash", ["-c", command]);
+    } catch (e) {
+      if (e instanceof ExecError) {
+        return e.result;
+      }
+      throw e;
+    }
   }
 
   id(): Promise<string | null> {

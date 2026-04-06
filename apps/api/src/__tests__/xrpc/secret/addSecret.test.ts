@@ -85,7 +85,12 @@ describe("addSecret handler", () => {
       // tx.insert(sandboxSecrets).returning().execute()
       [INSERTED_SANDBOX_SECRET],
       // post-tx select for updateSandbox
-      [{ sandbox_secrets: INSERTED_SANDBOX_SECRET, sandboxes: { uri: "at://did/io.pocketenv.sandbox/tid1" } }],
+      [
+        {
+          sandbox_secrets: INSERTED_SANDBOX_SECRET,
+          sandboxes: { uri: "at://did/io.pocketenv.sandbox/tid1" },
+        },
+      ],
     );
 
     await handler({

@@ -1,0 +1,37 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.restoreBackup",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Restore a backup of a sandbox",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The sandbox ID."
+          }
+        }
+      },
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "backupId"
+          ],
+          "properties": {
+            "backupId": {
+              "type": "string",
+              "description": "The backup ID to restore."
+            }
+          }
+        }
+      }
+    }
+  }
+}

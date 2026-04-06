@@ -1,0 +1,48 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.createBackup",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Create a backup of a sandbox by id",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The sandbox ID."
+          }
+        }
+      },
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": [
+            "directory"
+          ],
+          "properties": {
+            "directory": {
+              "type": "string",
+              "description": "The directory to backup."
+            },
+            "ttl": {
+              "type": "integer",
+              "description": "The time-to-live (TTL) for the backup in seconds. After this time, the backup will be automatically deleted. If not provided, the backup will expire after 3 days."
+            }
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "io.pocketenv.sandbox.defs#backupViewBasic"
+        }
+      }
+    }
+  }
+}

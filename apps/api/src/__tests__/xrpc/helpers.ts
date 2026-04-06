@@ -23,7 +23,8 @@ export function mockDb(...results: unknown[]) {
       {
         get(_t, key: string | symbol) {
           if (key === "execute") return () => Promise.resolve(results[idx++]);
-          if (key === "transaction") return (fn: (tx: any) => any) => fn(chain());
+          if (key === "transaction")
+            return (fn: (tx: any) => any) => fn(chain());
           if (
             key === "then" ||
             key === "catch" ||
@@ -116,7 +117,8 @@ export function captureSandboxHandler(
     },
   };
   register(server, ctx);
-  if (!capturedHandler) throw new Error(`Handler for ${method} was not registered`);
+  if (!capturedHandler)
+    throw new Error(`Handler for ${method} was not registered`);
   return capturedHandler;
 }
 
@@ -138,7 +140,8 @@ export function captureSecretHandler(
     },
   };
   register(server, ctx);
-  if (!capturedHandler) throw new Error(`Handler for ${method} was not registered`);
+  if (!capturedHandler)
+    throw new Error(`Handler for ${method} was not registered`);
   return capturedHandler;
 }
 

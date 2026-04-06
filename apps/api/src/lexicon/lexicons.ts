@@ -470,6 +470,51 @@ export const schemaDict = {
       },
     },
   },
+  IoPocketenvSandboxCreateBackup: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.createBackup",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Create a backup of a sandbox by id",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["directory"],
+            properties: {
+              directory: {
+                type: "string",
+                description: "The directory to backup.",
+              },
+              ttl: {
+                type: "integer",
+                description:
+                  "The time-to-live (TTL) for the backup in seconds. After this time, the backup will be automatically deleted. If not provided, the backup will expire after 3 days.",
+              },
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "ref",
+            ref: "lex:io.pocketenv.sandbox.defs#backupViewBasic",
+          },
+        },
+      },
+    },
+  },
   IoPocketenvSandboxCreateIntegration: {
     lexicon: 1,
     id: "io.pocketenv.sandbox.createIntegration",
@@ -1110,6 +1155,29 @@ export const schemaDict = {
           ref: "lex:io.pocketenv.sandbox.defs#integrationView",
         },
       },
+      backupViewBasic: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            description: "Unique identifier of the backup.",
+          },
+          directory: {
+            type: "string",
+            description: "The directory that was backed up.",
+          },
+          ttl: {
+            type: "integer",
+            description:
+              "The time-to-live (TTL) for the backup in seconds. After this time, the backup will be automatically deleted.",
+          },
+          createdAt: {
+            type: "string",
+            description: "datetime when the backup was created.",
+            format: "datetime",
+          },
+        },
+      },
     },
   },
   IoPocketenvSandboxDeleteSandbox: {
@@ -1272,6 +1340,41 @@ export const schemaDict = {
               previewUrl: {
                 type: "string",
                 description: "The preview URL for the exposed port.",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxGetBackups: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.getBackups",
+    defs: {
+      main: {
+        type: "query",
+        description: "Get the list of backups for a sandbox.",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        output: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            properties: {
+              backups: {
+                type: "array",
+                items: {
+                  type: "ref",
+                  ref: "lex:io.pocketenv.port.defs#backupViewBasic",
+                },
               },
             },
           },
@@ -1738,6 +1841,39 @@ export const schemaDict = {
           schema: {
             type: "ref",
             ref: "lex:io.pocketenv.sandbox.defs#tailscaleTokenView",
+          },
+        },
+      },
+    },
+  },
+  IoPocketenvSandboxRestoreBackup: {
+    lexicon: 1,
+    id: "io.pocketenv.sandbox.restoreBackup",
+    defs: {
+      main: {
+        type: "procedure",
+        description: "Restore a backup of a sandbox",
+        parameters: {
+          type: "params",
+          required: ["id"],
+          properties: {
+            id: {
+              type: "string",
+              description: "The sandbox ID.",
+            },
+          },
+        },
+        input: {
+          encoding: "application/json",
+          schema: {
+            type: "object",
+            required: ["backupId"],
+            properties: {
+              backupId: {
+                type: "string",
+                description: "The backup ID to restore.",
+              },
+            },
           },
         },
       },
@@ -2999,6 +3135,7 @@ export const ids = {
   IoPocketenvFileUpdateFile: "io.pocketenv.file.updateFile",
   IoPocketenvPortDefs: "io.pocketenv.port.defs",
   IoPocketenvSandboxClaimSandbox: "io.pocketenv.sandbox.claimSandbox",
+  IoPocketenvSandboxCreateBackup: "io.pocketenv.sandbox.createBackup",
   IoPocketenvSandboxCreateIntegration: "io.pocketenv.sandbox.createIntegration",
   IoPocketenvSandboxCreateSandbox: "io.pocketenv.sandbox.createSandbox",
   IoPocketenvSandboxDefs: "io.pocketenv.sandbox.defs",
@@ -3006,6 +3143,7 @@ export const ids = {
   IoPocketenvSandboxExec: "io.pocketenv.sandbox.exec",
   IoPocketenvSandboxExposePort: "io.pocketenv.sandbox.exposePort",
   IoPocketenvSandboxExposeVscode: "io.pocketenv.sandbox.exposeVscode",
+  IoPocketenvSandboxGetBackups: "io.pocketenv.sandbox.getBackups",
   IoPocketenvSandboxGetExposedPorts: "io.pocketenv.sandbox.getExposedPorts",
   IoPocketenvSandboxGetIntegrations: "io.pocketenv.sandbox.getIntegrations",
   IoPocketenvSandboxGetPreferences: "io.pocketenv.sandbox.getPreferences",
@@ -3022,6 +3160,7 @@ export const ids = {
   IoPocketenvSandboxPutTailscaleAuthKey:
     "io.pocketenv.sandbox.putTailscaleAuthKey",
   IoPocketenvSandboxPutTailscaleToken: "io.pocketenv.sandbox.putTailscaleToken",
+  IoPocketenvSandboxRestoreBackup: "io.pocketenv.sandbox.restoreBackup",
   IoPocketenvSandbox: "io.pocketenv.sandbox",
   IoPocketenvSandboxStartSandbox: "io.pocketenv.sandbox.startSandbox",
   IoPocketenvSandboxStopSandbox: "io.pocketenv.sandbox.stopSandbox",

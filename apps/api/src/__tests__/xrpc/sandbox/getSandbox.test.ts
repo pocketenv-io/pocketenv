@@ -80,7 +80,11 @@ describe("getSandbox handler", () => {
       execute: () => Promise.reject(new Error("db down")),
     };
     const ctx = { authVerifier: () => {}, db };
-    const handler = captureSandboxHandler("getSandbox", registerGetSandbox, ctx);
+    const handler = captureSandboxHandler(
+      "getSandbox",
+      registerGetSandbox,
+      ctx,
+    );
 
     const { body } = await handler({
       params: { id: "sb-1" },
@@ -92,7 +96,9 @@ describe("getSandbox handler", () => {
 
   it("maps baseSandbox from the base column", async () => {
     const sandboxWithBase = { ...MOCK_SANDBOX, base: "at://some/base/ref" };
-    const handler = makeHandler([[{ sandboxes: sandboxWithBase, users: null }]]);
+    const handler = makeHandler([
+      [{ sandboxes: sandboxWithBase, users: null }],
+    ]);
 
     const { body } = await handler({
       params: { id: sandboxWithBase.id },

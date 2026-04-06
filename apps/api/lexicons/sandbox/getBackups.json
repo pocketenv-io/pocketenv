@@ -1,0 +1,37 @@
+{
+  "lexicon": 1,
+  "id": "io.pocketenv.sandbox.getBackups",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get the list of backups for a sandbox.",
+      "parameters": {
+        "type": "params",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The sandbox ID."
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "backups": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "io.pocketenv.port.defs#backupViewBasic"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

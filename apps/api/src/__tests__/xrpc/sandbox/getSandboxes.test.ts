@@ -15,10 +15,7 @@ function makeHandler(...dbResults: unknown[]) {
 describe("getSandboxes handler", () => {
   it("returns a mapped list of sandboxes and the total count", async () => {
     // First execute() → rows; second execute() → count
-    const handler = makeHandler(
-      [{ sandboxes: MOCK_SANDBOX }],
-      [{ count: 1 }],
-    );
+    const handler = makeHandler([{ sandboxes: MOCK_SANDBOX }], [{ count: 1 }]);
 
     const { body } = await handler({
       params: {},

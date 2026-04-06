@@ -333,3 +333,27 @@ export function validateIntegrationView(v: unknown): ValidationResult {
 }
 
 export type IntegrationsView = IntegrationView[];
+
+export interface BackupViewBasic {
+  /** Unique identifier of the backup. */
+  id?: string;
+  /** The directory that was backed up. */
+  directory?: string;
+  /** The time-to-live (TTL) for the backup in seconds. After this time, the backup will be automatically deleted. */
+  ttl?: number;
+  /** datetime when the backup was created. */
+  createdAt?: string;
+  [k: string]: unknown;
+}
+
+export function isBackupViewBasic(v: unknown): v is BackupViewBasic {
+  return (
+    isObj(v) &&
+    hasProp(v, "$type") &&
+    v.$type === "io.pocketenv.sandbox.defs#backupViewBasic"
+  );
+}
+
+export function validateBackupViewBasic(v: unknown): ValidationResult {
+  return lexicons.validate("io.pocketenv.sandbox.defs#backupViewBasic", v);
+}

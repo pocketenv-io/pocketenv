@@ -436,6 +436,28 @@
         "description": "An integration connected to the sandbox",
         "ref": "io.pocketenv.sandbox.defs#integrationView"
       }
+    },
+    "backupViewBasic": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the backup."
+        },
+        "directory": {
+          "type": "string",
+          "description": "The directory that was backed up."
+        },
+        "ttl": {
+          "type": "integer",
+          "description": "The time-to-live (TTL) for the backup in seconds. After this time, the backup will be automatically deleted."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "datetime when the backup was created.",
+          "format": "datetime"
+        }
+      }
     }
   }
 }

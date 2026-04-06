@@ -442,4 +442,30 @@ defs = new Mapping<String, ObjectType | Array> {
       description = "An integration connected to the sandbox"
     }
   }
+  ["backupViewBasic"] = new ObjectType {
+    type = "object"
+    properties {
+      ["id"] = new StringType {
+        type = "string"
+        description = "Unique identifier of the backup."
+      }
+      ["directory"] = new StringType {
+        type = "string"
+        description = "The directory that was backed up."
+      }
+      ["description"] = new StringType {
+        type = "string"
+        description = "An optional description for the backup."
+      }
+      ["expiresAt"] = new IntegerType {
+        type = "integer"
+        description = "Datetime when the backup will expire and be automatically deleted."
+      }
+      ["createdAt"] = new StringType {
+        type = "string"
+        description = "datetime when the backup was created."
+        format = "datetime"
+      }
+    }
+  }
 }

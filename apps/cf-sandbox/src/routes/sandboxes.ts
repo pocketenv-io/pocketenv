@@ -542,14 +542,17 @@ sandboxRoutes.post("/v1/sandboxes/:sandboxId/backup", async (c) => {
   const sandbox = await createSandbox("cloudflare", { id: record.sandboxId! });
   const backupId = await sandbox.backup(params.directory, params.ttl);
 
-  await c.var.db.insert(backups).values({
+ const backup = await c.var.db.insert(backups).values({
     backupId,
     sandboxId: record.id,
     directory: params.directory,
+    description: params.description,
     expiresAt: params.ttl ? dayjs().add(params.ttl, "second").toDate() : dayjs().add(3, "days").toDate(),
-  }).execute();
+ })
+   .returning()
+   .execute();
 
-  return c.json({ backupId });
+  return c.json(backup);
 });
 
 sandboxRoutes.post("/v1/sandboxes/:sandboxId/restore", async (c) => {
@@ -564,7 +567,7 @@ sandboxRoutes.post("/v1/sandboxes/:sandboxId/restore", async (c) => {
   const [backup] = await c.var.db.select().from(backups)
     .where(
       and(
-        eq(backups.id, params.backupId),
+        eq(backups.backupId, params.backupId),
         eq(backups.sandboxId, record.id),
       ),
     )

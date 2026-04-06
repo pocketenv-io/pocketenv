@@ -1,0 +1,33 @@
+amends "../../schema/lexicon.pkl"
+
+lexicon = 1
+id = "io.pocketenv.sandbox.restoreBackup"
+defs = new Mapping<String, Procedure> {
+  ["main"] {
+    type = "procedure"
+    description = "Restore a backup of a sandbox"
+    parameters {
+      type = "params"
+      required = List("id")
+      properties {
+        ["id"] = new StringType {
+          type = "string"
+          description = "The sandbox ID."
+        }
+      }
+    }
+    input {
+      encoding = "application/json"
+      schema {
+        type = "object"
+        required = List("backupId")
+        properties {
+          ["backupId"] = new StringType {
+            type = "string"
+            description = "The backup ID to restore."
+          }
+        }
+      }
+    }
+  }
+}

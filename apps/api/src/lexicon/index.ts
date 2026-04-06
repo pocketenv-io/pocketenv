@@ -18,12 +18,14 @@ import type * as IoPocketenvFileGetFile from "./types/io/pocketenv/file/getFile"
 import type * as IoPocketenvFileGetFiles from "./types/io/pocketenv/file/getFiles";
 import type * as IoPocketenvFileUpdateFile from "./types/io/pocketenv/file/updateFile";
 import type * as IoPocketenvSandboxClaimSandbox from "./types/io/pocketenv/sandbox/claimSandbox";
+import type * as IoPocketenvSandboxCreateBackup from "./types/io/pocketenv/sandbox/createBackup";
 import type * as IoPocketenvSandboxCreateIntegration from "./types/io/pocketenv/sandbox/createIntegration";
 import type * as IoPocketenvSandboxCreateSandbox from "./types/io/pocketenv/sandbox/createSandbox";
 import type * as IoPocketenvSandboxDeleteSandbox from "./types/io/pocketenv/sandbox/deleteSandbox";
 import type * as IoPocketenvSandboxExec from "./types/io/pocketenv/sandbox/exec";
 import type * as IoPocketenvSandboxExposePort from "./types/io/pocketenv/sandbox/exposePort";
 import type * as IoPocketenvSandboxExposeVscode from "./types/io/pocketenv/sandbox/exposeVscode";
+import type * as IoPocketenvSandboxGetBackups from "./types/io/pocketenv/sandbox/getBackups";
 import type * as IoPocketenvSandboxGetExposedPorts from "./types/io/pocketenv/sandbox/getExposedPorts";
 import type * as IoPocketenvSandboxGetIntegrations from "./types/io/pocketenv/sandbox/getIntegrations";
 import type * as IoPocketenvSandboxGetPreferences from "./types/io/pocketenv/sandbox/getPreferences";
@@ -38,6 +40,7 @@ import type * as IoPocketenvSandboxPutPreferences from "./types/io/pocketenv/san
 import type * as IoPocketenvSandboxPutSshKeys from "./types/io/pocketenv/sandbox/putSshKeys";
 import type * as IoPocketenvSandboxPutTailscaleAuthKey from "./types/io/pocketenv/sandbox/putTailscaleAuthKey";
 import type * as IoPocketenvSandboxPutTailscaleToken from "./types/io/pocketenv/sandbox/putTailscaleToken";
+import type * as IoPocketenvSandboxRestoreBackup from "./types/io/pocketenv/sandbox/restoreBackup";
 import type * as IoPocketenvSandboxStartSandbox from "./types/io/pocketenv/sandbox/startSandbox";
 import type * as IoPocketenvSandboxStopSandbox from "./types/io/pocketenv/sandbox/stopSandbox";
 import type * as IoPocketenvSandboxUnexposePort from "./types/io/pocketenv/sandbox/unexposePort";
@@ -237,6 +240,17 @@ export class IoPocketenvSandboxNS {
     return this._server.xrpc.method(nsid, cfg);
   }
 
+  createBackup<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxCreateBackup.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxCreateBackup.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.createBackup"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
   createIntegration<AV extends AuthVerifier>(
     cfg: ConfigOf<
       AV,
@@ -300,6 +314,17 @@ export class IoPocketenvSandboxNS {
     >,
   ) {
     const nsid = "io.pocketenv.sandbox.exposeVscode"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  getBackups<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxGetBackups.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxGetBackups.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.getBackups"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 
@@ -454,6 +479,17 @@ export class IoPocketenvSandboxNS {
     >,
   ) {
     const nsid = "io.pocketenv.sandbox.putTailscaleToken"; // @ts-ignore
+    return this._server.xrpc.method(nsid, cfg);
+  }
+
+  restoreBackup<AV extends AuthVerifier>(
+    cfg: ConfigOf<
+      AV,
+      IoPocketenvSandboxRestoreBackup.Handler<ExtractAuth<AV>>,
+      IoPocketenvSandboxRestoreBackup.HandlerReqCtx<ExtractAuth<AV>>
+    >,
+  ) {
+    const nsid = "io.pocketenv.sandbox.restoreBackup"; // @ts-ignore
     return this._server.xrpc.method(nsid, cfg);
   }
 

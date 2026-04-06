@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.4] - 2026-04-06
+
+### Added
+
+- **Sandbox presets**: YAML-based preset system for sandbox bases (amp, claude, codex, and others). A new `prepareSandbox` helper parses and executes preset steps with conditional checks.
+- **Preset type and schema validation**: `Preset` type and Zod schema added for validating sandbox preset definitions.
+- **Provider column in `list` and `ps`**: The `pocketenv list` and `pocketenv ps` commands now show the sandbox provider.
+- **`@chrysb/alphaclaw` in OpenClaw images**: AlphaClaw is now pre-installed in OpenClaw sandbox images.
+- **Unit tests and CI workflows**: Vitest-based unit tests and GitHub Actions CI workflows added for `apps/api`, `apps/cli`, and `apps/cf-sandbox`.
+
+### Changed
+
+- **Sandbox app modularized**: Sandbox routes and helper logic have been split into separate modules for better maintainability.
+- **Bash runs in interactive mode for TTY sessions**: Sandbox TTY sessions now invoke `bash` in interactive mode (`-i`) for correct profile sourcing.
+- **`sudo`-first `apt-get` in sandbox presets**: Preset install commands now use `sudo apt-get` for compatibility with non-root sandbox environments.
+- **Bumped `@pocketenv/sdk`**: CLI updated to use the latest SDK release.
+
+### Fixed
+
+- **Only install Tailscale if missing**: Tailscale setup now skips installation when it is already present in the sandbox.
+- **Condition check in `prepareSandbox`**: Fixed an incorrect condition guard that could skip required preset steps.
+- **Command failures propagated correctly**: `exec` errors are now unwrapped and propagated so preset failures surface clearly.
+- **Do not throw on non-fatal command failures in `prepareSandbox`**: Non-critical preset steps no longer abort the entire preparation sequence.
+- **`env` import in sprites provider**: Fixed import to use `env` from `node:process` instead of a bare global reference.
+
+---
+
 ## [0.6.3] - 2026-04-05
 
 ### Changed

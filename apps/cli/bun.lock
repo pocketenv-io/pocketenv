@@ -6,7 +6,7 @@
       "name": "cli",
       "dependencies": {
         "@inquirer/prompts": "^8.3.0",
-        "@pocketenv/sdk": "^0.2.3",
+        "@pocketenv/sdk": "^0.2.4",
         "axios": "^1.13.6",
         "chalk": "^5.6.2",
         "cli-table3": "^0.6.5",
@@ -147,7 +147,7 @@
 
     "@oxc-project/types": ["@oxc-project/types@0.122.0", "", {}, "sha512-oLAl5kBpV4w69UtFZ9xqcmTi+GENWOcPF7FCrczTiBbmC0ibXxCwyvZGbO39rCVEuLGAZM84DH0pUIyyv/YJzA=="],
 
-    "@pocketenv/sdk": ["@pocketenv/sdk@0.2.3", "", { "dependencies": { "ignore": "^7.0.5", "libsodium-wrappers": "^0.8.2", "tar": "^7.5.13", "zod": "^4.3.6" } }, "sha512-jhUnRjsGZA2k6ebdewMabkFOuDz0xHf1ZsPWUPImyBvFZaa4PaB0q2baRdbGZ2mWU3nzjvpsUzMMV2vqUehBUA=="],
+    "@pocketenv/sdk": ["@pocketenv/sdk@0.2.4", "", { "dependencies": { "ignore": "^7.0.5", "libsodium-wrappers": "^0.8.2", "tar": "^7.5.13", "zod": "^4.3.6" } }, "sha512-lKcw7dPSa8IsmHhYsuqN6uJpHtySXFJYRl+kFaEm2Ed9n+z/U/TrturZifUmcIrZNZ2GVuD0NHfq8eHOxG42Nw=="],
 
     "@rolldown/binding-android-arm64": ["@rolldown/binding-android-arm64@1.0.0-rc.12", "", { "os": "android", "cpu": "arm64" }, "sha512-pv1y2Fv0JybcykuiiD3qBOBdz6RteYojRFY1d+b95WVuzx211CRh+ytI/+9iVyWQ6koTh5dawe4S/yRfOFjgaA=="],
 

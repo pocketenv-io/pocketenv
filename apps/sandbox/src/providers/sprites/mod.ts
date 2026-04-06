@@ -1,5 +1,4 @@
 import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
-import process, { env } from "node:process";
 import consola from "consola";
 import { ExecError, Sprite, SpritesClient } from "@fly/sprites";
 import path from "node:path";

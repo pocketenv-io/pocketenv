@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.8] - 2026-04-06
+
+### Changed
+
+- **Bumped CLI version to 0.6.8**.
+- **Updated `@pocketenv/sdk` to `^0.2.7`**: CLI now depends on the latest SDK release.
+- **Auto-open VS Code preview**: The `vscode` command now logs and automatically opens the preview URL in the default browser.
+
+
 ## [0.6.7] - 2026-04-06
 
 ### Changed

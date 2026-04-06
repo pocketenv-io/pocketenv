@@ -33,36 +33,43 @@ Deno.test("prepareSandbox - unknown base skips execution", async () => {
 });
 
 Deno.test("prepareSandbox - runs commands for known preset", async () => {
+  // exitCode 0 → conditions "already met" → conditional steps skipped
+  // Only unconditional steps (e.g. Install Dependencies) run their commands
   const sandbox = new MockSandbox();
   await prepareSandbox(sandbox, "nix");
-  // At least one command was executed
-  assertEquals(sandbox.calls.length > 0, true);
+  const ranAptGet = sandbox.calls.some((cmd) => cmd.includes("apt-get update"));
+  assertEquals(ranAptGet, true);
 });
 
 Deno.test("prepareSandbox - skips step when condition is already met", async () => {
-  // Sandbox that always returns exitCode 0 (condition "already met")
+  // exitCode 0 → condition IS met → conditional run blocks are skipped
   const sandbox = new MockSandbox();
-  const callsBefore = [...sandbox.calls];
   await prepareSandbox(sandbox, "nix");
-  // All condition checks returned 0 so no run commands should have fired
-  // (every step is skipped because its `if` condition is satisfied)
-  // We just verify the sandbox was called (for the `if` checks themselves)
-  assertEquals(Array.isArray(sandbox.calls), true);
-  void callsBefore; // used to satisfy linter
+  // The nix install command is inside a conditional step and must NOT have run
+  const ranNixInstall = sandbox.calls.some((cmd) =>
+    cmd.includes("install.determinate.systems/nix")
+  );
+  assertEquals(ranNixInstall, false);
 });
 
 Deno.test("prepareSandbox - executes run commands when condition not met", async () => {
-  class AlwaysFailCondition extends MockSandbox {
+  class ConditionFailMock extends MockSandbox {
     override sh(strings: TemplateStringsArray, ...values: any[]) {
       const cmd = String.raw({ raw: strings }, ...values);
       this.calls.push(cmd);
-      // Non-zero exit means condition is NOT met → run block executes
-      return Promise.resolve({ exitCode: 1, stdout: "", stderr: "" });
+      // Only if-condition checks (starting with "[") return non-zero exit code,
+      // meaning the condition is NOT met → run block executes.
+      // All subsequent run commands return 0 (success).
+      const exitCode = cmd.trimStart().startsWith("[") ? 1 : 0;
+      return Promise.resolve({ exitCode, stdout: "", stderr: "" });
     }
   }
 
-  const sandbox = new AlwaysFailCondition();
+  const sandbox = new ConditionFailMock();
   await prepareSandbox(sandbox, "nix");
-  // With conditions never met, all run lines should have executed
-  assertEquals(sandbox.calls.length > 0, true);
+  // With conditions never met, conditional run commands should have executed
+  const ranNixInstall = sandbox.calls.some((cmd) =>
+    cmd.includes("install.determinate.systems/nix")
+  );
+  assertEquals(ranNixInstall, true);
 });

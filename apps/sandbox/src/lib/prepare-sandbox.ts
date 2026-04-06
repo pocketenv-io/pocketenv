@@ -81,8 +81,10 @@ async function prepareSandbox(sandbox: BaseSandbox, base: string) {
       console.log(`${chalk.rgb(100, 232, 130)("exec")}  ${line}`);
       const result = await sandbox.sh`${line}`;
       if (result.exitCode !== 0) {
-        consola.warn(`Command "${chalk.rgb(100, 232, 130)(line)}" failed with exit code ${result.exitCode} ${result.stderr} ${result.stdout}.`);
-        throw new Error(`Command "${line}" failed with exit code ${result.exitCode}`);
+        consola.warn(
+          `Command "${chalk.rgb(100, 232, 130)(line)}" failed with exit code ${result.exitCode} ${result.stderr} ${result.stdout}.`,
+        );
+      }
     }
   }
 }

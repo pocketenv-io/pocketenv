@@ -44,6 +44,12 @@ export async function createBackup(sandboxId: string, directory: string, options
      }
 
     const sandbox = await Sandbox.get(sandboxId);
+
+    if (sandbox.data.provider !== "cloudflare") {
+      consola.error(`Backups are only supported for sandboxes running on Cloudflare Workers`);
+      process.exit(1);
+    }
+
     const { description, ttl } = data;
 
     await sandbox.backup.create(

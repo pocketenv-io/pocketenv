@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     squashfs-tools \
     squashfuse \
     fuse \
-    fuse-overlayfs \
+    fuse-overlayfs
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 

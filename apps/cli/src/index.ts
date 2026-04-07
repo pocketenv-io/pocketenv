@@ -206,7 +206,7 @@ backup
   .argument("<sandbox>", "the sandbox to create a backup for")
   .argument("<directory>", "the directory to backup")
   .option("--description, -d <description>", "an optional description for the backup")
-  .option("--ttl, -t <ttl>", "time to live for the backup (e.g., 24h, 7d)", "7d")
+  .option("--ttl, -t <ttl>", "time to live for the backup (e.g., 24h, 7d)", "3d")
   .description("create a backup for the given sandbox")
   .action(createBackup);
 

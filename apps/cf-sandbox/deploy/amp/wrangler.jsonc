@@ -22,7 +22,7 @@
     },
     {
       "binding": "BACKUP_BUCKET",
-      "bucket_name": "pocketenv-queue",
+      "bucket_name": "pocketenv-backup",
     },
   ],
   "queues": {
@@ -61,7 +61,7 @@
     "VOLUME_BUCKET": "pocketenv-volumes",
     "PREVIEW_TOKEN": "amp",
     "CLOUDFLARE_ACCOUNT_ID": "fe5b1e2ce9f94f4c0415ab94ce402012",
-    "BACKUP_BUCKET_NAME": "pocketenv-queue"
+    "BACKUP_BUCKET_NAME": "pocketenv-backup"
   },
   /**
    * Note: Use secrets to store sensitive data.

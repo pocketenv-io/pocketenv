@@ -22,21 +22,21 @@ export default function (server: Server, ctx: Context) {
 
     const [record] = await ctx.db
       .select()
-      .from(schema.sandboxes)
+      .from(schema.backups)
+      .leftJoin(
+        schema.sandboxes,
+        eq(schema.backups.sandboxId, schema.sandboxes.id),
+      )
       .leftJoin(schema.users, eq(schema.sandboxes.userId, schema.users.id))
       .where(
         and(
-          or(
-            eq(schema.sandboxes.id, params.id),
-            eq(schema.sandboxes.uri, params.id),
-            eq(schema.sandboxes.name, params.id),
-          ),
+          eq(schema.backups.backupId, input.backupId),
           eq(schema.users.did, auth.credentials.did),
         ),
       )
       .execute();
 
-    if (!record) {
+    if (!record?.sandboxes) {
       throw new XRPCError(404, "Sandbox not found");
     }
 

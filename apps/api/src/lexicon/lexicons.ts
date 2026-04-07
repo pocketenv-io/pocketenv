@@ -1854,16 +1854,6 @@ export const schemaDict = {
       main: {
         type: "procedure",
         description: "Restore a backup of a sandbox",
-        parameters: {
-          type: "params",
-          required: ["id"],
-          properties: {
-            id: {
-              type: "string",
-              description: "The sandbox ID.",
-            },
-          },
-        },
         input: {
           encoding: "application/json",
           schema: {

@@ -33,6 +33,7 @@ import {
 } from "./cmd/service";
 import copy from "./cmd/copy";
 import ps from "./cmd/ps";
+import { createBackup, listBackups, restoreBackup } from "./cmd/backup";
 
 const program = new Command();
 
@@ -197,6 +198,30 @@ program
   })
   .description("unexpose a port from the given sandbox")
   .action(unexposePort);
+
+const backup = program.command("backup").description("manage sandbox backups");
+
+backup
+  .command("create")
+  .argument("<sandbox>", "the sandbox to create a backup for")
+  .argument("<directory>", "the directory to backup")
+  .option("--description, -d <description>", "an optional description for the backup")
+  .option("--ttl, -t <ttl>", "time to live for the backup (e.g., 24h, 7d)", "7d")
+  .description("create a backup for the given sandbox")
+  .action(createBackup);
+
+backup
+  .command("restore")
+  .argument("<backup_id>", "the ID of the backup to restore")
+  .description("restore a backup to the given sandbox")
+  .action(restoreBackup);
+
+backup
+  .command("list")
+  .aliases(["ls"])
+  .argument("<sandbox>", "the sandbox to list backups for")
+  .description("list backups for the given sandbox")
+  .action(listBackups);
 
 const volume = program.command("volume").description("manage volumes");
 

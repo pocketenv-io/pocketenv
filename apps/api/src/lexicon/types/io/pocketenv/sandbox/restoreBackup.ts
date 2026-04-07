@@ -8,10 +8,7 @@ import { isObj, hasProp } from "../../../../util";
 import { CID } from "multiformats/cid";
 import { type HandlerAuth, HandlerPipeThrough } from "@atproto/xrpc-server";
 
-export interface QueryParams {
-  /** The sandbox ID. */
-  id: string;
-}
+export type QueryParams = {};
 
 export interface InputSchema {
   /** The backup ID to restore. */

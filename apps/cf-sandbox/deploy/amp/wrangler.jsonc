@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "AMP-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "amp-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "AMP-BACKUP",
+        "queue": "amp-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

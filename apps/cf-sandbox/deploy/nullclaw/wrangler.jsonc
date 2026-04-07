@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "NULLCLAW-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "nullclaw-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "NULLCLAW-BACKUP",
+        "queue": "nullclaw-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

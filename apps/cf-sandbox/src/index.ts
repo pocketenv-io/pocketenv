@@ -15,7 +15,7 @@ export { saveSecrets, saveVariables, getSandboxRecord as getSandboxById } from "
 
 type Bindings = {
   Sandbox: DurableObjectNamespace<Sandbox<Env>>;
-  BACKUP_QUEUE: Queue;
+  backup_queue: Queue;
 };
 
 const app = new Hono<{ Variables: Context; Bindings: Bindings }>();

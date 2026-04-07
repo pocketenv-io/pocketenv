@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "WASMER-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "wasmer-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "WASMER-BACKUP",
+        "queue": "wasmer-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

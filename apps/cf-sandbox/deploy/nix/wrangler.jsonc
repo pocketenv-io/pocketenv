@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "NIX-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "nix-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "NIX-BACKUP",
+        "queue": "nix-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

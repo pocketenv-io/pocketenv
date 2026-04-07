@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "ZEROCLAW-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "zeroclaw-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "ZEROCLAW-BACKUP",
+        "queue": "zeroclaw-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "OPENCRUST-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "opencrust-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "OPENCRUST-BACKUP",
+        "queue": "opencrust-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

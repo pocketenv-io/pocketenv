@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "CODEX-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "codex-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "CODEX-BACKUP",
+        "queue": "codex-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

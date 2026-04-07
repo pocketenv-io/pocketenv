@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "NANOCLAW-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "nanoclaw-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "NANOCLAW-BACKUP",
+        "queue": "nanoclaw-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

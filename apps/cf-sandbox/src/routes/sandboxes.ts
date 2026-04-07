@@ -36,7 +36,7 @@ import { BackupParams } from "../types/backup";
 import dayjs from "dayjs";
 import { RestoreParams } from "../types/restore";
 
-type Bindings = { Sandbox: DurableObjectNamespace<Sandbox<Env>>, 	BACKUP_QUEUE: Queue; };
+type Bindings = { Sandbox: DurableObjectNamespace<Sandbox<Env>>, 	backup_queue: Queue; };
 type App = { Variables: Context; Bindings: Bindings };
 
 export const sandboxRoutes = new Hono<App>();
@@ -539,7 +539,7 @@ sandboxRoutes.post("/v1/sandboxes/:sandboxId/backup", async (c) => {
 
   const params = await c.req.json<BackupParams>();
 
-  await c.env.BACKUP_QUEUE.send({
+  await c.env.backup_queue.send({
     ...params,
     recordId: record.id,
     sandboxId: record.sandboxId!,

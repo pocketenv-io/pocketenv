@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "CLAUDE-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "claude-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "CLAUDE-BACKUP",
+        "queue": "claude-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

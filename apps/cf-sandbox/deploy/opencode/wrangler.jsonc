@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "OPENCODE-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "opencode-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "OPENCODE-BACKUP",
+        "queue": "opencode-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

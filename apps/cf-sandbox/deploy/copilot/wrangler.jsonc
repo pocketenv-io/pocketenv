@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "COPILOT-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "copilot-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "COPILOT-BACKUP",
+        "queue": "copilot-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

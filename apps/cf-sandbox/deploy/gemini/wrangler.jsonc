@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "GEMINI-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "gemini-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "GEMINI-BACKUP",
+        "queue": "gemini-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

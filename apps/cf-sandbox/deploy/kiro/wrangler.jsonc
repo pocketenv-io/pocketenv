@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "KIRO-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "kiro-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "KIRO-BACKUP",
+        "queue": "kiro-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

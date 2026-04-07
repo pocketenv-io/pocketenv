@@ -28,13 +28,13 @@
   "queues": {
     "producers": [
       {
-        "queue": "OPENCLAW-BACKUP",
-        "binding": "BACKUP_QUEUE",
+        "queue": "openclaw-backup",
+        "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "OPENCLAW-BACKUP",
+        "queue": "openclaw-backup",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }

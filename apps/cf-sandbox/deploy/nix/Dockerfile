@@ -11,6 +11,7 @@ RUN apt-get install -y curl git unzip tmux build-essential gawk sed procps  wget
     squashfs-tools \
     squashfuse \
     fuse \
+    fuse-overlayfs \
     && useradd -m -s /bin/bash coder \
     && echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
 

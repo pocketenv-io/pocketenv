@@ -7,6 +7,7 @@ RUN apt-get update -y && apt-get install -y curl git unzip tmux build-essential 
     squashfuse \
     fuse \
     sudo \
+    fuse-overlayfs \
     && useradd -m -s /bin/bash coder \
     && echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
 

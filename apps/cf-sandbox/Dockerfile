@@ -20,7 +20,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     sed \
     procps \
     wget \
-    s3fs
+    s3fs \
+    sudo \
+    fontconfig \
+    squashfs-tools \
+    squashfuse \
+    fuse \
+    fuse-overlayfs \
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s
 

@@ -34,6 +34,7 @@ RUN apt-get update -y && apt-get install -y \
     squashfs-tools \
     squashfuse \
     fuse \
+    fuse-overlayfs \
     && useradd -m -s /bin/bash coder \
     && echo "coder ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/coder
 

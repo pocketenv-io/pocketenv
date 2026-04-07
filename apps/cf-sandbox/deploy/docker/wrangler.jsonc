@@ -22,19 +22,19 @@
     },
     {
       "binding": "BACKUP_BUCKET",
-      "bucket_name": "pocketenv-backup",
+      "bucket_name": "pocketenv-queue",
     },
   ],
   "queues": {
     "producers": [
       {
-        "queue": "docker-backup",
+        "queue": "docker-queue",
         "binding": "backup_queue",
       }
     ],
     "consumers": [
       {
-        "queue": "docker-backup",
+        "queue": "docker-queue",
         "max_batch_size": 10,
         "max_batch_timeout": 60,
       }
@@ -61,7 +61,7 @@
     "VOLUME_BUCKET": "pocketenv-volumes",
     "PREVIEW_TOKEN": "docker",
     "CLOUDFLARE_ACCOUNT_ID": "fe5b1e2ce9f94f4c0415ab94ce402012",
-    "BACKUP_BUCKET_NAME": "pocketenv-backup"
+    "BACKUP_BUCKET_NAME": "pocketenv-queue"
   },
   /**
    * Note: Use secrets to store sensitive data.

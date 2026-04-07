@@ -63,6 +63,7 @@ export default function (server: Server, ctx: Context) {
       );
     } catch (error) {
       console.warn("Failed to restore backup", error);
+      throw new XRPCError(500, `Failed to restore backup ${error}`);
     }
 
     return {};

@@ -67,6 +67,7 @@ export default function (server: Server, ctx: Context) {
       );
     } catch (error) {
       consola.warn("Failed to create backup in sandbox", error);
+      throw new XRPCError(500, `Failed to create backup ${error}`);
     }
   };
   server.io.pocketenv.sandbox.createBackup({

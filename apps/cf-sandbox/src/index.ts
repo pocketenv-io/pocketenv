@@ -6,11 +6,16 @@ import { authMiddleware } from "./middleware/auth";
 import { cpRoutes } from "./routes/cp";
 import { sandboxRoutes } from "./routes/sandboxes";
 import { terminalRoutes } from "./routes/terminal";
+import { backups } from "./schema";
+import dayjs from "dayjs";
+import { createSandbox } from "./providers";
+import { getConnection } from "./drizzle";
 
 export { saveSecrets, saveVariables, getSandboxRecord as getSandboxById } from "./lib/sandbox-helpers";
 
 type Bindings = {
   Sandbox: DurableObjectNamespace<Sandbox<Env>>;
+  BACKUP_QUEUE: Queue;
 };
 
 const app = new Hono<{ Variables: Context; Bindings: Bindings }>();
@@ -42,4 +47,29 @@ app.route("/", terminalRoutes);
 
 export { Sandbox } from "@cloudflare/sandbox";
 
-export default app;
+export default {
+  fetch: app.fetch,
+  async queue(batch: MessageBatch<{
+    directory: string;
+    description?: string;
+    ttl?: number;
+    sandboxId: string;
+    recordId: string;
+  }>, env: Env) {
+    const db = getConnection();
+    for (const message of batch.messages) {
+      const params = message.body;
+      const sandbox = await createSandbox('cloudflare', { id: params.sandboxId });
+      const backupId = await sandbox.backup(params.directory, params.ttl);
+
+      await db.insert(backups).values({
+        backupId,
+        sandboxId: params.recordId,
+        directory: params.directory,
+        description: params.description,
+        expiresAt: params.ttl ? dayjs().add(params.ttl, "second").toDate() : dayjs().add(3, "days").toDate(),
+     })
+       .execute();
+      }
+    },
+};

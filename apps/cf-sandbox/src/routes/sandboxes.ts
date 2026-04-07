@@ -36,7 +36,7 @@ import { BackupParams } from "../types/backup";
 import dayjs from "dayjs";
 import { RestoreParams } from "../types/restore";
 
-type Bindings = { Sandbox: DurableObjectNamespace<Sandbox<Env>> };
+type Bindings = { Sandbox: DurableObjectNamespace<Sandbox<Env>>, 	BACKUP_QUEUE: Queue; };
 type App = { Variables: Context; Bindings: Bindings };
 
 export const sandboxRoutes = new Hono<App>();
@@ -539,23 +539,11 @@ sandboxRoutes.post("/v1/sandboxes/:sandboxId/backup", async (c) => {
 
   const params = await c.req.json<BackupParams>();
 
-  const sandbox = await createSandbox("cloudflare", { id: record.sandboxId! });
-
-  c.executionCtx.waitUntil(
-    (async () => {
-      const backupId = await sandbox.backup(params.directory, params.ttl);
-
-      await c.var.db.insert(backups).values({
-        backupId,
-        sandboxId: record.id,
-        directory: params.directory,
-        description: params.description,
-        expiresAt: params.ttl ? dayjs().add(params.ttl, "second").toDate() : dayjs().add(3, "days").toDate(),
-     })
-       .execute();
-    })()
-  );
-
+  await c.env.BACKUP_QUEUE.send({
+    ...params,
+    recordId: record.id,
+    sandboxId: record.sandboxId!,
+  });
 
   return c.json({});
 });

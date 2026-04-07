@@ -25,6 +25,21 @@
       "bucket_name": "pocketenv-backup",
     },
   ],
+  "queues": {
+    "producers": [
+      {
+        "queue": "KILO-BACKUP",
+        "binding": "BACKUP_QUEUE",
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "KILO-BACKUP",
+        "max_batch_size": 10,
+        "max_batch_timeout": 60,
+      }
+    ],
+  },
   /**
    * Smart Placement
    * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

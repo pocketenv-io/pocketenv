@@ -3,7 +3,9 @@ import { pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import sandboxes from "./sandboxes";
 
 const backups = pgTable("backups", {
-  id: text("id").primaryKey().default(sql`xata_id()`),
+  id: text("id")
+    .primaryKey()
+    .default(sql`xata_id()`),
   sandboxId: text("sandbox_id")
     .notNull()
     .references(() => sandboxes.id, { onDelete: "cascade" }),
@@ -14,7 +16,7 @@ const backups = pgTable("backups", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export type SelectBakcup = InferSelectModel<typeof backups>;
+export type SelectBackup = InferSelectModel<typeof backups>;
 export type InsertBackup = InferInsertModel<typeof backups>;
 
 export default backups;

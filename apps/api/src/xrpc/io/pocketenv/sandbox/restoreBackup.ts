@@ -49,17 +49,21 @@ export default function (server: Server, ctx: Context) {
         ? ctx.cfsandbox(record.sandboxes.base!)
         : ctx.sandbox();
 
-    await sandbox.post(
-      `/v1/sandboxes/${record.sandboxes.id}/restore`,
-      {
-        backupId: input.backupId,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${await generateJwt(auth?.credentials?.did || "")}`,
+    try {
+      await sandbox.post(
+        `/v1/sandboxes/${record.sandboxes.id}/restore`,
+        {
+          backupId: input.backupId,
         },
-      },
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${await generateJwt(auth?.credentials?.did || "")}`,
+          },
+        },
+      );
+    } catch (error) {
+      console.warn("Failed to restore backup", error);
+    }
 
     return {};
   };

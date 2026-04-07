@@ -1,4 +1,5 @@
 import { XRPCError, type HandlerAuth } from "@atproto/xrpc-server";
+import { consola } from "consola";
 import { Providers } from "consts";
 import type { Context } from "context";
 import { and, eq, or } from "drizzle-orm";
@@ -9,7 +10,7 @@ import type {
 } from "lexicon/types/io/pocketenv/sandbox/createBackup";
 import generateJwt from "lib/generateJwt";
 import schema from "schema";
-import type { SelectBakcup } from "schema/backups";
+import type { SelectBackup } from "schema/backups";
 
 export default function (server: Server, ctx: Context) {
   const createBackup = async (
@@ -50,19 +51,23 @@ export default function (server: Server, ctx: Context) {
         ? ctx.cfsandbox(record.sandboxes.base!)
         : ctx.sandbox();
 
-    await sandbox.post<SelectBakcup>(
-      `/v1/sandboxes/${record.sandboxes.id}/backup`,
-      {
-        directory: input.directory,
-        description: input.description,
-        ttl: input.ttl,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${await generateJwt(auth?.credentials?.did || "")}`,
+    try {
+      await sandbox.post<SelectBackup>(
+        `/v1/sandboxes/${record.sandboxes.id}/backup`,
+        {
+          directory: input.directory,
+          description: input.description,
+          ttl: input.ttl,
         },
-      },
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${await generateJwt(auth?.credentials?.did || "")}`,
+          },
+        },
+      );
+    } catch (error) {
+      consola.warn("Failed to create backup in sandbox", error);
+    }
   };
   server.io.pocketenv.sandbox.createBackup({
     auth: ctx.authVerifier,

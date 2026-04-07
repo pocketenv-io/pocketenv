@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.9] - 2026-04-07
+
+### Added
+
+- **Sandbox backup commands**: New `pocketenv backup` subcommand group for managing sandbox backups.
+  - `pocketenv backup create <sandbox> <directory>` — create a backup of a directory inside a sandbox, with optional `--description` and `--ttl` (e.g. `10m`, `2h`, `7d`; default `3d`).
+  - `pocketenv backup restore <backup_id>` — restore a sandbox from a previously created backup.
+  - `pocketenv backup list <sandbox>` (alias: `ls`) — list all backups for a sandbox, showing backup ID, directory, creation time, and expiry.
+
+### Changed
+
+- **Default backup TTL reduced to `3d`**: The default time-to-live for new backups is now `3d` (was `7d`).
+
+---
+
 ## [0.6.8] - 2026-04-06
 
 ### Changed

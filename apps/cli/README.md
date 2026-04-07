@@ -305,6 +305,54 @@ pocketenv tailscale get my-sandbox
 
 ---
 
+### 💾 Backups
+
+Create and restore point-in-time backups of sandbox directories.
+
+#### `pocketenv backup create <sandbox> <directory>`
+
+Create a backup of a directory inside a sandbox.
+
+| Option                        | Description                                        |
+|-------------------------------|----------------------------------------------------|
+| `--description, -d <text>`    | Optional description for the backup                |
+| `--ttl, -t <duration>`        | Time-to-live (e.g. `10m`, `2h`, `7d`; default `3d`) |
+
+```sh
+pocketenv backup create my-sandbox /workspace
+pocketenv backup create my-sandbox /workspace --description "pre-deploy" --ttl 7d
+```
+
+---
+
+#### `pocketenv backup list <sandbox>`
+
+List all backups for a sandbox. Aliases: `ls`
+
+```sh
+pocketenv backup list my-sandbox
+pocketenv backup ls my-sandbox
+```
+
+Output example:
+
+```
+BACKUP ID                  DIRECTORY   CREATED AT       EXPIRES AT
+bkp_01jqwerty123456789     /app        2 hours ago      in 3 days
+```
+
+---
+
+#### `pocketenv backup restore <backup_id>`
+
+Restore a sandbox from a backup.
+
+```sh
+pocketenv backup restore bkp_01jqwerty123456789
+```
+
+---
+
 ## ⚙️ Configuration
 
 The CLI can be configured via the following environment variables:

@@ -107,7 +107,7 @@ export class DaytonaSandbox implements BaseSandbox {
       : env.VOLUME_BUCKET;
 
     await this.sandbox.process.executeCommand(
-      `tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path}`,
+      `tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path} || sudo tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path}`,
       undefined,
       {
         AWS_ACCESS_KEY_ID: env.R2_ACCESS_KEY_ID!,

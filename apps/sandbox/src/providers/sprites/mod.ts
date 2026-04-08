@@ -131,6 +131,15 @@ export class SpriteSandbox implements BaseSandbox {
 
   async mount(path: string, prefix?: string): Promise<void> {
     try {
+      const VERSION = "v1.2.1";
+      const ARCH = "amd64";
+      await this
+        .sh`command -v tigrisfs || ARCH=amd64 && curl -L "https://github.com/tigrisdata/tigrisfs/releases/download/${VERSION}/tigrisfs_${VERSION.replace("v", "")}_linux_${ARCH}.tar.gz" -o /tmp/tigrisfs.tar.gz`;
+      await this
+        .sh`command -v tigrisfs || tar -xzf /tmp/tigrisfs.tar.gz -C $HOME/.local/bin`;
+      await this.sh`command -v tigrisfs || rm -rf /tmp/tigrisfs.tar.gz`;
+      await this.sh`command -v tigrisfs || chmod +x $HOME/.local/bin/tigrisfs`;
+
       await this.sh`mkdir -p ${path} || sudo mkdir -p ${path}`;
 
       await this.mkdir(path);

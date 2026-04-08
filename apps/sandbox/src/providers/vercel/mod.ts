@@ -90,14 +90,15 @@ export class VercelSandbox implements BaseSandbox {
   async mount(path: string, prefix?: string): Promise<void> {
     const VERSION = "v1.2.1";
     const ARCH = "amd64";
+    await this.sh`mkdir -p $HOME/.local/bin`;
     await this
       .sh`command -v tigrisfs || ARCH=amd64 && curl -L "https://github.com/tigrisdata/tigrisfs/releases/download/${VERSION}/tigrisfs_${VERSION.replace("v", "")}_linux_${ARCH}.tar.gz" -o /tmp/tigrisfs.tar.gz`;
     await this
-      .sh`command -v tigrisfs || tar -xzf /tmp/tigrisfs.tar.gz -C $HOME/.local/bin`;
+      .sh`command -v tigrisfs || tar -xzf /tmp/tigrisfs.tar.gz -C ~/.local/bin`;
     await this.sh`command -v tigrisfs || rm -rf /tmp/tigrisfs.tar.gz`;
-    await this.sh`command -v tigrisfs || chmod +x $HOME/.local/bin/tigrisfs`;
+    await this.sh`command -v tigrisfs || chmod +x ~/.local/bin/tigrisfs`;
     await this
-      .sh`cp $HOME/.local/bin/tigrisfs /usr/bin || sudo cp $HOME/.local/bin/tigrisfs /usr/bin || true`;
+      .sh`cp ~/.local/bin/tigrisfs /usr/bin || sudo cp ~/.local/bin/tigrisfs /usr/bin || true`;
     await this.sh`mkdir -p ${path} || sudo mkdir -p ${path}`;
 
     await this.mkdir(path);

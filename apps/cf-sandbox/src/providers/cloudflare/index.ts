@@ -97,7 +97,7 @@ export class CloudflareSandbox implements BaseSandbox {
         ? `${env.VOLUME_BUCKET}:${prefix}`
         : env.VOLUME_BUCKET;
 
-      await this.sandbox.exec(
+      await this.sandbox.startProcess(
         `tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path}`,
         {
           env: {

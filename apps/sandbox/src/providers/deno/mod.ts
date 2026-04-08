@@ -120,7 +120,7 @@ export class DenoSandbox implements BaseSandbox {
     await this.sandbox.spawn("sh", {
       args: [
         "-c",
-        `tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path} || sudo tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path}`,
+        `noup tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path} || sudo nohup tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path} || true`,
       ],
       stdin: "null",
       stdout: "piped",

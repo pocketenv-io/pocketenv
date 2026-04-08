@@ -32,7 +32,7 @@ export const SandboxConfigSchema = z
     name: z.string().optional(),
     description: z.string().optional(),
     provider: z
-      .enum(["daytona", "vercel", "deno", "sprites"])
+      .enum(["daytona", "vercel", "deno", "sprites", "modal"])
       .optional()
       .default("deno"),
     base: z.enum(["openclaw"]).optional().default("openclaw"),

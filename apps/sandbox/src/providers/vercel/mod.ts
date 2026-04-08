@@ -100,6 +100,8 @@ export class VercelSandbox implements BaseSandbox {
     await this
       .sh`cp ~/.local/bin/tigrisfs /usr/bin || sudo cp ~/.local/bin/tigrisfs /usr/bin || true`;
     await this.sh`mkdir -p ${path} || sudo mkdir -p ${path}`;
+    await this.sh`sudo dnf install -y fuse3 fuse3-libs`;
+    await this.sh`sudo modprobe fuse`;
 
     await this.mkdir(path);
 

@@ -111,7 +111,7 @@ export class VercelSandbox implements BaseSandbox {
       cmd: "sh",
       args: [
         "-c",
-        `tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path} || sudo nohup tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path} || true`,
+        `tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path} || sudo tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path}`,
       ],
       env: {
         AWS_ACCESS_KEY_ID: env.R2_ACCESS_KEY_ID!,

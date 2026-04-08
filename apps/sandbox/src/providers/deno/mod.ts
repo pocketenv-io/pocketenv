@@ -4,7 +4,6 @@ import { env } from "node:process";
 import consola from "consola";
 import path from "node:path";
 import { Buffer } from "node:buffer";
-import crypto from "node:crypto";
 
 export class DenoSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
@@ -110,27 +109,27 @@ export class DenoSandbox implements BaseSandbox {
   }
 
   async mount(path: string, prefix?: string): Promise<void> {
-    await this
-      .sh`type s3fs || apt-get update && apt-get install -y s3fs || sudo apt-get update && sudo apt-get install -y s3fs || true`;
     await this.sh`mkdir -p ${path} || sudo mkdir -p ${path}`;
 
     await this.mkdir(path);
-
-    const passwdFile = `/tmp/.passwd-s3fs-${crypto.randomUUID()}`;
-
-    await this.writeFile(
-      passwdFile,
-      `${env.R2_ACCESS_KEY_ID}:${env.R2_SECRET_ACCESS_KEY}`,
-    );
-
-    await this.sh`chmod 0600 '${passwdFile}'`;
 
     const bucketPath = prefix
       ? `${env.VOLUME_BUCKET}:${prefix}`
       : env.VOLUME_BUCKET;
 
-    await this
-      .sh`s3fs '${bucketPath}' '${path}' -o 'passwd_file=${passwdFile},nomixupload,compat_dir,url=https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com'`;
+    await this.sandbox.spawn("sh", {
+      args: [
+        "-c",
+        `tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path}`,
+      ],
+      stdin: "null",
+      stdout: "piped",
+      stderr: "piped",
+      env: {
+        AWS_ACCESS_KEY_ID: env.R2_ACCESS_KEY_ID!,
+        AWS_SECRET_ACCESS_KEY: env.R2_SECRET_ACCESS_KEY!,
+      },
+    });
   }
 
   async unmount(path: string): Promise<void> {

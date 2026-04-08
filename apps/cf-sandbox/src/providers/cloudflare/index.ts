@@ -93,21 +93,19 @@ export class CloudflareSandbox implements BaseSandbox {
     try {
       await this.mkdir(path);
 
-      const passwdFile = `/tmp/.passwd-s3fs-${crypto.randomUUID()}`;
-
-      await this.writeFile(
-        passwdFile,
-        `${env.R2_ACCESS_KEY_ID}:${env.R2_SECRET_ACCESS_KEY}`,
-      );
-
-      await this.sh`chmod 0600 '${passwdFile}'`;
-
       const bucketPath = prefix
         ? `${env.VOLUME_BUCKET}:${prefix}`
         : env.VOLUME_BUCKET;
 
-      await this
-        .sh`s3fs '${bucketPath}' '${path}' -o 'passwd_file=${passwdFile},nomixupload,compat_dir,url=https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com'`;
+      await this.sandbox.exec(
+        `tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path}`,
+        {
+          env: {
+            AWS_ACCESS_KEY_ID: env.R2_ACCESS_KEY_ID,
+            AWS_SECRET_ACCESS_KEY: env.R2_SECRET_ACCESS_KEY,
+          },
+        },
+      );
     } catch (e) {
       console.log(e);
     }

@@ -159,7 +159,7 @@ class ModalProvider implements BaseProvider {
       },
     );
     const image = modal.images.fromRegistry(
-      options.image || "ghcr.io/pocketenv-io/daytona-openclaw:0.6.0",
+      options.image || "node:lts-trixie-slim",
     );
     const sandbox = await modal.sandboxes.create(app, image);
 

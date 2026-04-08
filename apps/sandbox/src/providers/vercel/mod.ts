@@ -96,6 +96,8 @@ export class VercelSandbox implements BaseSandbox {
       .sh`command -v tigrisfs || tar -xzf /tmp/tigrisfs.tar.gz -C $HOME/.local/bin`;
     await this.sh`command -v tigrisfs || rm -rf /tmp/tigrisfs.tar.gz`;
     await this.sh`command -v tigrisfs || chmod +x $HOME/.local/bin/tigrisfs`;
+    await this
+      .sh`cp $HOME/.local/bin/tigrisfs /usr/bin || sudo cp $HOME/.local/bin/tigrisfs /usr/bin || true`;
     await this.sh`mkdir -p ${path} || sudo mkdir -p ${path}`;
 
     await this.mkdir(path);

@@ -98,7 +98,7 @@ export class CloudflareSandbox implements BaseSandbox {
         : env.VOLUME_BUCKET;
 
       await this.sandbox.startProcess(
-        `tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" ${bucketPath} ${path}`,
+        `tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" -o allow_other,default_permissions ${bucketPath} ${path}`,
         {
           env: {
             AWS_ACCESS_KEY_ID: env.R2_ACCESS_KEY_ID,

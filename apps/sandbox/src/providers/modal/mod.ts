@@ -49,11 +49,13 @@ export class ModalSandbox implements BaseSandbox {
     }, "");
     const result = await this.sandbox.exec(["bash", "-c", command]);
 
+    consola.info(`exec command: ${command}`);
     const [stdout, stderr, exitCode] = await Promise.all([
       result.stdout.readText(),
       result.stderr.readText(),
       result.wait(),
     ]);
+    consola.info(`exitCode=${exitCode}`);
 
     return { ...result, stdout, stderr, exitCode };
   }
@@ -120,7 +122,8 @@ export class ModalSandbox implements BaseSandbox {
       ? `${env.VOLUME_BUCKET}:${prefix}`
       : env.VOLUME_BUCKET;
 
-    await this.sh`AWS_ACCESS_KEY_ID=${env.R2_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${env.R2_SECRET_ACCESS_KEY} nohup tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" -o allow_other,default_permissions ${bucketPath} ${path} > /dev/null 2>&1 &`;
+    await this
+      .sh`AWS_ACCESS_KEY_ID=${env.R2_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${env.R2_SECRET_ACCESS_KEY} nohup tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" -o allow_other,default_permissions ${bucketPath} ${path} > /dev/null 2>&1 &`;
   }
 
   async unmount(path: string): Promise<void> {
@@ -137,20 +140,25 @@ class ModalProvider implements BaseProvider {
       () => false,
     );
     modalAppName = `${modalAppName}-${suffix}`;
+    consola.info("Connecting to Modal with app name:", modalAppName);
     const modal = new ModalClient({
       tokenId: options.modalTokenId || env.MODAL_TOKEN_ID!,
       tokenSecret: options.modalTokenSecret || env.MODAL_TOKEN_SECRET!,
     });
+    consola.info("Creating Modal sandbox with app name:", modalAppName);
     const app = await modal.apps.fromName(
       options.modalAppName || modalAppName,
       {
         createIfMissing: true,
       },
     );
+    consola.info("Setup image for Modal sandbox with app name:", modalAppName);
     const image = modal.images.fromRegistry(
       options.image || "ghcr.io/pocketenv-io/daytona-openclaw:0.1.0",
     );
+    consola.info("Creating Modal sandbox with app name:", modalAppName);
     const sandbox = await modal.sandboxes.create(app, image);
+    consola.info("Created Modal sandbox with ID:", sandbox.sandboxId);
 
     return new ModalSandbox(sandbox);
   }

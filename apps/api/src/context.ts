@@ -11,6 +11,7 @@ import redis from "redis";
 import type { RequestHandler } from "express";
 import axios from "axios";
 import { workers } from "cloudflare";
+import { Providers } from "consts";
 
 const { DB_PATH } = env;
 export const db = createDb(DB_PATH);
@@ -38,9 +39,12 @@ export const ctx = {
     })
     .connect(),
   kv: new Map<string, string>(),
-  sandbox: () =>
+  sandbox: (provider?: string) =>
     axios.create({
-      baseURL: env.SANDBOX_API_URL,
+      baseURL:
+        provider === Providers.MODAL
+          ? env.MODAL_SANDBOX_API_URL
+          : env.SANDBOX_API_URL,
     }),
   cfsandbox: (base: string) =>
     axios.create({

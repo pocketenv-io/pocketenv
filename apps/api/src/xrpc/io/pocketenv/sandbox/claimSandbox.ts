@@ -45,7 +45,7 @@ export default function (server: Server, ctx: Context) {
       const sandbox =
         provider === Providers.CLOUDFLARE
           ? ctx.cfsandbox(base.base!)
-          : ctx.sandbox();
+          : ctx.sandbox(base?.provider);
       res = await sandbox.post(
         "/v1/sandboxes",
         {

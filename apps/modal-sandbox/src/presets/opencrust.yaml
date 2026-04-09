@@ -1,0 +1,54 @@
+- name: Install Dependencies
+  run: |
+    sudo apt-get update && sudo apt-get install -y curl unzip wget fontconfig || apt-get update && apt-get install -y curl unzip wget fontconfig
+
+- name: Install Opencrust and Tailscale
+  if: "[ ! -f $HOME/.opencrust-setup-done ] || ! command -v opencrust &>/dev/null"
+  run: |
+    mkdir -p $HOME/.npm-global && npm config set prefix $HOME/.npm-global
+    command -v tailscale || curl -fsSL https://tailscale.com/install.sh | sh
+    npm install -g pm2
+    OPENCRUST_VERISON=v0.1.21 OPENCRUST_ARCH=x86_64 wget -qO opencrust "https://github.com/opencrust-org/opencrust/releases/download/${OPENCRUST_VERSION}/opencrust-linux-${OPENCRUST_ARCH}"
+    mkdir -p $HOME/.local/bin
+    mv opencrust $HOME/.local/bin
+    chmod +x $HOME/.local/bin/opencrust
+    touch $HOME/.opencrust-setup-done
+
+- name: Install code-server and Cascadia Mono Nerd Font
+  if: "[ ! -f $HOME/.vscode-setup-done ] || ! command -v code-server &>/dev/null"
+  run: |
+    mkdir -p $HOME/.local/share/fonts
+    curl -fsSL https://code-server.dev/install.sh | sh
+    code-server --install-extension bastndev.lynx-theme --force
+    curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaMono.zip -o /tmp/CascadiaMono.zip
+    unzip -o /tmp/CascadiaMono.zip -d $HOME/.local/share/fonts/CascadiaMono
+    fc-cache -fv
+    rm /tmp/CascadiaMono.zip
+    touch $HOME/.vscode-setup-done
+
+- name: Setup Zoxide
+  if: "[ ! -f $HOME/.zoxide-setup-done ] || ! command -v zoxide &>/dev/null"
+  run: |
+    curl -fsSL https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.9/zoxide-0.9.9-x86_64-unknown-linux-musl.tar.gz -o /tmp/zoxide.tar.gz
+    mkdir -p ~/.local/bin
+    tar -xzf /tmp/zoxide.tar.gz -C ~/.local/bin zoxide
+    chmod +x ~/.local/bin/zoxide
+    rm /tmp/zoxide.tar.gz
+    echo 'export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc
+    echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
+    touch $HOME/.zoxide-setup-done
+
+- name: Setup Zerobrew
+  if: "[ ! -f $HOME/.zerobrew-setup-done ] || ! command -v zb &>/dev/null"
+  run: |
+    curl -fsSL https://zerobrew.rs/install | bash
+    touch $HOME/.zerobrew-setup-done
+
+- name: Setup tigrisfs
+  if: "[ ! -f $HOME/.tigrisfs-setup-done ] || ! command -v tigrisfs &> /dev/null"
+  run: |
+    ARCH=amd64 VERSION=$(curl -s https://api.github.com/repos/tigrisdata/tigrisfs/releases/latest | grep -o '"tag_name": "[^"]*' | cut -d'"' -f4) && curl -L "https://github.com/tigrisdata/tigrisfs/releases/download/${VERSION}/tigrisfs_${VERSION#v}_linux_${ARCH}.tar.gz" -o /tmp/tigrisfs.tar.gz
+    tar -xzf /tmp/tigrisfs.tar.gz -C $HOME/.local/bin/
+    rm /tmp/tigrisfs.tar.gz
+    chmod +x $HOME/.local/bin/tigrisfs
+    touch $HOME/.tigrisfs-setup-done

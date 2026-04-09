@@ -145,8 +145,6 @@ class ModalProvider implements BaseProvider {
       tokenId: options.modalTokenId || env.MODAL_TOKEN_ID!,
       tokenSecret: options.modalTokenSecret || env.MODAL_TOKEN_SECRET!,
     });
-    consola.log(options.modalTokenId, env.MODAL_TOKEN_ID);
-    consola.log(options.modalTokenSecret, env.MODAL_TOKEN_SECRET);
     consola.info("Creating Modal sandbox with app name:", modalAppName);
     const app = await modal.apps.fromName(
       options.modalAppName || modalAppName,

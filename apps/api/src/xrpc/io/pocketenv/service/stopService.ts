@@ -38,7 +38,7 @@ export default function (server: Server, ctx: Context) {
     const sandbox =
       record!.sandboxes!.provider === Providers.CLOUDFLARE
         ? ctx.cfsandbox(record!.sandboxes!.base!)
-        : ctx.sandbox();
+        : ctx.sandbox(record?.provider);
 
     if (record?.services?.status === "STOPPED") {
       consola.info("Service is already stopped, skipping stop", {

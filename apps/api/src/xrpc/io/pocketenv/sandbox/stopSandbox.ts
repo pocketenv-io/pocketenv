@@ -43,7 +43,7 @@ export default function (server: Server, ctx: Context) {
     const sandbox =
       record.provider === Providers.CLOUDFLARE
         ? ctx.cfsandbox(record.base!)
-        : ctx.sandbox();
+        : ctx.sandbox(record?.provider);
 
     await sandbox.post(`/v1/sandboxes/${record.id}/stop`, undefined, {
       headers: {

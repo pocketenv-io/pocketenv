@@ -41,7 +41,7 @@ export default function (server: Server, ctx: Context) {
     const sandbox =
       record.sandboxes.provider === Providers.CLOUDFLARE
         ? ctx.cfsandbox(record.sandboxes.base!)
-        : ctx.sandbox();
+        : ctx.sandbox(record.sandboxes.provider);
 
     const response = await sandbox.post<{ uuid: string }>(
       `/v1/sandboxes/${record.sandboxes.id}/push-directory`,

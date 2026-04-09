@@ -6,6 +6,7 @@ export enum Providers {
   VERCEL = "vercel",
   CLOUDFLARE = "cloudflare",
   SPRITE = "sprite",
+  MODAL = "modal",
 }
 
 export type Resources = {

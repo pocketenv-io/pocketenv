@@ -48,7 +48,7 @@ export default function (server: Server, ctx: Context) {
           const sandbox =
             existingSandbox.sandboxes.provider === Providers.CLOUDFLARE
               ? ctx.cfsandbox(existingSandbox.sandboxes.base!)
-              : ctx.sandbox();
+              : ctx.sandbox(existingSandbox.sandboxes.provider);
 
           await sandbox.post(
             `/v1/sandboxes/${existingSandbox.sandboxes.id}/start`,
@@ -101,7 +101,7 @@ export default function (server: Server, ctx: Context) {
       const sandbox =
         provider === Providers.CLOUDFLARE
           ? ctx.cfsandbox(input.base.split("/").pop()!)
-          : ctx.sandbox();
+          : ctx.sandbox(provider);
       res = await sandbox.post(
         "/v1/sandboxes",
         {

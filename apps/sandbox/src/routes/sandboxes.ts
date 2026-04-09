@@ -45,7 +45,7 @@ import process from "node:process";
 import prepareSandbox from "../lib/prepare-sandbox.ts";
 import { images } from "../images.ts";
 
-const SUPPORTED_PROVIDERS = ["daytona", "vercel", "deno", "sprites"];
+const SUPPORTED_PROVIDERS = ["daytona", "vercel", "deno", "sprites", "modal"];
 
 const sandboxRouter = new Hono<{ Variables: Context }>();
 

@@ -14,11 +14,12 @@ describe("Providers", () => {
     expect(Providers.VERCEL).toBe("vercel");
     expect(Providers.CLOUDFLARE).toBe("cloudflare");
     expect(Providers.SPRITE).toBe("sprite");
+    expect(Providers.MODAL).toBe("modal");
   });
 
-  it("has exactly 5 providers", () => {
+  it("has exactly 6 providers", () => {
     const values = Object.values(Providers);
-    expect(values).toHaveLength(5);
+    expect(values).toHaveLength(6);
   });
 });
 

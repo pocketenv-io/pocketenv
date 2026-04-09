@@ -41,4 +41,9 @@ export const DefaultResources: Record<Providers, Resources> = {
     memory: 4,
     disk: 100,
   },
+  modal: {
+    vcpus: 2,
+    memory: 8,
+    disk: 16,
+  },
 };

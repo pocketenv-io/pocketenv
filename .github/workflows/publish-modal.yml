@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - "modal/**"
-      - ".github/workflows/publish.yml"
+      - ".github/workflows/publish-modal.yml"
 
 jobs:
   deploy:

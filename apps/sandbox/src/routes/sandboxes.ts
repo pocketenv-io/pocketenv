@@ -83,138 +83,140 @@ sandboxRouter.post("/", async (c) => {
       name = `${name}-${suffix}`;
     } while (true);
 
-    const record = await c.var.db.transaction(async (tx) => {
-      const user = await tx
-        .select()
-        .from(users)
-        .where(eq(users.did, c.var.did || ""))
-        .execute()
-        .then((res) => res[0]);
+    const { record: initialRecord, user } = await c.var.db.transaction(
+      async (tx) => {
+        const user = await tx
+          .select()
+          .from(users)
+          .where(eq(users.did, c.var.did || ""))
+          .execute()
+          .then((res) => res[0]);
 
-      let [record] = await tx
-        .insert(sandboxes)
-        .values({
-          base: params.base,
-          name,
-          provider: params.provider,
-          publicKey: process.env.PUBLIC_KEY!,
-          userId: user?.id,
-          instanceType: "standard-1",
-          keepAlive: params.keepAlive,
-          sleepAfter: params.sleepAfter,
-          status: "INITIALIZING",
-        })
-        .returning()
-        .execute();
-
-      if (params.secrets.length > 0) {
-        await saveSecrets(tx, record, { secrets: params.secrets });
-      }
-
-      if (params.variables.length > 0) {
-        await saveVariables(tx, record, { variables: params.variables });
-      }
-
-      if (params.spriteToken && user?.id) {
-        await tx
-          .insert(spriteAuth)
+        const [record] = await tx
+          .insert(sandboxes)
           .values({
-            sandboxId: record.id,
-            spriteToken: params.spriteToken,
-            redactedSpriteToken: params.redactedSpriteToken ?? "",
-            userId: user.id,
-          } satisfies InsertSpriteAuth)
-          .execute();
-      }
-
-      if (params.daytonaApiKey && user?.id) {
-        await tx
-          .insert(daytonaAuth)
-          .values({
-            sandboxId: record.id,
-            apiKey: params.daytonaApiKey,
-            redactedApiKey: params.redactedDaytonaApiKey ?? "",
-            userId: user.id,
-            organizationId: params.daytonaOrganizationId!,
-          } satisfies InsertDaytonaAuth)
-          .execute();
-      }
-
-      if (params.denoDeployToken && user?.id) {
-        await tx
-          .insert(denoAuth)
-          .values({
-            sandboxId: record.id,
-            deployToken: params.denoDeployToken,
-            redactedDenoToken: params.redactedDenoDeployToken ?? "",
-            userId: user.id,
-          } satisfies InsertDenoAuth)
-          .execute();
-      }
-
-      if (params.vercelApiToken && user?.id) {
-        await tx
-          .insert(vercelAuth)
-          .values({
-            sandboxId: record.id,
-            vercelToken: params.vercelApiToken,
-            redactedVercelToken: params.redactedVercelApiToken ?? "",
-            userId: user.id,
-            projectId: params.vercelProjectId!,
-            teamId: params.vercelTeamId!,
+            base: params.base,
+            name,
+            provider: params.provider,
+            publicKey: process.env.PUBLIC_KEY!,
+            userId: user?.id,
+            instanceType: "standard-1",
+            keepAlive: params.keepAlive,
+            sleepAfter: params.sleepAfter,
+            status: "INITIALIZING",
           })
+          .returning()
           .execute();
-      }
 
-      if (params.modalTokenId && user?.id) {
-        await tx
-          .insert(modalAuth)
-          .values({
-            sandboxId: record.id,
-            tokenId: params.modalTokenId!,
-            redactedTokenId: params.redactedModalTokenId!,
-            tokenSecret: params.modalTokenSecret!,
-            redactedTokenSecret: params.redactedModalTokenSecret!,
-            userId: user.id,
-          })
-          .execute();
-      }
+        if (params.secrets.length > 0) {
+          await saveSecrets(tx, record, { secrets: params.secrets });
+        }
 
-      const sandbox = await createSandbox(params.provider, {
-        id: record.id,
-        keepAlive: params.keepAlive,
-        sleepAfter: params.sleepAfter,
-        snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
-        spriteToken: decrypt(params.spriteToken),
-        spriteName,
-        daytonaApiKey: decrypt(params.daytonaApiKey),
-        organizationId: params.daytonaOrganizationId,
-        denoDeployToken: decrypt(params.denoDeployToken),
-        vercelApiToken: decrypt(params.vercelApiToken),
-        vercelProjectId: params.vercelProjectId,
-        vercelTeamId: params.vercelTeamId,
-        modalTokenId: decrypt(params.modalTokenId),
-        modalTokenSecret: decrypt(params.modalTokenSecret),
-        image: images[params.base] || images["openclaw"],
-      });
-      const sandboxId = await sandbox.id();
+        if (params.variables.length > 0) {
+          await saveVariables(tx, record, { variables: params.variables });
+        }
 
-      [record] = await tx
-        .update(sandboxes)
-        .set({
-          status: "RUNNING",
-          sandboxId: sandboxId,
-          startedAt: new Date(),
-          vcpus: params.vcpus,
-          memory: params.memory,
-          disk: params.disk,
-        })
-        .where(eq(sandboxes.id, record.id))
-        .returning()
-        .execute();
+        if (params.spriteToken && user?.id) {
+          await tx
+            .insert(spriteAuth)
+            .values({
+              sandboxId: record.id,
+              spriteToken: params.spriteToken,
+              redactedSpriteToken: params.redactedSpriteToken ?? "",
+              userId: user.id,
+            } satisfies InsertSpriteAuth)
+            .execute();
+        }
 
-      return record;
+        if (params.daytonaApiKey && user?.id) {
+          await tx
+            .insert(daytonaAuth)
+            .values({
+              sandboxId: record.id,
+              apiKey: params.daytonaApiKey,
+              redactedApiKey: params.redactedDaytonaApiKey ?? "",
+              userId: user.id,
+              organizationId: params.daytonaOrganizationId!,
+            } satisfies InsertDaytonaAuth)
+            .execute();
+        }
+
+        if (params.denoDeployToken && user?.id) {
+          await tx
+            .insert(denoAuth)
+            .values({
+              sandboxId: record.id,
+              deployToken: params.denoDeployToken,
+              redactedDenoToken: params.redactedDenoDeployToken ?? "",
+              userId: user.id,
+            } satisfies InsertDenoAuth)
+            .execute();
+        }
+
+        if (params.vercelApiToken && user?.id) {
+          await tx
+            .insert(vercelAuth)
+            .values({
+              sandboxId: record.id,
+              vercelToken: params.vercelApiToken,
+              redactedVercelToken: params.redactedVercelApiToken ?? "",
+              userId: user.id,
+              projectId: params.vercelProjectId!,
+              teamId: params.vercelTeamId!,
+            })
+            .execute();
+        }
+
+        if (params.modalTokenId && user?.id) {
+          await tx
+            .insert(modalAuth)
+            .values({
+              sandboxId: record.id,
+              tokenId: params.modalTokenId!,
+              redactedTokenId: params.redactedModalTokenId!,
+              tokenSecret: params.modalTokenSecret!,
+              redactedTokenSecret: params.redactedModalTokenSecret!,
+              userId: user.id,
+            })
+            .execute();
+        }
+
+        return { record, user };
+      },
+    );
+
+    const sandbox = await createSandbox(params.provider, {
+      id: initialRecord.id,
+      keepAlive: params.keepAlive,
+      sleepAfter: params.sleepAfter,
+      snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
+      spriteToken: decrypt(params.spriteToken),
+      spriteName,
+      daytonaApiKey: decrypt(params.daytonaApiKey),
+      organizationId: params.daytonaOrganizationId,
+      denoDeployToken: decrypt(params.denoDeployToken),
+      vercelApiToken: decrypt(params.vercelApiToken),
+      vercelProjectId: params.vercelProjectId,
+      vercelTeamId: params.vercelTeamId,
+      modalTokenId: decrypt(params.modalTokenId),
+      modalTokenSecret: decrypt(params.modalTokenSecret),
+      image: images[params.base] || images["openclaw"],
     });
+    const sandboxId = await sandbox.id();
+
+    const [record] = await c.var.db
+      .update(sandboxes)
+      .set({
+        status: "RUNNING",
+        sandboxId: sandboxId,
+        startedAt: new Date(),
+        vcpus: params.vcpus,
+        memory: params.memory,
+        disk: params.disk,
+      })
+      .where(eq(sandboxes.id, initialRecord.id))
+      .returning()
+      .execute();
 
     return c.json(record);
   } catch (err) {
@@ -309,9 +311,8 @@ sandboxRouter.post("/:sandboxId/start", async (c) => {
         .execute(),
     ]);
 
-  await sandbox.setupDefaultSshKeys();
-
   Promise.all([
+    sandbox.setupDefaultSshKeys(),
     ...sandboxFileRecords
       .filter((x) => x.files !== null)
       .map((r) =>

@@ -6,6 +6,7 @@ import {
   daytonaAuth,
   denoAuth,
   vercelAuth,
+  modalAuth,
 } from "../schema/mod.ts";
 import {
   BaseSandbox,
@@ -26,6 +27,10 @@ export interface AuthParams {
     projectId?: string;
     teamId?: string;
   } | null;
+  modalAuthParams?: {
+    tokenId?: string;
+    tokenSecret?: string;
+  } | null;
 }
 
 export async function getAuthParams(
@@ -37,6 +42,7 @@ export async function getAuthParams(
     [daytonaAuthParams],
     [denoAuthParams],
     [vercelAuthParams],
+    [modalAuthParams],
   ] = await Promise.all([
     db
       .select()
@@ -58,8 +64,19 @@ export async function getAuthParams(
       .from(vercelAuth)
       .where(eq(vercelAuth.sandboxId, sandboxDbId))
       .execute(),
+    db
+      .select()
+      .from(modalAuth)
+      .where(eq(modalAuth.sandboxId, sandboxDbId))
+      .execute(),
   ]);
-  return { spriteAuthParams, daytonaAuthParams, denoAuthParams, vercelAuthParams };
+  return {
+    spriteAuthParams,
+    daytonaAuthParams,
+    denoAuthParams,
+    vercelAuthParams,
+    modalAuthParams,
+  };
 }
 
 export function buildCredentials(auth: AuthParams): SandboxOptions {
@@ -71,6 +88,8 @@ export function buildCredentials(auth: AuthParams): SandboxOptions {
     vercelApiToken: decrypt(auth.vercelAuthParams?.vercelToken),
     vercelProjectId: auth.vercelAuthParams?.projectId,
     vercelTeamId: auth.vercelAuthParams?.teamId,
+    modalTokenId: decrypt(auth.modalAuthParams?.tokenId),
+    modalTokenSecret: decrypt(auth.modalAuthParams?.tokenSecret),
   };
 }
 
@@ -82,6 +101,7 @@ export async function resolveSandboxInstance(
   if (!record.sandboxId) {
     const sandbox = await createSandbox(record.provider as Provider, {
       id: record.id,
+      modalAppName: record.name,
       ...credentials,
     });
     const sandboxId = await sandbox.id();
@@ -93,5 +113,9 @@ export async function resolveSandboxInstance(
     record.sandboxId = sandboxId;
   }
 
-  return getSandboxById(record.provider as Provider, record.sandboxId!, credentials);
+  return getSandboxById(
+    record.provider as Provider,
+    record.sandboxId!,
+    credentials,
+  );
 }

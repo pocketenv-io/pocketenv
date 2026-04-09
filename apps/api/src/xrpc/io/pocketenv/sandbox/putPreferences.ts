@@ -19,7 +19,7 @@ import vercelAuth from "schema/vercel-auth";
 import spriteAuth from "schema/sprite-auth";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import type { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
-import modalAuth from "schema/modal-auth";
+import modalAuth, { type InsertModalAuth } from "schema/modal-auth";
 
 export default function (server: Server, ctx: Context) {
   const putPreferences = async (input: HandlerInput, auth: HandlerAuth) => {
@@ -223,18 +223,18 @@ const saveSandboxProvider = async (
         .values({
           userId: user.id,
           sandboxId: input.body.sandboxId,
-          tokenId: pref.tokenId!,
-          redactedTokenId: pref.redactedTokenId!,
-          tokenSecret: pref.tokenSecret!,
-          redactedTokenSecret: pref.redactedTokenSecret!,
-        })
+          tokenId: pref.modalTokenId!,
+          redactedTokenId: pref.redactedModalTokenId!,
+          tokenSecret: pref.modalTokenSecret!,
+          redactedTokenSecret: pref.redactedModalTokenSecret!,
+        } satisfies InsertModalAuth)
         .onConflictDoUpdate({
           target: [modalAuth.sandboxId, modalAuth.userId],
           set: {
-            tokenId: pref.tokenId!,
-            redactedTokenId: pref.redactedTokenId!,
-            tokenSecret: pref.tokenSecret!,
-            redactedTokenSecret: pref.redactedTokenSecret!,
+            tokenId: pref.modalTokenId!,
+            redactedTokenId: pref.redactedModalTokenId!,
+            tokenSecret: pref.modalTokenSecret!,
+            redactedTokenSecret: pref.redactedModalTokenSecret!,
           },
         })
         .execute();

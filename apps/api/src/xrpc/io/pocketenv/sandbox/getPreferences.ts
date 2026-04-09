@@ -105,7 +105,7 @@ export default function (server: Server, ctx: Context) {
       (modal && {
         $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
         name: "modal" as const,
-        redactedTokenId: modal.redactedTokenId,
+        redactedModalTokenId: modal.redactedTokenId,
         modalTokenId: modal.tokenId,
         modalTokenSecret: modal.tokenSecret,
         redactedModalTokenSecret: modal.redactedTokenSecret,

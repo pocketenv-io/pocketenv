@@ -168,10 +168,12 @@ class ModalProvider implements BaseProvider {
       tokenId: options?.modalTokenId || env.MODAL_TOKEN_ID!,
       tokenSecret: options?.modalTokenSecret || env.MODAL_TOKEN_SECRET!,
     });
-    consola.log("Getting Modal sandbox with ID:", id);
-    const sandbox = await modal.sandboxes.fromId(id);
-    consola.log("Got Modal sandbox with ID:", id, sandbox);
-    return new ModalSandbox(sandbox);
+    try {
+      const sandbox = await modal.sandboxes.fromId(id);
+      return new ModalSandbox(sandbox);
+    } catch {
+      return this.create(options!);
+    }
   }
 }
 

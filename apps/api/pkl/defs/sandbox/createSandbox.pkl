@@ -124,6 +124,22 @@ defs = new Mapping<String, Procedure> {
             type = "string"
             description = "The team ID for Vercel resources"
           }
+          ["modalTokenId"] = new StringType {
+            type = "string"
+            description = "A token (encrypted) for accessing Modal resources"
+          }
+          ["redactedModalTokenId"] = new StringType {
+            type = "string"
+            description = "A redacted token for accessing Modal resources"
+          }
+          ["modalTokenSecret"] = new StringType {
+            type = "string"
+            description = "A token (encrypted) for accessing Modal resources"
+          }
+          ["redactedModalTokenSecret"] = new StringType {
+            type = "string"
+            description = "A redacted token for accessing Modal resources"
+          }
         }
       }
     }

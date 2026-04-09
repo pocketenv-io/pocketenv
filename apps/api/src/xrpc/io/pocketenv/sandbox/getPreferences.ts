@@ -9,6 +9,7 @@ import type {
 } from "lexicon/types/io/pocketenv/sandbox/getPreferences";
 import daytonaAuth from "schema/daytona-auth";
 import denoAuth from "schema/deno-auth";
+import modalAuth from "schema/modal-auth";
 import sandboxes from "schema/sandboxes";
 import spriteAuth from "schema/sprite-auth";
 import users from "schema/users";
@@ -36,7 +37,7 @@ export default function (server: Server, ctx: Context) {
       eq(sandboxes.name, params.id),
     );
 
-    const [daytona, deno, sprite, vercel] = await Promise.all([
+    const [daytona, deno, sprite, vercel, modal] = await Promise.all([
       ctx.db
         .select()
         .from(daytonaAuth)
@@ -65,9 +66,16 @@ export default function (server: Server, ctx: Context) {
         .where(and(eq(vercelAuth.userId, user.id), sandboxFilter))
         .execute()
         .then(([row]) => row?.vercel_auth),
+      ctx.db
+        .select()
+        .from(modalAuth)
+        .leftJoin(sandboxes, eq(modalAuth.sandboxId, sandboxes.id))
+        .where(and(eq(modalAuth.userId, user.id), sandboxFilter))
+        .execute()
+        .then(([row]) => row?.modal_auth),
     ]);
 
-    if (!daytona && !deno && !sprite && !vercel) {
+    if (!daytona && !deno && !sprite && !vercel && !modal) {
       return [];
     }
 
@@ -93,6 +101,14 @@ export default function (server: Server, ctx: Context) {
         redactedApiKey: vercel.redactedVercelToken,
         vercelProjectId: vercel.projectId,
         vercelTeamId: vercel.teamId,
+      }) ||
+      (modal && {
+        $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
+        name: "modal" as const,
+        redactedTokenId: modal.redactedTokenId,
+        modalTokenId: modal.tokenId,
+        modalTokenSecret: modal.tokenSecret,
+        redactedModalTokenSecret: modal.redactedTokenSecret,
       }))!;
 
     return [provider satisfies SandboxProviderPref];

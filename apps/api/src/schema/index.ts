@@ -19,6 +19,7 @@ import spriteAuth from "./sprite-auth";
 import vercelAuth from "./vercel-auth";
 import sandboxCp from "./sandbox-cp";
 import backups from "./backups";
+import modalAuth from "./modal-auth";
 
 export default {
   sandboxes,
@@ -42,4 +43,5 @@ export default {
   vercelAuth,
   sandboxCp,
   backups,
+  modalAuth,
 };

@@ -40,6 +40,8 @@ describe("createSandbox", () => {
     delete process.env.VERCEL_API_TOKEN;
     delete process.env.VERCEL_PROJECT_ID;
     delete process.env.VERCEL_TEAM_ID;
+    delete process.env.MODAL_TOKEN_ID;
+    delete process.env.MODAL_TOKEN_SECRET;
   });
 
   it("creates a sandbox with default provider and logs success", async () => {

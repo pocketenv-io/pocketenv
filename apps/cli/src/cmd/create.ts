@@ -27,12 +27,12 @@ async function createSandbox(
   const providerOptions: Record<string, any> = {};
 
   if (
-    !["sprites", "daytona", "deno", "vercel", "cloudflare"].includes(
+    !["sprites", "daytona", "deno", "vercel", "cloudflare", "modal"].includes(
       provider ?? "cloudflare",
     )
   ) {
     consola.error(
-      `Unsupported provider: ${provider}. Supported providers are: sprites, daytona, deno, vercel, cloudflare (default).`,
+      `Unsupported provider: ${provider}. Supported providers are: sprites, daytona, deno, vercel, modal, cloudflare (default).`,
     );
     process.exit(1);
   }
@@ -89,6 +89,21 @@ async function createSandbox(
     providerOptions.redactedVercelApiToken = redact(vercelApiToken);
     providerOptions.vercelProjectId = vercelProjectId;
     providerOptions.vercelTeamId = vercelTeamId;
+  }
+
+  if (provider === "modal") {
+    const modalTokenId = process.env.MODAL_TOKEN_ID;
+    const modalTokenSecret = process.env.MODAL_TOKEN_SECRET;
+    if (!modalTokenId || !modalTokenSecret) {
+      consola.error(
+        "MODAL_TOKEN_ID and MODAL_TOKEN_SECRET environment variables are required for Modal provider.",
+      );
+      process.exit(1);
+    }
+    providerOptions.modalTokenId = await encrypt(modalTokenId);
+    providerOptions.redactedModalTokenId = redact(modalTokenId);
+    providerOptions.modalTokenSecret = await encrypt(modalTokenSecret);
+    providerOptions.redactedModalTokenSecret = redact(modalTokenSecret);
   }
 
   try {

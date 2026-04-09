@@ -19,6 +19,7 @@ import {
   spriteAuth,
   denoAuth,
   vercelAuth,
+  modalAuth,
 } from "../schema/mod.ts";
 import {
   SandboxConfig,
@@ -164,6 +165,20 @@ sandboxRouter.post("/", async (c) => {
           .execute();
       }
 
+      if (params.modalTokenId && user?.id) {
+        await tx
+          .insert(modalAuth)
+          .values({
+            sandboxId: record.id,
+            tokenId: params.modalTokenId!,
+            redactedTokenId: params.redactedModalTokenId!,
+            tokenSecret: params.modalTokenSecret!,
+            redactedTokenSecret: params.redactedModalTokenSecret!,
+            userId: user.id,
+          })
+          .execute();
+      }
+
       const sandbox = await createSandbox(params.provider, {
         id: record.id,
         keepAlive: params.keepAlive,
@@ -177,6 +192,8 @@ sandboxRouter.post("/", async (c) => {
         vercelApiToken: decrypt(params.vercelApiToken),
         vercelProjectId: params.vercelProjectId,
         vercelTeamId: params.vercelTeamId,
+        modalTokenId: decrypt(params.modalTokenId),
+        modalTokenSecret: decrypt(params.modalTokenSecret),
       });
       const sandboxId = await sandbox.id();
 

@@ -19,6 +19,7 @@ import spriteAuth from "./sprite-auth.ts";
 import vercelAuth from "./vercel-auth.ts";
 import sandboxCp from "./sandbox-cp.ts";
 import backups from "./backups.ts";
+import modalAuth from "./modal-auth.ts";
 
 export {
   sandboxes,
@@ -41,5 +42,6 @@ export {
   spriteAuth,
   vercelAuth,
   sandboxCp,
-  backups
+  backups,
+  modalAuth,
 };

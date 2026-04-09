@@ -681,6 +681,24 @@ export const schemaDict = {
                 type: "string",
                 description: "The team ID for Vercel resources",
               },
+              modalTokenId: {
+                type: "string",
+                description:
+                  "A token (encrypted) for accessing Modal resources",
+              },
+              redactedModalTokenId: {
+                type: "string",
+                description: "A redacted token for accessing Modal resources",
+              },
+              modalTokenSecret: {
+                type: "string",
+                description:
+                  "A token (encrypted) for accessing Modal resources",
+              },
+              redactedModalTokenSecret: {
+                type: "string",
+                description: "A redacted token for accessing Modal resources",
+              },
             },
           },
         },
@@ -1042,6 +1060,26 @@ export const schemaDict = {
             type: "string",
             description:
               "The team ID for Vercel, if the sandbox provider is Vercel and the sandbox should be created within a specific team. This is used to determine which team within the Vercel project the sandbox should be associated with.",
+          },
+          modalTokenId: {
+            type: "string",
+            description:
+              "The token ID for Modal, if the sandbox provider is Modal. This is used to determine which Modal token to use when creating the sandbox.",
+          },
+          modalTokenSecret: {
+            type: "string",
+            description:
+              "The token secret for Modal, if the sandbox provider is Modal. This is used to determine which Modal token secret to use when creating the sandbox.",
+          },
+          redactedModalTokenId: {
+            type: "string",
+            description:
+              "The redacted token ID for Modal, returned in API responses when the sandbox provider is Modal. This can be used to identify which Modal token is being used without exposing the actual token ID.",
+          },
+          redactedModalTokenSecret: {
+            type: "string",
+            description:
+              "The redacted token secret for Modal, returned in API responses when the sandbox provider is Modal. This can be used to identify which Modal token secret is being used without exposing the actual token secret.",
           },
         },
       },

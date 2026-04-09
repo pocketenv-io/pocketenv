@@ -126,6 +126,22 @@
             "vercelTeamId": {
               "type": "string",
               "description": "The team ID for Vercel resources"
+            },
+            "modalTokenId": {
+              "type": "string",
+              "description": "A token (encrypted) for accessing Modal resources"
+            },
+            "redactedModalTokenId": {
+              "type": "string",
+              "description": "A redacted token for accessing Modal resources"
+            },
+            "modalTokenSecret": {
+              "type": "string",
+              "description": "A token (encrypted) for accessing Modal resources"
+            },
+            "redactedModalTokenSecret": {
+              "type": "string",
+              "description": "A redacted token for accessing Modal resources"
             }
           }
         }

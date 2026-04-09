@@ -58,6 +58,14 @@ export interface InputSchema {
   vercelProjectId?: string;
   /** The team ID for Vercel resources */
   vercelTeamId?: string;
+  /** A token (encrypted) for accessing Modal resources */
+  modalTokenId?: string;
+  /** A redacted token for accessing Modal resources */
+  redactedModalTokenId?: string;
+  /** A token (encrypted) for accessing Modal resources */
+  modalTokenSecret?: string;
+  /** A redacted token for accessing Modal resources */
+  redactedModalTokenSecret?: string;
   [k: string]: unknown;
 }
 

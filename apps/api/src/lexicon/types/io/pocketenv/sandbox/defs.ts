@@ -229,6 +229,14 @@ export interface SandboxProviderPref {
   vercelProjectId?: string;
   /** The team ID for Vercel, if the sandbox provider is Vercel and the sandbox should be created within a specific team. This is used to determine which team within the Vercel project the sandbox should be associated with. */
   vercelTeamId?: string;
+  /** The token ID for Modal, if the sandbox provider is Modal. This is used to determine which Modal token to use when creating the sandbox. */
+  modalTokenId?: string;
+  /** The token secret for Modal, if the sandbox provider is Modal. This is used to determine which Modal token secret to use when creating the sandbox. */
+  modalTokenSecret?: string;
+  /** The redacted token ID for Modal, returned in API responses when the sandbox provider is Modal. This can be used to identify which Modal token is being used without exposing the actual token ID. */
+  redactedModalTokenId?: string;
+  /** The redacted token secret for Modal, returned in API responses when the sandbox provider is Modal. This can be used to identify which Modal token secret is being used without exposing the actual token secret. */
+  redactedModalTokenSecret?: string;
   [k: string]: unknown;
 }
 

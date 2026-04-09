@@ -23,18 +23,31 @@ const LABELS = {
   sprites: "Sprites API Key",
 } as const;
 
-type Provider = keyof typeof LABELS | "cloudflare";
+type Provider = keyof typeof LABELS | "cloudflare" | "modal";
 
 const schema = z
   .object({
-    provider: z.enum(["cloudflare", "daytona", "vercel", "deno", "sprites"]),
+    provider: z.enum([
+      "cloudflare",
+      "daytona",
+      "vercel",
+      "deno",
+      "sprites",
+      "modal",
+    ]),
     apiKey: z.string().optional(),
     organizationId: z.string().optional(),
     vercelProjectId: z.string().optional(),
     vercelTeamId: z.string().optional(),
+    tokenId: z.string().optional(),
+    tokenSecret: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.provider !== "cloudflare" && !data.apiKey?.trim()) {
+    if (
+      data.provider !== "cloudflare" &&
+      data.provider !== "modal" &&
+      !data.apiKey?.trim()
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: `${LABELS[data.provider as keyof typeof LABELS]} is required`,
@@ -60,6 +73,20 @@ const schema = z
         code: z.ZodIssueCode.custom,
         message: "Vercel Team ID is required",
         path: ["vercelTeamId"],
+      });
+    }
+    if (data.provider === "modal" && !data.tokenId?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Modal Token ID is required",
+        path: ["tokenId"],
+      });
+    }
+    if (data.provider === "modal" && !data.tokenSecret?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Modal Token Secret is required",
+        path: ["tokenSecret"],
       });
     }
   });
@@ -93,6 +120,8 @@ function Services() {
       apiKey: "",
       vercelProjectId: "",
       vercelTeamId: "",
+      tokenId: "",
+      tokenSecret: "",
     },
   });
 
@@ -108,6 +137,8 @@ function Services() {
       setValue("organizationId", providerPref.organizationId ?? "");
       setValue("vercelProjectId", providerPref.vercelProjectId ?? "");
       setValue("vercelTeamId", providerPref.vercelTeamId ?? "");
+      setValue("tokenId", providerPref.modalTokenId ?? "");
+      setValue("tokenSecret", providerPref.redactedModalTokenSecret ?? "");
     }
   }, [preferences, setValue]);
 
@@ -131,13 +162,33 @@ function Services() {
       pref.vercelTeamId = values.vercelTeamId?.trim();
     }
 
-    if (values.apiKey?.includes("**") && values.provider !== "cloudflare") {
+    if (values.provider === "modal") {
+      if (values.tokenId?.trim()) {
+        pref.modalTokenId = values.tokenId.trim();
+      }
+      if (values.tokenSecret && !values.tokenSecret.includes("**")) {
+        const sealed = sodium.cryptoBoxSeal(
+          sodium.fromString(values.tokenSecret),
+          sodium.fromHex(PUBLIC_KEY),
+        );
+        pref.modalTokenSecret = sodium.toBase64(
+          sealed,
+          sodium.base64Variants.URLSAFE_NO_PADDING,
+        );
+        pref.redactedModalTokenSecret =
+          values.tokenSecret.length > 14
+            ? values.tokenSecret.slice(0, 11) +
+              "*".repeat(24) +
+              values.tokenSecret.slice(-3)
+            : values.tokenSecret;
+      }
+    } else if (values.apiKey?.includes("**") && values.provider !== "cloudflare") {
       if (values.provider !== "daytona" && values.provider !== "vercel") {
         return;
       }
     }
 
-    if (values.apiKey && !values.apiKey.includes("**")) {
+    if (values.provider !== "modal" && values.apiKey && !values.apiKey.includes("**")) {
       const sealed = sodium.cryptoBoxSeal(
         sodium.fromString(values.apiKey),
         sodium.fromHex(PUBLIC_KEY),
@@ -196,6 +247,8 @@ function Services() {
                         setValue("organizationId", "");
                         setValue("vercelProjectId", "");
                         setValue("vercelTeamId", "");
+                        setValue("tokenId", "");
+                        setValue("tokenSecret", "");
                       }}
                       className="select select-lg font-medium text-[15px]"
                     >
@@ -206,11 +259,12 @@ function Services() {
                       <option value="vercel">Vercel Sandbox</option>
                       <option value="deno">Deno Sandbox</option>
                       <option value="sprites">Sprites</option>
+                      <option value="modal">Modal</option>
                     </select>
                   </div>
-                  {provider !== "cloudflare" && (
+                  {provider !== "cloudflare" && provider !== "modal" && (
                     <div className="w-96">
-                      <label className="label-text">{LABELS[provider]}</label>
+                      <label className="label-text">{LABELS[provider as keyof typeof LABELS]}</label>
                       <input
                         {...register("apiKey")}
                         type="text"
@@ -266,6 +320,36 @@ function Services() {
                       {errors.vercelTeamId && (
                         <p className="text-error text-sm mt-1">
                           {errors.vercelTeamId.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {provider === "modal" && (
+                  <div className="flex flex-row mt-4 gap-6">
+                    <div className="w-96">
+                      <label className="label-text">Modal Token ID</label>
+                      <input
+                        {...register("tokenId")}
+                        type="text"
+                        className="input input-lg font-medium text-[15px]"
+                      />
+                      {errors.tokenId && (
+                        <p className="text-error text-sm mt-1">
+                          {errors.tokenId.message}
+                        </p>
+                      )}
+                    </div>
+                    <div className="w-96">
+                      <label className="label-text">Modal Token Secret</label>
+                      <input
+                        {...register("tokenSecret")}
+                        type="text"
+                        className="input input-lg font-medium text-[15px]"
+                      />
+                      {errors.tokenSecret && (
+                        <p className="text-error text-sm mt-1">
+                          {errors.tokenSecret.message}
                         </p>
                       )}
                     </div>

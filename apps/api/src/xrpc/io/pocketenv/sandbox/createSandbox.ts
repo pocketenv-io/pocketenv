@@ -120,6 +120,10 @@ export default function (server: Server, ctx: Context) {
           redactedVercelApiToken: input.redactedVercelApiToken,
           vercelProjectId: input.vercelProjectId,
           vercelTeamId: input.vercelTeamId,
+          modalTokenId: input.modalTokenId,
+          redactedModalTokenId: input.redactedModalTokenId,
+          modalTokenSecret: input.modalTokenSecret,
+          redactedModalTokenSecret: input.redactedModalTokenSecret,
         },
         {
           headers: {

@@ -19,6 +19,7 @@ import vercelAuth from "schema/vercel-auth";
 import spriteAuth from "schema/sprite-auth";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import type { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
+import modalAuth from "schema/modal-auth";
 
 export default function (server: Server, ctx: Context) {
   const putPreferences = async (input: HandlerInput, auth: HandlerAuth) => {
@@ -216,6 +217,28 @@ const saveSandboxProvider = async (
         })
         .execute();
       break;
+    case "modal":
+      await tx
+        .insert(modalAuth)
+        .values({
+          userId: user.id,
+          sandboxId: input.body.sandboxId,
+          tokenId: pref.tokenId!,
+          redactedTokenId: pref.redactedTokenId!,
+          tokenSecret: pref.tokenSecret!,
+          redactedTokenSecret: pref.redactedTokenSecret!,
+        })
+        .onConflictDoUpdate({
+          target: [modalAuth.sandboxId, modalAuth.userId],
+          set: {
+            tokenId: pref.tokenId!,
+            redactedTokenId: pref.redactedTokenId!,
+            tokenSecret: pref.tokenSecret!,
+            redactedTokenSecret: pref.redactedTokenSecret!,
+          },
+        })
+        .execute();
+      break;
     case "cloudflare": {
       const [record] = await tx
         .select()
@@ -265,6 +288,15 @@ const saveSandboxProvider = async (
             and(
               eq(spriteAuth.userId, user.id),
               eq(spriteAuth.sandboxId, record!.id),
+            ),
+          )
+          .execute(),
+        tx
+          .delete(modalAuth)
+          .where(
+            and(
+              eq(modalAuth.userId, user.id),
+              eq(modalAuth.sandboxId, record!.id),
             ),
           )
           .execute(),

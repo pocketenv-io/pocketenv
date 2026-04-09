@@ -12,6 +12,7 @@
     "@daytonaio/sdk": "^0.162.0",
     "@deno/sandbox": "^0.13.2",
     "@fly/sprites": "^0.0.1",
+    "@hono/node-server": "^1.19.13",
     "@std/yaml": "npm:@jsr/std__yaml",
     "@tsndr/cloudflare-worker-jwt": "^3.2.1",
     "@vercel/sandbox": "^1.9.3",

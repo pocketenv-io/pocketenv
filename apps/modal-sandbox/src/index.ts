@@ -1,4 +1,5 @@
 import { Hono } from "hono";
+import { serve } from "@hono/node-server";
 import type { Context } from "./context";
 import { logger } from "hono/logger";
 import { consola } from "consola";
@@ -31,4 +32,7 @@ const PORT = 8790;
 const url = chalk.greenBright(`http://localhost:${PORT}`);
 consola.info(`Starting server on ${url}`);
 
-app.listen(process.env.MODAL_SANDBOX_PORT || PORT);
+serve({
+  fetch: app.fetch,
+  port: PORT,
+});

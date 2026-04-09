@@ -61,7 +61,6 @@ RUN npm install -g pm2
 USER root
 
 RUN curl -L https://github.com/tsirysndr/pty-tunnel-server/releases/download/v0.0.2/pty-server-linux-x86_64.tar.gz | tar xz -C /tmp && \
-    chmod a+x /tmp/pty-tunnel-server && \
     mv /tmp/pty-tunnel-server /usr/bin && \
     chmod +x /usr/bin/pty-tunnel-server
 

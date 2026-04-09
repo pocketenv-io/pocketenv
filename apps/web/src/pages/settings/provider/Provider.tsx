@@ -137,7 +137,7 @@ function Services() {
       setValue("organizationId", providerPref.organizationId ?? "");
       setValue("vercelProjectId", providerPref.vercelProjectId ?? "");
       setValue("vercelTeamId", providerPref.vercelTeamId ?? "");
-      setValue("tokenId", providerPref.modalTokenId ?? "");
+      setValue("tokenId", providerPref.redactedModalTokenId ?? "");
       setValue("tokenSecret", providerPref.redactedModalTokenSecret ?? "");
     }
   }, [preferences, setValue]);
@@ -163,8 +163,21 @@ function Services() {
     }
 
     if (values.provider === "modal") {
-      if (values.tokenId?.trim()) {
-        pref.modalTokenId = values.tokenId.trim();
+      if (values.tokenId && !values.tokenId.includes("**")) {
+        const sealedId = sodium.cryptoBoxSeal(
+          sodium.fromString(values.tokenId.trim()),
+          sodium.fromHex(PUBLIC_KEY),
+        );
+        pref.modalTokenId = sodium.toBase64(
+          sealedId,
+          sodium.base64Variants.URLSAFE_NO_PADDING,
+        );
+        pref.redactedModalTokenId =
+          values.tokenId.length > 14
+            ? values.tokenId.slice(0, 11) +
+              "*".repeat(24) +
+              values.tokenId.slice(-3)
+            : values.tokenId;
       }
       if (values.tokenSecret && !values.tokenSecret.includes("**")) {
         const sealed = sodium.cryptoBoxSeal(

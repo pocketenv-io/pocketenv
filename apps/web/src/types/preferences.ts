@@ -14,6 +14,7 @@ export type SandboxProvider = {
   vercelProjectId?: string;
   vercelTeamId?: string;
   modalTokenId?: string;
+  redactedModalTokenId?: string;
   modalTokenSecret?: string;
   redactedModalTokenSecret?: string;
   $type: "io.pocketenv.sandbox.defs#sandboxProviderPref";

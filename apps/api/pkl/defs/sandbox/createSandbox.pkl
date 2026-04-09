@@ -28,7 +28,7 @@ defs = new Mapping<String, Procedure> {
           }
           ["provider"] = new StringType {
             type = "string"
-            enum = List("daytona", "vercel", "cloudflare", "deno", "sprites")
+            enum = List("daytona", "vercel", "cloudflare", "deno", "sprites", "modal")
             description =
               "The provider to create the sandbox on, e.g. 'daytona', 'vercel', 'cloudflare', etc."
           }

@@ -34,7 +34,8 @@
                 "vercel",
                 "cloudflare",
                 "deno",
-                "sprites"
+                "sprites",
+                "modal"
               ]
             },
             "topics": {

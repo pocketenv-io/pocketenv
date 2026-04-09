@@ -273,8 +273,7 @@ sandboxRouter.post("/:sandboxId/start", async (c) => {
   c.var.db
     .update(sandboxes)
     .set({
-      sandboxId:
-        record.provider === "deno" ? await sandbox.id() : record.sandboxId,
+      sandboxId: await sandbox.id(),
     })
     .where(eq(sandboxes.id, record.id))
     .execute()

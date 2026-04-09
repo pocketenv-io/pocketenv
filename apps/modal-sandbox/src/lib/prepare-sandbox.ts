@@ -1,48 +1,38 @@
 import { parse } from "@std/yaml";
-import amp from "../presets/amp.yaml" with { type: "text" };
-import claude from "../presets/claude.yaml" with { type: "text" };
-import codex from "../presets/codex.yaml" with { type: "text" };
-import copilot from "../presets/copilot.yaml" with { type: "text" };
-import crush from "../presets/crush.yaml" with { type: "text" };
-import cursor from "../presets/cursor.yaml" with { type: "text" };
-import gemini from "../presets/gemini.yaml" with { type: "text" };
-import kilo from "../presets/kilo.yaml" with { type: "text" };
-import kiro from "../presets/kiro.yaml" with { type: "text" };
-import mise from "../presets/mise.yaml" with { type: "text" };
-import nix from "../presets/nix.yaml" with { type: "text" };
-import nullclaw from "../presets/nullclaw.yaml" with { type: "text" };
-import openclaw from "../presets/openclaw.yaml" with { type: "text" };
-import opencode from "../presets/opencode.yaml" with { type: "text" };
-import opencrust from "../presets/opencrust.yaml" with { type: "text" };
-import picoclaw from "../presets/picoclaw.yaml" with { type: "text" };
-import pkgx from "../presets/pkgx.yaml" with { type: "text" };
-import wasmer from "../presets/wasmer.yaml" with { type: "text" };
-import zeroclaw from "../presets/zeroclaw.yaml" with { type: "text" };
+import { readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import chalk from "chalk";
 import { BaseSandbox } from "../providers";
 import { type Preset, PresetSchema } from "../types/preset";
 import { consola } from "consola";
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+function readPreset(name: string): string {
+  return readFileSync(join(__dirname, `../presets/${name}.yaml`), "utf-8");
+}
+
 const presets: Record<string, string> = {
-  amp,
-  claude,
-  codex,
-  copilot,
-  crush,
-  cursor,
-  gemini,
-  kilo,
-  kiro,
-  mise,
-  nix,
-  nullclaw,
-  openclaw,
-  opencode,
-  opencrust,
-  picoclaw,
-  pkgx,
-  wasmer,
-  zeroclaw,
+  amp: readPreset("amp"),
+  claude: readPreset("claude"),
+  codex: readPreset("codex"),
+  copilot: readPreset("copilot"),
+  crush: readPreset("crush"),
+  cursor: readPreset("cursor"),
+  gemini: readPreset("gemini"),
+  kilo: readPreset("kilo"),
+  kiro: readPreset("kiro"),
+  mise: readPreset("mise"),
+  nix: readPreset("nix"),
+  nullclaw: readPreset("nullclaw"),
+  openclaw: readPreset("openclaw"),
+  opencode: readPreset("opencode"),
+  opencrust: readPreset("opencrust"),
+  picoclaw: readPreset("picoclaw"),
+  pkgx: readPreset("pkgx"),
+  wasmer: readPreset("wasmer"),
+  zeroclaw: readPreset("zeroclaw"),
 };
 
 async function prepareSandbox(sandbox: BaseSandbox, base: string) {

@@ -32,7 +32,12 @@ const PORT = 8790;
 const url = chalk.greenBright(`http://localhost:${PORT}`);
 consola.info(`Starting server on ${url}`);
 
-serve({
-  fetch: app.fetch,
-  port: PORT,
-});
+serve(
+  {
+    fetch: app.fetch,
+    port: PORT,
+  },
+  () => {
+    consola.info(`Server started successfully`);
+  },
+);

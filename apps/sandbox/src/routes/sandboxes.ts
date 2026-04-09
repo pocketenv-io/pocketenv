@@ -43,6 +43,7 @@ import { PushDirectoryParams, pushSchema } from "../types/push.ts";
 import crypto from "node:crypto";
 import process from "node:process";
 import prepareSandbox from "../lib/prepare-sandbox.ts";
+import { images } from "../images.ts";
 
 const SUPPORTED_PROVIDERS = ["daytona", "vercel", "deno", "sprites"];
 
@@ -194,6 +195,7 @@ sandboxRouter.post("/", async (c) => {
         vercelTeamId: params.vercelTeamId,
         modalTokenId: decrypt(params.modalTokenId),
         modalTokenSecret: decrypt(params.modalTokenSecret),
+        image: images[params.base] || images["openclaw"],
       });
       const sandboxId = await sandbox.id();
 

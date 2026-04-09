@@ -54,6 +54,8 @@ RUN case "${TARGETARCH}" in \
     sudo tar -xzf /tmp/zeroclaw.tar.gz -C /home/modal/.local/bin && \
     sudo chmod +x /home/modal/.local/bin/zeroclaw
 
+ RUN mkdir -p /home/modal/.npm-global && npm config set prefix "/home/modal/.npm-global"
+
 ENV PATH="/home/modal/.local/bin:/home/modal/.npm-global/bin:${PATH}"
 
 RUN npm install -g pm2

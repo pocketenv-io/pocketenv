@@ -38,6 +38,8 @@ USER modal
 
 RUN curl -fsSL https://tailscale.com/install.sh | sh
 
+RUN mkdir -p /home/modal/.npm-global && npm config set prefix "/home/modal/.npm-global"
+
 RUN mkdir -p /home/modal/.local/bin && \
     curl -fsSL https://cli.kiro.dev/install | bash
 

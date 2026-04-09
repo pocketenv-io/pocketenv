@@ -40,6 +40,8 @@ RUN curl -fsSL https://tailscale.com/install.sh | sh
 
 RUN curl https://pkgx.sh | sh
 
+RUN mkdir -p /home/modal/.npm-global && npm config set prefix "/home/modal/.npm-global"
+
 ENV PATH="/home/modal/.local/bin:/home/modal/.npm-global/bin:${PATH}"
 
 RUN npm install -g pm2

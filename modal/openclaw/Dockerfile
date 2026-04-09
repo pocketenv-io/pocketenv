@@ -50,6 +50,8 @@ RUN curl -fsSL https://tailscale.com/install.sh | sh
 
 RUN curl -fsSL https://openclaw.ai/install.sh | bash || true
 
+RUN mkdir -p /home/modal/.npm-global && npm config set prefix "/home/modal/.npm-global"
+
 ENV PATH="/home/modal/.local/bin:/home/modal/.npm-global/bin:${PATH}"
 
 RUN npm install -g @chrysb/alphaclaw pm2

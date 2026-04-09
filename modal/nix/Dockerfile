@@ -43,6 +43,8 @@ RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/
     --init none \
     --no-confirm
 
+RUN mkdir -p /home/modal/.npm-global && npm config set prefix "/home/modal/.npm-global"
+
 ENV PATH="/home/modal/.local/bin:/home/modal/.npm-global/bin:${PATH}"
 
 RUN npm install -g pm2

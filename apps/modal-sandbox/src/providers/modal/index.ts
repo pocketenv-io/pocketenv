@@ -154,7 +154,7 @@ class ModalProvider implements BaseProvider {
     );
     consola.info("Setup image for Modal sandbox with app name:", modalAppName);
     const image = modal.images.fromRegistry(
-      options.image || "ghcr.io/pocketenv-io/daytona-openclaw:0.1.0",
+      options.image || "ghcr.io/pocketenv-io/modal-openclaw:0.1.0",
     );
     consola.info("Creating Modal sandbox with app name:", modalAppName);
     const sandbox = await modal.sandboxes.create(app, image);

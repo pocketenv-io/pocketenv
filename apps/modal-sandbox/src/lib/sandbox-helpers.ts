@@ -113,9 +113,8 @@ export async function resolveSandboxInstance(
     record.sandboxId = sandboxId;
   }
 
-  return getSandboxById(
-    record.provider as Provider,
-    record.sandboxId!,
-    credentials,
-  );
+  return getSandboxById(record.provider as Provider, record.sandboxId!, {
+    modalAppName: record.name,
+    ...credentials,
+  });
 }

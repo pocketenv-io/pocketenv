@@ -49,12 +49,13 @@ export class ModalSandbox implements BaseSandbox {
     }, "");
     const result = await this.sandbox.exec(["bash", "-c", command]);
 
-    return {
-      ...result,
-      stdout: await result.stdout.readText(),
-      stderr: await result.stderr.readText(),
-      exitCode: await result.wait(),
-    };
+    const [stdout, stderr, exitCode] = await Promise.all([
+      result.stdout.readText(),
+      result.stderr.readText(),
+      result.wait(),
+    ]);
+
+    return { ...result, stdout, stderr, exitCode };
   }
 
   async id(): Promise<string | null> {
@@ -119,19 +120,7 @@ export class ModalSandbox implements BaseSandbox {
       ? `${env.VOLUME_BUCKET}:${prefix}`
       : env.VOLUME_BUCKET;
 
-    await this.sandbox.exec(
-      [
-        "sh",
-        "-c",
-        `tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" -o allow_other,default_permissions ${bucketPath} ${path} || sudo tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" -o allow_other,default_permissions ${bucketPath} ${path}`,
-      ],
-      {
-        env: {
-          AWS_ACCESS_KEY_ID: env.R2_ACCESS_KEY_ID!,
-          AWS_SECRET_ACCESS_KEY: env.R2_SECRET_ACCESS_KEY!,
-        },
-      },
-    );
+    await this.sh`AWS_ACCESS_KEY_ID=${env.R2_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${env.R2_SECRET_ACCESS_KEY} nohup tigrisfs --endpoint "https://${env.ACCOUNT_ID}.r2.cloudflarestorage.com" -o allow_other,default_permissions ${bucketPath} ${path} > /dev/null 2>&1 &`;
   }
 
   async unmount(path: string): Promise<void> {

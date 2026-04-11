@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "apps/sandbox/**"
+      - "apps/modal-sandbox/**"
       - ".github/workflows/test-sandbox.yml"
 
 jobs:
@@ -13,9 +14,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+
       - name: Set up Deno
         uses: denoland/setup-deno@v2
 
-      - name: Run tests
+      - name: Run tests (sandbox)
         working-directory: apps/sandbox
         run: deno task test
+
+      - name: Run tests (modal sandbox)
+        working-directory: apps/modal-sandbox
+        run: |
+          bun install
+          bun run test

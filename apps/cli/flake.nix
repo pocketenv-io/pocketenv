@@ -13,7 +13,7 @@
 
         pocketenv-cli = pkgs.buildNpmPackage {
           pname = "pocketenv-cli";
-          version = "0.6.9";
+          version = "0.6.10";
 
           src = ./.;
 
@@ -21,6 +21,8 @@
           npmConfigHook = pkgs.importNpmLock.npmConfigHook;
 
           nodejs = pkgs.nodejs_24;
+
+          nativeBuildInputs = [ pkgs.bun ];
 
           meta.mainProgram = "pocketenv";
         };
@@ -30,6 +32,7 @@
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.nodejs_24
+            pkgs.bun
             pocketenv-cli
           ];
         };

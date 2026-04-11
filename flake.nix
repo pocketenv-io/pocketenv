@@ -35,6 +35,7 @@
         devShells.default = pkgs.mkShell {
           packages = [
             pkgs.nodejs_24
+            pkgs.bun
             cli
           ];
         };

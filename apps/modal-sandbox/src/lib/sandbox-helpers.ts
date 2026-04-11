@@ -77,7 +77,7 @@ export async function getAuthParams(
     db
       .select()
       .from(e2bAuth)
-      .where(eq(modalAuth.sandboxId, sandboxDbId))
+      .where(eq(e2bAuth.sandboxId, sandboxDbId))
       .execute(),
   ]);
   return {

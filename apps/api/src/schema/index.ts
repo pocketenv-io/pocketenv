@@ -20,6 +20,7 @@ import vercelAuth from "./vercel-auth";
 import sandboxCp from "./sandbox-cp";
 import backups from "./backups";
 import modalAuth from "./modal-auth";
+import e2bAuth from "./e2b-auth";
 
 export default {
   sandboxes,
@@ -44,4 +45,5 @@ export default {
   sandboxCp,
   backups,
   modalAuth,
+  e2bAuth,
 };

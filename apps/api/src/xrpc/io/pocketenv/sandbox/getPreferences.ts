@@ -9,6 +9,7 @@ import type {
 } from "lexicon/types/io/pocketenv/sandbox/getPreferences";
 import daytonaAuth from "schema/daytona-auth";
 import denoAuth from "schema/deno-auth";
+import e2bAuth from "schema/e2b-auth";
 import modalAuth from "schema/modal-auth";
 import sandboxes from "schema/sandboxes";
 import spriteAuth from "schema/sprite-auth";
@@ -37,7 +38,7 @@ export default function (server: Server, ctx: Context) {
       eq(sandboxes.name, params.id),
     );
 
-    const [daytona, deno, sprite, vercel, modal] = await Promise.all([
+    const [daytona, deno, sprite, vercel, modal, e2b] = await Promise.all([
       ctx.db
         .select()
         .from(daytonaAuth)
@@ -73,9 +74,16 @@ export default function (server: Server, ctx: Context) {
         .where(and(eq(modalAuth.userId, user.id), sandboxFilter))
         .execute()
         .then(([row]) => row?.modal_auth),
+      ctx.db
+        .select()
+        .from(e2bAuth)
+        .leftJoin(sandboxes, eq(e2bAuth.sandboxId, sandboxes.id))
+        .where(and(eq(e2bAuth.userId, user.id), sandboxFilter))
+        .execute()
+        .then(([row]) => row?.e2b_auth),
     ]);
 
-    if (!daytona && !deno && !sprite && !vercel && !modal) {
+    if (!daytona && !deno && !sprite && !vercel && !modal && !e2b) {
       return [];
     }
 
@@ -106,9 +114,12 @@ export default function (server: Server, ctx: Context) {
         $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
         name: "modal" as const,
         redactedModalTokenId: modal.redactedTokenId,
-        modalTokenId: modal.tokenId,
-        modalTokenSecret: modal.tokenSecret,
         redactedModalTokenSecret: modal.redactedTokenSecret,
+      }) ||
+      (e2b && {
+        $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
+        name: "e2b" as const,
+        redactedE2bAccessToken: e2b.redactedAccessToken,
       }))!;
 
     return [provider satisfies SandboxProviderPref];

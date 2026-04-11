@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "dev": "tsx --watch src/index.ts",
-    "start": "tsx src/index.ts",
-    "start:prod": "node dist/index.js",
-    "build": "pkgroll"
+    "start": "npm run build && node dist/index.js",
+    "start:prod": "npm run build && node dist/index.js",
+    "build": "bun build src/index.ts --outdir ./dist --target node"
   },
   "dependencies": {
     "@daytonaio/sdk": "^0.162.0",
@@ -19,6 +19,7 @@
     "chalk": "^5.6.2",
     "consola": "^3.4.2",
     "drizzle-orm": "^0.45.2",
+    "e2b": "^2.19.0",
     "effect": "^3.21.0",
     "envalid": "^8.1.1",
     "hono": "^4.12.12",

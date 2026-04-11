@@ -4,7 +4,7 @@
   "bin": {
     "pocketenv": "dist/index.js"
   },
-  "version": "0.6.9",
+  "version": "0.6.10",
   "type": "module",
   "keywords": [
     "sandbox",
@@ -24,7 +24,7 @@
   },
   "scripts": {
     "dev": "tsx ./src/index.ts",
-    "build": "pkgroll && chmod +x ./dist/index.js",
+    "build": "./build.ts && chmod +x ./dist/index.js",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -32,11 +32,11 @@
     "typescript": "^5"
   },
   "devDependencies": {
+    "@types/bun": "^1.3.12",
     "@types/cors": "^2.8.19",
     "@types/eventsource": "^1.1.15",
     "@types/express": "^5.0.6",
     "@types/ws": "^8.18.1",
-    "pkgroll": "^2.27.0",
     "tsx": "^4.21.0",
     "vitest": "^4.1.2"
   },

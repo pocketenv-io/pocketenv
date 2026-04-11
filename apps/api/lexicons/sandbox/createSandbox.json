@@ -35,7 +35,8 @@
                 "cloudflare",
                 "deno",
                 "sprites",
-                "modal"
+                "modal",
+                "e2b"
               ]
             },
             "topics": {
@@ -143,6 +144,14 @@
             "redactedModalTokenSecret": {
               "type": "string",
               "description": "A redacted token for accessing Modal resources"
+            },
+            "e2bAccessToken": {
+              "type": "string",
+              "description": "A token (encrypted) for accessing E2B resources"
+            },
+            "redactedE2bAccessToken": {
+              "type": "string",
+              "description": "A redacted token for accessing E2B resources"
             }
           }
         }

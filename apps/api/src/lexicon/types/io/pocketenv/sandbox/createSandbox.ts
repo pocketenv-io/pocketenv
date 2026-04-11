@@ -19,7 +19,14 @@ export interface InputSchema {
   /** A description for the sandbox */
   description?: string;
   /** The provider to create the sandbox on, e.g. 'daytona', 'vercel', 'cloudflare', etc. */
-  provider?: "daytona" | "vercel" | "cloudflare" | "deno" | "sprites" | "modal";
+  provider?:
+    | "daytona"
+    | "vercel"
+    | "cloudflare"
+    | "deno"
+    | "sprites"
+    | "modal"
+    | "e2b";
   /** A list of topics/tags to associate with the sandbox */
   topics?: string[];
   /** A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo. */
@@ -66,6 +73,10 @@ export interface InputSchema {
   modalTokenSecret?: string;
   /** A redacted token for accessing Modal resources */
   redactedModalTokenSecret?: string;
+  /** A token (encrypted) for accessing E2B resources */
+  e2bAccessToken?: string;
+  /** A redacted token for accessing E2B resources */
+  redactedE2bAccessToken?: string;
   [k: string]: unknown;
 }
 

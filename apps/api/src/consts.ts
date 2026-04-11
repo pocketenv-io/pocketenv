@@ -7,6 +7,7 @@ export enum Providers {
   CLOUDFLARE = "cloudflare",
   SPRITE = "sprite",
   MODAL = "modal",
+  E2B = "e2b",
 }
 
 export type Resources = {
@@ -42,6 +43,11 @@ export const DefaultResources: Record<Providers, Resources> = {
     disk: 100,
   },
   modal: {
+    vcpus: 2,
+    memory: 8,
+    disk: 16,
+  },
+  e2b: {
     vcpus: 2,
     memory: 8,
     disk: 16,

@@ -30,7 +30,7 @@ abstract class BaseProvider {
   abstract create(options: SandboxOptions): Promise<BaseSandbox>;
 }
 
-export type Provider = "daytona" | "deno" | "vercel" | "sprites" | "modal";
+export type Provider = "daytona" | "deno" | "vercel" | "sprites";
 
 export interface SandboxOptions {
   id?: string;
@@ -51,9 +51,6 @@ export interface SandboxOptions {
   vercelApiToken?: string;
   vercelProjectId?: string;
   vercelTeamId?: string;
-  modalTokenId?: string;
-  modalTokenSecret?: string;
-  modalAppName?: string;
   image?: string;
   [key: string]: any;
 }
@@ -77,10 +74,6 @@ export async function createSandbox(
       );
     case "sprites":
       return import("./sprites/mod.ts").then((module) =>
-        new module.default().create(options),
-      );
-    case "modal":
-      return import("./modal/mod.ts").then((module) =>
         new module.default().create(options),
       );
     default:
@@ -132,10 +125,6 @@ export async function getSandboxById(
     case "sprites":
       return import("./sprites/mod.ts").then((module) =>
         new module.default().get(id, options?.spriteToken),
-      );
-    case "modal":
-      return import("./modal/mod.ts").then((module) =>
-        new module.default().get(id, options),
       );
     default:
       consola.error(`Provider ${provider} is not supported yet.`);

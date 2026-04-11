@@ -32,7 +32,7 @@ export const SandboxConfigSchema = z
     name: z.string().optional(),
     description: z.string().optional(),
     provider: z
-      .enum(["daytona", "vercel", "deno", "sprites", "modal"])
+      .enum(["daytona", "vercel", "deno", "sprites"])
       .optional()
       .default("deno"),
     base: z.enum(["openclaw"]).optional().default("openclaw"),
@@ -48,10 +48,6 @@ export const SandboxConfigSchema = z
     redactedVercelApiToken: z.string().optional(),
     vercelProjectId: z.string().optional(),
     vercelTeamId: z.string().optional(),
-    modalTokenId: z.string().optional(),
-    redactedModalTokenId: z.string().optional(),
-    modalTokenSecret: z.string().optional(),
-    redactedModalTokenSecret: z.string().optional(),
     vcpus: z.number().optional().default(2),
     memory: z.number().optional().default(4),
     disk: z.number().optional().default(3),
@@ -167,38 +163,6 @@ export const SandboxConfigSchema = z
           code: z.ZodIssueCode.custom,
           message: "vercelProjectId is required when provider is 'vercel'",
           path: ["vercelProjectId"],
-        });
-      }
-    }
-
-    if (data.provider === "modal") {
-      if (!data.modalTokenId) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "modalTokenId is required when provider is 'modal'",
-          path: ["modalTokenId"],
-        });
-      }
-      if (!data.redactedModalTokenId) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "redactedModalTokenId is required when provider is 'modal'",
-          path: ["redactedModalTokenId"],
-        });
-      }
-      if (!data.modalTokenSecret) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "modalTokenSecret is required when provider is 'modal'",
-          path: ["modalTokenSecret"],
-        });
-      }
-      if (!data.redactedModalTokenSecret) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message:
-            "redactedModalTokenSecret is required when provider is 'modal'",
-          path: ["redactedModalTokenSecret"],
         });
       }
     }

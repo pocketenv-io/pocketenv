@@ -32,7 +32,7 @@ export const SandboxConfigSchema = z
     name: z.string().optional(),
     description: z.string().optional(),
     provider: z
-      .enum(["daytona", "vercel", "deno", "sprites", "modal"])
+      .enum(["daytona", "vercel", "deno", "sprites", "modal", "e2b"])
       .optional()
       .default("deno"),
     base: z.enum(["openclaw"]).optional().default("openclaw"),
@@ -52,6 +52,8 @@ export const SandboxConfigSchema = z
     redactedModalTokenId: z.string().optional(),
     modalTokenSecret: z.string().optional(),
     redactedModalTokenSecret: z.string().optional(),
+    e2bAccessToken: z.string().optional(),
+    redactedE2bAccessToken: z.string().optional(),
     vcpus: z.number().optional().default(2),
     memory: z.number().optional().default(4),
     disk: z.number().optional().default(3),
@@ -199,6 +201,16 @@ export const SandboxConfigSchema = z
           message:
             "redactedModalTokenSecret is required when provider is 'modal'",
           path: ["redactedModalTokenSecret"],
+        });
+      }
+    }
+
+    if (data.provider === "e2b") {
+      if (!data.e2bAccessToken) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "e2bAccessToken is required when provider is 'e2b'",
+          path: ["e2bAccessToken"],
         });
       }
     }

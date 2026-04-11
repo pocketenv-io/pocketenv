@@ -1,16 +1,11 @@
-import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
-import { ModalClient, Sandbox } from "modal";
-import consola from "consola";
+import { Sandbox, Template } from "e2b";
+import BaseProvider, { BaseSandbox, type SandboxOptions } from "..";
+import { consola } from "consola";
 import path from "node:path";
 import { env } from "node:process";
-import { Buffer } from "node:buffer";
-import {
-  adjectives,
-  generateUniqueAsync,
-  nouns,
-} from "unique-username-generator";
+import parseImageRef from "lib/parseImageRef";
 
-export class ModalSandbox implements BaseSandbox {
+export class E2bSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
 
   async start(): Promise<void> {
@@ -19,20 +14,17 @@ export class ModalSandbox implements BaseSandbox {
 
   async stop(): Promise<void> {
     try {
-      consola.info("Stopping Modal sandbox with ID:", await this.id());
-      await this.sandbox.terminate();
+      await this.sandbox.kill();
     } catch (error) {
-      consola.error("Error stopping Modal sandbox:", error);
+      consola.error("Error stopping e2b sandbox:", error);
     }
   }
 
   async delete(): Promise<void> {
-    // Modal's sandbox does not have a separate delete method, so we just stop it.
     try {
-      consola.info("Deleting Modal sandbox with ID:", await this.id());
       await this.stop();
     } catch (error) {
-      consola.error("Error deleting Modal sandbox:", error);
+      consola.error("Error deleting e2b sandbox:", error);
     }
   }
 
@@ -47,17 +39,13 @@ export class ModalSandbox implements BaseSandbox {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");
-    const result = await this.sandbox.exec(["bash", "-c", command]);
+    const result = await this.sandbox.commands.run(`bash -c ${command}`);
 
-    consola.info(`exec command: ${command}`);
-    const [stdout, stderr, exitCode] = await Promise.all([
-      result.stdout.readText(),
-      result.stderr.readText(),
-      result.wait(),
-    ]);
-    consola.info(`exitCode=${exitCode}`);
-
-    return { ...result, stdout, stderr, exitCode };
+    return {
+      stdout: result.stdout,
+      stderr: result.stderr,
+      exitCode: result.exitCode,
+    };
   }
 
   async id(): Promise<string | null> {
@@ -132,47 +120,36 @@ export class ModalSandbox implements BaseSandbox {
   }
 }
 
-class ModalProvider implements BaseProvider {
+class E2bProvider implements BaseProvider {
   async create(options: SandboxOptions): Promise<BaseSandbox> {
-    const suffix = Math.random().toString(36).substring(2, 6);
-    let modalAppName = await generateUniqueAsync(
-      { dictionaries: [adjectives, nouns], separator: "-" },
-      () => false,
-    );
-    modalAppName = `${modalAppName}-${suffix}`;
-    consola.info("Connecting to Modal with app name:", modalAppName);
-    const modal = new ModalClient({
-      tokenId: options.modalTokenId || env.MODAL_TOKEN_ID!,
-      tokenSecret: options.modalTokenSecret || env.MODAL_TOKEN_SECRET!,
+    if (!options.e2bAccessToken) {
+      throw new Error("E2B access token is required to create a sandbox");
+    }
+    const image = options.image || "ghcr.io/pocketenv-io/modal-openclaw:0.1.0";
+    const template = Template().fromImage(image);
+    const { name, tag } = parseImageRef(image);
+    await Template.build(template, name, {
+      tags: [tag],
     });
-    consola.info("Creating Modal sandbox with app name:", modalAppName);
-    const app = await modal.apps.fromName(
-      options.modalAppName || modalAppName,
-      {
-        createIfMissing: true,
-      },
-    );
-    consola.info("Setup image for Modal sandbox with app name:", modalAppName);
-    const image = modal.images.fromRegistry(
-      options.image || "ghcr.io/pocketenv-io/daytona-openclaw:0.1.0",
-    );
-    consola.info("Creating Modal sandbox with app name:", modalAppName);
-    const sandbox = await modal.sandboxes.create(app, image);
-    consola.info("Created Modal sandbox with ID:", sandbox.sandboxId);
-
-    return new ModalSandbox(sandbox);
+    const sandbox = await Sandbox.create(`${name}:${tag}`, {
+      accessToken: options.e2bAccessToken,
+    });
+    return new E2bSandbox(sandbox);
   }
 
   async get(id: string, options?: SandboxOptions): Promise<BaseSandbox> {
-    const modal = new ModalClient({
-      tokenId: options?.modalTokenId || env.MODAL_TOKEN_ID!,
-      tokenSecret: options?.modalTokenSecret || env.MODAL_TOKEN_SECRET!,
-    });
-    consola.log("Getting Modal sandbox with ID:", id);
-    const sandbox = await modal.sandboxes.fromId(id);
-    consola.log("Got Modal sandbox with ID:", id, sandbox);
-    return new ModalSandbox(sandbox);
+    try {
+      if (!options?.e2bAccessToken) {
+        throw new Error("E2B access token is required to get a sandbox");
+      }
+      const sandbox = await Sandbox.connect(id, {
+        accessToken: options?.e2bAccessToken,
+      });
+      return new E2bSandbox(sandbox);
+    } catch {
+      return this.create(options!);
+    }
   }
 }
 
-export default ModalProvider;
+export default E2bProvider;

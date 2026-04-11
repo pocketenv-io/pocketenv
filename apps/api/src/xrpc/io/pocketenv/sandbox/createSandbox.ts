@@ -124,6 +124,8 @@ export default function (server: Server, ctx: Context) {
           redactedModalTokenId: input.redactedModalTokenId,
           modalTokenSecret: input.modalTokenSecret,
           redactedModalTokenSecret: input.redactedModalTokenSecret,
+          e2bAccessToken: input.e2bAccessToken,
+          redactedE2bAccessToken: input.redactedE2bAccessToken,
         },
         {
           headers: {

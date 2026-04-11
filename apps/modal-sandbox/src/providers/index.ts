@@ -29,7 +29,13 @@ abstract class BaseProvider {
   abstract create(options: SandboxOptions): Promise<BaseSandbox>;
 }
 
-export type Provider = "daytona" | "deno" | "vercel" | "sprites" | "modal";
+export type Provider =
+  | "daytona"
+  | "deno"
+  | "vercel"
+  | "sprites"
+  | "modal"
+  | "e2b";
 
 export interface SandboxOptions {
   id?: string;
@@ -54,6 +60,7 @@ export interface SandboxOptions {
   modalTokenSecret?: string;
   modalAppName?: string;
   image?: string;
+  e2bAccessToken?: string;
   [key: string]: any;
 }
 

@@ -41,10 +41,9 @@ export const ctx = {
   kv: new Map<string, string>(),
   sandbox: (provider?: string) =>
     axios.create({
-      baseURL:
-        provider === Providers.MODAL
-          ? env.MODAL_SANDBOX_API_URL
-          : env.SANDBOX_API_URL,
+      baseURL: [Providers.MODAL, Providers.E2B].includes(provider as Providers)
+        ? env.MODAL_SANDBOX_API_URL
+        : env.SANDBOX_API_URL,
     }),
   cfsandbox: (base: string) =>
     axios.create({

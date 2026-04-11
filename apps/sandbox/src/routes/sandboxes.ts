@@ -19,7 +19,6 @@ import {
   spriteAuth,
   denoAuth,
   vercelAuth,
-  modalAuth,
 } from "../schema/mod.ts";
 import {
   SandboxConfig,
@@ -43,9 +42,8 @@ import { PushDirectoryParams, pushSchema } from "../types/push.ts";
 import crypto from "node:crypto";
 import process from "node:process";
 import prepareSandbox from "../lib/prepare-sandbox.ts";
-import { images } from "../images.ts";
 
-const SUPPORTED_PROVIDERS = ["daytona", "vercel", "deno", "sprites", "modal"];
+const SUPPORTED_PROVIDERS = ["daytona", "vercel", "deno", "sprites"];
 
 const sandboxRouter = new Hono<{ Variables: Context }>();
 
@@ -167,20 +165,6 @@ sandboxRouter.post("/", async (c) => {
             .execute();
         }
 
-        if (params.modalTokenId && user?.id) {
-          await tx
-            .insert(modalAuth)
-            .values({
-              sandboxId: record.id,
-              tokenId: params.modalTokenId!,
-              redactedTokenId: params.redactedModalTokenId!,
-              tokenSecret: params.modalTokenSecret!,
-              redactedTokenSecret: params.redactedModalTokenSecret!,
-              userId: user.id,
-            })
-            .execute();
-        }
-
         return { record, user };
       },
     );
@@ -198,9 +182,6 @@ sandboxRouter.post("/", async (c) => {
       vercelApiToken: decrypt(params.vercelApiToken),
       vercelProjectId: params.vercelProjectId,
       vercelTeamId: params.vercelTeamId,
-      modalTokenId: decrypt(params.modalTokenId),
-      modalTokenSecret: decrypt(params.modalTokenSecret),
-      image: images[params.base] || images["openclaw"],
     });
     const sandboxId = await sandbox.id();
 

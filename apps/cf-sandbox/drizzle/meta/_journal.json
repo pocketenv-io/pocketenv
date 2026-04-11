@@ -309,6 +309,13 @@
       "when": 1775713354864,
       "tag": "0043_supreme_ezekiel",
       "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1775922491213,
+      "tag": "0044_organic_scalphunter",
+      "breakpoints": true
     }
   ]
 }

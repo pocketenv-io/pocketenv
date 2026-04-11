@@ -20,6 +20,7 @@ import spriteAuth from "schema/sprite-auth";
 import type { PgTransaction } from "drizzle-orm/pg-core";
 import type { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import modalAuth, { type InsertModalAuth } from "schema/modal-auth";
+import e2bAuth, { type InsertE2BAuth } from "schema/e2b-auth";
 
 export default function (server: Server, ctx: Context) {
   const putPreferences = async (input: HandlerInput, auth: HandlerAuth) => {
@@ -235,6 +236,24 @@ const saveSandboxProvider = async (
             redactedTokenId: pref.redactedModalTokenId!,
             tokenSecret: pref.modalTokenSecret!,
             redactedTokenSecret: pref.redactedModalTokenSecret!,
+          },
+        })
+        .execute();
+      break;
+    case "e2b":
+      await tx
+        .insert(e2bAuth)
+        .values({
+          userId: user.id,
+          sandboxId: input.body.sandboxId,
+          accessToken: pref.e2bAccessToken!,
+          redactedAccessToken: pref.redactedE2bAccessToken!,
+        } satisfies InsertE2BAuth)
+        .onConflictDoUpdate({
+          target: [modalAuth.sandboxId, e2bAuth.userId],
+          set: {
+            accessToken: pref.e2bAccessToken!,
+            redactedAccessToken: pref.redactedE2bAccessToken!,
           },
         })
         .execute();

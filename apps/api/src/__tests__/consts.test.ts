@@ -15,11 +15,12 @@ describe("Providers", () => {
     expect(Providers.CLOUDFLARE).toBe("cloudflare");
     expect(Providers.SPRITE).toBe("sprite");
     expect(Providers.MODAL).toBe("modal");
+    expect(Providers.E2B).toBe("e2b");
   });
 
-  it("has exactly 6 providers", () => {
+  it("has exactly 7 providers", () => {
     const values = Object.values(Providers);
-    expect(values).toHaveLength(6);
+    expect(values).toHaveLength(7);
   });
 });
 

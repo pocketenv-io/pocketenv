@@ -20,6 +20,7 @@ import {
   denoAuth,
   vercelAuth,
   modalAuth,
+  e2bAuth,
 } from "../schema";
 import {
   type SandboxConfig,
@@ -44,8 +45,16 @@ import crypto from "node:crypto";
 import process from "node:process";
 import prepareSandbox from "../lib/prepare-sandbox";
 import { images } from "../images";
+import type { InsertSandbox } from "schema/sandboxes";
 
-const SUPPORTED_PROVIDERS = ["daytona", "vercel", "deno", "sprites", "modal"];
+const SUPPORTED_PROVIDERS = [
+  "daytona",
+  "vercel",
+  "deno",
+  "sprites",
+  "modal",
+  "e2b",
+];
 
 const sandboxRouter = new Hono<{ Variables: Context }>();
 
@@ -181,44 +190,69 @@ sandboxRouter.post("/", async (c) => {
             .execute();
         }
 
+        if (params.e2bAccessToken && user?.id) {
+          await tx
+            .insert(e2bAuth)
+            .values({
+              sandboxId: record!.id,
+              accessToken: params.e2bAccessToken!,
+              redactedAccessToken: params.redactedE2bAccessToken ?? "",
+              userId: user.id,
+            })
+            .execute();
+        }
+
         return { record, user };
       },
     );
 
-    const sandbox = await createSandbox(params.provider, {
-      id: initialRecord?.id,
-      keepAlive: params.keepAlive,
-      sleepAfter: params.sleepAfter,
-      snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
-      spriteToken: decrypt(params.spriteToken),
-      spriteName,
-      daytonaApiKey: decrypt(params.daytonaApiKey),
-      organizationId: params.daytonaOrganizationId,
-      denoDeployToken: decrypt(params.denoDeployToken),
-      vercelApiToken: decrypt(params.vercelApiToken),
-      vercelProjectId: params.vercelProjectId,
-      vercelTeamId: params.vercelTeamId,
-      modalTokenId: decrypt(params.modalTokenId),
-      modalTokenSecret: decrypt(params.modalTokenSecret),
-      image: images[params.base] || images["openclaw"],
-    });
-    const sandboxId = await sandbox.id();
+    new Promise<InsertSandbox>(async (resolve) => {
+      const sandbox = await createSandbox(params.provider, {
+        id: initialRecord?.id,
+        keepAlive: params.keepAlive,
+        sleepAfter: params.sleepAfter,
+        snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
+        spriteToken: decrypt(params.spriteToken),
+        spriteName,
+        daytonaApiKey: decrypt(params.daytonaApiKey),
+        organizationId: params.daytonaOrganizationId,
+        denoDeployToken: decrypt(params.denoDeployToken),
+        vercelApiToken: decrypt(params.vercelApiToken),
+        vercelProjectId: params.vercelProjectId,
+        vercelTeamId: params.vercelTeamId,
+        modalTokenId: decrypt(params.modalTokenId),
+        modalTokenSecret: decrypt(params.modalTokenSecret),
+        image: images[params.base] || images["openclaw"],
+        e2bAccessToken: decrypt(params.e2bAccessToken),
+      });
+      const sandboxId = await sandbox.id();
 
-    const [record] = await c.var.db
-      .update(sandboxes)
-      .set({
-        status: "RUNNING",
-        sandboxId: sandboxId,
-        startedAt: new Date(),
-        vcpus: params.vcpus,
-        memory: params.memory,
-        disk: params.disk,
+      const [record] = await c.var.db
+        .update(sandboxes)
+        .set({
+          status: "RUNNING",
+          sandboxId: sandboxId,
+          startedAt: new Date(),
+          vcpus: params.vcpus,
+          memory: params.memory,
+          disk: params.disk,
+        })
+        .where(eq(sandboxes.id, initialRecord!.id))
+        .returning()
+        .execute();
+
+      resolve(record!);
+    })
+      .then((record) => {
+        consola.success(
+          `Sandbox ${record.id} is running with ID ${record.sandboxId}`,
+        );
       })
-      .where(eq(sandboxes.id, initialRecord!.id))
-      .returning()
-      .execute();
+      .catch((e) => {
+        consola.error(`Failed to start sandbox ${initialRecord?.id}: ${e}`);
+      });
 
-    return c.json(record);
+    return c.json(initialRecord);
   } catch (err) {
     console.log(err);
     return c.json(

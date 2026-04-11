@@ -28,7 +28,7 @@ defs = new Mapping<String, Procedure> {
           }
           ["provider"] = new StringType {
             type = "string"
-            enum = List("daytona", "vercel", "cloudflare", "deno", "sprites", "modal")
+            enum = List("daytona", "vercel", "cloudflare", "deno", "sprites", "modal", "e2b")
             description =
               "The provider to create the sandbox on, e.g. 'daytona', 'vercel', 'cloudflare', etc."
           }
@@ -139,6 +139,14 @@ defs = new Mapping<String, Procedure> {
           ["redactedModalTokenSecret"] = new StringType {
             type = "string"
             description = "A redacted token for accessing Modal resources"
+          }
+          ["e2bAccessToken"] = new StringType {
+            type = "string"
+            description = "A token (encrypted) for accessing E2B resources"
+          }
+          ["redactedE2bAccessToken"] = new StringType {
+            type = "string"
+            description = "A redacted token for accessing E2B resources"
           }
         }
       }

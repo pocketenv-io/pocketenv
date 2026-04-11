@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "tsx --watch src/index.ts",
     "start": "npm run build && node dist/index.js",
-    "start:prod": "npm run build && node dist/index.js",
-    "build": "bun build src/index.ts --outdir ./dist --target node"
+    "start:prod": "npm run build && node --enable-source-maps dist/index.js",
+    "build": "bun build src/index.ts --outdir ./dist --target node --minify --sourcemap=linked"
   },
   "dependencies": {
     "@daytonaio/sdk": "^0.162.0",

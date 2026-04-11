@@ -10,9 +10,10 @@ await build({
   target: "node",
   format: "esm",
   minify: true,
+  sourcemap: "linked",
 });
 
-const shebang = "#!/usr/bin/env node\n";
+const shebang = "#!/usr/bin/env -S node --enable-source-maps\n";
 
 const content = fs.readFileSync(outfile, "utf-8");
 fs.writeFileSync(outfile, shebang + content);

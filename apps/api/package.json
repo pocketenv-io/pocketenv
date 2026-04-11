@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "tsx --watch src/index.ts",
     "start": "npm run build && node dist/index.js",
-    "start:prod": "npm run build && node dist/index.js",
+    "start:prod": "npm run build && node --enable-source-maps dist/index.js",
     "pkl:eval": "pkl eval -f json",
     "pkl:gen": "tsx ./scripts/pkl.ts",
     "lexgen": "lex gen-server ./src/lexicon ./lexicons/**/* ./lexicons/*",
@@ -13,7 +13,7 @@
     "lint": "biome lint src",
     "sandbox": "tsx ./scripts/sandbox.ts",
     "seed": "tsx ./scripts/seed.ts",
-    "build": "bun build src/index.ts --outdir ./dist --target node --external better-sqlite3",
+    "build": "bun build src/index.ts --outdir ./dist --target node --external better-sqlite3 --minify --sourcemap=linked",
     "test": "vitest",
     "test:run": "vitest run"
   },

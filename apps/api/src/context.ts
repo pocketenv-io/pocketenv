@@ -12,6 +12,8 @@ import type { RequestHandler } from "express";
 import axios from "axios";
 import { workers } from "cloudflare";
 import { Providers } from "consts";
+import type { ListenerSocket } from "pty/pty-tunnel/websocket";
+import express from "express";
 
 const { DB_PATH } = env;
 export const db = createDb(DB_PATH);
@@ -22,6 +24,13 @@ const kv = createStorage({
 });
 
 const baseIdResolver = createIdResolver(kv);
+
+export type Session = {
+  socket: ListenerSocket;
+  clients: Set<express.Response>;
+};
+
+const sessions = new Map<string, Session>();
 
 export const ctx = {
   oauthClient: await createClient(db),
@@ -52,6 +61,7 @@ export const ctx = {
           ? workers[base]
           : env.CF_SANDBOX_API_URL,
     }),
+  sessions,
 };
 
 export const contextMiddleware: RequestHandler = (req, _res, next) => {

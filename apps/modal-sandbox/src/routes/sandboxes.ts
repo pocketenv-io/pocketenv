@@ -393,8 +393,9 @@ sandboxRouter.post("/:sandboxId/start", async (c) => {
     .set({
       status: "RUNNING",
       startedAt: new Date(),
-      sandboxId:
-        record.provider === "deno" ? await sandbox.id() : record.sandboxId,
+      sandboxId: ["deno", "modal", "e2b"].includes(record.provider)
+        ? await sandbox.id()
+        : record.sandboxId,
     })
     .where(eq(sandboxes.id, c.req.param("sandboxId")))
     .execute();

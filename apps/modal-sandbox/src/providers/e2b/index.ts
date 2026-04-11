@@ -132,9 +132,10 @@ class E2bProvider implements BaseProvider {
       tags: [tag],
       cpuCount: 4,
       memoryMB: 4096,
+      apiKey: options.e2bApiKey,
     });
     const sandbox = await Sandbox.create(`${name}:${tag}`, {
-      accessToken: options.e2bApiKey,
+      apiKey: options.e2bApiKey,
     });
     return new E2bSandbox(sandbox);
   }
@@ -145,7 +146,7 @@ class E2bProvider implements BaseProvider {
         throw new Error("E2B API KEY is required to get a sandbox");
       }
       const sandbox = await Sandbox.connect(id, {
-        accessToken: options?.e2bApiKey,
+        apiKey: options?.e2bApiKey,
       });
       return new E2bSandbox(sandbox);
     } catch {

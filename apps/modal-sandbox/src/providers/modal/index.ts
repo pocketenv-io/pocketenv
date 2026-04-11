@@ -161,7 +161,7 @@ class ModalProvider implements BaseProvider {
     );
     consola.info("Creating Modal sandbox with app name:", modalAppName);
     const sandbox = await modal.sandboxes.create(app, image, {
-      encryptedPorts: [PTY_PORT, VSCODE_PORT],
+      encryptedPorts: [PTY_PORT, VSCODE_PORT, 3000, 4000, 8000],
     });
     consola.info("Created Modal sandbox with ID:", sandbox.sandboxId);
 

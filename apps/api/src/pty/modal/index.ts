@@ -33,8 +33,8 @@ async function setupSandboxEnvironment(
   options: SandboxEnvironmentOptions,
 ): Promise<{ sandbox: Sandbox; cmd: ContainerProcess<string> }> {
   const modal = new ModalClient({
-    tokenId: decrypt(options.tokenId),
-    tokenSecret: decrypt(options.tokenSecret),
+    tokenId: options.tokenId,
+    tokenSecret: options.tokenSecret,
   });
   const sandbox = await modal.sandboxes.fromId(options.id);
 

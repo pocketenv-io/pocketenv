@@ -70,7 +70,7 @@ async function ssh(sandboxName: string | undefined) {
     process.exit(1);
   }
 
-  // export type Provider = "daytona" | "deno" | "cloudflare" | "vercel" | "sprites";
+  // export type Provider = "daytona" | "deno" | "cloudflare" | "vercel" | "sprites" | "modal" | "e2b";
   switch (sandbox.provider) {
     case "cloudflare":
       await cloudflare(sandbox);
@@ -87,11 +87,17 @@ async function ssh(sandboxName: string | undefined) {
     case "sprites":
       await tty(sandbox, true);
       break;
+    case "modal":
+      await tty(sandbox, false); // pty
+      break;
+    case "e2b":
+      await tty(sandbox, false); // pty
+      break;
     default:
       consola.error(
         `Sandbox ${chalk.yellowBright(sandbox.name)} uses provider ` +
           `${chalk.cyan(sandbox.provider)}, but this command only supports ` +
-          `${chalk.cyan("cloudflare")}, ${chalk.cyan("daytona")}, ${chalk.cyan("deno")}, ${chalk.cyan("vercel")}, or ${chalk.cyan("sprites")} sandboxes.`,
+          `${chalk.cyan("cloudflare")}, ${chalk.cyan("daytona")}, ${chalk.cyan("deno")}, ${chalk.cyan("vercel")}, ${chalk.cyan("sprites")}, ${chalk.cyan("modal")} or ${chalk.cyan("e2b")} sandboxes.`,
       );
       process.exit(1);
   }

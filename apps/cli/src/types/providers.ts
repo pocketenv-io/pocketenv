@@ -4,4 +4,5 @@ export type Provider =
   | "cloudflare"
   | "vercel"
   | "sprites"
-  | "modal";
+  | "modal"
+  | "e2b";

@@ -89,6 +89,10 @@ export async function createSandbox(
       return import("./modal").then((module) =>
         new module.default().create(options),
       );
+    case "e2b":
+      return import("./e2b").then((module) =>
+        new module.default().create(options),
+      );
     default:
       console.log(`Provider ${provider} is not supported yet.`);
       throw new Error(`Unsupported provider: ${provider}`);
@@ -141,6 +145,10 @@ export async function getSandboxById(
       );
     case "modal":
       return import("./modal").then((module) =>
+        new module.default().get(id, options),
+      );
+    case "e2b":
+      return import("./e2b").then((module) =>
         new module.default().get(id, options),
       );
     default:

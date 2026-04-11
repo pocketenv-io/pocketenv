@@ -128,13 +128,14 @@ class E2bProvider implements BaseProvider {
     const image = options.image || "ghcr.io/pocketenv-io/modal-openclaw:0.1.0";
     const template = Template().fromImage(image);
     const { name, tag } = parseImageRef(image);
-    await Template.build(template, name, {
+    const templateName = name.split("/").pop()!;
+    await Template.build(template, templateName, {
       tags: [tag],
       cpuCount: 4,
       memoryMB: 4096,
       apiKey: options.e2bApiKey,
     });
-    const sandbox = await Sandbox.create(`${name}:${tag}`, {
+    const sandbox = await Sandbox.create(`${templateName}:${tag}`, {
       apiKey: options.e2bApiKey,
     });
     return new E2bSandbox(sandbox);

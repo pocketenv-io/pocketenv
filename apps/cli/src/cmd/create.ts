@@ -27,9 +27,15 @@ async function createSandbox(
   const providerOptions: Record<string, any> = {};
 
   if (
-    !["sprites", "daytona", "deno", "vercel", "cloudflare", "modal"].includes(
-      provider ?? "cloudflare",
-    )
+    ![
+      "sprites",
+      "daytona",
+      "deno",
+      "vercel",
+      "cloudflare",
+      "modal",
+      "e2b",
+    ].includes(provider ?? "cloudflare")
   ) {
     consola.error(
       `Unsupported provider: ${provider}. Supported providers are: sprites, daytona, deno, vercel, modal, cloudflare (default).`,
@@ -104,6 +110,18 @@ async function createSandbox(
     providerOptions.redactedModalTokenId = redact(modalTokenId);
     providerOptions.modalTokenSecret = await encrypt(modalTokenSecret);
     providerOptions.redactedModalTokenSecret = redact(modalTokenSecret);
+  }
+
+  if (provider === "e2b") {
+    const e2bAccessToken = process.env.E2B_ACCESS_TOKEN;
+    if (!e2bAccessToken) {
+      consola.error(
+        "E2B_ACCESS_TOKEN environment variable is required for E2B provider.",
+      );
+      process.exit(1);
+    }
+    providerOptions.e2bAccessToken = await encrypt(e2bAccessToken);
+    providerOptions.redactedE2bAccessToken = redact(e2bAccessToken);
   }
 
   try {

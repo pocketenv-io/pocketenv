@@ -7,6 +7,7 @@ import {
   denoAuth,
   vercelAuth,
   modalAuth,
+  e2bAuth,
 } from "../schema";
 import {
   BaseSandbox,
@@ -31,6 +32,9 @@ export interface AuthParams {
     tokenId?: string;
     tokenSecret?: string;
   } | null;
+  e2bAuthParams?: {
+    apiKey?: string;
+  } | null;
 }
 
 export async function getAuthParams(
@@ -43,6 +47,7 @@ export async function getAuthParams(
     [denoAuthParams],
     [vercelAuthParams],
     [modalAuthParams],
+    [e2bAuthParams],
   ] = await Promise.all([
     db
       .select()
@@ -69,6 +74,11 @@ export async function getAuthParams(
       .from(modalAuth)
       .where(eq(modalAuth.sandboxId, sandboxDbId))
       .execute(),
+    db
+      .select()
+      .from(e2bAuth)
+      .where(eq(modalAuth.sandboxId, sandboxDbId))
+      .execute(),
   ]);
   return {
     spriteAuthParams,
@@ -76,6 +86,7 @@ export async function getAuthParams(
     denoAuthParams,
     vercelAuthParams,
     modalAuthParams,
+    e2bAuthParams,
   };
 }
 
@@ -90,6 +101,7 @@ export function buildCredentials(auth: AuthParams): SandboxOptions {
     vercelTeamId: auth.vercelAuthParams?.teamId,
     modalTokenId: decrypt(auth.modalAuthParams?.tokenId),
     modalTokenSecret: decrypt(auth.modalAuthParams?.tokenSecret),
+    e2bApiKey: decrypt(auth.e2bAuthParams?.apiKey),
   };
 }
 

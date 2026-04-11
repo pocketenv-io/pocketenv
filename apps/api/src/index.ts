@@ -11,6 +11,9 @@ import ssh, { attachWebSocket as attachSshWebSocket } from "./ssh";
 import tty, { attachWebSocket as attachTtyWebSocket } from "./tty";
 import pty, { attachWebSocket as attachPtyWebSocket } from "./pty";
 import { createRateLimiter } from "./ratelimiter";
+import { createServer as createHttpServer } from "node:http";
+import type { IncomingMessage } from "node:http";
+import type { Duplex } from "node:stream";
 
 let xrpcServer = createServer({
   validateResponse: false,
@@ -57,13 +60,33 @@ app.use("/ssh", ssh);
 app.use("/tty", tty);
 app.use("/pty", pty);
 
-const server = app.listen(process.env.POCKETENV_XPRC_PORT || 8789, () => {
+const httpServer = createHttpServer(app);
+
+const wsHandlers = [
+  attachPtyWebSocket("/pty"),
+  attachTtyWebSocket("/tty"),
+  attachSshWebSocket("/ssh"),
+];
+
+httpServer.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
+  const pathname = new URL(req.url ?? "", "http://localhost").pathname;
+  for (const { wss, pathRegex } of wsHandlers) {
+    const match = pathname.match(pathRegex);
+    if (match) {
+      wss.handleUpgrade(req, socket, head, (ws) => {
+        wss.emit("connection", ws, req, match[1]!);
+      });
+      return;
+    }
+  }
+  // No handler matched — reject cleanly
+  socket.write("HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n");
+  socket.destroy();
+});
+
+httpServer.listen(process.env.POCKETENV_XPRC_PORT || 8789, () => {
   consola.log(chalk.greenBright(banner));
   consola.info(
     `Pocketenv XRPC API is running on port ${process.env.POCKETENV_XPRC_PORT || 8789}`,
   );
 });
-
-attachPtyWebSocket(server, "/pty");
-attachTtyWebSocket(server, "/tty");
-attachSshWebSocket(server, "/ssh");

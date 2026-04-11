@@ -28,6 +28,7 @@ async function ssh(sandbox: Sandbox, tty: boolean = false): Promise<void> {
 
   const baseUrl = tty ? env.POCKETENV_TTY_URL : env.POCKETENV_PTY_URL;
   const wsUrl = toWsUrl(baseUrl, `/${sandbox.id}/ws`, authToken);
+  consola.info(wsUrl);
 
   let cols = process.stdout.columns ?? 220;
   let rows = process.stdout.rows ?? 50;
@@ -115,7 +116,9 @@ async function ssh(sandbox: Sandbox, tty: boolean = false): Promise<void> {
     if (!exiting) {
       const msg = reason.length ? ` (${code} – ${reason})` : "";
       if (msg) {
-        process.stderr.write(`\r\n${chalk.yellow("Connection closed")}${msg}\r\n`);
+        process.stderr.write(
+          `\r\n${chalk.yellow("Connection closed")}${msg}\r\n`,
+        );
       }
       teardown(0);
     }

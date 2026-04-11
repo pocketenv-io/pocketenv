@@ -7,8 +7,6 @@ import { env } from "lib/env";
 import generateJwt from "lib/generateJwt";
 import { WebSocketServer, type WebSocket } from "ws";
 import type { IncomingMessage } from "http";
-import type { Server } from "http";
-import type { Duplex } from "node:stream";
 
 interface SSHSession {
   client: Client;
@@ -272,19 +270,9 @@ router.delete("/disconnect/:sessionId", (req, res) => {
 
 export default router;
 
-export function attachWebSocket(server: Server, base: string) {
+export function attachWebSocket(base: string) {
   const pathRegex = new RegExp(`^${base}/([^/]+)/ws$`);
   const wss = new WebSocketServer({ noServer: true });
-
-  server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
-    const url = new URL(req.url ?? "", "http://localhost");
-    const match = url.pathname.match(pathRegex);
-    if (!match) return;
-
-    wss.handleUpgrade(req, socket, head, (ws) => {
-      wss.emit("connection", ws, req, match[1]!);
-    });
-  });
 
   wss.on("connection", async (ws: WebSocket, req: IncomingMessage, sessionId: string) => {
     const url = new URL(req.url ?? "", "http://localhost");
@@ -333,4 +321,6 @@ export function attachWebSocket(server: Server, base: string) {
       session.wsClients.delete(ws);
     });
   });
+
+  return { wss, pathRegex };
 }

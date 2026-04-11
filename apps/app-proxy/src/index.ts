@@ -78,7 +78,9 @@ export default {
 			API_ROUTES.includes(url.pathname) ||
 			url.pathname.startsWith('/oauth/callback') ||
 			url.pathname.startsWith('/xrpc') ||
-			url.pathname.startsWith('/ssh')
+			url.pathname.startsWith('/ssh') ||
+			url.pathname.startsWith('/pty') ||
+			url.pathname.startsWith('/tty')
 		) {
 			redirectToApi = true;
 		}

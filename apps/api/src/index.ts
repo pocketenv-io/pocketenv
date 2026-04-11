@@ -7,12 +7,12 @@ import { contextMiddleware, ctx } from "context";
 import { createServer } from "lexicon";
 import chalk from "chalk";
 import API from "./xrpc";
-import ssh from "./ssh";
-import tty from "./tty";
-import pty from "./pty";
+import ssh, { attachWebSocket as attachSshWebSocket } from "./ssh";
+import tty, { attachWebSocket as attachTtyWebSocket } from "./tty";
+import pty, { attachWebSocket as attachPtyWebSocket } from "./pty";
 import { createRateLimiter } from "./ratelimiter";
 
-let server = createServer({
+let xrpcServer = createServer({
   validateResponse: false,
   payload: {
     jsonLimit: 100 * 1024, // 100kb
@@ -21,7 +21,7 @@ let server = createServer({
   },
 });
 
-server = API(server, ctx);
+xrpcServer = API(xrpcServer, ctx);
 
 const app = express();
 
@@ -52,14 +52,18 @@ app.get("/", (req, res) => {
 });
 
 app.use(bsky);
-app.use(server.xrpc.router);
+app.use(xrpcServer.xrpc.router);
 app.use("/ssh", ssh);
 app.use("/tty", tty);
 app.use("/pty", pty);
 
-app.listen(process.env.POCKETENV_XPRC_PORT || 8789, () => {
+const server = app.listen(process.env.POCKETENV_XPRC_PORT || 8789, () => {
   consola.log(chalk.greenBright(banner));
   consola.info(
     `Pocketenv XRPC API is running on port ${process.env.POCKETENV_XPRC_PORT || 8789}`,
   );
 });
+
+attachPtyWebSocket(server, "/pty");
+attachTtyWebSocket(server, "/tty");
+attachSshWebSocket(server, "/ssh");

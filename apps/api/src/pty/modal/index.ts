@@ -169,14 +169,17 @@ export async function createTerminalSession(ctx: Context, id: string) {
   const session: Session = {
     socket,
     clients: new Set(),
+    wsClients: new Set(),
   };
 
   socket.addEventListener("message", async ({ data }) => {
+    const text = data.toString("utf-8");
     for (const res of session.clients) {
       res.write(`event: output\n`);
-      res.write(
-        `data: ${JSON.stringify({ data: data.toString("utf-8") })}\n\n`,
-      );
+      res.write(`data: ${JSON.stringify({ data: text })}\n\n`);
+    }
+    for (const ws of session.wsClients) {
+      if (ws.readyState === ws.OPEN) ws.send(text);
     }
   });
 

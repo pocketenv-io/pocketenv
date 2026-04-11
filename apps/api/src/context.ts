@@ -13,6 +13,7 @@ import axios from "axios";
 import { workers } from "cloudflare";
 import { Providers } from "consts";
 import type { Message } from "pty/pty-tunnel/messages";
+import type { WebSocket } from "ws";
 import express from "express";
 
 const { DB_PATH } = env;
@@ -32,6 +33,7 @@ export interface TerminalSocket {
 export type Session = {
   socket: TerminalSocket;
   clients: Set<express.Response>;
+  wsClients: Set<WebSocket>;
 };
 
 const sessions = new Map<string, Session>();

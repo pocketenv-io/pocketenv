@@ -45,7 +45,7 @@ export async function createTerminalSession(ctx: Context, id: string): Promise<S
     },
   };
 
-  const session: Session = { socket, clients: new Set() };
+  const session: Session = { socket, clients: new Set(), wsClients: new Set() };
 
   const terminal = await sandbox.pty.create({
     cols: process.stdout.columns ?? 80,
@@ -55,6 +55,9 @@ export async function createTerminalSession(ctx: Context, id: string): Promise<S
       for (const res of session.clients) {
         res.write("event: output\n");
         res.write(`data: ${JSON.stringify({ data: text })}\n\n`);
+      }
+      for (const ws of session.wsClients) {
+        if (ws.readyState === ws.OPEN) ws.send(text);
       }
     },
   });

@@ -9,6 +9,10 @@ import jwt from "jsonwebtoken";
 import schema from "schema";
 import decrypt from "lib/decrypt";
 import path from "node:path";
+import { WebSocketServer, type WebSocket } from "ws";
+import type { IncomingMessage } from "http";
+import type { Server } from "http";
+import type { Duplex } from "node:stream";
 
 const router = Router();
 router.use((req, res, next) => {
@@ -39,6 +43,7 @@ router.use((req, res, next) => {
 type Session = {
   cmd: any;
   clients: Set<express.Response>;
+  wsClients: Set<WebSocket>;
 };
 
 const sessions = new Map<string, Session>();
@@ -278,6 +283,7 @@ async function createTerminalSession(ctx: Context, id: string) {
   const session: Session = {
     cmd,
     clients: new Set(),
+    wsClients: new Set(),
   };
 
   cmd.stdout.on("data", (chunk: Buffer | string) => {
@@ -287,6 +293,9 @@ async function createTerminalSession(ctx: Context, id: string) {
       res.write(`event: output\n`);
       res.write(`data: ${JSON.stringify({ data })}\n\n`);
     }
+    for (const ws of session.wsClients) {
+      if (ws.readyState === ws.OPEN) ws.send(data);
+    }
   });
 
   cmd.on?.("exit", (code: number) => {
@@ -294,7 +303,11 @@ async function createTerminalSession(ctx: Context, id: string) {
       res.write(`event: exit\n`);
       res.write(`data: ${JSON.stringify({ code })}\n\n`);
     }
+    for (const ws of session.wsClients) {
+      if (ws.readyState === ws.OPEN) ws.close(1000, "exit");
+    }
     session.clients.clear();
+    session.wsClients.clear();
     sessions.delete(id);
   });
 
@@ -303,7 +316,11 @@ async function createTerminalSession(ctx: Context, id: string) {
       res.write(`event: error\n`);
       res.write(`data: ${JSON.stringify({ message: err.message })}\n\n`);
     }
+    for (const ws of session.wsClients) {
+      if (ws.readyState === ws.OPEN) ws.close(1011, err.message);
+    }
     session.clients.clear();
+    session.wsClients.clear();
     sessions.delete(id);
   });
 
@@ -363,3 +380,63 @@ router.post("/:id/resize", async (req, res) => {
 });
 
 export default router;
+
+export function attachWebSocket(server: Server, base: string) {
+  const pathRegex = new RegExp(`^${base}/([^/]+)/ws$`);
+  const wss = new WebSocketServer({ noServer: true });
+
+  server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
+    const url = new URL(req.url ?? "", "http://localhost");
+    const match = url.pathname.match(pathRegex);
+    if (!match) return;
+
+    wss.handleUpgrade(req, socket, head, (ws) => {
+      wss.emit("connection", ws, req, match[1]!);
+    });
+  });
+
+  wss.on("connection", async (ws: WebSocket, req: IncomingMessage, id: string) => {
+    const url = new URL(req.url ?? "", "http://localhost");
+    const tokenParam = url.searchParams.get("token");
+    const authHeader = req.headers.authorization;
+    const bearer = tokenParam ?? authHeader?.split("Bearer ")[1]?.trim();
+    if (bearer && bearer !== "null") {
+      try {
+        jwt.verify(bearer, env.JWT_SECRET, { ignoreExpiration: true });
+      } catch (err) {
+        consola.error("WS: Invalid JWT token:", err);
+        ws.close(1008, "Invalid token");
+        return;
+      }
+    }
+
+    let session: Session;
+    try {
+      session = await getSession(context.ctx, id);
+    } catch (err) {
+      consola.error("WS: Failed to get session:", err);
+      ws.close(1011, "Session error");
+      return;
+    }
+
+    session.wsClients.add(ws);
+
+    ws.on("message", (data) => {
+      const text = data.toString("utf-8");
+      try {
+        const msg = JSON.parse(text);
+        if (msg?.type === "resize" && Number.isInteger(msg.cols) && Number.isInteger(msg.rows)) {
+          session.cmd.resize(msg.cols, msg.rows);
+          return;
+        }
+      } catch {
+        // not JSON — treat as raw input
+      }
+      session.cmd.stdin.write(text);
+    });
+
+    ws.on("close", () => {
+      session.wsClients.delete(ws);
+    });
+  });
+}

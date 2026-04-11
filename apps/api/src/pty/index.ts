@@ -9,6 +9,10 @@ import schema from "schema";
 import * as vercel from "./vercel";
 import * as modal from "./modal";
 import * as e2b from "./e2b";
+import { WebSocketServer, type WebSocket } from "ws";
+import type { IncomingMessage } from "http";
+import type { Server } from "http";
+import type { Duplex } from "node:stream";
 
 const router = Router();
 router.use((req, res, next) => {
@@ -45,7 +49,10 @@ async function getSession(ctx: Context, id: string) {
       e2bAuth: schema.e2bAuth.id,
     })
     .from(schema.sandboxes)
-    .leftJoin(schema.modalAuth, eq(schema.modalAuth.sandboxId, schema.sandboxes.id))
+    .leftJoin(
+      schema.modalAuth,
+      eq(schema.modalAuth.sandboxId, schema.sandboxes.id),
+    )
     .leftJoin(schema.e2bAuth, eq(schema.e2bAuth.sandboxId, schema.sandboxes.id))
     .where(or(eq(schema.sandboxes.id, id), eq(schema.sandboxes.sandboxId, id)))
     .execute();
@@ -106,3 +113,73 @@ router.post("/:id/resize", async (req, res) => {
 });
 
 export default router;
+
+export function attachWebSocket(server: Server, base: string) {
+  const pathRegex = new RegExp(`^${base}/([^/]+)/ws$`);
+  const wss = new WebSocketServer({ noServer: true });
+
+  server.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
+    const url = new URL(req.url ?? "", "http://localhost");
+    const match = url.pathname.match(pathRegex);
+    if (!match) return;
+
+    wss.handleUpgrade(req, socket, head, (ws) => {
+      wss.emit("connection", ws, req, match[1]!);
+    });
+  });
+
+  wss.on("connection", async (ws: WebSocket, req: IncomingMessage, id: string) => {
+    const url = new URL(req.url ?? "", "http://localhost");
+
+    // Auth: query param ?token=<jwt> or Authorization: Bearer <jwt> header
+    const tokenParam = url.searchParams.get("token");
+    const authHeader = req.headers.authorization;
+    const bearer = tokenParam ?? authHeader?.split("Bearer ")[1]?.trim();
+    if (bearer && bearer !== "null") {
+      try {
+        jwt.verify(bearer, env.JWT_SECRET, { ignoreExpiration: true });
+      } catch (err) {
+        consola.error("WS: Invalid JWT token:", err);
+        ws.close(1008, "Invalid token");
+        return;
+      }
+    }
+
+    let session: Awaited<ReturnType<typeof getSession>>;
+    try {
+      session = await getSession(context.ctx, id);
+    } catch (err) {
+      consola.error("WS: Failed to get session:", err);
+      ws.close(1011, "Session error");
+      return;
+    }
+
+    session.wsClients.add(ws);
+
+    ws.on("message", (data) => {
+      const text = data.toString("utf-8");
+      try {
+        const msg = JSON.parse(text);
+        if (
+          msg?.type === "resize" &&
+          Number.isInteger(msg.cols) &&
+          Number.isInteger(msg.rows)
+        ) {
+          session.socket.sendMessage({
+            type: "resize",
+            cols: msg.cols,
+            rows: msg.rows,
+          });
+          return;
+        }
+      } catch {
+        // not JSON — treat as raw input
+      }
+      session.socket.sendMessage({ type: "message", message: text });
+    });
+
+    ws.on("close", () => {
+      session.wsClients.delete(ws);
+    });
+  });
+}

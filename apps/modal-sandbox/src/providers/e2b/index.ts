@@ -130,6 +130,8 @@ class E2bProvider implements BaseProvider {
     const { name, tag } = parseImageRef(image);
     await Template.build(template, name, {
       tags: [tag],
+      cpuCount: 4,
+      memoryMB: 4096,
     });
     const sandbox = await Sandbox.create(`${name}:${tag}`, {
       accessToken: options.e2bAccessToken,

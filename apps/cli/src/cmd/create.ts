@@ -113,10 +113,11 @@ async function createSandbox(
   }
 
   if (provider === "e2b") {
-    const e2bAccessToken = process.env.E2B_ACCESS_TOKEN;
+    const e2bAccessToken =
+      process.env.E2B_ACCESS_TOKEN || process.env.E2B_API_KEY;
     if (!e2bAccessToken) {
       consola.error(
-        "E2B_ACCESS_TOKEN environment variable is required for E2B provider.",
+        "E2B_API_KEY environment variable is required for E2B provider.",
       );
       process.exit(1);
     }

@@ -17,6 +17,8 @@ jobs:
       - name: Set up Bun
         run: |
           curl -fsSL https://bun.sh/install | bash
+          echo "BUN_INSTALL=/home/runner/.bun" >> $GITHUB_ENV
+          echo "PATH=/home/runner/.bun/bin:$PATH" >> $GITHUB_ENV
 
       - name: Set up Deno
         uses: denoland/setup-deno@v2

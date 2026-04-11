@@ -21,6 +21,7 @@ const LABELS = {
   vercel: "Vercel API Token",
   deno: "Deno Deploy Token",
   sprites: "Sprites API Key",
+  e2b: "E2B Access Token",
 } as const;
 
 type Provider = keyof typeof LABELS | "cloudflare" | "modal";
@@ -34,6 +35,7 @@ const schema = z
       "deno",
       "sprites",
       "modal",
+      "e2b",
     ]),
     apiKey: z.string().optional(),
     organizationId: z.string().optional(),
@@ -41,11 +43,13 @@ const schema = z
     vercelTeamId: z.string().optional(),
     tokenId: z.string().optional(),
     tokenSecret: z.string().optional(),
+    e2bAccessToken: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (
       data.provider !== "cloudflare" &&
       data.provider !== "modal" &&
+      data.provider !== "e2b" &&
       !data.apiKey?.trim()
     ) {
       ctx.addIssue({
@@ -89,6 +93,13 @@ const schema = z
         path: ["tokenSecret"],
       });
     }
+    if (data.provider === "e2b" && !data.e2bAccessToken?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "E2B Access Token is required",
+        path: ["e2bAccessToken"],
+      });
+    }
   });
 
 type FormValues = z.infer<typeof schema>;
@@ -122,6 +133,7 @@ function Services() {
       vercelTeamId: "",
       tokenId: "",
       tokenSecret: "",
+      e2bAccessToken: "",
     },
   });
 
@@ -139,6 +151,7 @@ function Services() {
       setValue("vercelTeamId", providerPref.vercelTeamId ?? "");
       setValue("tokenId", providerPref.redactedModalTokenId ?? "");
       setValue("tokenSecret", providerPref.redactedModalTokenSecret ?? "");
+      setValue("e2bAccessToken", providerPref.redactedE2bAccessToken ?? "");
     }
   }, [preferences, setValue]);
 
@@ -195,13 +208,38 @@ function Services() {
               values.tokenSecret.slice(-3)
             : values.tokenSecret;
       }
-    } else if (values.apiKey?.includes("**") && values.provider !== "cloudflare") {
+    } else if (values.provider === "e2b") {
+      if (values.e2bAccessToken && !values.e2bAccessToken.includes("**")) {
+        const sealed = sodium.cryptoBoxSeal(
+          sodium.fromString(values.e2bAccessToken.trim()),
+          sodium.fromHex(PUBLIC_KEY),
+        );
+        pref.e2bAccessToken = sodium.toBase64(
+          sealed,
+          sodium.base64Variants.URLSAFE_NO_PADDING,
+        );
+        pref.redactedE2bAccessToken =
+          values.e2bAccessToken.length > 14
+            ? values.e2bAccessToken.slice(0, 11) +
+              "*".repeat(24) +
+              values.e2bAccessToken.slice(-3)
+            : values.e2bAccessToken;
+      }
+    } else if (
+      values.apiKey?.includes("**") &&
+      values.provider !== "cloudflare"
+    ) {
       if (values.provider !== "daytona" && values.provider !== "vercel") {
         return;
       }
     }
 
-    if (values.provider !== "modal" && values.apiKey && !values.apiKey.includes("**")) {
+    if (
+      values.provider !== "modal" &&
+      values.provider !== "e2b" &&
+      values.apiKey &&
+      !values.apiKey.includes("**")
+    ) {
       const sealed = sodium.cryptoBoxSeal(
         sodium.fromString(values.apiKey),
         sodium.fromHex(PUBLIC_KEY),
@@ -262,6 +300,7 @@ function Services() {
                         setValue("vercelTeamId", "");
                         setValue("tokenId", "");
                         setValue("tokenSecret", "");
+                        setValue("e2bAccessToken", "");
                       }}
                       className="select select-lg font-medium text-[15px]"
                     >
@@ -273,11 +312,14 @@ function Services() {
                       <option value="deno">Deno Sandbox</option>
                       <option value="sprites">Sprites</option>
                       <option value="modal">Modal</option>
+                      <option value="e2b">E2B</option>
                     </select>
                   </div>
-                  {provider !== "cloudflare" && provider !== "modal" && (
+                  {provider !== "cloudflare" && provider !== "modal" && provider !== "e2b" && (
                     <div className="w-96">
-                      <label className="label-text">{LABELS[provider as keyof typeof LABELS]}</label>
+                      <label className="label-text">
+                        {LABELS[provider as keyof typeof LABELS]}
+                      </label>
                       <input
                         {...register("apiKey")}
                         type="text"
@@ -336,6 +378,21 @@ function Services() {
                         </p>
                       )}
                     </div>
+                  </div>
+                )}
+                {provider === "e2b" && (
+                  <div className="w-96 mt-4">
+                    <label className="label-text">E2B Access Token</label>
+                    <input
+                      {...register("e2bAccessToken")}
+                      type="text"
+                      className="input input-lg font-medium text-[15px]"
+                    />
+                    {errors.e2bAccessToken && (
+                      <p className="text-error text-sm mt-1">
+                        {errors.e2bAccessToken.message}
+                      </p>
+                    )}
                   </div>
                 )}
                 {provider === "modal" && (

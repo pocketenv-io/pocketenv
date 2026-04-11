@@ -17,6 +17,8 @@ export type SandboxProvider = {
   redactedModalTokenId?: string;
   modalTokenSecret?: string;
   redactedModalTokenSecret?: string;
+  e2bAccessToken?: string;
+  redactedE2bAccessToken?: string;
   $type: "io.pocketenv.sandbox.defs#sandboxProviderPref";
 };
 

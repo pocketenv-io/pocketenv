@@ -4,7 +4,11 @@ import * as context from "context";
 import express, { Router } from "express";
 import { env } from "lib/env";
 import jwt from "jsonwebtoken";
+import { eq, or } from "drizzle-orm";
+import schema from "schema";
 import * as vercel from "./vercel";
+import * as modal from "./modal";
+import * as e2b from "./e2b";
 
 const router = Router();
 router.use((req, res, next) => {
@@ -33,7 +37,22 @@ router.use((req, res, next) => {
 });
 
 async function getSession(ctx: Context, id: string) {
-  return ctx.sessions.get(id) ?? (await vercel.createTerminalSession(ctx, id));
+  if (ctx.sessions.has(id)) return ctx.sessions.get(id)!;
+
+  const [record] = await ctx.db
+    .select({
+      modalAuth: schema.modalAuth.id,
+      e2bAuth: schema.e2bAuth.id,
+    })
+    .from(schema.sandboxes)
+    .leftJoin(schema.modalAuth, eq(schema.modalAuth.sandboxId, schema.sandboxes.id))
+    .leftJoin(schema.e2bAuth, eq(schema.e2bAuth.sandboxId, schema.sandboxes.id))
+    .where(or(eq(schema.sandboxes.id, id), eq(schema.sandboxes.sandboxId, id)))
+    .execute();
+
+  if (record?.modalAuth) return modal.createTerminalSession(ctx, id);
+  if (record?.e2bAuth) return e2b.createTerminalSession(ctx, id);
+  return vercel.createTerminalSession(ctx, id);
 }
 
 router.get("/:id/stream", async (req, res) => {

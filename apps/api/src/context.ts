@@ -12,7 +12,7 @@ import type { RequestHandler } from "express";
 import axios from "axios";
 import { workers } from "cloudflare";
 import { Providers } from "consts";
-import type { ListenerSocket } from "pty/pty-tunnel/websocket";
+import type { Message } from "pty/pty-tunnel/messages";
 import express from "express";
 
 const { DB_PATH } = env;
@@ -25,8 +25,12 @@ const kv = createStorage({
 
 const baseIdResolver = createIdResolver(kv);
 
+export interface TerminalSocket {
+  sendMessage(message: Message): void;
+}
+
 export type Session = {
-  socket: ListenerSocket;
+  socket: TerminalSocket;
   clients: Set<express.Response>;
 };
 

@@ -10,6 +10,9 @@ import {
   nouns,
 } from "unique-username-generator";
 
+const PTY_PORT = 26661;
+export const VSCODE_PORT = 1024;
+
 export class ModalSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
 
@@ -157,7 +160,9 @@ class ModalProvider implements BaseProvider {
       options.image || "ghcr.io/pocketenv-io/modal-openclaw:0.1.0",
     );
     consola.info("Creating Modal sandbox with app name:", modalAppName);
-    const sandbox = await modal.sandboxes.create(app, image);
+    const sandbox = await modal.sandboxes.create(app, image, {
+      encryptedPorts: [PTY_PORT, VSCODE_PORT],
+    });
     consola.info("Created Modal sandbox with ID:", sandbox.sandboxId);
 
     return new ModalSandbox(sandbox);

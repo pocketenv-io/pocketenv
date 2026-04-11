@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2026-04-12
+
+### Added
+
+- **Modal sandbox provider**: Full support for [Modal](https://modal.com) as a sandbox provider.
+  - Modal sandbox creation, management, and PTY/SSH sessions.
+  - Pre-built Modal Docker images with `pty-tunnel-server` and npm/bun toolchains.
+  - CI integration: `modal-sandbox` tests run in GitHub Actions with Bun.
+- **E2B sandbox provider**: Full support for [E2B](https://e2b.dev) as a sandbox provider.
+  - E2B authentication via `E2B_API_KEY` environment variable (replaces former `e2bAccessToken`).
+  - `pocketenv sandbox create --provider e2b` with configurable default CPU/memory resources.
+  - PTY and SSH sessions for E2B sandboxes.
+- **WebSocket support for SSH/TTY/PTY sessions**: Terminal sessions now upgrade to WebSocket connections, centralizing upgrade handling across all providers.
+- **Cloudflare R2 mounts via tigrisfs**: Sandbox mounts now use [tigrisfs](https://github.com/tigrisdata/tigrisfs) (pinned to v1.2.1) for Cloudflare R2-backed storage, replacing direct FUSE mounting.
+- **FUSE support in Vercel sandbox**: Vercel sandboxes now install and load the FUSE kernel module to support tigrisfs mounts.
+
+### Changed
+
+- **E2B API key renamed**: `e2bAccessToken` / `e2bAccessTokenRedacted` fields renamed to `e2bApiKey` / `e2bApiKeyRedacted` throughout schema and helpers.
+- **Preset YAMLs loaded at runtime**: Preset YAML files are now loaded dynamically at runtime instead of being bundled as static imports, reducing build size.
+- **Production builds minified with source maps**: Build output is now minified with source maps enabled for production.
+- **PTY session handling refactored**: PTY/SSH logic extracted into the Vercel module for reuse across Modal and E2B providers.
+- **Parallelized output reads and background mounts**: Sandbox output reads and mount operations now run concurrently for faster startup.
+- **Use bash for sandbox PTY**: Sandbox PTY sessions now use `bash` instead of `sh` for a better interactive experience.
+- **sandboxId handling for Modal/E2B**: Modal and E2B sandboxes follow the same `sandboxId` lifecycle as Deno Deploy — cleared on stop, always set from `sandbox.id`.
+
+### Fixed
+
+- **Sandbox recovery on ID fetch failure**: If fetching an existing sandbox by ID fails, a new sandbox is created automatically as a fallback.
+- **PUBLIC_KEY / PRIVATE_KEY validation**: Decrypt helpers now validate that both keys are present before attempting decryption.
+
+---
+
 ## [0.6.9] - 2026-04-07
 
 ### Added

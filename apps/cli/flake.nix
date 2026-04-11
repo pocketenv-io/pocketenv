@@ -1,5 +1,5 @@
 {
-  description = "A Nix Flake for @rocksky/cli";
+  description = "A Nix Flake for @pocketenv/cli";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/release-25.05";
@@ -13,7 +13,7 @@
 
         pocketenv-cli = pkgs.buildNpmPackage {
           pname = "pocketenv-cli";
-          version = "0.6.10";
+          version = "0.7.0";
 
           src = ./.;
 

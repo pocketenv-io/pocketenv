@@ -113,16 +113,15 @@ async function createSandbox(
   }
 
   if (provider === "e2b") {
-    const e2bAccessToken =
-      process.env.E2B_ACCESS_TOKEN || process.env.E2B_API_KEY;
-    if (!e2bAccessToken) {
+    const e2bApiKey = process.env.E2B_ACCESS_TOKEN || process.env.E2B_API_KEY;
+    if (!e2bApiKey) {
       consola.error(
         "E2B_API_KEY environment variable is required for E2B provider.",
       );
       process.exit(1);
     }
-    providerOptions.e2bAccessToken = await encrypt(e2bAccessToken);
-    providerOptions.redactedE2bAccessToken = redact(e2bAccessToken);
+    providerOptions.e2bApiKey = await encrypt(e2bApiKey);
+    providerOptions.redactedE2bApiKey = redact(e2bApiKey);
   }
 
   try {

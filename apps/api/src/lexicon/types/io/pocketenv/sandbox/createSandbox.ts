@@ -73,10 +73,10 @@ export interface InputSchema {
   modalTokenSecret?: string;
   /** A redacted token for accessing Modal resources */
   redactedModalTokenSecret?: string;
-  /** A token (encrypted) for accessing E2B resources */
-  e2bAccessToken?: string;
-  /** A redacted token for accessing E2B resources */
-  redactedE2bAccessToken?: string;
+  /** An API KEY (encrypted) for accessing E2B resources */
+  e2bApiKey?: string;
+  /** A redacted API KEY for accessing E2B resources */
+  redactedE2bApiKey?: string;
   [k: string]: unknown;
 }
 

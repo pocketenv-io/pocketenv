@@ -145,13 +145,13 @@
               "type": "string",
               "description": "A redacted token for accessing Modal resources"
             },
-            "e2bAccessToken": {
+            "e2bApiKey": {
               "type": "string",
-              "description": "A token (encrypted) for accessing E2B resources"
+              "description": "An API KEY (encrypted) for accessing E2B resources"
             },
-            "redactedE2bAccessToken": {
+            "redactedE2bApiKey": {
               "type": "string",
-              "description": "A redacted token for accessing E2B resources"
+              "description": "A redacted API KEY for accessing E2B resources"
             }
           }
         }

@@ -707,13 +707,14 @@ export const schemaDict = {
                 type: "string",
                 description: "A redacted token for accessing Modal resources",
               },
-              e2bAccessToken: {
+              e2bApiKey: {
                 type: "string",
-                description: "A token (encrypted) for accessing E2B resources",
+                description:
+                  "An API KEY (encrypted) for accessing E2B resources",
               },
-              redactedE2bAccessToken: {
+              redactedE2bApiKey: {
                 type: "string",
-                description: "A redacted token for accessing E2B resources",
+                description: "A redacted API KEY for accessing E2B resources",
               },
             },
           },
@@ -1097,15 +1098,15 @@ export const schemaDict = {
             description:
               "The redacted token secret for Modal, returned in API responses when the sandbox provider is Modal. This can be used to identify which Modal token secret is being used without exposing the actual token secret.",
           },
-          e2bAccessToken: {
+          e2bApiKey: {
             type: "string",
             description:
-              "The access token for E2B, if the sandbox provider is E2B. This is used to determine which E2B token to use when creating the sandbox.",
+              "The API KEY for E2B, if the sandbox provider is E2B. This is used to determine which E2B API KEY to use when creating the sandbox.",
           },
-          redactedE2bAccessToken: {
+          redactedE2bApiKey: {
             type: "string",
             description:
-              "The redacted access token for E2B, returned in API responses when the sandbox provider is E2B. This can be used to identify which E2B token is being used without exposing the actual access token.",
+              "The redacted API KEY for E2B, returned in API responses when the sandbox provider is E2B. This can be used to identify which E2B API KEY is being used without exposing the actual API KEY.",
           },
         },
       },

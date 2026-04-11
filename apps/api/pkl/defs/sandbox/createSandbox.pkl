@@ -140,13 +140,13 @@ defs = new Mapping<String, Procedure> {
             type = "string"
             description = "A redacted token for accessing Modal resources"
           }
-          ["e2bAccessToken"] = new StringType {
+          ["e2bApiKey"] = new StringType {
             type = "string"
-            description = "A token (encrypted) for accessing E2B resources"
+            description = "An API KEY (encrypted) for accessing E2B resources"
           }
-          ["redactedE2bAccessToken"] = new StringType {
+          ["redactedE2bApiKey"] = new StringType {
             type = "string"
-            description = "A redacted token for accessing E2B resources"
+            description = "A redacted API KEY for accessing E2B resources"
           }
         }
       }

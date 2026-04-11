@@ -246,14 +246,14 @@ const saveSandboxProvider = async (
         .values({
           userId: user.id,
           sandboxId: input.body.sandboxId,
-          accessToken: pref.e2bAccessToken!,
-          redactedAccessToken: pref.redactedE2bAccessToken!,
+          apiKey: pref.e2bApiKey!,
+          redactedApiKey: pref.redactedE2bApiKey!,
         } satisfies InsertE2BAuth)
         .onConflictDoUpdate({
           target: [modalAuth.sandboxId, e2bAuth.userId],
           set: {
-            accessToken: pref.e2bAccessToken!,
-            redactedAccessToken: pref.redactedE2bAccessToken!,
+            apiKey: pref.e2bApiKey!,
+            redactedApiKey: pref.redactedApiKey!,
           },
         })
         .execute();

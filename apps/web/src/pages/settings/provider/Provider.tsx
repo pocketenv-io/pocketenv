@@ -43,7 +43,7 @@ const schema = z
     vercelTeamId: z.string().optional(),
     tokenId: z.string().optional(),
     tokenSecret: z.string().optional(),
-    e2bAccessToken: z.string().optional(),
+    e2bApiKey: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (
@@ -93,11 +93,11 @@ const schema = z
         path: ["tokenSecret"],
       });
     }
-    if (data.provider === "e2b" && !data.e2bAccessToken?.trim()) {
+    if (data.provider === "e2b" && !data.e2bApiKey?.trim()) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "E2B Access Token is required",
-        path: ["e2bAccessToken"],
+        path: ["e2bApiKey"],
       });
     }
   });
@@ -133,7 +133,7 @@ function Services() {
       vercelTeamId: "",
       tokenId: "",
       tokenSecret: "",
-      e2bAccessToken: "",
+      e2bApiKey: "",
     },
   });
 
@@ -151,7 +151,7 @@ function Services() {
       setValue("vercelTeamId", providerPref.vercelTeamId ?? "");
       setValue("tokenId", providerPref.redactedModalTokenId ?? "");
       setValue("tokenSecret", providerPref.redactedModalTokenSecret ?? "");
-      setValue("e2bAccessToken", providerPref.redactedE2bAccessToken ?? "");
+      setValue("e2bApiKey", providerPref.redactedE2bApiKey ?? "");
     }
   }, [preferences, setValue]);
 
@@ -209,21 +209,21 @@ function Services() {
             : values.tokenSecret;
       }
     } else if (values.provider === "e2b") {
-      if (values.e2bAccessToken && !values.e2bAccessToken.includes("**")) {
+      if (values.e2bApiKey && !values.e2bApiKey.includes("**")) {
         const sealed = sodium.cryptoBoxSeal(
-          sodium.fromString(values.e2bAccessToken.trim()),
+          sodium.fromString(values.e2bApiKey.trim()),
           sodium.fromHex(PUBLIC_KEY),
         );
-        pref.e2bAccessToken = sodium.toBase64(
+        pref.e2bApiKey = sodium.toBase64(
           sealed,
           sodium.base64Variants.URLSAFE_NO_PADDING,
         );
-        pref.redactedE2bAccessToken =
-          values.e2bAccessToken.length > 14
-            ? values.e2bAccessToken.slice(0, 11) +
+        pref.redactedE2bApiKey =
+          values.e2bApiKey.length > 14
+            ? values.e2bApiKey.slice(0, 11) +
               "*".repeat(24) +
-              values.e2bAccessToken.slice(-3)
-            : values.e2bAccessToken;
+              values.e2bApiKey.slice(-3)
+            : values.e2bApiKey;
       }
     } else if (
       values.apiKey?.includes("**") &&
@@ -300,7 +300,7 @@ function Services() {
                         setValue("vercelTeamId", "");
                         setValue("tokenId", "");
                         setValue("tokenSecret", "");
-                        setValue("e2bAccessToken", "");
+                        setValue("e2bApiKey", "");
                       }}
                       className="select select-lg font-medium text-[15px]"
                     >
@@ -315,23 +315,25 @@ function Services() {
                       <option value="e2b">E2B</option>
                     </select>
                   </div>
-                  {provider !== "cloudflare" && provider !== "modal" && provider !== "e2b" && (
-                    <div className="w-96">
-                      <label className="label-text">
-                        {LABELS[provider as keyof typeof LABELS]}
-                      </label>
-                      <input
-                        {...register("apiKey")}
-                        type="text"
-                        className="input input-lg font-medium text-[15px]"
-                      />
-                      {errors.apiKey && (
-                        <p className="text-error text-sm mt-1">
-                          {errors.apiKey.message}
-                        </p>
-                      )}
-                    </div>
-                  )}
+                  {provider !== "cloudflare" &&
+                    provider !== "modal" &&
+                    provider !== "e2b" && (
+                      <div className="w-96">
+                        <label className="label-text">
+                          {LABELS[provider as keyof typeof LABELS]}
+                        </label>
+                        <input
+                          {...register("apiKey")}
+                          type="text"
+                          className="input input-lg font-medium text-[15px]"
+                        />
+                        {errors.apiKey && (
+                          <p className="text-error text-sm mt-1">
+                            {errors.apiKey.message}
+                          </p>
+                        )}
+                      </div>
+                    )}
                 </div>
                 {provider === "daytona" && (
                   <div className="w-full mt-4">
@@ -384,13 +386,13 @@ function Services() {
                   <div className="w-96 mt-4">
                     <label className="label-text">E2B Access Token</label>
                     <input
-                      {...register("e2bAccessToken")}
+                      {...register("e2bApiKey")}
                       type="text"
                       className="input input-lg font-medium text-[15px]"
                     />
-                    {errors.e2bAccessToken && (
+                    {errors.e2bApiKey && (
                       <p className="text-error text-sm mt-1">
-                        {errors.e2bAccessToken.message}
+                        {errors.e2bApiKey.message}
                       </p>
                     )}
                   </div>

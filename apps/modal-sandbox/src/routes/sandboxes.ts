@@ -190,13 +190,13 @@ sandboxRouter.post("/", async (c) => {
             .execute();
         }
 
-        if (params.e2bAccessToken && user?.id) {
+        if (params.e2bApiKey && user?.id) {
           await tx
             .insert(e2bAuth)
             .values({
               sandboxId: record!.id,
-              accessToken: params.e2bAccessToken!,
-              redactedAccessToken: params.redactedE2bAccessToken ?? "",
+              apiKey: params.e2bApiKey!,
+              redactedApiKey: params.redactedE2bApiKey ?? "",
               userId: user.id,
             })
             .execute();
@@ -223,7 +223,7 @@ sandboxRouter.post("/", async (c) => {
         modalTokenId: decrypt(params.modalTokenId),
         modalTokenSecret: decrypt(params.modalTokenSecret),
         image: images[params.base] || images["openclaw"],
-        e2bAccessToken: decrypt(params.e2bAccessToken),
+        e2bApiKey: decrypt(params.e2bApiKey),
       });
       const sandboxId = await sandbox.id();
 

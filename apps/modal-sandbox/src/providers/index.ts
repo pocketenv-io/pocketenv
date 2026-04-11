@@ -60,7 +60,7 @@ export interface SandboxOptions {
   modalTokenSecret?: string;
   modalAppName?: string;
   image?: string;
-  e2bAccessToken?: string;
+  e2bApiKey?: string;
   [key: string]: any;
 }
 

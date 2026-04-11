@@ -122,8 +122,8 @@ export class E2bSandbox implements BaseSandbox {
 
 class E2bProvider implements BaseProvider {
   async create(options: SandboxOptions): Promise<BaseSandbox> {
-    if (!options.e2bAccessToken) {
-      throw new Error("E2B access token is required to create a sandbox");
+    if (!options.e2bApiKey) {
+      throw new Error("E2B API KEY is required to create a sandbox");
     }
     const image = options.image || "ghcr.io/pocketenv-io/modal-openclaw:0.1.0";
     const template = Template().fromImage(image);
@@ -134,18 +134,18 @@ class E2bProvider implements BaseProvider {
       memoryMB: 4096,
     });
     const sandbox = await Sandbox.create(`${name}:${tag}`, {
-      accessToken: options.e2bAccessToken,
+      accessToken: options.e2bApiKey,
     });
     return new E2bSandbox(sandbox);
   }
 
   async get(id: string, options?: SandboxOptions): Promise<BaseSandbox> {
     try {
-      if (!options?.e2bAccessToken) {
-        throw new Error("E2B access token is required to get a sandbox");
+      if (!options?.e2bApiKey) {
+        throw new Error("E2B API KEY is required to get a sandbox");
       }
       const sandbox = await Sandbox.connect(id, {
-        accessToken: options?.e2bAccessToken,
+        accessToken: options?.e2bApiKey,
       });
       return new E2bSandbox(sandbox);
     } catch {

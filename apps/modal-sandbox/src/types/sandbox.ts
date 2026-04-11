@@ -52,8 +52,8 @@ export const SandboxConfigSchema = z
     redactedModalTokenId: z.string().optional(),
     modalTokenSecret: z.string().optional(),
     redactedModalTokenSecret: z.string().optional(),
-    e2bAccessToken: z.string().optional(),
-    redactedE2bAccessToken: z.string().optional(),
+    e2bApiKey: z.string().optional(),
+    redactedE2bApiKey: z.string().optional(),
     vcpus: z.number().optional().default(2),
     memory: z.number().optional().default(4),
     disk: z.number().optional().default(3),
@@ -206,11 +206,18 @@ export const SandboxConfigSchema = z
     }
 
     if (data.provider === "e2b") {
-      if (!data.e2bAccessToken) {
+      if (!data.e2bApiKey) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "e2bAccessToken is required when provider is 'e2b'",
-          path: ["e2bAccessToken"],
+          message: "e2bApiKey is required when provider is 'e2b'",
+          path: ["e2bApiKey"],
+        });
+      }
+      if (!data.redactedE2bApiKey) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "redactedE2bApiKey is required when provider is 'e2b'",
+          path: ["redactedE2bApiKey"],
         });
       }
     }

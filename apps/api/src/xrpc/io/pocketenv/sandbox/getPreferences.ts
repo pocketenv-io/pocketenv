@@ -119,7 +119,7 @@ export default function (server: Server, ctx: Context) {
       (e2b && {
         $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
         name: "e2b" as const,
-        redactedE2bAccessToken: e2b.redactedAccessToken,
+        redactedE2bApiKey: e2b.redactedApiKey,
       }))!;
 
     return [provider satisfies SandboxProviderPref];

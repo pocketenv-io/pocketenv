@@ -9,7 +9,6 @@ import chalk from "chalk";
 import { $ } from "zx";
 import crypto from "crypto";
 import fs from "fs/promises";
-import path from "node:path";
 
 const TERM = "xterm-256color";
 const PTY_SERVER_DOWNLOAD_URL =

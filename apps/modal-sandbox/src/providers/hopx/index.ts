@@ -125,22 +125,36 @@ class HopxProvider implements BaseProvider {
     if (!options.hopxApiKey) {
       throw new Error("Hopx API KEY is required to create a sandbox");
     }
+
     const image = options.image || "ghcr.io/pocketenv-io/modal-openclaw:0.1.0";
     const template = new Template(image);
     const { name } = parseImageRef(image);
     const templateName = name.split("/").pop()!;
-    await Template.build(template, {
-      name: templateName,
-      apiKey: options.hopxApiKey,
-      cpu: 2,
-      memory: 4096,
-      diskGB: 10,
-    });
-    const sandbox = await Sandbox.create({
-      template: templateName,
-      apiKey: options.hopxApiKey,
-    });
-    return new HopxSandbox(sandbox);
+
+    try {
+      const sandbox = await Sandbox.create({
+        template: templateName,
+        apiKey: options.hopxApiKey,
+      });
+      return new HopxSandbox(sandbox);
+    } catch (error) {
+      consola.warn(
+        `Sandbox with template ${templateName} not found, creating a new one...`,
+      );
+
+      await Template.build(template, {
+        name: templateName,
+        apiKey: options.hopxApiKey,
+        cpu: 2,
+        memory: 4096,
+        diskGB: 10,
+      });
+      const sandbox = await Sandbox.create({
+        template: templateName,
+        apiKey: options.hopxApiKey,
+      });
+      return new HopxSandbox(sandbox);
+    }
   }
 
   async get(id: string, options?: SandboxOptions): Promise<BaseSandbox> {

@@ -39,6 +39,17 @@ export async function createTerminalSession(
   const sandbox = await Sandbox.connect(sandboxId, apiKey);
   consola.info("Hopx: sandbox connected", chalk.greenBright(sandboxId));
 
+  consola.info("Hopx: waiting for sandbox to be running", chalk.greenBright(sandboxId));
+  for (let attempts = 0; attempts < 30; attempts++) {
+    const info = await sandbox.getInfo();
+    if (info.status === "running") break;
+    if (info.status === "stopped" || info.status === "error") {
+      throw new Error(`Sandbox is in unexpected state: ${info.status}`);
+    }
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+  consola.info("Hopx: sandbox is running", chalk.greenBright(sandboxId));
+
   consola.info("Hopx: connecting terminal", chalk.greenBright(sandboxId));
   const ws = await sandbox.terminal.connect();
   consola.info("Hopx: terminal connected", chalk.greenBright(sandboxId));

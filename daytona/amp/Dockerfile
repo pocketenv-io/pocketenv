@@ -37,8 +37,11 @@ RUN npm install -g \
     pm2
 
 USER root
-RUN mkdir -p /home/daytona/.local/share/fonts && chown -R daytona:daytona /home/daytona/.local
+RUN mkdir -p /home/daytona/.local/share/fonts && chown -R daytona:daytona /home/daytona/.local && \
+    chsh -s /bin/bash daytona
 USER daytona
+
+RUN echo '[[ -f ~/.bashrc ]] && source ~/.bashrc' >> ~/.bash_profile
 
 WORKDIR /home/daytona
 

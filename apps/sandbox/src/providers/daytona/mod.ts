@@ -153,7 +153,7 @@ class DaytonaProvider implements BaseProvider {
       : DEFAULT_IMAGE;
     const image = Image.base(name);
     const metadata = parseImageRef(name);
-    const snapshotName = metadata.name.split("/").pop()!;
+    const snapshotName = `${metadata.name.split("/").pop()!}-medium`;
     try {
       const snapshot = await daytona.snapshot.get(snapshotName);
       if (snapshot.state !== "active") {

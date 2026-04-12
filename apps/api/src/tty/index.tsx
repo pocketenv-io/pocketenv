@@ -398,6 +398,11 @@ export function attachWebSocket(base: string) {
       }
     }
 
+    // Buffer messages that arrive before the session is ready.
+    const pendingMessages: Buffer[] = [];
+    const bufferMessage = (data: Buffer) => pendingMessages.push(data);
+    ws.on("message", bufferMessage);
+
     let session: Session;
     try {
       session = await getSession(context.ctx, id);
@@ -408,8 +413,9 @@ export function attachWebSocket(base: string) {
     }
 
     session.wsClients.add(ws);
+    ws.off("message", bufferMessage);
 
-    ws.on("message", (data) => {
+    const handleMessage = (data: Buffer) => {
       const text = data.toString("utf-8");
       try {
         const msg = JSON.parse(text);
@@ -421,11 +427,21 @@ export function attachWebSocket(base: string) {
         // not JSON — treat as raw input
       }
       session.cmd.stdin.write(text);
-    });
+    };
+
+    // Replay messages buffered during session setup (e.g. the initial resize).
+    for (const data of pendingMessages) {
+      handleMessage(data);
+    }
+
+    ws.on("message", (data) => handleMessage(data as Buffer));
 
     ws.on("close", () => {
       session.wsClients.delete(ws);
     });
+
+    // Trigger a fresh prompt redraw (initial output was lost while wsClients was empty).
+    session.cmd.stdin.write("\n");
   });
 
   return { wss, pathRegex };

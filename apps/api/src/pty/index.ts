@@ -135,6 +135,13 @@ export function attachWebSocket(base: string) {
         }
       }
 
+      // The WS upgrade completes immediately but session creation is async.
+      // Buffer any messages (resize, keystrokes) that arrive before the session
+      // is ready so they can be replayed once the session exists.
+      const pendingMessages: Buffer[] = [];
+      const bufferMessage = (data: Buffer) => pendingMessages.push(data);
+      ws.on("message", bufferMessage);
+
       let session: Awaited<ReturnType<typeof getSession>>;
       try {
         session = await getSession(context.ctx, id);
@@ -145,8 +152,9 @@ export function attachWebSocket(base: string) {
       }
 
       session.wsClients.add(ws);
+      ws.off("message", bufferMessage);
 
-      ws.on("message", (data) => {
+      const handleMessage = (data: Buffer) => {
         const text = data.toString("utf-8");
         try {
           const msg = JSON.parse(text);
@@ -166,11 +174,22 @@ export function attachWebSocket(base: string) {
           // not JSON — treat as raw input
         }
         session.socket.sendMessage({ type: "message", message: text });
-      });
+      };
+
+      // Replay messages buffered during session setup (e.g. the initial resize).
+      for (const data of pendingMessages) {
+        handleMessage(data);
+      }
+
+      ws.on("message", (data) => handleMessage(data as Buffer));
 
       ws.on("close", () => {
         session.wsClients.delete(ws);
       });
+
+      // The shell's initial prompt was output while wsClients was empty and is
+      // now lost. Send a newline to trigger a fresh prompt redraw.
+      session.socket.sendMessage({ type: "message", message: "\n" });
     },
   );
 

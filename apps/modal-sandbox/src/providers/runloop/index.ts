@@ -147,7 +147,7 @@ class RunloopProvider implements BaseProvider {
         launch_parameters: {
           user_parameters: {
             username: "modal",
-            uid: 4444,
+            uid: 1995,
           },
           resource_size_request: "MEDIUM",
         },

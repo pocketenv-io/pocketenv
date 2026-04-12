@@ -100,7 +100,16 @@ export default function (server: Server, ctx: Context) {
           .then(([row]) => row?.runloop_auth),
       ]);
 
-    if (!daytona && !deno && !sprite && !vercel && !modal && !e2b) {
+    if (
+      !daytona &&
+      !deno &&
+      !sprite &&
+      !vercel &&
+      !modal &&
+      !e2b &&
+      !hopx &&
+      !runloop
+    ) {
       return [];
     }
 

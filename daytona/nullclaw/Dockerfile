@@ -78,7 +78,7 @@ RUN curl -s https://ohmyposh.dev/install.sh | bash -s && \
 
 RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git && \
     mkdir -p ~/.local && \
-    make -C ble.sh install PREFIX=~/.local && \
+    make -C ble.sh install PREFIX=$HOME/.local && \
     rm -rf ble.sh && \
     echo 'export LANG=en_US.UTF-8' >> ~/.bashrc && \
     echo 'source -- ~/.local/share/blesh/ble.sh' >> ~/.bashrc

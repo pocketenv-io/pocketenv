@@ -121,10 +121,18 @@ function Project({ sandbox }: ProjectProps) {
           }}
           sandboxId={sandbox.id}
           isCloudflare={sandbox.provider === "cloudflare"}
-          isTty={["sprites", "vercel", "modal", "e2b"].includes(
+          isTty={[
+            "sprites",
+            "vercel",
+            "modal",
+            "e2b",
+            "hopx",
+            "runloop",
+            "blaxel",
+          ].includes(sandbox.provider)}
+          pty={["vercel", "modal", "e2b", "hopx", "runloop", "blaxel"].includes(
             sandbox.provider,
           )}
-          pty={["vercel", "modal", "e2b"].includes(sandbox.provider)}
           worker={sandbox.baseSandbox}
         />
       </td>

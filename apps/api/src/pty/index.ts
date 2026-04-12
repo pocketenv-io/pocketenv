@@ -9,6 +9,7 @@ import schema from "schema";
 import * as vercel from "./vercel";
 import * as modal from "./modal";
 import * as e2b from "./e2b";
+import * as runloop from "./runloop";
 import { WebSocketServer, type WebSocket } from "ws";
 import type { IncomingMessage } from "http";
 
@@ -55,6 +56,7 @@ async function getSession(ctx: Context, id: string, key = id) {
     .select({
       modalAuth: schema.modalAuth.id,
       e2bAuth: schema.e2bAuth.id,
+      runloopAuth: schema.runloopAuth.id,
     })
     .from(schema.sandboxes)
     .leftJoin(
@@ -62,11 +64,16 @@ async function getSession(ctx: Context, id: string, key = id) {
       eq(schema.modalAuth.sandboxId, schema.sandboxes.id),
     )
     .leftJoin(schema.e2bAuth, eq(schema.e2bAuth.sandboxId, schema.sandboxes.id))
+    .leftJoin(
+      schema.runloopAuth,
+      eq(schema.runloopAuth.sandboxId, schema.sandboxes.id),
+    )
     .where(or(eq(schema.sandboxes.id, id), eq(schema.sandboxes.sandboxId, id)))
     .execute();
 
   if (record?.modalAuth) return modal.createTerminalSession(ctx, id, key);
   if (record?.e2bAuth) return e2b.createTerminalSession(ctx, id, key);
+  if (record?.runloopAuth) return runloop.createTerminalSession(ctx, id, key);
   return vercel.createTerminalSession(ctx, id, key);
 }
 

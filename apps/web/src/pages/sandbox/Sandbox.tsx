@@ -327,12 +327,23 @@ function New() {
                           onClose={() => {}}
                           worker={data.sandbox.baseSandbox}
                           isCloudflare={data.sandbox.provider === "cloudflare"}
-                          isTty={["sprites", "vercel", "modal", "e2b"].includes(
-                            data.sandbox.provider,
-                          )}
-                          pty={["vercel", "modal", "e2b"].includes(
-                            data.sandbox.provider,
-                          )}
+                          isTty={[
+                            "sprites",
+                            "vercel",
+                            "modal",
+                            "e2b",
+                            "hopx",
+                            "runloop",
+                            "blaxel",
+                          ].includes(data.sandbox.provider)}
+                          pty={[
+                            "vercel",
+                            "modal",
+                            "e2b",
+                            "hopx",
+                            "runloop",
+                            "blaxel",
+                          ].includes(data.sandbox.provider)}
                         />
                       )}
                     </div>

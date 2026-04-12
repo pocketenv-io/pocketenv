@@ -39,7 +39,17 @@ router.use((req, res, next) => {
 });
 
 async function getSession(ctx: Context, id: string) {
-  if (ctx.sessions.has(id)) return ctx.sessions.get(id)!;
+  if (ctx.sessions.has(id)) {
+    const existing = ctx.sessions.get(id)!;
+    // If the underlying pty-tunnel socket is closed, evict and recreate.
+    const sock = existing.socket as { readyState?: number };
+    if (sock.readyState !== undefined && sock.readyState !== 1 /* OPEN */) {
+      consola.info("PTY session stale, recreating", { id });
+      ctx.sessions.delete(id);
+    } else {
+      return existing;
+    }
+  }
 
   const [record] = await ctx.db
     .select({

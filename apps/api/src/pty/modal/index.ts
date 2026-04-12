@@ -187,6 +187,15 @@ export async function createTerminalSession(ctx: Context, id: string) {
     }
   });
 
+  socket.addEventListener("close", () => {
+    ctx.sessions.delete(id);
+    for (const ws of session.wsClients) {
+      if (ws.readyState === ws.OPEN) ws.close(1000, "exit");
+    }
+    session.clients.clear();
+    session.wsClients.clear();
+  });
+
   consola.info("Modal: waiting for pty-tunnel socket to open", chalk.greenBright(id));
   await socket.waitForOpen();
   consola.info("Modal: pty-tunnel socket open, sending ready", chalk.greenBright(id));

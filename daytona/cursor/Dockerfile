@@ -58,7 +58,8 @@ RUN curl -fsSL https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.9/zo
     chmod +x ~/.local/bin/zoxide && \
     rm /tmp/zoxide.tar.gz && \
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && \
-    echo 'eval "$(zoxide init bash)"' >> ~/.bashrc
+    echo 'eval "$(zoxide init bash)"' >> ~/.bashrc && \
+    echo 'eval "$(zoxide init zsh)"' >> ~/.zshrc
 
 RUN curl -fsSL https://zerobrew.rs/install | bash
 
@@ -66,7 +67,8 @@ RUN curl https://cursor.com/install -fsS | bash
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s && \
     curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee ~/.tokyonight_storm.omp.json >/dev/null && \
-    echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"' >> ~/.bashrc
+    echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"' >> ~/.bashrc && \
+    echo 'eval "$(oh-my-posh init zsh --config ~/.tokyonight_storm.omp.json)"' >> ~/.zshrc
 
 RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git && \
     mkdir -p ~/.local && \
@@ -88,4 +90,8 @@ RUN case "${TARGETARCH}" in \
     tar -xzf /tmp/eza.tar.gz -C ~/.local/bin && \
     chmod +x ~/.local/bin/eza && \
     rm /tmp/eza.tar.gz && \
-    echo 'alias ls="eza -l"' >> ~/.bashrc
+    echo 'alias ls="eza -l"' >> ~/.bashrc && \
+    echo 'alias ls="eza -l"' >> ~/.zshrc
+
+RUN mkdir -p ~/.zsh && git clone https://github.com/zsh-users/zsh-autosuggestions ~/.zsh/zsh-autosuggestions \
+    && echo "source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh" >> ~/.zshrc

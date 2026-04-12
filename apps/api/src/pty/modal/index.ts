@@ -36,8 +36,11 @@ async function setupSandboxEnvironment(
     tokenId: options.tokenId,
     tokenSecret: options.tokenSecret,
   });
+  consola.info("Modal: fetching sandbox", chalk.greenBright(options.id));
   const sandbox = await modal.sandboxes.fromId(options.id);
+  consola.info("Modal: sandbox fetched", chalk.greenBright(options.id));
 
+  consola.info("Modal: checking pty-tunnel-server", chalk.greenBright(options.id));
   if (!(await checkIfServerInstalled(sandbox))) {
     await $`bash -c "type /tmp/${SERVER_BIN_NAME} || curl -L ${PTY_SERVER_DOWNLOAD_URL} | tar xz -C /tmp"`;
 
@@ -89,10 +92,7 @@ async function setupSandboxEnvironment(
     },
   );
 
-  consola.info(
-    "Sandbox environment set up for sandbox",
-    chalk.greenBright(options.id),
-  );
+  consola.info("Modal: pty-tunnel-server process started", chalk.greenBright(options.id));
 
   return { sandbox, cmd };
 }
@@ -149,7 +149,9 @@ export async function createTerminalSession(ctx: Context, id: string) {
     consola.error("pty-tunnel-server log stream error:", err),
   );
 
+  consola.info("Modal: fetching sandbox tunnels", chalk.greenBright(id));
   const tunnels = await sandbox.tunnels();
+  consola.info("Modal: tunnels fetched", JSON.stringify(Object.keys(tunnels)));
   const port = tunnels[PTY_PORT];
   if (!port) {
     consola.error(`PTY port ${PTY_PORT} not found in sandbox tunnels`, {
@@ -159,7 +161,9 @@ export async function createTerminalSession(ctx: Context, id: string) {
     throw new Error(`PTY port ${PTY_PORT} not found in sandbox tunnels`);
   }
 
+  consola.info("Modal: awaiting pty-tunnel connection info", chalk.greenBright(id));
   const details = await listener.connection;
+  consola.info("Modal: pty-tunnel connection info received", chalk.greenBright(id));
 
   const url = `wss://${port.url.replace(/^https?:\/\//, "")}` as const;
   consola.info("Connecting to WebSocket URL:", url);
@@ -183,7 +187,9 @@ export async function createTerminalSession(ctx: Context, id: string) {
     }
   });
 
+  consola.info("Modal: waiting for pty-tunnel socket to open", chalk.greenBright(id));
   await socket.waitForOpen();
+  consola.info("Modal: pty-tunnel socket open, sending ready", chalk.greenBright(id));
   socket.sendMessage({ type: "ready" });
 
   ctx.sessions.set(id, session);

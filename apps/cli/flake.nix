@@ -13,7 +13,7 @@
 
         pocketenv-cli = pkgs.buildNpmPackage {
           pname = "pocketenv-cli";
-          version = "0.7.0";
+          version = "0.7.1";
 
           src = ./.;
 

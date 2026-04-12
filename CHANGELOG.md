@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.1] - 2026-04-12
+
+### Added
+
+- **Daytona images and async sandbox creation**: Sandbox images are now resolved from a registry, and Daytona sandboxes support asynchronous creation with image-based provisioning.
+- **Optional session key for shared PTY sessions**: PTY sessions now accept an optional `sessionId` URL parameter as a session key, allowing multiple connections to share the same terminal session.
+- **Locale and dev tools in Dockerfiles**: Daytona and Modal Dockerfiles now set `LANG`/`LC_ALL`, `TARGETARCH`, and include common dev tools for a more complete environment.
+- **Modal pty-tunnel logging**: Added structured logging for the Modal pty-tunnel server to aid debugging.
+
+### Changed
+
+- **WebSocket terminal streams**: Terminal sessions now stream over WebSockets with buffering and message replay during session setup, replacing raw HTTP streams.
+- **Bash shell across all providers**: PTY sessions for Modal and E2B providers now use `bash`, consistent with the Vercel provider. Daytona sandboxes also default to `bash`.
+- **SHELL set to bash in Dockerfiles**: All Cloudflare, Daytona, and Modal Dockerfiles now set `SHELL ["/bin/bash", "-c"]` and fix `chsh` usage.
+- **WORKDIR set to user home in Dockerfiles**: Container working directory defaults to the user's home directory.
+- **`$HOME` used for tool install paths**: oh-my-posh theme and BLE install prefix now use `$HOME` instead of hardcoded paths.
+- **Daytona -medium snapshot variants**: Daytona Dockerfiles now include `-medium` snapshot image variants.
+- **tigrisfs pinned in Dockerfiles**: tigrisfs version is now pinned in all Dockerfiles for reproducible builds.
+
+### Fixed
+
+- **Stale PTY session eviction**: PTY sessions are now evicted when stale and properly cleaned up when the connection closes, preventing resource leaks.
+- **Debug WebSocket URL log removed**: Removed an accidental debug log that printed the WebSocket URL on connection.
+
+---
+
 ## [0.7.0] - 2026-04-12
 
 ### Added

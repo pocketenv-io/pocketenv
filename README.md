@@ -55,7 +55,7 @@ yay -Syu pocketenv
 
 Honestly? Because every sandbox tool out there wants you to commit to their platform. Their API, their format, their rules. Switch providers and you're rewriting everything.
 
-Pocketenv is the escape hatch. One interface, multiple backends — Cloudflare, Daytona, Deno, Vercel, and more. Write once, run anywhere (for real this time).
+Pocketenv is the escape hatch. One interface, multiple backends — Cloudflare, Daytona, Deno, Vercel, Modal, E2B and more. Write once, run anywhere (for real this time).
 
 It also uses [AT Protocol](https://atproto.com) lexicons under the hood, which means sandbox definitions are open, portable, and not owned by anyone.
 
@@ -76,7 +76,7 @@ Probably yes if any of these sound familiar:
 ## What it can do
 
 **Run sandboxes on whatever backend you want**
-Daytona, Cloudflare Sandbox, Vercel Sandbox, Deno Sandbox — swap between them without changing your workflow.
+Daytona, Cloudflare Sandbox, Vercel Sandbox, Deno Sandbox, Modal, E2B — swap between them without changing your workflow.
 
 **Works with the AI tools you're already using**
 Claude Code, Codex CLI, Gemini CLI, Copilot, OpenClaw, your own agents — they all just work.

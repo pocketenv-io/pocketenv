@@ -135,6 +135,7 @@ class HopxProvider implements BaseProvider {
       const sandbox = await Sandbox.create({
         template: templateName,
         apiKey: options.hopxApiKey,
+        region: "us-east",
       });
       return new HopxSandbox(sandbox);
     } catch (error) {
@@ -156,6 +157,7 @@ class HopxProvider implements BaseProvider {
       const sandbox = await Sandbox.create({
         template: templateName,
         apiKey: options.hopxApiKey,
+        region: "us-east",
       });
       return new HopxSandbox(sandbox);
     }

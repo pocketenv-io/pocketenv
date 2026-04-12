@@ -1,9 +1,11 @@
 import BaseProvider, { BaseSandbox, SandboxOptions } from "../mod.ts";
-import { Daytona, Sandbox } from "@daytonaio/sdk";
+import { Daytona, Sandbox, Image } from "@daytonaio/sdk";
 import process, { env } from "node:process";
 import consola from "consola";
 import path from "node:path";
 import { Buffer } from "node:buffer";
+import { images } from "../../images.ts";
+import parseImageRef from "../../lib/parseImageRef.ts";
 
 export class DaytonaSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
@@ -145,10 +147,42 @@ class DaytonaProvider implements BaseProvider {
       _experimental: {},
     });
 
+    const DEFAULT_IMAGE = "ghcr.io/pocketenv-io/daytona-openclaw:0.6.0";
+    const name = options.image
+      ? images[options.image] || DEFAULT_IMAGE
+      : DEFAULT_IMAGE;
+    const image = Image.base(name);
+    const metadata = parseImageRef(name);
+    const snapshotName = metadata.name.split("/").pop()!;
+    try {
+      const snapshot = await daytona.snapshot.get(snapshotName);
+      if (snapshot.state !== "active") {
+        consola.warn(
+          "Snapshot found in Daytona but not active, activating snapshot",
+          snapshotName,
+        );
+        await daytona.snapshot.activate(snapshot);
+      }
+    } catch (error) {
+      consola.warn(
+        "Snapshot not found in Daytona, building image and creating snapshot",
+        snapshotName,
+        error,
+      );
+      await daytona.snapshot.create({
+        name: snapshotName,
+        image,
+        resources: {
+          cpu: 2,
+          memory: 4,
+          disk: 8,
+        },
+      });
+    }
+
     const sandbox = await daytona.create({
       language: "typescript",
-      // snapshot: process.env.DAYTONA_SNAPSHOT,
-      snapshot: "daytona-medium",
+      snapshot: snapshotName,
       envVars: options.envVars,
     });
 

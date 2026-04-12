@@ -42,6 +42,7 @@ import { PushDirectoryParams, pushSchema } from "../types/push.ts";
 import crypto from "node:crypto";
 import process from "node:process";
 import prepareSandbox from "../lib/prepare-sandbox.ts";
+import { InsertSandbox } from "../schema/sandboxes.ts";
 
 const SUPPORTED_PROVIDERS = ["daytona", "vercel", "deno", "sprites"];
 
@@ -169,37 +170,47 @@ sandboxRouter.post("/", async (c) => {
       },
     );
 
-    const sandbox = await createSandbox(params.provider, {
-      id: initialRecord.id,
-      keepAlive: params.keepAlive,
-      sleepAfter: params.sleepAfter,
-      snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
-      spriteToken: decrypt(params.spriteToken),
-      spriteName,
-      daytonaApiKey: decrypt(params.daytonaApiKey),
-      organizationId: params.daytonaOrganizationId,
-      denoDeployToken: decrypt(params.denoDeployToken),
-      vercelApiToken: decrypt(params.vercelApiToken),
-      vercelProjectId: params.vercelProjectId,
-      vercelTeamId: params.vercelTeamId,
-    });
-    const sandboxId = await sandbox.id();
+    (async () => {
+      const sandbox = await createSandbox(params.provider, {
+        id: initialRecord.id,
+        keepAlive: params.keepAlive,
+        sleepAfter: params.sleepAfter,
+        snapshotRoot: process.env.DENO_SNAPSHOT_ROOT,
+        spriteToken: decrypt(params.spriteToken),
+        spriteName,
+        daytonaApiKey: decrypt(params.daytonaApiKey),
+        organizationId: params.daytonaOrganizationId,
+        denoDeployToken: decrypt(params.denoDeployToken),
+        vercelApiToken: decrypt(params.vercelApiToken),
+        vercelProjectId: params.vercelProjectId,
+        vercelTeamId: params.vercelTeamId,
+      });
+      const sandboxId = await sandbox.id();
 
-    const [record] = await c.var.db
-      .update(sandboxes)
-      .set({
-        status: "RUNNING",
-        sandboxId: sandboxId,
-        startedAt: new Date(),
-        vcpus: params.vcpus,
-        memory: params.memory,
-        disk: params.disk,
+      const [record] = await c.var.db
+        .update(sandboxes)
+        .set({
+          status: "RUNNING",
+          sandboxId: sandboxId,
+          startedAt: new Date(),
+          vcpus: params.vcpus,
+          memory: params.memory,
+          disk: params.disk,
+        })
+        .where(eq(sandboxes.id, initialRecord.id))
+        .returning()
+        .execute();
+
+      return record;
+    })()
+      .then((record) => {
+        consola.success(`Sandbox ${record.id} is created and running`);
       })
-      .where(eq(sandboxes.id, initialRecord.id))
-      .returning()
-      .execute();
+      .catch((e) => {
+        consola.error(`Failed to create sandbox ${initialRecord.id}: ${e}`);
+      });
 
-    return c.json(record);
+    return c.json(initialRecord);
   } catch (err) {
     console.log(err);
     return c.json(

@@ -97,7 +97,7 @@ async function setupSandboxEnvironment(
   return { sandbox, cmd };
 }
 
-export async function createTerminalSession(ctx: Context, id: string) {
+export async function createTerminalSession(ctx: Context, id: string, key = id) {
   const [record] = await ctx.db
     .select()
     .from(schema.sandboxes)
@@ -188,7 +188,7 @@ export async function createTerminalSession(ctx: Context, id: string) {
   });
 
   socket.addEventListener("close", () => {
-    ctx.sessions.delete(id);
+    ctx.sessions.delete(key);
     for (const ws of session.wsClients) {
       if (ws.readyState === ws.OPEN) ws.close(1000, "exit");
     }
@@ -201,6 +201,6 @@ export async function createTerminalSession(ctx: Context, id: string) {
   consola.info("Modal: pty-tunnel socket open, sending ready", chalk.greenBright(id));
   socket.sendMessage({ type: "ready" });
 
-  ctx.sessions.set(id, session);
+  ctx.sessions.set(key, session);
   return session;
 }

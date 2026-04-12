@@ -38,14 +38,14 @@ router.use((req, res, next) => {
   next();
 });
 
-async function getSession(ctx: Context, id: string) {
-  if (ctx.sessions.has(id)) {
-    const existing = ctx.sessions.get(id)!;
+async function getSession(ctx: Context, id: string, key = id) {
+  if (ctx.sessions.has(key)) {
+    const existing = ctx.sessions.get(key)!;
     // If the underlying pty-tunnel socket is closed, evict and recreate.
     const sock = existing.socket as { readyState?: number };
     if (sock.readyState !== undefined && sock.readyState !== 1 /* OPEN */) {
-      consola.info("PTY session stale, recreating", { id });
-      ctx.sessions.delete(id);
+      consola.info("PTY session stale, recreating", { id, key });
+      ctx.sessions.delete(key);
     } else {
       return existing;
     }
@@ -65,9 +65,9 @@ async function getSession(ctx: Context, id: string) {
     .where(or(eq(schema.sandboxes.id, id), eq(schema.sandboxes.sandboxId, id)))
     .execute();
 
-  if (record?.modalAuth) return modal.createTerminalSession(ctx, id);
-  if (record?.e2bAuth) return e2b.createTerminalSession(ctx, id);
-  return vercel.createTerminalSession(ctx, id);
+  if (record?.modalAuth) return modal.createTerminalSession(ctx, id, key);
+  if (record?.e2bAuth) return e2b.createTerminalSession(ctx, id, key);
+  return vercel.createTerminalSession(ctx, id, key);
 }
 
 router.get("/:id/stream", async (req, res) => {
@@ -145,6 +145,9 @@ export function attachWebSocket(base: string) {
         }
       }
 
+      const shareId = url.searchParams.get("sessionId") ?? undefined;
+      const key = shareId ?? id;
+
       // The WS upgrade completes immediately but session creation is async.
       // Buffer any messages (resize, keystrokes) that arrive before the session
       // is ready so they can be replayed once the session exists.
@@ -154,7 +157,7 @@ export function attachWebSocket(base: string) {
 
       let session: Awaited<ReturnType<typeof getSession>>;
       try {
-        session = await getSession(context.ctx, id);
+        session = await getSession(context.ctx, id, key);
       } catch (err) {
         consola.error("WS: Failed to get session:", err);
         ws.close(1011, "Session error");

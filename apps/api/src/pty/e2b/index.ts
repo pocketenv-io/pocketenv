@@ -6,7 +6,7 @@ import { Sandbox } from "e2b";
 import decrypt from "lib/decrypt";
 import type { Message } from "pty/pty-tunnel/messages";
 
-export async function createTerminalSession(ctx: Context, id: string): Promise<Session> {
+export async function createTerminalSession(ctx: Context, id: string, key = id): Promise<Session> {
   const [record] = await ctx.db
     .select()
     .from(schema.sandboxes)
@@ -65,6 +65,6 @@ export async function createTerminalSession(ctx: Context, id: string): Promise<S
   pid = terminal.pid;
   consola.info("E2B PTY session created", { id, pid });
 
-  ctx.sessions.set(id, session);
+  ctx.sessions.set(key, session);
   return session;
 }

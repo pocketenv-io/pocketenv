@@ -46,7 +46,7 @@ type Session = {
 
 const sessions = new Map<string, Session>();
 
-async function createTerminalSession(ctx: Context, id: string) {
+async function createTerminalSession(ctx: Context, id: string, key = id) {
   const [sandbox] = await ctx.db
     .select()
     .from(schema.sandboxes)
@@ -306,7 +306,7 @@ async function createTerminalSession(ctx: Context, id: string) {
     }
     session.clients.clear();
     session.wsClients.clear();
-    sessions.delete(id);
+    sessions.delete(key);
   });
 
   cmd.on?.("error", (err: Error) => {
@@ -319,15 +319,15 @@ async function createTerminalSession(ctx: Context, id: string) {
     }
     session.clients.clear();
     session.wsClients.clear();
-    sessions.delete(id);
+    sessions.delete(key);
   });
 
-  sessions.set(id, session);
+  sessions.set(key, session);
   return session;
 }
 
-async function getSession(ctx: Context, id: string) {
-  return sessions.get(id) ?? (await createTerminalSession(ctx, id));
+async function getSession(ctx: Context, id: string, key = id) {
+  return sessions.get(key) ?? (await createTerminalSession(ctx, id, key));
 }
 
 router.get("/:id/stream", async (req, res) => {
@@ -398,6 +398,9 @@ export function attachWebSocket(base: string) {
       }
     }
 
+    const shareId = url.searchParams.get("sessionId") ?? undefined;
+    const key = shareId ?? id;
+
     // Buffer messages that arrive before the session is ready.
     const pendingMessages: Buffer[] = [];
     const bufferMessage = (data: Buffer) => pendingMessages.push(data);
@@ -405,7 +408,7 @@ export function attachWebSocket(base: string) {
 
     let session: Session;
     try {
-      session = await getSession(context.ctx, id);
+      session = await getSession(context.ctx, id, key);
     } catch (err) {
       consola.error("WS: Failed to get session:", err);
       ws.close(1011, "Session error");

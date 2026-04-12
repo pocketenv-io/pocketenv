@@ -10,6 +10,7 @@ import * as vercel from "./vercel";
 import * as modal from "./modal";
 import * as e2b from "./e2b";
 import * as runloop from "./runloop";
+import * as hopx from "./hopx";
 import { WebSocketServer, type WebSocket } from "ws";
 import type { IncomingMessage } from "http";
 
@@ -57,6 +58,7 @@ async function getSession(ctx: Context, id: string, key = id) {
       modalAuth: schema.modalAuth.id,
       e2bAuth: schema.e2bAuth.id,
       runloopAuth: schema.runloopAuth.id,
+      hopxAuth: schema.hopxAuth.id,
     })
     .from(schema.sandboxes)
     .leftJoin(
@@ -68,12 +70,17 @@ async function getSession(ctx: Context, id: string, key = id) {
       schema.runloopAuth,
       eq(schema.runloopAuth.sandboxId, schema.sandboxes.id),
     )
+    .leftJoin(
+      schema.hopxAuth,
+      eq(schema.hopxAuth.sandboxId, schema.sandboxes.id),
+    )
     .where(or(eq(schema.sandboxes.id, id), eq(schema.sandboxes.sandboxId, id)))
     .execute();
 
   if (record?.modalAuth) return modal.createTerminalSession(ctx, id, key);
   if (record?.e2bAuth) return e2b.createTerminalSession(ctx, id, key);
   if (record?.runloopAuth) return runloop.createTerminalSession(ctx, id, key);
+  if (record?.hopxAuth) return hopx.createTerminalSession(ctx, id, key);
   return vercel.createTerminalSession(ctx, id, key);
 }
 

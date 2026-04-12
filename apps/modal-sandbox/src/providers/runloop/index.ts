@@ -39,7 +39,7 @@ export class RunloopSandbox implements BaseSandbox {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");
-    const result = await this.sandbox.cmd.exec(`bash -c ${command}`);
+    const result = await this.sandbox.cmd.exec(`bash -c "${command}"`);
 
     return {
       stdout: await result.stdout(),

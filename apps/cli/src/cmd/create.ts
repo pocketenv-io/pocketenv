@@ -41,7 +41,7 @@ async function createSandbox(
     ].includes(provider ?? "cloudflare")
   ) {
     consola.error(
-      `Unsupported provider: ${provider}. Supported providers are: sprites, daytona, deno, vercel, modal, cloudflare (default).`,
+      `Unsupported provider: ${provider}. Supported providers are: sprites, daytona, deno, vercel, modal, e2b, hopx, runloop, blaxel, cloudflare (default).`,
     );
     process.exit(1);
   }

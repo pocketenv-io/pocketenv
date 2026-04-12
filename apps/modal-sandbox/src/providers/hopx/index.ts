@@ -142,6 +142,10 @@ class HopxProvider implements BaseProvider {
         `Sandbox with template ${templateName} not found, creating a new one...`,
       );
 
+      template.runCmd(
+        `echo "This is a custom template built from image ${image}"`,
+      );
+
       await Template.build(template, {
         name: templateName,
         apiKey: options.hopxApiKey,

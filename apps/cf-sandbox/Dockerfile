@@ -1,5 +1,7 @@
 FROM node:24-slim
 
+SHELL ["/bin/bash", "-c"]
+
 ARG TARGETARCH
 
 COPY --from=docker.io/cloudflare/sandbox:0.7.5 /container-server/sandbox /sandbox

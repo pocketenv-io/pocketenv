@@ -1,5 +1,7 @@
 FROM codercom/code-server:latest
 
+SHELL ["/bin/bash", "-c"]
+
 ARG TARGETARCH
 
 USER root

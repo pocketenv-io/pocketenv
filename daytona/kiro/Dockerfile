@@ -1,5 +1,7 @@
 FROM daytonaio/sandbox:0.6.0
 
+SHELL ["/bin/bash", "-c"]
+
 ARG TARGETARCH
 
 ENV LC_ALL=en_US.UTF-8
@@ -37,7 +39,7 @@ RUN npm install -g pm2
 
 USER root
 RUN mkdir -p /home/daytona/.local/share/fonts && chown -R daytona:daytona /home/daytona/.local && \
-    chsh -s /bin/bash daytona
+    usermod -s /bin/bash daytona
 USER daytona
 
 RUN echo '[[ -f ~/.bashrc ]] && source ~/.bashrc' >> ~/.bash_profile

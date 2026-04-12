@@ -1,5 +1,7 @@
 FROM pkgxdev/pkgx:latest
 
+SHELL ["/bin/bash", "-c"]
+
 ARG TARGETARCH
 
 COPY --from=docker.io/library/node:24 /usr/local/bin/node /usr/local/bin/node

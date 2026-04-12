@@ -1,5 +1,7 @@
 FROM jdxcode/mise:latest
 
+SHELL ["/bin/bash", "-c"]
+
 ARG TARGETARCH
 
 RUN apt-get update -y && apt-get install -y curl git unzip tmux build-essential gawk sed procps wget locales-all s3fs fontconfig \

@@ -1,5 +1,7 @@
 FROM node:lts-trixie-slim
 
+SHELL ["/bin/bash", "-c"]
+
 ARG TARGETARCH
 
 ENV LC_ALL=en_US.UTF-8

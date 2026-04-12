@@ -1,5 +1,7 @@
 FROM node:25-trixie
 
+SHELL ["/bin/bash", "-c"]
+
 ARG TARGETARCH
 
 COPY --from=docker.io/cloudflare/sandbox:0.7.8 /container-server/sandbox /sandbox

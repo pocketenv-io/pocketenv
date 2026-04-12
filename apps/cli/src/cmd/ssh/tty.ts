@@ -28,7 +28,6 @@ async function ssh(sandbox: Sandbox, tty: boolean = false): Promise<void> {
 
   const baseUrl = tty ? env.POCKETENV_TTY_URL : env.POCKETENV_PTY_URL;
   const wsUrl = toWsUrl(baseUrl, `/${sandbox.id}/ws`, authToken);
-  consola.info(wsUrl);
 
   let cols = process.stdout.columns ?? 220;
   let rows = process.stdout.rows ?? 50;

@@ -132,15 +132,33 @@ class RunloopProvider implements BaseProvider {
       bearerToken: options.runloopApiKey,
     });
 
-    await sdk.blueprint.create({
-      name: templateName,
-      dockerfile: `FROM ${image}`,
-    });
-
-    const sandbox = await sdk.devbox.create({
-      blueprint_name: templateName,
-    });
-    return new RunloopSandbox(sandbox);
+    try {
+      const sandbox = await sdk.devbox.create({
+        blueprint_name: templateName,
+      });
+      return new RunloopSandbox(sandbox);
+    } catch (error) {
+      consola.warn(
+        `Runloop blueprint ${templateName} not found, creating a new one...`,
+      );
+      await sdk.blueprint.create({
+        name: templateName,
+        dockerfile: `FROM ${image}`,
+        launch_parameters: {
+          custom_cpu_cores: 2,
+          custom_gb_memory: 4,
+          custom_disk_size: 10,
+          user_parameters: {
+            username: "modal",
+            uid: 4444,
+          },
+        },
+      });
+      const sandbox = await sdk.devbox.create({
+        blueprint_name: templateName,
+      });
+      return new RunloopSandbox(sandbox);
+    }
   }
 
   async get(id: string, options?: SandboxOptions): Promise<BaseSandbox> {

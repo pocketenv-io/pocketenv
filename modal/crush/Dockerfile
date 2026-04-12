@@ -40,7 +40,7 @@ RUN curl -L https://github.com/tsirysndr/pty-tunnel-server/releases/download/v0.
 RUN ARCH=$(uname -m) && \
     if [ "$ARCH" = "x86_64" ]; then ARCH="amd64"; fi && \
     if [ "$ARCH" = "aarch64" ]; then ARCH="arm64"; fi && \
-    VERSION=$(curl -s https://api.github.com/repos/tigrisdata/tigrisfs/releases/latest | grep -o '"tag_name": "[^"]*' | cut -d'"' -f4) && \
+    VERSION=v1.2.1 && \
     curl -L "https://github.com/tigrisdata/tigrisfs/releases/download/${VERSION}/tigrisfs_${VERSION#v}_linux_${ARCH}.tar.gz" -o /tmp/tigrisfs.tar.gz && \
     tar -xzf /tmp/tigrisfs.tar.gz -C /usr/local/bin/ && \
     rm /tmp/tigrisfs.tar.gz && \

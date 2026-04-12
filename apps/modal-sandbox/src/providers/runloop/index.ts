@@ -145,10 +145,6 @@ class RunloopProvider implements BaseProvider {
         name: templateName,
         dockerfile: `FROM ${image}`,
         launch_parameters: {
-          user_parameters: {
-            username: "modal",
-            uid: 1995,
-          },
           resource_size_request: "MEDIUM",
         },
       });

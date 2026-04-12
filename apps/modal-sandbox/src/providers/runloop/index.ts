@@ -134,6 +134,7 @@ class RunloopProvider implements BaseProvider {
 
     try {
       const sandbox = await sdk.devbox.create({
+        tunnel: { auth_mode: "open" },
         blueprint_name: templateName,
       });
       return new RunloopSandbox(sandbox);
@@ -149,6 +150,7 @@ class RunloopProvider implements BaseProvider {
         },
       });
       const sandbox = await sdk.devbox.create({
+        tunnel: { auth_mode: "open" },
         blueprint_name: templateName,
       });
       return new RunloopSandbox(sandbox);

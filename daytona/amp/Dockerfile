@@ -58,7 +58,7 @@ RUN curl -fsSL https://github.com/ajeetdsouza/zoxide/releases/download/v0.9.9/zo
 RUN curl -fsSL https://zerobrew.rs/install | bash
 
 RUN curl -s https://ohmyposh.dev/install.sh | bash -s && \
-    curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee /root/.tokyonight_storm.omp.json >/dev/null && \
+    curl -s https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/refs/heads/main/themes/tokyonight_storm.omp.json | tee ~/.tokyonight_storm.omp.json >/dev/null && \
     echo 'eval "$(oh-my-posh init bash --config ~/.tokyonight_storm.omp.json)"' >> ~/.bashrc
 
 RUN git clone --recursive --depth 1 --shallow-submodules https://github.com/akinomyoga/ble.sh.git && \

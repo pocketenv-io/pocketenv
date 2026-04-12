@@ -1,5 +1,5 @@
 /** eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useRef, useMemo, useCallback, useState } from "react";
+import { useEffect, useRef, useMemo, useState } from "react";
 import { useXTerm } from "react-xtermjs";
 import { FitAddon } from "@xterm/addon-fit";
 import { API_URL } from "../../consts";
@@ -70,7 +70,7 @@ function TerminalContent({
   onClose,
 }: TerminalContentProps) {
   const sessionIdRef = useRef<string | null>(null);
-  const eventSourceRef = useRef<EventSource | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
 
   const theme = isDarkMode ? darkTheme : lightTheme;
@@ -92,45 +92,6 @@ function TerminalContent({
   );
 
   const { ref, instance } = useXTerm({ options });
-
-  const sendInput = useCallback(async (data: string) => {
-    const sid = sessionIdRef.current;
-    if (!sid) return;
-    try {
-      await fetch(`${API_URL}/ssh/input/${sid}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(localStorage.getItem("token") && {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          }),
-        },
-        body: JSON.stringify({ data }),
-      });
-    } catch {
-      // Silently ignore input errors (session may have closed)
-    }
-  }, []);
-
-  const sendResize = useCallback(async (cols: number, rows: number) => {
-    const sid = sessionIdRef.current;
-    if (!sid) return;
-    try {
-      await fetch(`${API_URL}/ssh/resize/${sid}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(localStorage.getItem("token") && {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          }),
-        },
-
-        body: JSON.stringify({ cols, rows }),
-      });
-    } catch {
-      // Silently ignore resize errors
-    }
-  }, []);
 
   useEffect(() => {
     if (!instance) return;
@@ -157,7 +118,9 @@ function TerminalContent({
     window.addEventListener("resize", handleResize);
 
     const resizeDisposable = instance.onResize(({ cols, rows }) => {
-      sendResize(cols, rows);
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({ type: "resize", cols, rows }));
+      }
     });
 
     const connect = async () => {
@@ -167,14 +130,13 @@ function TerminalContent({
 
         instance.write(`\x1b[35mConnecting to SSH session...\x1b[0m\r\n`);
 
+        const token = localStorage.getItem("token");
         const response = await fetch(`${API_URL}/ssh/connect`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "X-Sandbox-Id": sandboxId,
-            ...(localStorage.getItem("token") && {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            }),
+            ...(token && { Authorization: `Bearer ${token}` }),
           },
           body: JSON.stringify({ cols, rows }),
         });
@@ -192,16 +154,18 @@ function TerminalContent({
         const { sessionId } = await response.json();
         sessionIdRef.current = sessionId;
 
-        const es = new EventSource(`${API_URL}/ssh/stream/${sessionId}`);
-        eventSourceRef.current = es;
+        const wsBase = API_URL.replace(/^http/, "ws");
+        const params = token ? `?token=${encodeURIComponent(token)}` : "";
+        const ws = new WebSocket(`${wsBase}/ssh/${sessionId}/ws${params}`);
+        wsRef.current = ws;
 
-        es.addEventListener("connected", () => {
+        ws.onopen = () => {
           instance.focus();
-        });
+        };
 
-        es.onmessage = (event) => {
+        ws.onmessage = (event) => {
           // Data is base64-encoded
-          const bytes = atob(event.data);
+          const bytes = atob(event.data as string);
           const arr = new Uint8Array(bytes.length);
           for (let i = 0; i < bytes.length; i++) {
             arr[i] = bytes.charCodeAt(i);
@@ -210,22 +174,20 @@ function TerminalContent({
           instance.write(text);
         };
 
-        es.addEventListener("close", () => {
-          instance.write("\r\n\x1b[38;5;250mSSH session closed.\x1b[0m\r\n");
-          es.close();
-          eventSourceRef.current = null;
+        ws.onclose = (event) => {
+          if (event.code === 1000) {
+            instance.write("\r\n\x1b[38;5;250mSSH session closed.\x1b[0m\r\n");
+          } else if (wsRef.current) {
+            instance.write("\r\n\x1b[38;5;203mSSH connection lost.\x1b[0m\r\n");
+          }
+          wsRef.current = null;
           sessionIdRef.current = null;
           onClose();
-        });
+        };
 
-        es.addEventListener("error", () => {
-          // EventSource error can be a reconnect or a real error
-          if (es.readyState === EventSource.CLOSED) {
-            instance.write("\r\n\x1b[38;5;203mSSH connection lost.\x1b[0m\r\n");
-            eventSourceRef.current = null;
-            sessionIdRef.current = null;
-          }
-        });
+        ws.onerror = () => {
+          // onclose fires right after onerror, so just let it handle cleanup
+        };
       } catch (err: any) {
         instance.write(
           `\x1b[38;5;203mFailed to connect: ${err.message}\x1b[0m\r\n`,
@@ -237,7 +199,9 @@ function TerminalContent({
 
     // Forward keyboard input to SSH
     const dataDisposable = instance.onData((data) => {
-      sendInput(data);
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(data);
+      }
     });
 
     return () => {
@@ -246,23 +210,24 @@ function TerminalContent({
       dataDisposable.dispose();
       resizeDisposable.dispose();
 
-      // Cleanup SSH session
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
+      if (wsRef.current) {
+        wsRef.current.onclose = null;
+        wsRef.current.close();
+        wsRef.current = null;
       }
       if (sessionIdRef.current) {
         // Fire-and-forget disconnect
+        const token = localStorage.getItem("token");
         fetch(`${API_URL}/ssh/disconnect/${sessionIdRef.current}`, {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            ...(token && { Authorization: `Bearer ${token}` }),
           },
         }).catch(() => {});
         sessionIdRef.current = null;
       }
     };
-  }, [instance, sendInput, sendResize, sandboxId, onClose]);
+  }, [instance, sandboxId, onClose]);
 
   return (
     <div

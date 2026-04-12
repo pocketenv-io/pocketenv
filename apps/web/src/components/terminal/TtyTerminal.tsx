@@ -64,11 +64,6 @@ interface TerminalContentProps {
   pty?: boolean;
 }
 
-function authHeaders(): Record<string, string> {
-  const token = localStorage.getItem("token");
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
 function TerminalContent({
   isDarkMode,
   sandboxId,
@@ -76,12 +71,12 @@ function TerminalContent({
   pty,
 }: TerminalContentProps) {
   // Stable refs so the main effect never re-runs because these changed
-  const eventSourceRef = useRef<EventSource | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
   const sandboxIdRef = useRef(sandboxId);
   const onCloseRef = useRef(onClose);
 
-  const BASE_URL = `${API_URL}/${pty ? "pty" : "tty"}`;
+  const type = pty ? "pty" : "tty";
 
   // Keep refs in sync with the latest props after every render,
   // without listing them as effect deps (which would retrigger connect).
@@ -138,93 +133,62 @@ function TerminalContent({
     };
     window.addEventListener("resize", handleResize);
 
-    // --- Helper functions that read latest values from refs ---
-    const sendInput = async (data: string) => {
-      try {
-        await fetch(`${BASE_URL}/${sandboxIdRef.current}/input`, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain", ...authHeaders() },
-          body: data,
-        });
-      } catch {
-        // session may have closed
-      }
-    };
-
-    const sendResize = async (cols: number, rows: number) => {
-      try {
-        await fetch(`${BASE_URL}/${sandboxIdRef.current}/resize`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", ...authHeaders() },
-          body: JSON.stringify({ cols, rows }),
-        });
-      } catch {
-        // ignore
-      }
-    };
-
     const resizeDisposable = instance.onResize(({ cols, rows }) => {
-      sendResize(cols, rows);
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({ type: "resize", cols, rows }));
+      }
     });
 
-    // --- SSE stream ---
+    // --- WebSocket stream ---
     const connect = () => {
       // Guard: don't open a second connection if one is already live.
       // This covers React 18 Strict Mode double-invocation and any accidental
       // re-render that manages to reach this code path.
-      if (
-        eventSourceRef.current &&
-        eventSourceRef.current.readyState !== EventSource.CLOSED
-      ) {
+      if (wsRef.current && wsRef.current.readyState !== WebSocket.CLOSED) {
         return;
       }
 
       instance.write(`\x1b[35mConnecting to terminal...\x1b[0m\r\n`);
 
-      const es = new EventSource(`${BASE_URL}/${sandboxIdRef.current}/stream`);
-      eventSourceRef.current = es;
+      const token = localStorage.getItem("token");
+      const wsBase = API_URL.replace(/^http/, "ws");
+      const params = token ? `?token=${encodeURIComponent(token)}` : "";
+      const ws = new WebSocket(
+        `${wsBase}/${type}/${sandboxIdRef.current}/ws${params}`,
+      );
+      wsRef.current = ws;
 
-      es.addEventListener("open", () => {
+      ws.onopen = () => {
         // Clear the "Connecting…" line and focus the terminal
         instance.write("\r\x1b[K");
         instance.focus();
         // Sync terminal dimensions immediately after connecting
-        sendResize(instance.cols, instance.rows);
-      });
+        ws.send(
+          JSON.stringify({ type: "resize", cols: instance.cols, rows: instance.rows }),
+        );
+      };
 
-      // The server emits `event: output` with `data: { "data": "..." }`
-      es.addEventListener("output", (event: MessageEvent) => {
-        try {
-          const { data } = JSON.parse(event.data) as { data: string };
-          instance.write(data);
-        } catch {
-          instance.write(event.data);
-        }
-      });
+      ws.onmessage = (event) => {
+        instance.write(event.data as string);
+      };
 
-      // The server emits `event: exit` when the process terminates
-      es.addEventListener("exit", (event: MessageEvent) => {
-        try {
-          const { code } = JSON.parse(event.data) as { code: number };
+      ws.onclose = (event) => {
+        if (event.code === 1000) {
           instance.write(
-            `\r\n\x1b[38;5;250mProcess exited with code ${code}.\x1b[0m\r\n`,
+            `\r\n\x1b[38;5;250mProcess exited.\x1b[0m\r\n`,
           );
-        } catch {
-          instance.write(`\r\n\x1b[38;5;250mProcess exited.\x1b[0m\r\n`);
-        }
-        es.close();
-        eventSourceRef.current = null;
-        onCloseRef.current();
-      });
-
-      es.onerror = () => {
-        if (es.readyState === EventSource.CLOSED) {
+          wsRef.current = null;
+          onCloseRef.current();
+        } else if (wsRef.current) {
           instance.write(
             "\r\n\x1b[38;5;203mTerminal connection lost.\x1b[0m\r\n",
           );
-          eventSourceRef.current = null;
+          wsRef.current = null;
         }
-        // readyState === CONNECTING means the browser is auto-retrying — let it.
+      };
+
+      ws.onerror = () => {
+        // onclose fires right after onerror, so just let it handle cleanup
       };
     };
 
@@ -232,7 +196,9 @@ function TerminalContent({
 
     // Forward keyboard input to the TTY
     const dataDisposable = instance.onData((data) => {
-      sendInput(data);
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(data);
+      }
     });
 
     return () => {
@@ -241,9 +207,10 @@ function TerminalContent({
       dataDisposable.dispose();
       resizeDisposable.dispose();
 
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
+      if (wsRef.current) {
+        wsRef.current.onclose = null;
+        wsRef.current.close();
+        wsRef.current = null;
       }
     };
   }, [instance]);

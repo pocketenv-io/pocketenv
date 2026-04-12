@@ -76,6 +76,8 @@ RUN mkdir -p /home/modal/.local/share/fonts && chown -R modal:modal /home/modal/
 
 USER modal
 
+WORKDIR /home/modal
+
 RUN curl -fsSL https://code-server.dev/install.sh | sh && \
     code-server --install-extension bastndev.lynx-theme --force && \
     curl -fsSL https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/CascadiaMono.zip -o /tmp/CascadiaMono.zip && \

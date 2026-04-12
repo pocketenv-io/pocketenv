@@ -61,6 +61,7 @@ USER root
 RUN mkdir -p /home/modal/.local/share/fonts && chown -R modal:modal /home/modal/.local
 USER modal
 
+WORKDIR /home/modal
 
 RUN curl -fsSL https://code-server.dev/install.sh | sh && \
     code-server --install-extension bastndev.lynx-theme --force && \

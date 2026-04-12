@@ -47,6 +47,8 @@ RUN ARCH=$(uname -m) && \
     chmod +x /usr/local/bin/tigrisfs
 USER modal
 
+WORKDIR /home/modal
+
 RUN curl -fsSL https://tailscale.com/install.sh | sh
 
 RUN mkdir -p /home/modal/.npm-global && npm config set prefix "/home/modal/.npm-global"

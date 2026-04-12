@@ -145,13 +145,11 @@ class RunloopProvider implements BaseProvider {
         name: templateName,
         dockerfile: `FROM ${image}`,
         launch_parameters: {
-          custom_cpu_cores: 2,
-          custom_gb_memory: 4,
-          custom_disk_size: 10,
           user_parameters: {
             username: "modal",
             uid: 4444,
           },
+          resource_size_request: "MEDIUM",
         },
       });
       const sandbox = await sdk.devbox.create({

@@ -21,6 +21,8 @@ import type { PgTransaction } from "drizzle-orm/pg-core";
 import type { NodePgQueryResultHKT } from "drizzle-orm/node-postgres";
 import modalAuth, { type InsertModalAuth } from "schema/modal-auth";
 import e2bAuth, { type InsertE2BAuth } from "schema/e2b-auth";
+import hopxAuth from "schema/hopx-auth";
+import runloopAuth from "schema/runloop-auth";
 
 export default function (server: Server, ctx: Context) {
   const putPreferences = async (input: HandlerInput, auth: HandlerAuth) => {
@@ -258,6 +260,42 @@ const saveSandboxProvider = async (
         })
         .execute();
       break;
+    case "hopx":
+      await tx
+        .insert(hopxAuth)
+        .values({
+          userId: user.id,
+          sandboxId: input.body.sandboxId,
+          apiKey: pref.hopxApiKey!,
+          redactedApiKey: pref.redactedHopxApiKey!,
+        })
+        .onConflictDoUpdate({
+          target: [hopxAuth.sandboxId, hopxAuth.userId],
+          set: {
+            apiKey: pref.hopxApiKey!,
+            redactedApiKey: pref.redactedHopxApiKey!,
+          },
+        })
+        .execute();
+      break;
+    case "runloop":
+      await tx
+        .insert(runloopAuth)
+        .values({
+          userId: user.id,
+          sandboxId: input.body.sandboxId,
+          apiKey: pref.runloopApiKey!,
+          redactedApiKey: pref.redactedRunloopApiKey!,
+        })
+        .onConflictDoUpdate({
+          target: [runloopAuth.sandboxId, runloopAuth.userId],
+          set: {
+            apiKey: pref.runloopApiKey!,
+            redactedApiKey: pref.redactedRunloopApiKey!,
+          },
+        })
+        .execute();
+      break;
     case "cloudflare": {
       const [record] = await tx
         .select()
@@ -316,6 +354,30 @@ const saveSandboxProvider = async (
             and(
               eq(modalAuth.userId, user.id),
               eq(modalAuth.sandboxId, record!.id),
+            ),
+          )
+          .execute(),
+        tx
+          .delete(e2bAuth)
+          .where(
+            and(eq(e2bAuth.userId, user.id), eq(e2bAuth.sandboxId, record!.id)),
+          )
+          .execute(),
+        tx
+          .delete(hopxAuth)
+          .where(
+            and(
+              eq(hopxAuth.userId, user.id),
+              eq(hopxAuth.sandboxId, record!.id),
+            ),
+          )
+          .execute(),
+        tx
+          .delete(runloopAuth)
+          .where(
+            and(
+              eq(runloopAuth.userId, user.id),
+              eq(runloopAuth.sandboxId, record!.id),
             ),
           )
           .execute(),

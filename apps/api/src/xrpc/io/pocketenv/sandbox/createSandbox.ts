@@ -21,16 +21,29 @@ import sandboxes from "schema/sandboxes";
 export default function (server: Server, ctx: Context) {
   const createSandbox = async (input: InputSchema, auth: HandlerAuth) => {
     let res;
-    try {
-      const { credentials, artifacts } = auth;
-      if (!credentials && !artifacts) {
-        throw new XRPCError(
-          401,
-          "Authentication failed, invalid challenge",
-          "AuthenticationError",
-        );
-      }
 
+    const { credentials, artifacts } = auth;
+    if (!credentials && !artifacts) {
+      throw new XRPCError(
+        401,
+        "Authentication failed, invalid challenge",
+        "AuthenticationError",
+      );
+    }
+
+    // disallow braxel sandboxes for users other than the designated test account
+    if (
+      credentials?.did !== "did:plc:7vdlgi2bflelz7mmuxoqjfcr" &&
+      input.provider === Providers.BLAXEL
+    ) {
+      throw new XRPCError(
+        403,
+        "Braxel sandboxes are only available to designated test accounts",
+        "SandboxProviderError",
+      );
+    }
+
+    try {
       if (input.repo && credentials?.did) {
         const [existingSandbox] = await ctx.db
           .select()
@@ -126,6 +139,10 @@ export default function (server: Server, ctx: Context) {
           redactedModalTokenSecret: input.redactedModalTokenSecret,
           e2bApiKey: input.e2bApiKey,
           redactedE2bApiKey: input.redactedE2bApiKey,
+          hopxApiKey: input.hopxApiKey,
+          redactedHopxApiKey: input.redactedHopxApiKey,
+          runloopApiKey: input.runloopApiKey,
+          redactedRunloopApiKey: input.redactedRunloopApiKey,
         },
         {
           headers: {

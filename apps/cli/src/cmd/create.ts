@@ -35,6 +35,9 @@ async function createSandbox(
       "cloudflare",
       "modal",
       "e2b",
+      "hopx",
+      "runloop",
+      "blaxel",
     ].includes(provider ?? "cloudflare")
   ) {
     consola.error(
@@ -122,6 +125,30 @@ async function createSandbox(
     }
     providerOptions.e2bApiKey = await encrypt(e2bApiKey);
     providerOptions.redactedE2bApiKey = redact(e2bApiKey);
+  }
+
+  if (provider == "hopx") {
+    const hopxApiKey = process.env.HOPX_API_KEY;
+    if (!hopxApiKey) {
+      consola.error(
+        "HOPX_API_KEY environment variable is required for HopX provider.",
+      );
+      process.exit(1);
+    }
+    providerOptions.hopxApiKey = await encrypt(hopxApiKey);
+    providerOptions.redactedHopxApiKey = redact(hopxApiKey);
+  }
+
+  if (provider == "runloop") {
+    const runloopApiKey = process.env.RUNLOOP_API_KEY;
+    if (!runloopApiKey) {
+      consola.error(
+        "RUNLOOP_API_KEY environment variable is required for RunLoop provider.",
+      );
+      process.exit(1);
+    }
+    providerOptions.runloopApiKey = await encrypt(runloopApiKey);
+    providerOptions.redactedRunloopApiKey = redact(runloopApiKey);
   }
 
   try {

@@ -8,6 +8,8 @@ import {
   vercelAuth,
   modalAuth,
   e2bAuth,
+  hopxAuth,
+  runloopAuth,
 } from "../schema";
 import {
   BaseSandbox,
@@ -18,6 +20,7 @@ import {
 } from "../providers";
 import type { SelectSandbox } from "../schema/sandboxes";
 import decrypt from "./decrypt";
+import { env } from "node:process";
 
 export interface AuthParams {
   spriteAuthParams?: { spriteToken?: string } | null;
@@ -35,6 +38,12 @@ export interface AuthParams {
   e2bAuthParams?: {
     apiKey?: string;
   } | null;
+  hopxAuthParams?: {
+    apiKey?: string;
+  } | null;
+  runloopAuthParams?: {
+    apiKey?: string;
+  } | null;
 }
 
 export async function getAuthParams(
@@ -48,6 +57,8 @@ export async function getAuthParams(
     [vercelAuthParams],
     [modalAuthParams],
     [e2bAuthParams],
+    [hopxAuthParams],
+    [runloopAuthParams],
   ] = await Promise.all([
     db
       .select()
@@ -79,6 +90,16 @@ export async function getAuthParams(
       .from(e2bAuth)
       .where(eq(e2bAuth.sandboxId, sandboxDbId))
       .execute(),
+    db
+      .select()
+      .from(hopxAuth)
+      .where(eq(hopxAuth.sandboxId, sandboxDbId))
+      .execute(),
+    db
+      .select()
+      .from(runloopAuth)
+      .where(eq(runloopAuth.sandboxId, sandboxDbId))
+      .execute(),
   ]);
   return {
     spriteAuthParams,
@@ -87,6 +108,8 @@ export async function getAuthParams(
     vercelAuthParams,
     modalAuthParams,
     e2bAuthParams,
+    hopxAuthParams,
+    runloopAuthParams,
   };
 }
 
@@ -102,6 +125,10 @@ export function buildCredentials(auth: AuthParams): SandboxOptions {
     modalTokenId: decrypt(auth.modalAuthParams?.tokenId),
     modalTokenSecret: decrypt(auth.modalAuthParams?.tokenSecret),
     e2bApiKey: decrypt(auth.e2bAuthParams?.apiKey),
+    hopxApiKey: decrypt(auth.hopxAuthParams?.apiKey),
+    runloopApiKey: decrypt(auth.runloopAuthParams?.apiKey),
+    blaxelApiKey: env.BL_API_KEY,
+    blaxelWorkspace: env.BL_WORKSPACE,
   };
 }
 
@@ -114,6 +141,7 @@ export async function resolveSandboxInstance(
     const sandbox = await createSandbox(record.provider as Provider, {
       id: record.id,
       modalAppName: record.name,
+      blaxelName: record.name,
       ...credentials,
     });
     const sandboxId = await sandbox.id();
@@ -127,6 +155,7 @@ export async function resolveSandboxInstance(
 
   return getSandboxById(record.provider as Provider, record.sandboxId!, {
     modalAppName: record.name,
+    blaxelName: record.name,
     ...credentials,
   });
 }

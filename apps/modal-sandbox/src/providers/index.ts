@@ -35,7 +35,10 @@ export type Provider =
   | "vercel"
   | "sprites"
   | "modal"
-  | "e2b";
+  | "e2b"
+  | "hopx"
+  | "runloop"
+  | "blaxel";
 
 export interface SandboxOptions {
   id?: string;
@@ -61,6 +64,11 @@ export interface SandboxOptions {
   modalAppName?: string;
   image?: string;
   e2bApiKey?: string;
+  hopxApiKey?: string;
+  runloopApiKey?: string;
+  blaxelWorkspace?: string;
+  blaxelApiKey?: string;
+  blaxelName?: string;
   [key: string]: any;
 }
 
@@ -91,6 +99,18 @@ export async function createSandbox(
       );
     case "e2b":
       return import("./e2b").then((module) =>
+        new module.default().create(options),
+      );
+    case "hopx":
+      return import("./hopx").then((module) =>
+        new module.default().create(options),
+      );
+    case "runloop":
+      return import("./runloop").then((module) =>
+        new module.default().create(options),
+      );
+    case "blaxel":
+      return import("./blaxel").then((module) =>
         new module.default().create(options),
       );
     default:
@@ -149,6 +169,18 @@ export async function getSandboxById(
       );
     case "e2b":
       return import("./e2b").then((module) =>
+        new module.default().get(id, options),
+      );
+    case "hopx":
+      return import("./hopx").then((module) =>
+        new module.default().get(id, options),
+      );
+    case "runloop":
+      return import("./runloop").then((module) =>
+        new module.default().get(id, options),
+      );
+    case "blaxel":
+      return import("./blaxel").then((module) =>
         new module.default().get(id, options),
       );
     default:

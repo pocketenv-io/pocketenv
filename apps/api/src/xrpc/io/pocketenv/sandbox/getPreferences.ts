@@ -10,7 +10,9 @@ import type {
 import daytonaAuth from "schema/daytona-auth";
 import denoAuth from "schema/deno-auth";
 import e2bAuth from "schema/e2b-auth";
+import hopxAuth from "schema/hopx-auth";
 import modalAuth from "schema/modal-auth";
+import runloopAuth from "schema/runloop-auth";
 import sandboxes from "schema/sandboxes";
 import spriteAuth from "schema/sprite-auth";
 import users from "schema/users";
@@ -38,50 +40,65 @@ export default function (server: Server, ctx: Context) {
       eq(sandboxes.name, params.id),
     );
 
-    const [daytona, deno, sprite, vercel, modal, e2b] = await Promise.all([
-      ctx.db
-        .select()
-        .from(daytonaAuth)
-        .leftJoin(sandboxes, eq(daytonaAuth.sandboxId, sandboxes.id))
-        .where(and(eq(daytonaAuth.userId, user.id), sandboxFilter))
-        .execute()
-        .then(([row]) => row?.daytona_auth),
-      ctx.db
-        .select()
-        .from(denoAuth)
-        .leftJoin(sandboxes, eq(denoAuth.sandboxId, sandboxes.id))
-        .where(and(eq(denoAuth.userId, user.id), sandboxFilter))
-        .execute()
-        .then(([row]) => row?.deno_auth),
-      ctx.db
-        .select()
-        .from(spriteAuth)
-        .leftJoin(sandboxes, eq(spriteAuth.sandboxId, sandboxes.id))
-        .where(and(eq(spriteAuth.userId, user.id), sandboxFilter))
-        .execute()
-        .then(([row]) => row?.sprite_auth),
-      ctx.db
-        .select()
-        .from(vercelAuth)
-        .leftJoin(sandboxes, eq(vercelAuth.sandboxId, sandboxes.id))
-        .where(and(eq(vercelAuth.userId, user.id), sandboxFilter))
-        .execute()
-        .then(([row]) => row?.vercel_auth),
-      ctx.db
-        .select()
-        .from(modalAuth)
-        .leftJoin(sandboxes, eq(modalAuth.sandboxId, sandboxes.id))
-        .where(and(eq(modalAuth.userId, user.id), sandboxFilter))
-        .execute()
-        .then(([row]) => row?.modal_auth),
-      ctx.db
-        .select()
-        .from(e2bAuth)
-        .leftJoin(sandboxes, eq(e2bAuth.sandboxId, sandboxes.id))
-        .where(and(eq(e2bAuth.userId, user.id), sandboxFilter))
-        .execute()
-        .then(([row]) => row?.e2b_auth),
-    ]);
+    const [daytona, deno, sprite, vercel, modal, e2b, hopx, runloop] =
+      await Promise.all([
+        ctx.db
+          .select()
+          .from(daytonaAuth)
+          .leftJoin(sandboxes, eq(daytonaAuth.sandboxId, sandboxes.id))
+          .where(and(eq(daytonaAuth.userId, user.id), sandboxFilter))
+          .execute()
+          .then(([row]) => row?.daytona_auth),
+        ctx.db
+          .select()
+          .from(denoAuth)
+          .leftJoin(sandboxes, eq(denoAuth.sandboxId, sandboxes.id))
+          .where(and(eq(denoAuth.userId, user.id), sandboxFilter))
+          .execute()
+          .then(([row]) => row?.deno_auth),
+        ctx.db
+          .select()
+          .from(spriteAuth)
+          .leftJoin(sandboxes, eq(spriteAuth.sandboxId, sandboxes.id))
+          .where(and(eq(spriteAuth.userId, user.id), sandboxFilter))
+          .execute()
+          .then(([row]) => row?.sprite_auth),
+        ctx.db
+          .select()
+          .from(vercelAuth)
+          .leftJoin(sandboxes, eq(vercelAuth.sandboxId, sandboxes.id))
+          .where(and(eq(vercelAuth.userId, user.id), sandboxFilter))
+          .execute()
+          .then(([row]) => row?.vercel_auth),
+        ctx.db
+          .select()
+          .from(modalAuth)
+          .leftJoin(sandboxes, eq(modalAuth.sandboxId, sandboxes.id))
+          .where(and(eq(modalAuth.userId, user.id), sandboxFilter))
+          .execute()
+          .then(([row]) => row?.modal_auth),
+        ctx.db
+          .select()
+          .from(e2bAuth)
+          .leftJoin(sandboxes, eq(e2bAuth.sandboxId, sandboxes.id))
+          .where(and(eq(e2bAuth.userId, user.id), sandboxFilter))
+          .execute()
+          .then(([row]) => row?.e2b_auth),
+        ctx.db
+          .select()
+          .from(hopxAuth)
+          .leftJoin(sandboxes, eq(hopxAuth.sandboxId, sandboxes.id))
+          .where(and(eq(hopxAuth.userId, user.id), sandboxFilter))
+          .execute()
+          .then(([row]) => row?.hopx_auth),
+        ctx.db
+          .select()
+          .from(runloopAuth)
+          .leftJoin(sandboxes, eq(runloopAuth.sandboxId, sandboxes.id))
+          .where(and(eq(runloopAuth.userId, user.id), sandboxFilter))
+          .execute()
+          .then(([row]) => row?.runloop_auth),
+      ]);
 
     if (!daytona && !deno && !sprite && !vercel && !modal && !e2b) {
       return [];
@@ -120,6 +137,16 @@ export default function (server: Server, ctx: Context) {
         $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
         name: "e2b" as const,
         redactedE2bApiKey: e2b.redactedApiKey,
+      }) ||
+      (hopx && {
+        $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
+        name: "hopx" as const,
+        redactedHopxApiKey: hopx.redactedApiKey,
+      }) ||
+      (runloop && {
+        $type: "io.pocketenv.sandbox.defs#sandboxProviderPref" as const,
+        name: "runloop" as const,
+        redactedRunloopApiKey: runloop.redactedApiKey,
       }))!;
 
     return [provider satisfies SandboxProviderPref];

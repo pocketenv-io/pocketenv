@@ -32,7 +32,17 @@ export const SandboxConfigSchema = z
     name: z.string().optional(),
     description: z.string().optional(),
     provider: z
-      .enum(["daytona", "vercel", "deno", "sprites", "modal", "e2b"])
+      .enum([
+        "daytona",
+        "vercel",
+        "deno",
+        "sprites",
+        "modal",
+        "e2b",
+        "hopx",
+        "runloop",
+        "blaxel",
+      ])
       .optional()
       .default("deno"),
     base: z.enum(["openclaw"]).optional().default("openclaw"),
@@ -54,6 +64,10 @@ export const SandboxConfigSchema = z
     redactedModalTokenSecret: z.string().optional(),
     e2bApiKey: z.string().optional(),
     redactedE2bApiKey: z.string().optional(),
+    hopxApiKey: z.string().optional(),
+    redactedHopxApiKey: z.string().optional(),
+    runloopApiKey: z.string().optional(),
+    redactedRunloopApiKey: z.string().optional(),
     vcpus: z.number().optional().default(2),
     memory: z.number().optional().default(4),
     disk: z.number().optional().default(3),
@@ -218,6 +232,41 @@ export const SandboxConfigSchema = z
           code: z.ZodIssueCode.custom,
           message: "redactedE2bApiKey is required when provider is 'e2b'",
           path: ["redactedE2bApiKey"],
+        });
+      }
+    }
+
+    if (data.provider === "hopx") {
+      if (!data.hopxApiKey) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "hopxApiKey is required when provider is 'hopx'",
+          path: ["hopxApiKey"],
+        });
+      }
+      if (!data.redactedHopxApiKey) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "redactedHopxApiKey is required when provider is 'hopx'",
+          path: ["redactedHopxApiKey"],
+        });
+      }
+    }
+
+    if (data.provider === "runloop") {
+      if (!data.runloopApiKey) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "runloopApiKey is required when provider is 'runloop'",
+          path: ["runloopApiKey"],
+        });
+      }
+      if (!data.redactedRunloopApiKey) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "redactedRunloopApiKey is required when provider is 'runloop'",
+          path: ["redactedRunloopApiKey"],
         });
       }
     }

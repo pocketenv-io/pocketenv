@@ -16,11 +16,14 @@ describe("Providers", () => {
     expect(Providers.SPRITE).toBe("sprite");
     expect(Providers.MODAL).toBe("modal");
     expect(Providers.E2B).toBe("e2b");
+    expect(Providers.HOPX).toBe("hopx");
+    expect(Providers.RUNLOOP).toBe("runloop");
+    expect(Providers.BLAXEL).toBe("blaxel");
   });
 
-  it("has exactly 7 providers", () => {
+  it("has exactly 10 providers", () => {
     const values = Object.values(Providers);
-    expect(values).toHaveLength(7);
+    expect(values).toHaveLength(10);
   });
 });
 

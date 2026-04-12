@@ -19,6 +19,10 @@ export type SandboxProvider = {
   redactedModalTokenSecret?: string;
   e2bApiKey?: string;
   redactedE2bApiKey?: string;
+  hopxApiKey?: string;
+  redactedHopxApiKey?: string;
+  runloopApiKey?: string;
+  redactedRunloopApiKey?: string;
   $type: "io.pocketenv.sandbox.defs#sandboxProviderPref";
 };
 

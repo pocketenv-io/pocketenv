@@ -1,22 +1,22 @@
-import { Sandbox, Template } from "e2b";
+import { Sandbox, Template } from "@hopx-ai/sdk";
 import BaseProvider, { BaseSandbox, type SandboxOptions } from "..";
 import { consola } from "consola";
 import path from "node:path";
 import { env } from "node:process";
 import parseImageRef from "lib/parseImageRef";
 
-export class E2bSandbox implements BaseSandbox {
+export class HopxSandbox implements BaseSandbox {
   constructor(private sandbox: Sandbox) {}
 
   async start(): Promise<void> {
-    // E2B's sandbox starts immediately upon creation, so we can just return here.
+    // Hopx's sandbox starts immediately upon creation, so we can just return here.
   }
 
   async stop(): Promise<void> {
     try {
       await this.sandbox.kill();
     } catch (error) {
-      consola.error("Error stopping e2b Sandbox:", error);
+      consola.error("Error stopping hopx Sandbox:", error);
     }
   }
 
@@ -24,7 +24,7 @@ export class E2bSandbox implements BaseSandbox {
     try {
       await this.stop();
     } catch (error) {
-      consola.error("Error deleting e2b Sandbox:", error);
+      consola.error("Error deleting hopx Sandbox:", error);
     }
   }
 
@@ -39,12 +39,12 @@ export class E2bSandbox implements BaseSandbox {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");
-    const result = await this.sandbox.commands.run(`bash -c ${command}`);
+    const result = await this.sandbox.commands.run(command);
 
     return {
       stdout: result.stdout,
       stderr: result.stderr,
-      exitCode: result.exitCode,
+      exitCode: result.exit_code,
     };
   }
 
@@ -120,40 +120,42 @@ export class E2bSandbox implements BaseSandbox {
   }
 }
 
-class E2bProvider implements BaseProvider {
+class HopxProvider implements BaseProvider {
   async create(options: SandboxOptions): Promise<BaseSandbox> {
-    if (!options.e2bApiKey) {
-      throw new Error("E2B API KEY is required to create a Sandbox");
+    if (!options.hopxApiKey) {
+      throw new Error("Hopx API KEY is required to create a sandbox");
     }
     const image = options.image || "ghcr.io/pocketenv-io/modal-openclaw:0.1.0";
-    const template = Template().fromImage(image);
-    const { name, tag } = parseImageRef(image);
+    const template = new Template(image);
+    const { name } = parseImageRef(image);
     const templateName = name.split("/").pop()!;
-    await Template.build(template, templateName, {
-      tags: [tag],
-      cpuCount: 4,
-      memoryMB: 4096,
-      apiKey: options.e2bApiKey,
+    await Template.build(template, {
+      name: templateName,
+      apiKey: options.hopxApiKey,
+      cpu: 2,
+      memory: 4096,
+      diskGB: 10,
     });
-    const sandbox = await Sandbox.create(`${templateName}:${tag}`, {
-      apiKey: options.e2bApiKey,
+    const sandbox = await Sandbox.create({
+      template: templateName,
+      apiKey: options.hopxApiKey,
     });
-    return new E2bSandbox(sandbox);
+    return new HopxSandbox(sandbox);
   }
 
   async get(id: string, options?: SandboxOptions): Promise<BaseSandbox> {
+    if (!options?.hopxApiKey) {
+      throw new Error("Hopx API KEY is required to get a sandbox");
+    }
+
     try {
-      if (!options?.e2bApiKey) {
-        throw new Error("E2B API KEY is required to get a sandbox");
-      }
-      const sandbox = await Sandbox.connect(id, {
-        apiKey: options?.e2bApiKey,
-      });
-      return new E2bSandbox(sandbox);
+      const sandbox = await Sandbox.connect(id, options.hopxApiKey);
+      return new HopxSandbox(sandbox);
     } catch {
+      consola.warn(`Sandbox with id ${id} not found, creating a new one...`);
       return this.create(options!);
     }
   }
 }
 
-export default E2bProvider;
+export default HopxProvider;

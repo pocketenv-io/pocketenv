@@ -1,22 +1,22 @@
-import { Sandbox, Template } from "e2b";
+import { RunloopSDK, Devbox } from "@runloop/api-client";
 import BaseProvider, { BaseSandbox, type SandboxOptions } from "..";
 import { consola } from "consola";
 import path from "node:path";
 import { env } from "node:process";
 import parseImageRef from "lib/parseImageRef";
 
-export class E2bSandbox implements BaseSandbox {
-  constructor(private sandbox: Sandbox) {}
+export class RunloopSandbox implements BaseSandbox {
+  constructor(private sandbox: Devbox) {}
 
   async start(): Promise<void> {
-    // E2B's sandbox starts immediately upon creation, so we can just return here.
+    // Runloop's sandbox starts immediately upon creation, so we can just return here.
   }
 
   async stop(): Promise<void> {
     try {
-      await this.sandbox.kill();
+      await this.sandbox.shutdown();
     } catch (error) {
-      consola.error("Error stopping e2b Sandbox:", error);
+      consola.error("Error stopping Runloop Sandbox:", error);
     }
   }
 
@@ -24,7 +24,7 @@ export class E2bSandbox implements BaseSandbox {
     try {
       await this.stop();
     } catch (error) {
-      consola.error("Error deleting e2b Sandbox:", error);
+      consola.error("Error deleting Runloop Sandbox:", error);
     }
   }
 
@@ -39,17 +39,17 @@ export class E2bSandbox implements BaseSandbox {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");
-    const result = await this.sandbox.commands.run(`bash -c ${command}`);
+    const result = await this.sandbox.cmd.exec(`bash -c ${command}`);
 
     return {
-      stdout: result.stdout,
-      stderr: result.stderr,
-      exitCode: result.exitCode,
+      stdout: await result.stdout(),
+      stderr: await result.stderr(),
+      exitCode: result.exitCode || 0,
     };
   }
 
   async id(): Promise<string | null> {
-    return this.sandbox.sandboxId;
+    return this.sandbox.id;
   }
 
   async ssh(): Promise<any> {}
@@ -120,40 +120,43 @@ export class E2bSandbox implements BaseSandbox {
   }
 }
 
-class E2bProvider implements BaseProvider {
+class RunloopProvider implements BaseProvider {
   async create(options: SandboxOptions): Promise<BaseSandbox> {
-    if (!options.e2bApiKey) {
-      throw new Error("E2B API KEY is required to create a Sandbox");
+    if (!options.runloopApiKey) {
+      throw new Error("Runloop API KEY is required to create a sandbox");
     }
     const image = options.image || "ghcr.io/pocketenv-io/modal-openclaw:0.1.0";
-    const template = Template().fromImage(image);
-    const { name, tag } = parseImageRef(image);
+    const { name } = parseImageRef(image);
     const templateName = name.split("/").pop()!;
-    await Template.build(template, templateName, {
-      tags: [tag],
-      cpuCount: 4,
-      memoryMB: 4096,
-      apiKey: options.e2bApiKey,
+    const sdk = new RunloopSDK({
+      bearerToken: options.runloopApiKey,
     });
-    const sandbox = await Sandbox.create(`${templateName}:${tag}`, {
-      apiKey: options.e2bApiKey,
+
+    await sdk.blueprint.create({
+      name: templateName,
+      dockerfile: `FROM ${image}`,
     });
-    return new E2bSandbox(sandbox);
+
+    const sandbox = await sdk.devbox.create({
+      blueprint_name: templateName,
+    });
+    return new RunloopSandbox(sandbox);
   }
 
   async get(id: string, options?: SandboxOptions): Promise<BaseSandbox> {
+    if (!options?.runloopApiKey) {
+      throw new Error("Runloop API KEY is required to get a sandbox");
+    }
     try {
-      if (!options?.e2bApiKey) {
-        throw new Error("E2B API KEY is required to get a sandbox");
-      }
-      const sandbox = await Sandbox.connect(id, {
-        apiKey: options?.e2bApiKey,
+      const sdk = new RunloopSDK({
+        bearerToken: options?.runloopApiKey,
       });
-      return new E2bSandbox(sandbox);
+      const sandbox = sdk.devbox.fromId(id);
+      return new RunloopSandbox(sandbox);
     } catch {
       return this.create(options!);
     }
   }
 }
 
-export default E2bProvider;
+export default RunloopProvider;

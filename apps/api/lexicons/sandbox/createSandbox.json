@@ -36,7 +36,10 @@
                 "deno",
                 "sprites",
                 "modal",
-                "e2b"
+                "e2b",
+                "blaxel",
+                "hopx",
+                "runloop"
               ]
             },
             "topics": {
@@ -152,6 +155,22 @@
             "redactedE2bApiKey": {
               "type": "string",
               "description": "A redacted API KEY for accessing E2B resources"
+            },
+            "hopxApiKey": {
+              "type": "string",
+              "description": "An API KEY (encrypted) for accessing hopx resources"
+            },
+            "redactedHopxApiKey": {
+              "type": "string",
+              "description": "A redacted API KEY for accessing hopx resources"
+            },
+            "runloopApiKey": {
+              "type": "string",
+              "description": "An API KEY (encrypted) for accessing Runloop resources"
+            },
+            "redactedRunloopApiKey": {
+              "type": "string",
+              "description": "A redacted API KEY for accessing Runloop resources"
             }
           }
         }

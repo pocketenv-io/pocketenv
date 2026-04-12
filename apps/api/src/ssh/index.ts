@@ -274,53 +274,60 @@ export function attachWebSocket(base: string) {
   const pathRegex = new RegExp(`^${base}/([^/]+)/ws$`);
   const wss = new WebSocketServer({ noServer: true });
 
-  wss.on("connection", async (ws: WebSocket, req: IncomingMessage, sessionId: string) => {
-    const url = new URL(req.url ?? "", "http://localhost");
-    const tokenParam = url.searchParams.get("token");
-    const authHeader = req.headers.authorization;
-    const bearer = tokenParam ?? authHeader?.split("Bearer ")[1]?.trim();
-    if (bearer && bearer !== "null") {
-      try {
-        jwt.verify(bearer, env.JWT_SECRET, { ignoreExpiration: true });
-      } catch (err) {
-        consola.error("WS: Invalid JWT token:", err);
-        ws.close(1008, "Invalid token");
-        return;
-      }
-    }
-
-    const session = sessions.get(sessionId);
-    if (!session) {
-      ws.close(1011, "Session not found");
-      return;
-    }
-
-    session.wsClients.add(ws);
-
-    // Flush buffered output that arrived before the WS client connected
-    for (const encoded of session.buffer) {
-      ws.send(encoded);
-    }
-
-    ws.on("message", (data) => {
-      if (!session.stream) return;
-      const text = data.toString("utf-8");
-      try {
-        const msg = JSON.parse(text);
-        if (msg?.type === "resize" && Number.isInteger(msg.cols) && Number.isInteger(msg.rows)) {
-          (session.stream as any).setWindow(msg.rows, msg.cols, 0, 0);
+  wss.on(
+    "connection",
+    async (ws: WebSocket, req: IncomingMessage, sessionId: string) => {
+      const url = new URL(req.url ?? "", "http://localhost");
+      const tokenParam = url.searchParams.get("token");
+      const authHeader = req.headers.authorization;
+      const bearer = tokenParam ?? authHeader?.split("Bearer ")[1]?.trim();
+      if (bearer && bearer !== "null") {
+        try {
+          jwt.verify(bearer, env.JWT_SECRET, { ignoreExpiration: true });
+        } catch (err) {
+          consola.error("WS: Invalid JWT token:", err);
+          ws.close(1008, "Invalid token");
           return;
         }
-      } catch {
-        // not JSON — treat as raw input
       }
-      session.stream.write(text);
-    });
 
-    ws.on("close", () => {
-      session.wsClients.delete(ws);
-    });
-  });
+      const session = sessions.get(sessionId);
+      if (!session) {
+        ws.close(1011, "Session not found");
+        return;
+      }
+
+      session.wsClients.add(ws);
+
+      // Flush buffered output that arrived before the WS client connected
+      for (const encoded of session.buffer) {
+        ws.send(encoded);
+      }
+
+      ws.on("message", (data) => {
+        if (!session.stream) return;
+        const text = data.toString("utf-8");
+        try {
+          const msg = JSON.parse(text);
+          if (
+            msg?.type === "resize" &&
+            Number.isInteger(msg.cols) &&
+            Number.isInteger(msg.rows)
+          ) {
+            (session.stream as any).setWindow(msg.rows, msg.cols, 0, 0);
+            return;
+          }
+        } catch {
+          // not JSON — treat as raw input
+        }
+        session.stream.write(text);
+      });
+
+      ws.on("close", () => {
+        session.wsClients.delete(ws);
+      });
+    },
+  );
 
   return { wss, pathRegex };
 }

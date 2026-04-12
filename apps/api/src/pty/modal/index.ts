@@ -2,7 +2,7 @@ import type { Context, Session } from "context";
 import { eq, or } from "drizzle-orm";
 import schema from "schema";
 import { consola } from "consola";
-import { ContainerProcess, ModalClient, Sandbox } from "modal";
+import { type ContainerProcess, ModalClient, type Sandbox } from "modal";
 import decrypt from "lib/decrypt";
 import { createListener } from "pty/pty-tunnel";
 import chalk from "chalk";
@@ -40,7 +40,10 @@ async function setupSandboxEnvironment(
   const sandbox = await modal.sandboxes.fromId(options.id);
   consola.info("Modal: sandbox fetched", chalk.greenBright(options.id));
 
-  consola.info("Modal: checking pty-tunnel-server", chalk.greenBright(options.id));
+  consola.info(
+    "Modal: checking pty-tunnel-server",
+    chalk.greenBright(options.id),
+  );
   if (!(await checkIfServerInstalled(sandbox))) {
     await $`bash -c "type /tmp/${SERVER_BIN_NAME} || curl -L ${PTY_SERVER_DOWNLOAD_URL} | tar xz -C /tmp"`;
 
@@ -92,12 +95,19 @@ async function setupSandboxEnvironment(
     },
   );
 
-  consola.info("Modal: pty-tunnel-server process started", chalk.greenBright(options.id));
+  consola.info(
+    "Modal: pty-tunnel-server process started",
+    chalk.greenBright(options.id),
+  );
 
   return { sandbox, cmd };
 }
 
-export async function createTerminalSession(ctx: Context, id: string, key = id) {
+export async function createTerminalSession(
+  ctx: Context,
+  id: string,
+  key = id,
+) {
   const [record] = await ctx.db
     .select()
     .from(schema.sandboxes)
@@ -161,9 +171,15 @@ export async function createTerminalSession(ctx: Context, id: string, key = id) 
     throw new Error(`PTY port ${PTY_PORT} not found in sandbox tunnels`);
   }
 
-  consola.info("Modal: awaiting pty-tunnel connection info", chalk.greenBright(id));
+  consola.info(
+    "Modal: awaiting pty-tunnel connection info",
+    chalk.greenBright(id),
+  );
   const details = await listener.connection;
-  consola.info("Modal: pty-tunnel connection info received", chalk.greenBright(id));
+  consola.info(
+    "Modal: pty-tunnel connection info received",
+    chalk.greenBright(id),
+  );
 
   const url = `wss://${port.url.replace(/^https?:\/\//, "")}` as const;
   consola.info("Connecting to WebSocket URL:", url);
@@ -196,9 +212,15 @@ export async function createTerminalSession(ctx: Context, id: string, key = id) 
     session.wsClients.clear();
   });
 
-  consola.info("Modal: waiting for pty-tunnel socket to open", chalk.greenBright(id));
+  consola.info(
+    "Modal: waiting for pty-tunnel socket to open",
+    chalk.greenBright(id),
+  );
   await socket.waitForOpen();
-  consola.info("Modal: pty-tunnel socket open, sending ready", chalk.greenBright(id));
+  consola.info(
+    "Modal: pty-tunnel socket open, sending ready",
+    chalk.greenBright(id),
+  );
   socket.sendMessage({ type: "ready" });
 
   ctx.sessions.set(key, session);

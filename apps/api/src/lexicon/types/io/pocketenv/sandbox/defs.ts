@@ -241,6 +241,14 @@ export interface SandboxProviderPref {
   e2bApiKey?: string;
   /** The redacted API KEY for E2B, returned in API responses when the sandbox provider is E2B. This can be used to identify which E2B API KEY is being used without exposing the actual API KEY. */
   redactedE2bApiKey?: string;
+  /** The API KEY for hopx, if the sandbox provider is hopx. This is used to determine which hopx API KEY to use when creating the sandbox. */
+  hopxApiKey?: string;
+  /** The redacted API KEY for hopx, returned in API responses when the sandbox provider is hopx. This can be used to identify which hopx API KEY is being used without exposing the actual API KEY. */
+  redactedHopxApiKey?: string;
+  /** The API KEY for Runloop, if the sandbox provider is Runloop. This is used to determine which Runloop API KEY to use when creating the sandbox. */
+  runloopApiKey?: string;
+  /** The redacted API KEY for Runloop, returned in API responses when the sandbox provider is Runloop. This can be used to identify which Runloop API KEY is being used without exposing the actual API KEY. */
+  redactedRunloopApiKey?: string;
   [k: string]: unknown;
 }
 

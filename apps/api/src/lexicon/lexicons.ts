@@ -585,6 +585,9 @@ export const schemaDict = {
                   "sprites",
                   "modal",
                   "e2b",
+                  "blaxel",
+                  "hopx",
+                  "runloop",
                 ],
               },
               topics: {
@@ -715,6 +718,25 @@ export const schemaDict = {
               redactedE2bApiKey: {
                 type: "string",
                 description: "A redacted API KEY for accessing E2B resources",
+              },
+              hopxApiKey: {
+                type: "string",
+                description:
+                  "An API KEY (encrypted) for accessing hopx resources",
+              },
+              redactedHopxApiKey: {
+                type: "string",
+                description: "A redacted API KEY for accessing hopx resources",
+              },
+              runloopApiKey: {
+                type: "string",
+                description:
+                  "An API KEY (encrypted) for accessing Runloop resources",
+              },
+              redactedRunloopApiKey: {
+                type: "string",
+                description:
+                  "A redacted API KEY for accessing Runloop resources",
               },
             },
           },
@@ -1107,6 +1129,26 @@ export const schemaDict = {
             type: "string",
             description:
               "The redacted API KEY for E2B, returned in API responses when the sandbox provider is E2B. This can be used to identify which E2B API KEY is being used without exposing the actual API KEY.",
+          },
+          hopxApiKey: {
+            type: "string",
+            description:
+              "The API KEY for hopx, if the sandbox provider is hopx. This is used to determine which hopx API KEY to use when creating the sandbox.",
+          },
+          redactedHopxApiKey: {
+            type: "string",
+            description:
+              "The redacted API KEY for hopx, returned in API responses when the sandbox provider is hopx. This can be used to identify which hopx API KEY is being used without exposing the actual API KEY.",
+          },
+          runloopApiKey: {
+            type: "string",
+            description:
+              "The API KEY for Runloop, if the sandbox provider is Runloop. This is used to determine which Runloop API KEY to use when creating the sandbox.",
+          },
+          redactedRunloopApiKey: {
+            type: "string",
+            description:
+              "The redacted API KEY for Runloop, returned in API responses when the sandbox provider is Runloop. This can be used to identify which Runloop API KEY is being used without exposing the actual API KEY.",
           },
         },
       },

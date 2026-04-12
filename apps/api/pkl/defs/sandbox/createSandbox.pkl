@@ -28,7 +28,19 @@ defs = new Mapping<String, Procedure> {
           }
           ["provider"] = new StringType {
             type = "string"
-            enum = List("daytona", "vercel", "cloudflare", "deno", "sprites", "modal", "e2b")
+            enum =
+              List(
+                "daytona",
+                "vercel",
+                "cloudflare",
+                "deno",
+                "sprites",
+                "modal",
+                "e2b",
+                "blaxel",
+                "hopx",
+                "runloop",
+              )
             description =
               "The provider to create the sandbox on, e.g. 'daytona', 'vercel', 'cloudflare', etc."
           }
@@ -147,6 +159,22 @@ defs = new Mapping<String, Procedure> {
           ["redactedE2bApiKey"] = new StringType {
             type = "string"
             description = "A redacted API KEY for accessing E2B resources"
+          }
+          ["hopxApiKey"] = new StringType {
+            type = "string"
+            description = "An API KEY (encrypted) for accessing hopx resources"
+          }
+          ["redactedHopxApiKey"] = new StringType {
+            type = "string"
+            description = "A redacted API KEY for accessing hopx resources"
+          }
+          ["runloopApiKey"] = new StringType {
+            type = "string"
+            description = "An API KEY (encrypted) for accessing Runloop resources"
+          }
+          ["redactedRunloopApiKey"] = new StringType {
+            type = "string"
+            description = "A redacted API KEY for accessing Runloop resources"
           }
         }
       }

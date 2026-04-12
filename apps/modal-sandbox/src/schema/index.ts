@@ -21,6 +21,8 @@ import sandboxCp from "./sandbox-cp";
 import backups from "./backups";
 import modalAuth from "./modal-auth";
 import e2bAuth from "./e2b-auth";
+import hopxAuth from "./hopx-auth";
+import runloopAuth from "./runloop-auth";
 
 export {
   sandboxes,
@@ -46,4 +48,6 @@ export {
   backups,
   modalAuth,
   e2bAuth,
+  hopxAuth,
+  runloopAuth,
 };

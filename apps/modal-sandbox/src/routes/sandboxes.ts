@@ -21,6 +21,8 @@ import {
   vercelAuth,
   modalAuth,
   e2bAuth,
+  runloopAuth,
+  hopxAuth,
 } from "../schema";
 import {
   type SandboxConfig,
@@ -42,7 +44,7 @@ import type { InsertDenoAuth } from "../schema/deno-auth";
 import { type PullDirectoryParams, pullSchema } from "../types/pull";
 import { type PushDirectoryParams, pushSchema } from "../types/push";
 import crypto from "node:crypto";
-import process from "node:process";
+import process, { env } from "node:process";
 import prepareSandbox from "../lib/prepare-sandbox";
 import { images } from "../images";
 import type { InsertSandbox } from "schema/sandboxes";
@@ -54,6 +56,9 @@ const SUPPORTED_PROVIDERS = [
   "sprites",
   "modal",
   "e2b",
+  "hopx",
+  "blaxel",
+  "runloop",
 ];
 
 const sandboxRouter = new Hono<{ Variables: Context }>();
@@ -202,6 +207,30 @@ sandboxRouter.post("/", async (c) => {
             .execute();
         }
 
+        if (params.runloopApiKey && user?.id) {
+          await tx
+            .insert(runloopAuth)
+            .values({
+              sandboxId: record!.id,
+              apiKey: params.runloopApiKey!,
+              redactedApiKey: params.redactedRunloopApiKey ?? "",
+              userId: user.id,
+            })
+            .execute();
+        }
+
+        if (params.hopxApiKey && user?.id) {
+          await tx
+            .insert(hopxAuth)
+            .values({
+              sandboxId: record!.id,
+              apiKey: params.hopxApiKey!,
+              redactedApiKey: params.redactedHopxApiKey ?? "",
+              userId: user.id,
+            })
+            .execute();
+        }
+
         return { record, user };
       },
     );
@@ -224,6 +253,11 @@ sandboxRouter.post("/", async (c) => {
         modalTokenSecret: decrypt(params.modalTokenSecret),
         image: images[params.base] || images["openclaw"],
         e2bApiKey: decrypt(params.e2bApiKey),
+        hopxApiKey: decrypt(params.hopxApiKey),
+        runloopApiKey: decrypt(params.runloopApiKey),
+        blaxelApiKey: env.BL_API_KEY,
+        blaxelWorkspace: env.BL_WORKSPACE,
+        blaxelName: name,
       });
       const sandboxId = await sandbox.id();
 

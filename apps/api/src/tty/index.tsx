@@ -383,69 +383,76 @@ export function attachWebSocket(base: string) {
   const pathRegex = new RegExp(`^${base}/([^/]+)/ws$`);
   const wss = new WebSocketServer({ noServer: true });
 
-  wss.on("connection", async (ws: WebSocket, req: IncomingMessage, id: string) => {
-    const url = new URL(req.url ?? "", "http://localhost");
-    const tokenParam = url.searchParams.get("token");
-    const authHeader = req.headers.authorization;
-    const bearer = tokenParam ?? authHeader?.split("Bearer ")[1]?.trim();
-    if (bearer && bearer !== "null") {
-      try {
-        jwt.verify(bearer, env.JWT_SECRET, { ignoreExpiration: true });
-      } catch (err) {
-        consola.error("WS: Invalid JWT token:", err);
-        ws.close(1008, "Invalid token");
-        return;
-      }
-    }
-
-    const shareId = url.searchParams.get("sessionId") ?? undefined;
-    const key = shareId ?? id;
-
-    // Buffer messages that arrive before the session is ready.
-    const pendingMessages: Buffer[] = [];
-    const bufferMessage = (data: Buffer) => pendingMessages.push(data);
-    ws.on("message", bufferMessage);
-
-    let session: Session;
-    try {
-      session = await getSession(context.ctx, id, key);
-    } catch (err) {
-      consola.error("WS: Failed to get session:", err);
-      ws.close(1011, "Session error");
-      return;
-    }
-
-    session.wsClients.add(ws);
-    ws.off("message", bufferMessage);
-
-    const handleMessage = (data: Buffer) => {
-      const text = data.toString("utf-8");
-      try {
-        const msg = JSON.parse(text);
-        if (msg?.type === "resize" && Number.isInteger(msg.cols) && Number.isInteger(msg.rows)) {
-          session.cmd.resize(msg.cols, msg.rows);
+  wss.on(
+    "connection",
+    async (ws: WebSocket, req: IncomingMessage, id: string) => {
+      const url = new URL(req.url ?? "", "http://localhost");
+      const tokenParam = url.searchParams.get("token");
+      const authHeader = req.headers.authorization;
+      const bearer = tokenParam ?? authHeader?.split("Bearer ")[1]?.trim();
+      if (bearer && bearer !== "null") {
+        try {
+          jwt.verify(bearer, env.JWT_SECRET, { ignoreExpiration: true });
+        } catch (err) {
+          consola.error("WS: Invalid JWT token:", err);
+          ws.close(1008, "Invalid token");
           return;
         }
-      } catch {
-        // not JSON — treat as raw input
       }
-      session.cmd.stdin.write(text);
-    };
 
-    // Replay messages buffered during session setup (e.g. the initial resize).
-    for (const data of pendingMessages) {
-      handleMessage(data);
-    }
+      const shareId = url.searchParams.get("sessionId") ?? undefined;
+      const key = shareId ?? id;
 
-    ws.on("message", (data) => handleMessage(data as Buffer));
+      // Buffer messages that arrive before the session is ready.
+      const pendingMessages: Buffer[] = [];
+      const bufferMessage = (data: Buffer) => pendingMessages.push(data);
+      ws.on("message", bufferMessage);
 
-    ws.on("close", () => {
-      session.wsClients.delete(ws);
-    });
+      let session: Session;
+      try {
+        session = await getSession(context.ctx, id, key);
+      } catch (err) {
+        consola.error("WS: Failed to get session:", err);
+        ws.close(1011, "Session error");
+        return;
+      }
 
-    // Trigger a fresh prompt redraw (initial output was lost while wsClients was empty).
-    session.cmd.stdin.write("\n");
-  });
+      session.wsClients.add(ws);
+      ws.off("message", bufferMessage);
+
+      const handleMessage = (data: Buffer) => {
+        const text = data.toString("utf-8");
+        try {
+          const msg = JSON.parse(text);
+          if (
+            msg?.type === "resize" &&
+            Number.isInteger(msg.cols) &&
+            Number.isInteger(msg.rows)
+          ) {
+            session.cmd.resize(msg.cols, msg.rows);
+            return;
+          }
+        } catch {
+          // not JSON — treat as raw input
+        }
+        session.cmd.stdin.write(text);
+      };
+
+      // Replay messages buffered during session setup (e.g. the initial resize).
+      for (const data of pendingMessages) {
+        handleMessage(data);
+      }
+
+      ws.on("message", (data) => handleMessage(data as Buffer));
+
+      ws.on("close", () => {
+        session.wsClients.delete(ws);
+      });
+
+      // Trigger a fresh prompt redraw (initial output was lost while wsClients was empty).
+      session.cmd.stdin.write("\n");
+    },
+  );
 
   return { wss, pathRegex };
 }

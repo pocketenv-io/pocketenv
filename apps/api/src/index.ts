@@ -68,21 +68,24 @@ const wsHandlers = [
   attachSshWebSocket("/ssh"),
 ];
 
-httpServer.on("upgrade", (req: IncomingMessage, socket: Duplex, head: Buffer) => {
-  const pathname = new URL(req.url ?? "", "http://localhost").pathname;
-  for (const { wss, pathRegex } of wsHandlers) {
-    const match = pathname.match(pathRegex);
-    if (match) {
-      wss.handleUpgrade(req, socket, head, (ws) => {
-        wss.emit("connection", ws, req, match[1]!);
-      });
-      return;
+httpServer.on(
+  "upgrade",
+  (req: IncomingMessage, socket: Duplex, head: Buffer) => {
+    const pathname = new URL(req.url ?? "", "http://localhost").pathname;
+    for (const { wss, pathRegex } of wsHandlers) {
+      const match = pathname.match(pathRegex);
+      if (match) {
+        wss.handleUpgrade(req, socket, head, (ws) => {
+          wss.emit("connection", ws, req, match[1]!);
+        });
+        return;
+      }
     }
-  }
-  // No handler matched — reject cleanly
-  socket.write("HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n");
-  socket.destroy();
-});
+    // No handler matched — reject cleanly
+    socket.write("HTTP/1.1 404 Not Found\r\nConnection: close\r\n\r\n");
+    socket.destroy();
+  },
+);
 
 httpServer.listen(process.env.POCKETENV_XPRC_PORT || 8789, () => {
   consola.log(chalk.greenBright(banner));

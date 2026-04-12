@@ -26,7 +26,10 @@ export interface InputSchema {
     | "deno"
     | "sprites"
     | "modal"
-    | "e2b";
+    | "e2b"
+    | "blaxel"
+    | "hopx"
+    | "runloop";
   /** A list of topics/tags to associate with the sandbox */
   topics?: string[];
   /** A git repository URL to clone into the sandbox, e.g. a GitHub/Tangled repo. */
@@ -77,6 +80,14 @@ export interface InputSchema {
   e2bApiKey?: string;
   /** A redacted API KEY for accessing E2B resources */
   redactedE2bApiKey?: string;
+  /** An API KEY (encrypted) for accessing hopx resources */
+  hopxApiKey?: string;
+  /** A redacted API KEY for accessing hopx resources */
+  redactedHopxApiKey?: string;
+  /** An API KEY (encrypted) for accessing Runloop resources */
+  runloopApiKey?: string;
+  /** A redacted API KEY for accessing Runloop resources */
+  redactedRunloopApiKey?: string;
   [k: string]: unknown;
 }
 

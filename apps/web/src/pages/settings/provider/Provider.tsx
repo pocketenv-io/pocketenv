@@ -24,7 +24,12 @@ const LABELS = {
   e2b: "E2B Access Token",
 } as const;
 
-type Provider = keyof typeof LABELS | "cloudflare" | "modal";
+type Provider =
+  | keyof typeof LABELS
+  | "cloudflare"
+  | "modal"
+  | "hopx"
+  | "runloop";
 
 const schema = z
   .object({
@@ -36,6 +41,8 @@ const schema = z
       "sprites",
       "modal",
       "e2b",
+      "hopx",
+      "runloop",
     ]),
     apiKey: z.string().optional(),
     organizationId: z.string().optional(),
@@ -44,12 +51,16 @@ const schema = z
     tokenId: z.string().optional(),
     tokenSecret: z.string().optional(),
     e2bApiKey: z.string().optional(),
+    hopxApiKey: z.string().optional(),
+    runloopApiKey: z.string().optional(),
   })
   .superRefine((data, ctx) => {
     if (
       data.provider !== "cloudflare" &&
       data.provider !== "modal" &&
       data.provider !== "e2b" &&
+      data.provider !== "hopx" &&
+      data.provider !== "runloop" &&
       !data.apiKey?.trim()
     ) {
       ctx.addIssue({
@@ -100,6 +111,20 @@ const schema = z
         path: ["e2bApiKey"],
       });
     }
+    if (data.provider === "hopx" && !data.hopxApiKey?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "HopX API Key is required",
+        path: ["hopxApiKey"],
+      });
+    }
+    if (data.provider === "runloop" && !data.runloopApiKey?.trim()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Runloop API Key is required",
+        path: ["runloopApiKey"],
+      });
+    }
   });
 
 type FormValues = z.infer<typeof schema>;
@@ -134,6 +159,8 @@ function Services() {
       tokenId: "",
       tokenSecret: "",
       e2bApiKey: "",
+      hopxApiKey: "",
+      runloopApiKey: "",
     },
   });
 
@@ -152,6 +179,8 @@ function Services() {
       setValue("tokenId", providerPref.redactedModalTokenId ?? "");
       setValue("tokenSecret", providerPref.redactedModalTokenSecret ?? "");
       setValue("e2bApiKey", providerPref.redactedE2bApiKey ?? "");
+      setValue("hopxApiKey", providerPref.redactedHopxApiKey ?? "");
+      setValue("runloopApiKey", providerPref.redactedRunloopApiKey ?? "");
     }
   }, [preferences, setValue]);
 
@@ -225,6 +254,40 @@ function Services() {
               values.e2bApiKey.slice(-3)
             : values.e2bApiKey;
       }
+    } else if (values.provider === "hopx") {
+      if (values.hopxApiKey && !values.hopxApiKey.includes("**")) {
+        const sealed = sodium.cryptoBoxSeal(
+          sodium.fromString(values.hopxApiKey.trim()),
+          sodium.fromHex(PUBLIC_KEY),
+        );
+        pref.hopxApiKey = sodium.toBase64(
+          sealed,
+          sodium.base64Variants.URLSAFE_NO_PADDING,
+        );
+        pref.redactedHopxApiKey =
+          values.hopxApiKey.length > 14
+            ? values.hopxApiKey.slice(0, 11) +
+              "*".repeat(24) +
+              values.hopxApiKey.slice(-3)
+            : values.hopxApiKey;
+      }
+    } else if (values.provider === "runloop") {
+      if (values.runloopApiKey && !values.runloopApiKey.includes("**")) {
+        const sealed = sodium.cryptoBoxSeal(
+          sodium.fromString(values.runloopApiKey.trim()),
+          sodium.fromHex(PUBLIC_KEY),
+        );
+        pref.runloopApiKey = sodium.toBase64(
+          sealed,
+          sodium.base64Variants.URLSAFE_NO_PADDING,
+        );
+        pref.redactedRunloopApiKey =
+          values.runloopApiKey.length > 14
+            ? values.runloopApiKey.slice(0, 11) +
+              "*".repeat(24) +
+              values.runloopApiKey.slice(-3)
+            : values.runloopApiKey;
+      }
     } else if (
       values.apiKey?.includes("**") &&
       values.provider !== "cloudflare"
@@ -237,6 +300,8 @@ function Services() {
     if (
       values.provider !== "modal" &&
       values.provider !== "e2b" &&
+      values.provider !== "hopx" &&
+      values.provider !== "runloop" &&
       values.apiKey &&
       !values.apiKey.includes("**")
     ) {
@@ -301,6 +366,8 @@ function Services() {
                         setValue("tokenId", "");
                         setValue("tokenSecret", "");
                         setValue("e2bApiKey", "");
+                        setValue("hopxApiKey", "");
+                        setValue("runloopApiKey", "");
                       }}
                       className="select select-lg font-medium text-[15px]"
                     >
@@ -313,11 +380,15 @@ function Services() {
                       <option value="sprites">Sprites</option>
                       <option value="modal">Modal</option>
                       <option value="e2b">E2B</option>
+                      <option value="hopx">Hopx</option>
+                      <option value="runloop">Runloop</option>
                     </select>
                   </div>
                   {provider !== "cloudflare" &&
                     provider !== "modal" &&
-                    provider !== "e2b" && (
+                    provider !== "e2b" &&
+                    provider !== "hopx" &&
+                    provider !== "runloop" && (
                       <div className="w-96">
                         <label className="label-text">
                           {LABELS[provider as keyof typeof LABELS]}
@@ -393,6 +464,36 @@ function Services() {
                     {errors.e2bApiKey && (
                       <p className="text-error text-sm mt-1">
                         {errors.e2bApiKey.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+                {provider === "hopx" && (
+                  <div className="w-96 mt-4">
+                    <label className="label-text">Hopx API Key</label>
+                    <input
+                      {...register("hopxApiKey")}
+                      type="text"
+                      className="input input-lg font-medium text-[15px]"
+                    />
+                    {errors.hopxApiKey && (
+                      <p className="text-error text-sm mt-1">
+                        {errors.hopxApiKey.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+                {provider === "runloop" && (
+                  <div className="w-96 mt-4">
+                    <label className="label-text">Runloop API Key</label>
+                    <input
+                      {...register("runloopApiKey")}
+                      type="text"
+                      className="input input-lg font-medium text-[15px]"
+                    />
+                    {errors.runloopApiKey && (
+                      <p className="text-error text-sm mt-1">
+                        {errors.runloopApiKey.message}
                       </p>
                     )}
                   </div>

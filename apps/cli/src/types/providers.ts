@@ -5,4 +5,7 @@ export type Provider =
   | "vercel"
   | "sprites"
   | "modal"
-  | "e2b";
+  | "e2b"
+  | "hopx"
+  | "runloop"
+  | "blaxel";

@@ -108,7 +108,11 @@ async function setupSandboxEnvironment(
   return { sandbox, cmd };
 }
 
-export async function createTerminalSession(ctx: Context, id: string, key = id) {
+export async function createTerminalSession(
+  ctx: Context,
+  id: string,
+  key = id,
+) {
   const [record] = await ctx.db
     .select()
     .from(schema.sandboxes)

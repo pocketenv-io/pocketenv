@@ -1,22 +1,27 @@
-import { Sandbox, Template } from "e2b";
+import { SandboxInstance } from "@blaxel/core";
 import BaseProvider, { BaseSandbox, type SandboxOptions } from "..";
 import { consola } from "consola";
 import path from "node:path";
 import { env } from "node:process";
-import parseImageRef from "lib/parseImageRef";
 
-export class E2bSandbox implements BaseSandbox {
-  constructor(private sandbox: Sandbox) {}
+const PTY_PORT = 26661;
+export const VSCODE_PORT = 1024;
+
+export class BlaxelSandbox implements BaseSandbox {
+  constructor(
+    private sandbox: SandboxInstance,
+    private name: string,
+  ) {}
 
   async start(): Promise<void> {
-    // E2B's sandbox starts immediately upon creation, so we can just return here.
+    // Blaxel's sandbox starts immediately upon creation, so we can just return here.
   }
 
   async stop(): Promise<void> {
     try {
-      await this.sandbox.kill();
+      await this.sandbox.delete();
     } catch (error) {
-      consola.error("Error stopping e2b Sandbox:", error);
+      consola.error("Error stopping blaxel Sandbox:", error);
     }
   }
 
@@ -24,7 +29,7 @@ export class E2bSandbox implements BaseSandbox {
     try {
       await this.stop();
     } catch (error) {
-      consola.error("Error deleting e2b Sandbox:", error);
+      consola.error("Error deleting blaxel Sandbox:", error);
     }
   }
 
@@ -39,7 +44,10 @@ export class E2bSandbox implements BaseSandbox {
     const command = strings.reduce((acc, str, i) => {
       return acc + str + (values[i] || "");
     }, "");
-    const result = await this.sandbox.commands.run(`bash -c ${command}`);
+    const result = await this.sandbox.process.exec({
+      command: `bash -c ${command}`,
+      waitForCompletion: true,
+    });
 
     return {
       stdout: result.stdout,
@@ -49,7 +57,7 @@ export class E2bSandbox implements BaseSandbox {
   }
 
   async id(): Promise<string | null> {
-    return this.sandbox.sandboxId;
+    return this.name;
   }
 
   async ssh(): Promise<any> {}
@@ -120,40 +128,60 @@ export class E2bSandbox implements BaseSandbox {
   }
 }
 
-class E2bProvider implements BaseProvider {
+class BlaxelProvider implements BaseProvider {
   async create(options: SandboxOptions): Promise<BaseSandbox> {
-    if (!options.e2bApiKey) {
-      throw new Error("E2B API KEY is required to create a Sandbox");
+    if (!options.blaxelApiKey || !options.blaxelWorkspace) {
+      throw new Error(
+        "Blaxel API KEY and Workspace are required to create a Sandbox",
+      );
+    }
+    if (!options.blaxelName) {
+      throw new Error("Blaxel Sandbox name is required to create a Sandbox");
     }
     const image = options.image || "ghcr.io/pocketenv-io/modal-openclaw:0.1.0";
-    const template = Template().fromImage(image);
-    const { name, tag } = parseImageRef(image);
-    const templateName = name.split("/").pop()!;
-    await Template.build(template, templateName, {
-      tags: [tag],
-      cpuCount: 4,
-      memoryMB: 4096,
-      apiKey: options.e2bApiKey,
+    const sandbox = await SandboxInstance.createIfNotExists({
+      name: options.blaxelName,
+      image,
+      memory: 4096,
+      ports: [
+        {
+          target: PTY_PORT,
+          protocol: "TCP",
+        },
+        {
+          target: VSCODE_PORT,
+          protocol: "HTTP",
+        },
+        {
+          target: 3000,
+          protocol: "TCP",
+        },
+        {
+          target: 4000,
+          protocol: "TCP",
+        },
+        {
+          target: 8000,
+          protocol: "TCP",
+        },
+      ],
     });
-    const sandbox = await Sandbox.create(`${templateName}:${tag}`, {
-      apiKey: options.e2bApiKey,
-    });
-    return new E2bSandbox(sandbox);
+    return new BlaxelSandbox(sandbox, options.blaxelName);
   }
 
   async get(id: string, options?: SandboxOptions): Promise<BaseSandbox> {
     try {
-      if (!options?.e2bApiKey) {
-        throw new Error("E2B API KEY is required to get a sandbox");
-      }
-      const sandbox = await Sandbox.connect(id, {
-        apiKey: options?.e2bApiKey,
-      });
-      return new E2bSandbox(sandbox);
+      const sandbox = await SandboxInstance.get(id);
+      return new BlaxelSandbox(sandbox, id);
     } catch {
+      if (!options?.blaxelApiKey || !options?.blaxelWorkspace) {
+        throw new Error(
+          "Blaxel API KEY and Workspace are required to get a Sandbox",
+        );
+      }
       return this.create(options!);
     }
   }
 }
 
-export default E2bProvider;
+export default BlaxelProvider;

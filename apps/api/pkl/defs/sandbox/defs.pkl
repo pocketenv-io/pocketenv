@@ -365,6 +365,26 @@ defs = new Mapping<String, ObjectType | Array> {
         description =
           "The redacted API KEY for E2B, returned in API responses when the sandbox provider is E2B. This can be used to identify which E2B API KEY is being used without exposing the actual API KEY."
       }
+      ["hopxApiKey"] = new StringType {
+        type = "string"
+        description =
+          "The API KEY for hopx, if the sandbox provider is hopx. This is used to determine which hopx API KEY to use when creating the sandbox."
+      }
+      ["redactedHopxApiKey"] = new StringType {
+        type = "string"
+        description =
+          "The redacted API KEY for hopx, returned in API responses when the sandbox provider is hopx. This can be used to identify which hopx API KEY is being used without exposing the actual API KEY."
+      }
+      ["runloopApiKey"] = new StringType {
+        type = "string"
+        description =
+          "The API KEY for Runloop, if the sandbox provider is Runloop. This is used to determine which Runloop API KEY to use when creating the sandbox."
+      }
+      ["redactedRunloopApiKey"] = new StringType {
+        type = "string"
+        description =
+          "The redacted API KEY for Runloop, returned in API responses when the sandbox provider is Runloop. This can be used to identify which Runloop API KEY is being used without exposing the actual API KEY."
+      }
     }
   }
   ["preferences"] = new Array {

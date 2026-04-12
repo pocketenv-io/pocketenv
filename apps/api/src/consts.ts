@@ -8,6 +8,9 @@ export enum Providers {
   SPRITE = "sprite",
   MODAL = "modal",
   E2B = "e2b",
+  HOPX = "hopx",
+  RUNLOOP = "runloop",
+  BLAXEL = "blaxel",
 }
 
 export type Resources = {
@@ -51,5 +54,20 @@ export const DefaultResources: Record<Providers, Resources> = {
     vcpus: 2,
     memory: 8,
     disk: 16,
+  },
+  hopx: {
+    vcpus: 2,
+    memory: 8,
+    disk: 16,
+  },
+  runloop: {
+    vcpus: 2,
+    memory: 8,
+    disk: 16,
+  },
+  blaxel: {
+    vcpus: 2,
+    memory: 4,
+    disk: 8,
   },
 };

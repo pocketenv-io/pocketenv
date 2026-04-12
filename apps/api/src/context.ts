@@ -14,7 +14,7 @@ import { workers } from "cloudflare";
 import { Providers } from "consts";
 import type { Message } from "pty/pty-tunnel/messages";
 import type { WebSocket } from "ws";
-import express from "express";
+import type express from "express";
 
 const { DB_PATH } = env;
 export const db = createDb(DB_PATH);
@@ -56,7 +56,13 @@ export const ctx = {
   kv: new Map<string, string>(),
   sandbox: (provider?: string) =>
     axios.create({
-      baseURL: [Providers.MODAL, Providers.E2B].includes(provider as Providers)
+      baseURL: [
+        Providers.MODAL,
+        Providers.E2B,
+        Providers.BLAXEL,
+        Providers.HOPX,
+        Providers.RUNLOOP,
+      ].includes(provider as Providers)
         ? env.MODAL_SANDBOX_API_URL
         : env.SANDBOX_API_URL,
     }),

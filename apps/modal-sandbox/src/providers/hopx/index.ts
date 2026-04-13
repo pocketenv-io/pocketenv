@@ -135,12 +135,12 @@ class HopxProvider implements BaseProvider {
       const sandbox = await Sandbox.create({
         template: templateName,
         apiKey: options.hopxApiKey,
-        region: "us-east",
       });
       return new HopxSandbox(sandbox);
     } catch (error) {
       consola.warn(
         `Sandbox with template ${templateName} not found, creating a new one...`,
+        error,
       );
 
       template.runCmd(
@@ -157,7 +157,6 @@ class HopxProvider implements BaseProvider {
       const sandbox = await Sandbox.create({
         template: templateName,
         apiKey: options.hopxApiKey,
-        region: "us-east",
       });
       return new HopxSandbox(sandbox);
     }

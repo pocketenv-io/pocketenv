@@ -456,7 +456,7 @@ sandboxRouter.post("/:sandboxId/stop", async (c) => {
     .update(sandboxes)
     .set({
       status: "STOPPED",
-      sandboxId: ["deno", "vercel", "modal", "e2b", "runloop", "hopx"].includes(
+      sandboxId: ["deno", "vercel", "modal", "e2b", "runloop"].includes(
         record.provider,
       )
         ? null

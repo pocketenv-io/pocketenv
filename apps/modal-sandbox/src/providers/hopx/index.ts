@@ -14,7 +14,7 @@ export class HopxSandbox implements BaseSandbox {
 
   async stop(): Promise<void> {
     try {
-      await this.sandbox.kill();
+      await this.sandbox.pause();
     } catch (error) {
       consola.error("Error stopping hopx Sandbox:", error);
     }
@@ -23,6 +23,7 @@ export class HopxSandbox implements BaseSandbox {
   async delete(): Promise<void> {
     try {
       await this.stop();
+      await this.sandbox.kill();
     } catch (error) {
       consola.error("Error deleting hopx Sandbox:", error);
     }

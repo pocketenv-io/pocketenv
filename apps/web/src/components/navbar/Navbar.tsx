@@ -227,7 +227,7 @@ function Navbar({ title, project, withLogo, root, rootLink }: NavbarProps) {
               <li>
                 <a
                   className="dropdown-item"
-                  href="https://docs.pocketenv.io/faq-2028704m0"
+                  href="https://docs.pocketenv.io/faq"
                   target="_blank"
                 >
                   <span className="icon-[tabler--help-triangle]"></span>

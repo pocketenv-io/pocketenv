@@ -130,9 +130,17 @@ class HopxProvider implements BaseProvider {
     const image = options.image || "ghcr.io/pocketenv-io/modal-openclaw:0.1.0";
     const template = new Template(image);
     const { name } = parseImageRef(image);
-    const templateName = name.split("/").pop()!;
+    const templateName = name.split("/").pop()!.replace("modal-", "");
 
     try {
+      await Template.build(template, {
+        name: templateName,
+        apiKey: options.hopxApiKey,
+        cpu: 2,
+        memory: 2048,
+        diskGB: 10,
+      });
+
       const sandbox = await Sandbox.create({
         template: templateName,
         apiKey: options.hopxApiKey,
@@ -140,7 +148,7 @@ class HopxProvider implements BaseProvider {
       return new HopxSandbox(sandbox);
     } catch (error) {
       consola.warn(
-        `Sandbox with template ${templateName} not found, creating a new one...`,
+        `Template ${templateName} already exists or failed to build, connecting to existing template...`,
         error,
       );
 
@@ -148,13 +156,6 @@ class HopxProvider implements BaseProvider {
         `echo "This is a custom template built from image ${image}"`,
       );
 
-      await Template.build(template, {
-        name: templateName,
-        apiKey: options.hopxApiKey,
-        cpu: 2,
-        memory: 4096,
-        diskGB: 10,
-      });
       const sandbox = await Sandbox.create({
         template: templateName,
         apiKey: options.hopxApiKey,

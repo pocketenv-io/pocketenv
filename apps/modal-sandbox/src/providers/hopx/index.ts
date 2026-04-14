@@ -133,6 +133,10 @@ class HopxProvider implements BaseProvider {
     const templateName = name.split("/").pop()!.replace("modal-", "");
 
     try {
+      template.runCmd(
+        `echo "This is a custom template built from image ${image}"`,
+      );
+
       await Template.build(template, {
         name: templateName,
         apiKey: options.hopxApiKey,
@@ -150,10 +154,6 @@ class HopxProvider implements BaseProvider {
       consola.warn(
         `Template ${templateName} already exists or failed to build, connecting to existing template...`,
         error,
-      );
-
-      template.runCmd(
-        `echo "This is a custom template built from image ${image}"`,
       );
 
       const sandbox = await Sandbox.create({

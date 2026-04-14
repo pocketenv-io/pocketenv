@@ -161,12 +161,13 @@ function New() {
                       )}
                     </button>
                     {((profile && data?.sandbox?.owner?.did === profile.did) ||
-                      !data?.sandbox?.owner) && (
-                      <ContextMenu
-                        sandboxId={data?.sandbox?.id}
-                        uri={data?.sandbox?.uri}
-                      />
-                    )}
+                      !data?.sandbox?.owner) &&
+                      profile && (
+                        <ContextMenu
+                          sandboxId={data?.sandbox?.id}
+                          uri={data?.sandbox?.uri}
+                        />
+                      )}
                   </div>
 
                   <div className="w-[50%] overflow-x-auto mt-5 ml-[-18px]">

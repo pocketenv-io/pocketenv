@@ -162,7 +162,8 @@ function New() {
                     </button>
                     {((profile && data?.sandbox?.owner?.did === profile.did) ||
                       !data?.sandbox?.owner) &&
-                      profile && (
+                      profile &&
+                      data?.sandbox?.uri && (
                         <ContextMenu
                           sandboxId={data?.sandbox?.id}
                           uri={data?.sandbox?.uri}

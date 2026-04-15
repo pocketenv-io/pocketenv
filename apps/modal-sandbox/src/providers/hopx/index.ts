@@ -161,8 +161,8 @@ class HopxProvider implements BaseProvider {
       );
       template.setUser("root");
       template.runCmd("echo '=== 👤 Creating user hopx and workspace ==='");
-      template.runCmd("groupadd -g 1001 hopx || true");
-      template.runCmd("useradd -m -u 1001 -g 1001 -s /bin/bash hopx || true");
+      template.runCmd("groupadd hopx || true");
+      template.runCmd("useradd -m -g hopx -s /bin/bash hopx || true");
       template.runCmd("mkdir -p /workspace");
       template.runCmd("chown -R hopx:hopx /workspace");
       template.runCmd("chmod 755 /workspace");

@@ -136,12 +136,50 @@ class HopxProvider implements BaseProvider {
       template.runCmd(
         `echo "This is a custom template built from image ${image}"`,
       );
+      template.aptInstall(
+        "curl",
+        "ca-certificates",
+        "gnupg",
+        "lsb-release",
+        "apt-transport-https",
+        "software-properties-common",
+        "build-essential",
+        "git",
+        "wget",
+        "vim",
+        "nano",
+        "jq",
+        "htop",
+        "tmux",
+        "unzip",
+        "zip",
+        "iputils-ping",
+        "nftables",
+        "iptables",
+        "dnsutils",
+        "ttyd",
+      );
+      template.setUser("root");
+      template.runCmd("echo '=== 👤 Creating user hopx and workspace ==='");
+      template.runCmd("groupadd -g 1001 hopx || true");
+      template.runCmd("useradd -m -u 1001 -g 1001 -s /bin/bash hopx || true");
+      template.runCmd("mkdir -p /workspace");
+      template.runCmd("chown -R hopx:hopx /workspace");
+      template.runCmd("chmod 755 /workspace");
+      template.runCmd(
+        "echo 'hopx ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/hopx",
+      );
+      template.runCmd("chmod 440 /etc/sudoers.d/hopx");
+      template.runCmd(
+        "echo '✓ User hopx created with /workspace and sudo access'",
+      );
+      template.setUser("modal");
 
       await Template.build(template, {
         name: templateName,
         apiKey: options.hopxApiKey,
         cpu: 2,
-        memory: 2048,
+        memory: 4096,
         diskGB: 10,
       });
 
